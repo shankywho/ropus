@@ -29,7 +29,7 @@ func TestEvaluateRisk_OrchestratorPipeline(t *testing.T) {
 	// 2. Initialize Orchestrator with mock ML client and nil DB/velocity (degrades gracefully)
 	mlClient := riskengine.NewMLClient(mlServer.URL)
 	store := features.NewVelocityStore(nil)
-	orchestrator := riskengine.NewOrchestrator(nil, store, nil, mlClient)
+	orchestrator := riskengine.NewOrchestrator(nil, store, nil, mlClient, nil)
 	handler := riskengine.NewHandler(orchestrator)
 
 	reqPayload := riskengine.RiskEvaluationRequest{
@@ -87,7 +87,7 @@ func TestEvaluateRisk_MLTimeoutFallback(t *testing.T) {
 	// ML server that simulates non-responding / unreachable endpoint
 	mlClient := riskengine.NewMLClient("http://127.0.0.1:59999") // invalid port
 	store := features.NewVelocityStore(nil)
-	orchestrator := riskengine.NewOrchestrator(nil, store, nil, mlClient)
+	orchestrator := riskengine.NewOrchestrator(nil, store, nil, mlClient, nil)
 	handler := riskengine.NewHandler(orchestrator)
 
 	reqPayload := riskengine.RiskEvaluationRequest{

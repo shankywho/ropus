@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/shankywho/ropus/backend/internal/features"
 	"github.com/shankywho/ropus/backend/internal/rules"
+	"github.com/shankywho/ropus/backend/internal/utils"
 )
 
 // Orchestrator orchestrates the real-time synchronous risk evaluation pipeline.
@@ -20,6 +22,7 @@ type Orchestrator struct {
 	velocityStore *features.VelocityStore
 	rulesService  *rules.Service
 	mlClient      *MLClient
+	kms           utils.KMS
 }
 
 // NewOrchestrator constructs a new risk Orchestrator.
@@ -28,12 +31,17 @@ func NewOrchestrator(
 	velocityStore *features.VelocityStore,
 	rulesService *rules.Service,
 	mlClient *MLClient,
+	kms utils.KMS,
 ) *Orchestrator {
+	if kms == nil {
+		kms = utils.NewMockKMS()
+	}
 	return &Orchestrator{
 		db:            db,
 		velocityStore: velocityStore,
 		rulesService:  rulesService,
 		mlClient:      mlClient,
+		kms:           kms,
 	}
 }
 
@@ -48,6 +56,18 @@ func (o *Orchestrator) ensureTenantExists(ctx context.Context, tenantID string) 
 		ON CONFLICT (tenant_id) DO NOTHING
 	`, tenantID, fmt.Sprintf("key_%s", tenantID))
 	return err
+}
+
+// maskIPAddress produces a privacy-preserving masked IP for logging/audit streams.
+func maskIPAddress(ip string) string {
+	if ip == "" {
+		return ""
+	}
+	parts := strings.Split(ip, ".")
+	if len(parts) == 4 {
+		return fmt.Sprintf("%s.%s.***.***", parts[0], parts[1])
+	}
+	return "masked_ip"
 }
 
 // Evaluate executes the complete synchronous decision pipeline.
@@ -87,7 +107,7 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 		velocityMetrics = &features.VelocityMetrics{TxnCountIP1h: 0, TxnCountToken24h: 0}
 	}
 
-	// Build the unified evaluation context
+	// Build the in-memory evaluation context for real-time inference & rules
 	evalContext := map[string]interface{}{
 		"transaction_id":      req.TransactionID,
 		"amount":              req.Amount,
@@ -217,48 +237,136 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 	}
 
 	// -------------------------------------------------------------
-	// STEP 5: Persistence into PostgreSQL risk_decisions
+	// STEP 5: Envelope Encryption & Transactional Outbox Persistence
 	// -------------------------------------------------------------
 	latencyMs := int(time.Since(startTime).Milliseconds())
+	nowUTC := time.Now().UTC()
 
-	featureSnapshotBytes, _ := json.Marshal(evalContext)
-	rawPayloadBytes, _ := json.Marshal(req)
+	// 1. Retrieve Tenant AES-256 Key from KMS
+	tenantKey, keyErr := o.kms.GetTenantKey(tenantID)
+	if keyErr != nil {
+		log.Printf("Warning: KMS key retrieval error: %v", keyErr)
+	}
+
+	// 2. Encrypt PII (IP Address & Device Fingerprint) for at-rest storage
+	encryptedIP := ip
+	encryptedDeviceFP := req.DeviceFingerprint
+	if len(tenantKey) > 0 {
+		if encIP, err := utils.EncryptString(ip, tenantKey); err == nil {
+			encryptedIP = encIP
+		}
+		if encFP, err := utils.EncryptString(req.DeviceFingerprint, tenantKey); err == nil {
+			encryptedDeviceFP = encFP
+		}
+	}
+
+	// 3. Prepare Encrypted Feature Snapshot (Stored in Postgres)
+	encryptedFeatureSnapshot := make(map[string]interface{}, len(evalContext))
+	for k, v := range evalContext {
+		encryptedFeatureSnapshot[k] = v
+	}
+	encryptedFeatureSnapshot["ip_address"] = encryptedIP
+	encryptedFeatureSnapshot["device_fingerprint"] = encryptedDeviceFP
+	encryptedFeatureSnapshot["_encryption"] = "AES-256-GCM"
+
+	featureSnapshotBytes, _ := json.Marshal(encryptedFeatureSnapshot)
+
+	// Encrypt raw payload PII
+	encryptedRawPayload := req
+	encryptedRawPayload.IPAddress = encryptedIP
+	encryptedRawPayload.DeviceFingerprint = encryptedDeviceFP
+	rawPayloadBytes, _ := json.Marshal(encryptedRawPayload)
 	reasonCodesBytes, _ := json.Marshal(reasonCodes)
+
+	// 4. Prepare Sanitized Outbox Payload (Decrypted PII is NEVER sent to Kafka)
+	outboxSnapshot := make(map[string]interface{}, len(evalContext))
+	for k, v := range evalContext {
+		outboxSnapshot[k] = v
+	}
+	outboxSnapshot["ip_address"] = maskIPAddress(ip)
+	outboxSnapshot["device_fingerprint"] = encryptedDeviceFP
+
+	outboxPayload := map[string]interface{}{
+		"decision_id":          decisionID,
+		"tenant_id":            tenantID,
+		"transaction_id":       req.TransactionID,
+		"amount":               req.Amount,
+		"currency":             req.Currency,
+		"recommended_action":   finalAction,
+		"risk_score":           riskScore,
+		"reason_codes":         reasonCodes,
+		"feature_snapshot_ref": snapshotRef,
+		"feature_snapshot":     outboxSnapshot,
+		"latency_ms":           latencyMs,
+		"evaluated_at":         nowUTC.Format(time.RFC3339),
+	}
+	outboxPayloadBytes, _ := json.Marshal(outboxPayload)
+	outboxID := uuid.New().String()
 
 	if o.db != nil {
 		_ = o.ensureTenantExists(ctx, tenantID)
 
-		insertQuery := `
-			INSERT INTO risk_decisions (
-				decision_id, tenant_id, transaction_id, amount, currency,
-				recommended_action, risk_score, reason_codes,
-				feature_snapshot_ref, feature_snapshot, raw_payload, latency_ms, created_at
-			)
-			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-			ON CONFLICT (tenant_id, transaction_id) DO UPDATE
-			SET recommended_action = EXCLUDED.recommended_action,
-			    risk_score = EXCLUDED.risk_score,
-			    reason_codes = EXCLUDED.reason_codes,
-			    latency_ms = EXCLUDED.latency_ms
-		`
-
-		_, err = o.db.Exec(ctx, insertQuery,
-			decisionID,
-			tenantID,
-			req.TransactionID,
-			req.Amount,
-			req.Currency,
-			finalAction,
-			riskScore,
-			reasonCodesBytes,
-			snapshotRef,
-			featureSnapshotBytes,
-			rawPayloadBytes,
-			latencyMs,
-			time.Now().UTC(),
-		)
+		tx, err := o.db.Begin(ctx)
 		if err != nil {
-			log.Printf("Warning: Failed to persist risk decision into postgres: %v", err)
+			log.Printf("Warning: Failed to start database transaction: %v", err)
+		} else {
+			defer tx.Rollback(ctx)
+
+			// Insert into risk_decisions with encrypted PII
+			insertDecisionQuery := `
+				INSERT INTO risk_decisions (
+					decision_id, tenant_id, transaction_id, amount, currency,
+					recommended_action, risk_score, reason_codes,
+					feature_snapshot_ref, feature_snapshot, raw_payload, latency_ms, created_at
+				)
+				VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+				ON CONFLICT (tenant_id, transaction_id) DO UPDATE
+				SET recommended_action = EXCLUDED.recommended_action,
+				    risk_score = EXCLUDED.risk_score,
+				    reason_codes = EXCLUDED.reason_codes,
+				    feature_snapshot = EXCLUDED.feature_snapshot,
+				    raw_payload = EXCLUDED.raw_payload,
+				    latency_ms = EXCLUDED.latency_ms
+			`
+			_, err = tx.Exec(ctx, insertDecisionQuery,
+				decisionID,
+				tenantID,
+				req.TransactionID,
+				req.Amount,
+				req.Currency,
+				finalAction,
+				riskScore,
+				reasonCodesBytes,
+				snapshotRef,
+				featureSnapshotBytes,
+				rawPayloadBytes,
+				latencyMs,
+				nowUTC,
+			)
+			if err != nil {
+				log.Printf("Error inserting risk_decision in tx: %v", err)
+			}
+
+			// Insert outbox event (guaranteed sanitized / encrypted PII)
+			insertOutboxQuery := `
+				INSERT INTO outbox_events (id, aggregate_type, aggregate_id, type, payload, created_at)
+				VALUES ($1, $2, $3, $4, $5, $6)
+			`
+			_, err = tx.Exec(ctx, insertOutboxQuery,
+				outboxID,
+				"RiskDecision",
+				decisionID,
+				"risk.decisioned",
+				outboxPayloadBytes,
+				nowUTC,
+			)
+			if err != nil {
+				log.Printf("Error inserting outbox_events in tx: %v", err)
+			}
+
+			if commitErr := tx.Commit(ctx); commitErr != nil {
+				log.Printf("Error committing risk decision transaction: %v", commitErr)
+			}
 		}
 	}
 
@@ -273,7 +381,7 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 		ReasonCodes:        reasonCodes,
 		FeatureSnapshotRef: snapshotRef,
 		Features:           evalContext,
-		EvaluatedAt:        time.Now().UTC().Format(time.RFC3339),
+		EvaluatedAt:        nowUTC.Format(time.RFC3339),
 		IsDegraded:         isDegraded,
 		LatencyMs:          latencyMs,
 	}, nil

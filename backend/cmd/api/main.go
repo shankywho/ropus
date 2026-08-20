@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -16,16 +17,27 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 
+	"github.com/shankywho/ropus/backend/internal/audit"
+	"github.com/shankywho/ropus/backend/internal/cases"
 	"github.com/shankywho/ropus/backend/internal/features"
+	"github.com/shankywho/ropus/backend/internal/ingestion"
 	"github.com/shankywho/ropus/backend/internal/riskengine"
 	"github.com/shankywho/ropus/backend/internal/rules"
+	"github.com/shankywho/ropus/backend/internal/utils"
 )
 
 type Config struct {
-	Port         string
-	DatabaseURL  string
-	RedisURL     string
-	MLServiceURL string
+	Port               string
+	DatabaseURL        string
+	RedisURL           string
+	MLServiceURL       string
+	WebhookSecret      string
+	KafkaBrokers       []string
+	KafkaTopic         string
+	ClickHouseAddr     string
+	ClickHouseDB       string
+	ClickHouseUser     string
+	ClickHousePassword string
 }
 
 func loadConfig() Config {
@@ -53,11 +65,38 @@ func loadConfig() Config {
 		mlServiceURL = "http://localhost:8000"
 	}
 
+	webhookSecret := os.Getenv("WEBHOOK_SECRET")
+	if webhookSecret == "" {
+		webhookSecret = "whsec_dummy_risk_secret_12345"
+	}
+
+	kafkaBrokersRaw := os.Getenv("KAFKA_BROKERS")
+	if kafkaBrokersRaw == "" {
+		kafkaBrokersRaw = getEnvOrDefault("KAFKA_BROKER", "localhost:9092")
+	}
+	kafkaBrokers := strings.Split(kafkaBrokersRaw, ",")
+
+	kafkaTopic := getEnvOrDefault("KAFKA_TOPIC", "risk.events")
+
+	chAddr := os.Getenv("CLICKHOUSE_ADDR")
+	if chAddr == "" {
+		chHost := getEnvOrDefault("CLICKHOUSE_HOST", "localhost")
+		chPort := getEnvOrDefault("CLICKHOUSE_NATIVE_PORT", "9000")
+		chAddr = fmt.Sprintf("%s:%s", chHost, chPort)
+	}
+
 	return Config{
-		Port:         port,
-		DatabaseURL:  dbURL,
-		RedisURL:     redisURL,
-		MLServiceURL: mlServiceURL,
+		Port:               port,
+		DatabaseURL:        dbURL,
+		RedisURL:           redisURL,
+		MLServiceURL:       mlServiceURL,
+		WebhookSecret:      webhookSecret,
+		KafkaBrokers:       kafkaBrokers,
+		KafkaTopic:         kafkaTopic,
+		ClickHouseAddr:     chAddr,
+		ClickHouseDB:       getEnvOrDefault("CLICKHOUSE_DB", "default"),
+		ClickHouseUser:     getEnvOrDefault("CLICKHOUSE_USER", "default"),
+		ClickHousePassword: os.Getenv("CLICKHOUSE_PASSWORD"),
 	}
 }
 
@@ -112,16 +151,47 @@ func main() {
 		log.Println("Successfully connected to Redis feature store.")
 	}
 
-	// 3. Domain Services, ML Client & Orchestrator
+	// 3. ClickHouse Client (ClickHouse 24 OLAP)
+	chClient, err := audit.NewClickHouseClient(cfg.ClickHouseAddr, cfg.ClickHouseDB, cfg.ClickHouseUser, cfg.ClickHousePassword)
+	if err != nil {
+		log.Printf("Warning: ClickHouse init error (%v). Continuing...", err)
+	} else {
+		defer chClient.Close()
+		chCtx, chCancel := context.WithTimeout(context.Background(), 2*time.Second)
+		if pingErr := chClient.Ping(chCtx); pingErr != nil {
+			log.Printf("Warning: ClickHouse ping failed (%v). Continuing...", pingErr)
+		} else {
+			log.Println("Successfully connected to ClickHouse OLAP server.")
+		}
+		chCancel()
+	}
+
+	// 4. Domain Services, KMS & Handlers
+	kms := utils.NewMockKMS()
 	velocityStore := features.NewVelocityStore(redisClient)
+
 	rulesService := rules.NewService(dbPool)
 	rulesHandler := rules.NewHandler(rulesService)
 
+	casesService := cases.NewService(dbPool)
+	casesHandler := cases.NewHandler(casesService)
+
 	mlClient := riskengine.NewMLClient(cfg.MLServiceURL)
-	orchestrator := riskengine.NewOrchestrator(dbPool, velocityStore, rulesService, mlClient)
+	orchestrator := riskengine.NewOrchestrator(dbPool, velocityStore, rulesService, mlClient, kms)
 	riskHandler := riskengine.NewHandler(orchestrator)
 
-	// 4. HTTP Router Setup
+	webhookHandler := ingestion.NewWebhookHandler(dbPool)
+
+	// 5. Asynchronous Kafka Consumers
+	kafkaCaseConsumer := cases.NewKafkaConsumer(cfg.KafkaBrokers, cfg.KafkaTopic, "risk-case-manager-group", casesService)
+	consumerCtx, consumerCancel := context.WithCancel(context.Background())
+	defer consumerCancel()
+	go kafkaCaseConsumer.Start(consumerCtx)
+
+	kafkaAuditConsumer := audit.NewKafkaAuditConsumer(cfg.KafkaBrokers, cfg.KafkaTopic, "risk-audit-group", chClient)
+	go kafkaAuditConsumer.Start(consumerCtx)
+
+	// 6. HTTP Router Setup
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -147,12 +217,21 @@ func main() {
 			redisStatus = "disconnected"
 		}
 
+		chStatus := "connected"
+		if chClient == nil || chClient.Ping(pingCtx) != nil {
+			chStatus = "disconnected"
+		}
+
 		response := map[string]interface{}{
-			"status":     "ok",
-			"database":   dbStatus,
-			"redis":      redisStatus,
-			"ml_service": cfg.MLServiceURL,
-			"time":       time.Now().UTC().Format(time.RFC3339),
+			"status":        "ok",
+			"database":      dbStatus,
+			"redis":         redisStatus,
+			"clickhouse":    chStatus,
+			"kms":           "active",
+			"ml_service":    cfg.MLServiceURL,
+			"kafka_brokers": cfg.KafkaBrokers,
+			"kafka_topic":   cfg.KafkaTopic,
+			"time":          time.Now().UTC().Format(time.RFC3339),
 		}
 
 		w.WriteHeader(http.StatusOK)
@@ -168,6 +247,9 @@ func main() {
 		})
 	})
 
+	// Provider Webhooks Ingestion (HMAC protected)
+	r.Post("/webhooks/provider", webhookHandler.HandleProviderWebhook)
+
 	// V1 API Routes
 	r.Route("/v1", func(r chi.Router) {
 		// Real-time risk evaluation orchestrator
@@ -181,6 +263,17 @@ func main() {
 			r.Put("/{id}", rulesHandler.UpdateRule)
 			r.Put("/{id}/status", rulesHandler.TransitionStatus)
 		})
+
+		// Case management & Analyst Manual Review Queue
+		r.Route("/cases", func(r chi.Router) {
+			r.Get("/", casesHandler.ListCases)
+			r.Get("/{id}", casesHandler.GetCase)
+			r.Put("/{id}/claim", casesHandler.ClaimCase)
+			r.Put("/{id}/resolve", casesHandler.ResolveCase)
+		})
+
+		// Webhook alias under /v1
+		r.Post("/webhooks/provider", webhookHandler.HandleProviderWebhook)
 	})
 
 	server := &http.Server{
@@ -191,7 +284,7 @@ func main() {
 		IdleTimeout:  60 * time.Second,
 	}
 
-	// 5. Graceful Shutdown
+	// 7. Graceful Shutdown
 	serverErrors := make(chan error, 1)
 	go func() {
 		log.Printf("AI Risk Manager API listening on :%s", cfg.Port)
@@ -206,6 +299,11 @@ func main() {
 		log.Fatalf("Error starting server: %v", err)
 	case sig := <-shutdown:
 		log.Printf("Received signal %v, initiating graceful shutdown...", sig)
+
+		consumerCancel()
+		_ = kafkaCaseConsumer.Close()
+		_ = kafkaAuditConsumer.Close()
+
 		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer shutdownCancel()
 
