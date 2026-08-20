@@ -18,6 +18,7 @@ import (
 
 	"github.com/shankywho/ropus/backend/internal/features"
 	"github.com/shankywho/ropus/backend/internal/riskengine"
+	"github.com/shankywho/ropus/backend/internal/rules"
 )
 
 type Config struct {
@@ -108,6 +109,9 @@ func main() {
 	velocityStore := features.NewVelocityStore(redisClient)
 	riskHandler := riskengine.NewHandler(velocityStore)
 
+	rulesService := rules.NewService(dbPool)
+	rulesHandler := rules.NewHandler(rulesService)
+
 	// 4. HTTP Router Setup
 	r := chi.NewRouter()
 
@@ -154,9 +158,19 @@ func main() {
 		})
 	})
 
-	// V1 Risk Evaluation API route
+	// V1 API Routes
 	r.Route("/v1", func(r chi.Router) {
+		// Real-time risk evaluation
 		r.Post("/risk-evaluations", riskHandler.EvaluateRisk)
+
+		// Rules management & Maker-Checker workflow
+		r.Route("/rules", func(r chi.Router) {
+			r.Post("/", rulesHandler.CreateRule)
+			r.Get("/", rulesHandler.ListRules)
+			r.Get("/{id}", rulesHandler.GetRule)
+			r.Put("/{id}", rulesHandler.UpdateRule)
+			r.Put("/{id}/status", rulesHandler.TransitionStatus)
+		})
 	})
 
 	server := &http.Server{
