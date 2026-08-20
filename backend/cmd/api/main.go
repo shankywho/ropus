@@ -22,9 +22,10 @@ import (
 )
 
 type Config struct {
-	Port        string
-	DatabaseURL string
-	RedisURL    string
+	Port         string
+	DatabaseURL  string
+	RedisURL     string
+	MLServiceURL string
 }
 
 func loadConfig() Config {
@@ -47,10 +48,16 @@ func loadConfig() Config {
 		redisURL = fmt.Sprintf("redis://%s:%s/0", redisHost, redisPort)
 	}
 
+	mlServiceURL := os.Getenv("ML_SERVICE_URL")
+	if mlServiceURL == "" {
+		mlServiceURL = "http://localhost:8000"
+	}
+
 	return Config{
-		Port:        port,
-		DatabaseURL: dbURL,
-		RedisURL:    redisURL,
+		Port:         port,
+		DatabaseURL:  dbURL,
+		RedisURL:     redisURL,
+		MLServiceURL: mlServiceURL,
 	}
 }
 
@@ -105,12 +112,14 @@ func main() {
 		log.Println("Successfully connected to Redis feature store.")
 	}
 
-	// 3. Domain Services & Handlers
+	// 3. Domain Services, ML Client & Orchestrator
 	velocityStore := features.NewVelocityStore(redisClient)
-	riskHandler := riskengine.NewHandler(velocityStore)
-
 	rulesService := rules.NewService(dbPool)
 	rulesHandler := rules.NewHandler(rulesService)
+
+	mlClient := riskengine.NewMLClient(cfg.MLServiceURL)
+	orchestrator := riskengine.NewOrchestrator(dbPool, velocityStore, rulesService, mlClient)
+	riskHandler := riskengine.NewHandler(orchestrator)
 
 	// 4. HTTP Router Setup
 	r := chi.NewRouter()
@@ -139,10 +148,11 @@ func main() {
 		}
 
 		response := map[string]interface{}{
-			"status":   "ok",
-			"database": dbStatus,
-			"redis":    redisStatus,
-			"time":     time.Now().UTC().Format(time.RFC3339),
+			"status":     "ok",
+			"database":   dbStatus,
+			"redis":      redisStatus,
+			"ml_service": cfg.MLServiceURL,
+			"time":       time.Now().UTC().Format(time.RFC3339),
 		}
 
 		w.WriteHeader(http.StatusOK)
@@ -160,7 +170,7 @@ func main() {
 
 	// V1 API Routes
 	r.Route("/v1", func(r chi.Router) {
-		// Real-time risk evaluation
+		// Real-time risk evaluation orchestrator
 		r.Post("/risk-evaluations", riskHandler.EvaluateRisk)
 
 		// Rules management & Maker-Checker workflow

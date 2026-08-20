@@ -11,13 +11,29 @@ import (
 	"github.com/shankywho/ropus/backend/internal/riskengine"
 )
 
-func TestEvaluateRisk_MockResponse(t *testing.T) {
-	// Initialize handler with nil redis (falls back gracefully to default velocity)
+func TestEvaluateRisk_OrchestratorPipeline(t *testing.T) {
+	// 1. Mock ML Sidecar HTTP Server
+	mlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		resp := riskengine.MLPredictResponse{
+			RiskScore:           78,
+			Probability:         0.78,
+			ReasonCodes:         []string{"HIGH_IP_VELOCITY_1H"},
+			FeatureAttributions: map[string]float64{"ip_velocity_1h": 0.45},
+			LatencyMs:           4.2,
+		}
+		_ = json.NewEncoder(w).Encode(resp)
+	}))
+	defer mlServer.Close()
+
+	// 2. Initialize Orchestrator with mock ML client and nil DB/velocity (degrades gracefully)
+	mlClient := riskengine.NewMLClient(mlServer.URL)
 	store := features.NewVelocityStore(nil)
-	handler := riskengine.NewHandler(store)
+	orchestrator := riskengine.NewOrchestrator(nil, store, nil, mlClient)
+	handler := riskengine.NewHandler(orchestrator)
 
 	reqPayload := riskengine.RiskEvaluationRequest{
-		TransactionID: "txn_test_123",
+		TransactionID: "txn_test_orchestrator_1",
 		Amount:        50000,
 		Currency:      "INR",
 		PaymentMethod: riskengine.PaymentMethod{
@@ -49,19 +65,60 @@ func TestEvaluateRisk_MockResponse(t *testing.T) {
 		t.Fatalf("failed to decode response JSON: %v", err)
 	}
 
-	if resp.TransactionID != "txn_test_123" {
-		t.Errorf("expected transaction_id txn_test_123, got %s", resp.TransactionID)
+	if resp.TransactionID != "txn_test_orchestrator_1" {
+		t.Errorf("expected transaction_id txn_test_orchestrator_1, got %s", resp.TransactionID)
 	}
 
-	if resp.RecommendedAction != "ALLOW_RECOMMENDATION" {
-		t.Errorf("expected recommended_action ALLOW_RECOMMENDATION, got %s", resp.RecommendedAction)
+	if resp.RiskScore != 78 {
+		t.Errorf("expected risk_score 78 from mock ML service, got %d", resp.RiskScore)
 	}
 
-	if resp.DecisionID == "" {
-		t.Errorf("expected non-empty decision_id")
+	// Score 78 maps to MANUAL_REVIEW
+	if resp.RecommendedAction != "MANUAL_REVIEW" {
+		t.Errorf("expected recommended_action MANUAL_REVIEW for score 78, got %s", resp.RecommendedAction)
 	}
 
-	if resp.FeatureSnapshotRef == "" {
-		t.Errorf("expected non-empty feature_snapshot_ref")
+	if len(resp.ReasonCodes) == 0 || resp.ReasonCodes[0] != "HIGH_IP_VELOCITY_1H" {
+		t.Errorf("expected reason code HIGH_IP_VELOCITY_1H, got %v", resp.ReasonCodes)
+	}
+}
+
+func TestEvaluateRisk_MLTimeoutFallback(t *testing.T) {
+	// ML server that simulates non-responding / unreachable endpoint
+	mlClient := riskengine.NewMLClient("http://127.0.0.1:59999") // invalid port
+	store := features.NewVelocityStore(nil)
+	orchestrator := riskengine.NewOrchestrator(nil, store, nil, mlClient)
+	handler := riskengine.NewHandler(orchestrator)
+
+	reqPayload := riskengine.RiskEvaluationRequest{
+		TransactionID: "txn_test_timeout",
+		Amount:        2500,
+		Currency:      "INR",
+		PaymentMethod: riskengine.PaymentMethod{
+			Type:  "card",
+			Token: "tkn_card_timeout",
+		},
+		DeviceFingerprint: "fp_device_abc",
+		IPAddress:         "192.168.1.100",
+	}
+
+	body, _ := json.Marshal(reqPayload)
+	req := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(body))
+	rr := httptest.NewRecorder()
+	handler.EvaluateRisk(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected status 200 on fallback, got %d", rr.Code)
+	}
+
+	var resp riskengine.RiskEvaluationResponse
+	_ = json.NewDecoder(rr.Body).Decode(&resp)
+
+	if !resp.IsDegraded {
+		t.Errorf("expected is_degraded=true when ML service fails")
+	}
+
+	if resp.RecommendedAction == "" {
+		t.Errorf("expected valid recommended_action even on degraded fallback")
 	}
 }

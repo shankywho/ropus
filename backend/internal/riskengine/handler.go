@@ -4,10 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
-
-	"github.com/google/uuid"
-	"github.com/shankywho/ropus/backend/internal/features"
 )
 
 // PaymentMethod details provided in the transaction context.
@@ -36,17 +32,19 @@ type RiskEvaluationResponse struct {
 	FeatureSnapshotRef string                 `json:"feature_snapshot_ref"`
 	Features           map[string]interface{} `json:"features,omitempty"`
 	EvaluatedAt        string                 `json:"evaluated_at"`
+	IsDegraded         bool                   `json:"is_degraded,omitempty"`
+	LatencyMs          int                    `json:"latency_ms"`
 }
 
 // Handler handles risk evaluation HTTP requests.
 type Handler struct {
-	velocityStore *features.VelocityStore
+	orchestrator *Orchestrator
 }
 
-// NewHandler constructs a new risk evaluation Handler.
-func NewHandler(velocityStore *features.VelocityStore) *Handler {
+// NewHandler constructs a new risk evaluation Handler using the Orchestrator.
+func NewHandler(orchestrator *Orchestrator) *Handler {
 	return &Handler{
-		velocityStore: velocityStore,
+		orchestrator: orchestrator,
 	}
 }
 
@@ -54,7 +52,7 @@ func NewHandler(velocityStore *features.VelocityStore) *Handler {
 func (h *Handler) EvaluateRisk(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	// 1. Resolve Tenant ID (defaulting to demo tenant if not provided)
+	// 1. Resolve Tenant ID
 	tenantID := r.Header.Get("X-Tenant-ID")
 	if tenantID == "" {
 		tenantID = "00000000-0000-0000-0000-000000000001"
@@ -65,53 +63,26 @@ func (h *Handler) EvaluateRisk(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(map[string]string{
-			"type":    "invalid_request",
+			"error":   "invalid_request",
 			"message": fmt.Sprintf("Failed to parse request JSON: %v", err),
 		})
 		return
 	}
 
-	if req.TransactionID == "" {
-		req.TransactionID = fmt.Sprintf("txn_%s", uuid.New().String()[:8])
+	// If IP address is missing from payload, extract from remote address
+	if req.IPAddress == "" {
+		req.IPAddress = r.RemoteAddr
 	}
 
-	// 3. Query Velocity Feature Store
-	ip := req.IPAddress
-	if ip == "" {
-		ip = r.RemoteAddr
-	}
-	token := req.PaymentMethod.Token
-
-	metrics, err := h.velocityStore.GetVelocityMetrics(r.Context(), tenantID, ip, token)
+	// 3. Execute Complete Synchronous Risk Orchestration Pipeline
+	resp, err := h.orchestrator.Evaluate(r.Context(), tenantID, req)
 	if err != nil {
-		// Log error, but fail-open/degrade gracefully for velocity features
-		metrics = &features.VelocityMetrics{
-			TxnCountIP1h:     0,
-			TxnCountToken24h: 0,
-		}
-	}
-
-	// 4. Record current event in velocity store asynchronously / best effort
-	_ = h.velocityStore.RecordEvent(r.Context(), tenantID, ip, token, req.Amount)
-
-	// 5. Construct Baseline Response (MVP mock ALLOW_RECOMMENDATION)
-	decisionID := fmt.Sprintf("dec_%s", uuid.New().String())
-	snapshotRef := fmt.Sprintf("snap_%s", uuid.New().String()[:8])
-
-	resp := RiskEvaluationResponse{
-		DecisionID:         decisionID,
-		TransactionID:      req.TransactionID,
-		RecommendedAction:  "ALLOW_RECOMMENDATION",
-		RiskScore:          15, // Low risk baseline
-		ReasonCodes:        []string{},
-		FeatureSnapshotRef: snapshotRef,
-		Features: map[string]interface{}{
-			"velocity.ip.1hr":     metrics.TxnCountIP1h,
-			"velocity.token.24hr": metrics.TxnCountToken24h,
-			"amount":              req.Amount,
-			"currency":            req.Currency,
-		},
-		EvaluatedAt: time.Now().UTC().Format(time.RFC3339),
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(map[string]string{
+			"error":   "evaluation_error",
+			"message": err.Error(),
+		})
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
