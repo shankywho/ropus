@@ -14,18 +14,20 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/redis/go-redis/v9"
+
+	"github.com/shankywho/ropus/backend/internal/features"
+	"github.com/shankywho/ropus/backend/internal/riskengine"
 )
 
 type Config struct {
 	Port        string
 	DatabaseURL string
+	RedisURL    string
 }
 
 func loadConfig() Config {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	port := getEnvOrDefault("PORT", "8080")
 
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
@@ -37,9 +39,17 @@ func loadConfig() Config {
 		dbURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPass, dbHost, dbPort, dbName)
 	}
 
+	redisURL := os.Getenv("REDIS_URL")
+	if redisURL == "" {
+		redisHost := getEnvOrDefault("REDIS_HOST", "localhost")
+		redisPort := getEnvOrDefault("REDIS_PORT", "6379")
+		redisURL = fmt.Sprintf("redis://%s:%s/0", redisHost, redisPort)
+	}
+
 	return Config{
 		Port:        port,
 		DatabaseURL: dbURL,
+		RedisURL:    redisURL,
 	}
 }
 
@@ -55,7 +65,7 @@ func main() {
 
 	log.Printf("Starting AI Risk Manager API on port %s...", cfg.Port)
 
-	// Database Connection Pool
+	// 1. Database Connection Pool (Postgres 16)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -74,14 +84,31 @@ func main() {
 	}
 	defer dbPool.Close()
 
-	// Verify DB connectivity
 	if err := dbPool.Ping(ctx); err != nil {
 		log.Printf("Warning: Postgres ping failed (%v). Continuing to start server...", err)
 	} else {
 		log.Println("Successfully connected to PostgreSQL database.")
 	}
 
-	// Router Setup
+	// 2. Redis Client (Redis 7)
+	redisOpt, err := redis.ParseURL(cfg.RedisURL)
+	if err != nil {
+		log.Fatalf("Unable to parse REDIS_URL: %v", err)
+	}
+	redisClient := redis.NewClient(redisOpt)
+	defer redisClient.Close()
+
+	if err := redisClient.Ping(ctx).Err(); err != nil {
+		log.Printf("Warning: Redis ping failed (%v). Continuing to start server...", err)
+	} else {
+		log.Println("Successfully connected to Redis feature store.")
+	}
+
+	// 3. Domain Services & Handlers
+	velocityStore := features.NewVelocityStore(redisClient)
+	riskHandler := riskengine.NewHandler(velocityStore)
+
+	// 4. HTTP Router Setup
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -93,7 +120,7 @@ func main() {
 	// Health check endpoint
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		
+
 		dbStatus := "connected"
 		pingCtx, pingCancel := context.WithTimeout(r.Context(), 2*time.Second)
 		defer pingCancel()
@@ -102,9 +129,15 @@ func main() {
 			dbStatus = "disconnected"
 		}
 
+		redisStatus := "connected"
+		if err := redisClient.Ping(pingCtx).Err(); err != nil {
+			redisStatus = "disconnected"
+		}
+
 		response := map[string]interface{}{
 			"status":   "ok",
 			"database": dbStatus,
+			"redis":    redisStatus,
 			"time":     time.Now().UTC().Format(time.RFC3339),
 		}
 
@@ -112,13 +145,18 @@ func main() {
 		_ = json.NewEncoder(w).Encode(response)
 	})
 
-	// Root welcome endpoint
+	// Root endpoint
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]string{
 			"service": "AI Risk Manager API",
 			"version": "v1.0-mvp",
 		})
+	})
+
+	// V1 Risk Evaluation API route
+	r.Route("/v1", func(r chi.Router) {
+		r.Post("/risk-evaluations", riskHandler.EvaluateRisk)
 	})
 
 	server := &http.Server{
@@ -129,7 +167,7 @@ func main() {
 		IdleTimeout:  60 * time.Second,
 	}
 
-	// Graceful Shutdown Channel
+	// 5. Graceful Shutdown
 	serverErrors := make(chan error, 1)
 	go func() {
 		log.Printf("AI Risk Manager API listening on :%s", cfg.Port)
