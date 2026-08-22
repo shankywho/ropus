@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: risk-model-training-job
+  namespace: risk-engine
+  labels:
+    app.kubernetes.io/name: risk-training-job
+    app.kubernetes.io/part-of: ai-risk-manager
+    app.kubernetes.io/component: mlops-training
+spec:
+  ttlSecondsAfterFinished: 3600
+  backoffLimit: 2
+  activeDeadlineSeconds: 1800
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: risk-training-job
+    spec:
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+      containers:
+        - name: trainer
+          image: risk-ml-service:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python", "-m", "training.train_candidate"]
+          env:
+            - name: DATASET_PATH
+              value: "/app/data/training_features.parquet"
+            - name: OUTPUT_MODEL_DIR
+              value: "/app/artifacts/candidates"
+            - name: HYPERPARAMS_CONFIG
+              value: "{\"n_estimators\": 100, \"max_depth\": 6, \"learning_rate\": 0.05}"
+          resources:
+            requests:
+              cpu: "1000m"
+              memory: "2Gi"
+            limits:
+              cpu: "4000m"
+              memory: "8Gi"
+          volumeMounts:
+            - name: artifacts-volume
+              mountPath: /app/artifacts
+      volumes:
+        - name: artifacts-volume
+          emptyDir: {}

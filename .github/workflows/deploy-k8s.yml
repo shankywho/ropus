@@ -1,0 +1,35 @@
+name: Kubernetes Manifest & Helm Deployment Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  k8s-validation:
+    name: Validate Manifests & Helm Charts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.14.0'
+
+      - name: Setup Kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Lint Helm Chart
+        run: |
+          helm lint deploy/helm/risk-manager/
+
+      - name: Test Helm Template Rendering
+        run: |
+          helm template test-release deploy/helm/risk-manager/ --values deploy/helm/risk-manager/values.yaml
+
+      - name: Validate Kubernetes Manifests (Dry-Run / Conftest)
+        run: |
+          kubectl apply --dry-run=client -f deploy/kubernetes/

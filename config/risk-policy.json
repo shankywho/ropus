@@ -1,0 +1,39 @@
+{
+  "policy_version": "1.0.0",
+  "name": "cost_sensitive_risk_policy",
+  "description": "Configurable business cost matrix and operational review capacity constraints for optimal risk decisioning",
+  "active_scenario": "Scenario_B_Balanced",
+  "default_costs": {
+    "false_positive_cost": 500.0,
+    "manual_review_cost": 100.0,
+    "residual_review_fraud_multiplier": 0.05,
+    "operational_review_capacity_pct": 0.10
+  },
+  "scenarios": {
+    "Scenario_A_Low_Fraud_Cost": {
+      "description": "Low fraud loss severity / low chargeback penalty environment",
+      "false_positive_cost": 1000.0,
+      "manual_review_cost": 100.0,
+      "fraud_loss_multiplier": 0.50
+    },
+    "Scenario_B_Balanced": {
+      "description": "Standard balanced e-commerce baseline",
+      "false_positive_cost": 500.0,
+      "manual_review_cost": 100.0,
+      "fraud_loss_multiplier": 1.00
+    },
+    "Scenario_C_High_Fraud_Cost": {
+      "description": "High-risk digital goods / irreversible payout environment",
+      "false_positive_cost": 200.0,
+      "manual_review_cost": 100.0,
+      "fraud_loss_multiplier": 2.00
+    },
+    "Scenario_D_High_Customer_Friction": {
+      "description": "VIP / High-LTV luxury merchant prioritizing checkout conversion",
+      "false_positive_cost": 2500.0,
+      "manual_review_cost": 100.0,
+      "fraud_loss_multiplier": 1.00
+    }
+  },
+  "review_capacity_targets": [0.01, 0.05, 0.10, 0.20]
+}

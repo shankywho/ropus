@@ -1,0 +1,13 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: risk-backend-pdb
+  namespace: risk-engine
+  labels:
+    app.kubernetes.io/name: risk-backend
+    app.kubernetes.io/part-of: ai-risk-manager
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: risk-backend

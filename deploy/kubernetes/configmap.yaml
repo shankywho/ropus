@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: risk-backend-config
+  namespace: risk-engine
+  labels:
+    app.kubernetes.io/name: risk-backend
+    app.kubernetes.io/part-of: ai-risk-manager
+data:
+  PORT: "8080"
+  APP_ENV: "production"
+  POSTGRES_HOST: "risk-postgres-rw.risk-engine.svc.cluster.local"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "risk_engine"
+  POSTGRES_USER: "risk_user"
+  REDIS_HOST: "risk-redis-master.risk-engine.svc.cluster.local"
+  REDIS_PORT: "6379"
+  ML_SERVICE_URL: "http://risk-ml-service.risk-engine.svc.cluster.local:8000"
+  CLICKHOUSE_HOST: "risk-clickhouse.risk-engine.svc.cluster.local"
+  CLICKHOUSE_NATIVE_PORT: "9000"
+  KAFKA_BROKER: "risk-redpanda.risk-engine.svc.cluster.local:29092"
+  KAFKA_TOPIC: "risk.events"
+  STATE_FILE_PATH: "/app/state/registry_state.json"
+  ARTIFACTS_DIR: "/app/artifacts"
+  TLS_ENABLED: "false"
+  LOG_LEVEL: "info"

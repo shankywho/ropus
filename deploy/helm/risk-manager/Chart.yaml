@@ -1,0 +1,14 @@
+apiVersion: v2
+name: risk-manager
+description: Production-grade cloud-native Helm chart for the AI Risk Manager & Ropus platform.
+type: application
+version: 1.0.0
+appVersion: "3.24.0"
+keywords:
+  - fraud-detection
+  - risk-engine
+  - machine-learning
+  - kubernetes
+maintainers:
+  - name: Platform Engineering
+    email: platform-eng@ropus.internal

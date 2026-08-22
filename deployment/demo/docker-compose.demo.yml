@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    container_name: ropus-backend-demo
+    restart: always
+    environment:
+      - PORT=8080
+      - DEMO_MODE=true
+      - REDIS_URL=redis:6379
+      - POSTGRES_URL=postgres://ropus_demo:ropus_demo_2026@postgres:5432/ropus_demo_db?sslmode=disable
+      - ML_SERVICE_URL=http://ml-service:5001
+      - JWT_SECRET=ropus_investor_demo_jwt_secret_2026
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+    container_name: ropus-frontend-demo
+    restart: always
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_DEMO_MODE=true
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: ropus-postgres-demo
+    restart: always
+    environment:
+      - POSTGRES_USER=ropus_demo
+      - POSTGRES_PASSWORD=ropus_demo_2026
+      - POSTGRES_DB=ropus_demo_db
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    container_name: ropus-redis-demo
+    restart: always
+    ports:
+      - "6379:6379"
+
+  ml-service:
+    build:
+      context: ../../ml-service
+      dockerfile: Dockerfile
+    container_name: ropus-ml-demo
+    restart: always
+    ports:
+      - "5001:5001"

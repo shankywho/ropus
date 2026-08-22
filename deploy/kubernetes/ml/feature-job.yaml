@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: risk-feature-snapshot-job
+  namespace: risk-engine
+  labels:
+    app.kubernetes.io/name: risk-feature-job
+    app.kubernetes.io/part-of: ai-risk-manager
+    app.kubernetes.io/component: mlops-features
+spec:
+  ttlSecondsAfterFinished: 1800
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: risk-feature-job
+    spec:
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: feature-extractor
+          image: risk-ml-service:latest
+          command: ["python", "-m", "training.generate_feature_snapshot"]
+          env:
+            - name: LOOKBACK_DAYS
+              value: "30"
+            - name: OUTPUT_PARQUET_PATH
+              value: "/app/data/training_features.parquet"
+          resources:
+            requests:
+              cpu: "1000m"
+              memory: "2Gi"
+            limits:
+              cpu: "4000m"
+              memory: "8Gi"
+          volumeMounts:
+            - name: data-volume
+              mountPath: /app/data
+      volumes:
+        - name: data-volume
+          emptyDir: {}

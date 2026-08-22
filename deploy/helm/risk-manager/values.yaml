@@ -1,0 +1,94 @@
+global:
+  environment: production
+
+replicaCount: 3
+
+image:
+  repository: ghcr.io/shankywho/ropus-risk-backend
+  pullPolicy: IfNotPresent
+  tag: "v3.24.0"
+
+serviceAccount:
+  create: true
+  name: "risk-backend-sa"
+  automountServiceAccountToken: false
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: "1m"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: risk-api.ropus.internal
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: risk-backend-tls-secret
+      hosts:
+        - risk-api.ropus.internal
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 2000m
+    memory: 1Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+networkPolicy:
+  enabled: true
+
+env:
+  PORT: "8080"
+  APP_ENV: "production"
+  POSTGRES_HOST: "risk-postgres-rw"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "risk_engine"
+  POSTGRES_USER: "risk_user"
+  REDIS_HOST: "risk-redis-master"
+  REDIS_PORT: "6379"
+  ML_SERVICE_URL: "http://risk-ml-service:8000"
+  CLICKHOUSE_HOST: "risk-clickhouse"
+  CLICKHOUSE_NATIVE_PORT: "9000"
+  KAFKA_BROKER: "risk-redpanda:29092"
+  KAFKA_TOPIC: "risk.events"
+  STATE_FILE_PATH: "/app/state/registry_state.json"
+  ARTIFACTS_DIR: "/app/artifacts"
+  TLS_ENABLED: "false"
+
+secrets:
+  adminApiKey: "PROD_SECRET_KEY_MUST_BE_OVERRIDDEN_AT_DEPLOYMENT_TIME"
+  postgresPassword: "PROD_PASSWORD_MUST_BE_OVERRIDDEN_AT_DEPLOYMENT_TIME"

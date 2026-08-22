@@ -1,0 +1,32 @@
+# Binaries
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+dist/
+
+# Environment files
+.env
+.env.local
+
+# Go workspace / cache
+vendor/
+
+# Node / Next.js (for future frontend)
+node_modules/
+.next/
+out/
+
+# Python / ML (for future ml-service)
+__pycache__/
+*.pyc
+.venv/
+env/
+*.onnx
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
