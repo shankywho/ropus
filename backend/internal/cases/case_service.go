@@ -22,9 +22,15 @@ type CaseStatus string
 
 const (
 	StatusOpen            CaseStatus = "OPEN"
+	StatusTriaged         CaseStatus = "TRIAGED"
+	StatusAssigned        CaseStatus = "ASSIGNED"
+	StatusInvestigating   CaseStatus = "INVESTIGATING"
+	StatusActionRequired  CaseStatus = "ACTION_REQUIRED"
 	StatusUnderReview     CaseStatus = "UNDER_REVIEW"
 	StatusResolvedAllow   CaseStatus = "RESOLVED_ALLOW"
 	StatusResolvedDecline CaseStatus = "RESOLVED_DECLINE"
+	StatusConfirmedFraud  CaseStatus = "CONFIRMED_FRAUD"
+	StatusFalsePositive   CaseStatus = "FALSE_POSITIVE"
 	StatusClosed          CaseStatus = "CLOSED"
 )
 
@@ -38,7 +44,7 @@ type Case struct {
 	AssignedTo       *string    `json:"assigned_to,omitempty"`
 	ResolutionReason *string    `json:"resolution_reason,omitempty"`
 	ResolvedAt       *time.Time `json:"resolved_at,omitempty"`
-	SLAExpiresAt     time.Time  `json:"sla_expires_at"`
+	SLAExpiresAt     *time.Time `json:"sla_expires_at,omitempty"`
 	CreatedAt        time.Time  `json:"created_at"`
 	UpdatedAt        time.Time  `json:"updated_at"`
 }
