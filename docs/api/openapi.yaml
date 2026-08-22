@@ -1,0 +1,328 @@
+openapi: 3.0.3
+info:
+  title: AI Risk Manager & Risk Engine Platform API
+  version: 1.0.0
+  description: |
+    Production-grade AI Risk Manager decisioning and autonomous safety control plane.
+    Provides sub-millisecond synchronous fraud evaluations, candidate model retraining orchestration,
+    canary rollout management, role-based access control (RBAC), and automated disaster recovery.
+
+servers:
+  - url: http://localhost:8080
+    description: Local / Docker Environment
+
+paths:
+  /health:
+    get:
+      summary: Liveness Probe
+      description: Returns service liveness, uptime, and active model versions.
+      responses:
+        '200':
+          description: Service is healthy and alive.
+  /healthz:
+    get:
+      summary: Kubernetes Liveness Probe Alias
+      responses:
+        '200':
+          description: OK
+
+  /readiness:
+    get:
+      summary: Readiness Probe
+      description: Returns health status of upstream/downstream dependencies (Postgres, Redis, ClickHouse, ML sidecar).
+      responses:
+        '200':
+          description: Service is ready to accept traffic.
+        '503':
+          description: One or more critical dependencies unavailable.
+  /readyz:
+    get:
+      summary: Kubernetes Readiness Probe Alias
+      responses:
+        '200':
+          description: OK
+        '503':
+          description: Service Unavailable
+
+  /metrics:
+    get:
+      summary: Prometheus Telemetry Metrics
+      description: Standard Prometheus exposition format for request rates, latency histograms, error budgets, drift, and retraining.
+      responses:
+        '200':
+          description: Prometheus plaintext metrics.
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /v1/risk-evaluations:
+    post:
+      summary: Synchronous Risk Decision Evaluation
+      description: Executes real-time transaction scoring against fraud rules, device velocity, ML sidecar, and calibrated decision policies.
+      parameters:
+        - name: X-Tenant-ID
+          in: header
+          required: false
+          schema:
+            type: string
+            default: "00000000-0000-0000-0000-000000000001"
+        - name: X-Correlation-ID
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: X-Idempotency-Key
+          in: header
+          required: false
+          description: Unique idempotency key to prevent duplicate evaluations.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - transaction_id
+                - amount
+              properties:
+                transaction_id:
+                  type: string
+                  maxLength: 128
+                amount:
+                  type: integer
+                  minimum: 0
+                currency:
+                  type: string
+                  default: "USD"
+                payment_method:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    token:
+                      type: string
+                device_fingerprint:
+                  type: string
+                ip_address:
+                  type: string
+                account_id:
+                  type: string
+      responses:
+        '200':
+          description: Risk decision successfully computed.
+        '400':
+          description: Bad request / validation error.
+        '409':
+          description: Idempotency conflict (key reused with different payload).
+        '429':
+          description: Rate limit exceeded for tenant.
+        '500':
+          description: Internal evaluation failure.
+
+  /v1/models/production:
+    get:
+      summary: Get Active Production and Fallback Models
+      responses:
+        '200':
+          description: Active model metadata.
+
+  /v1/models/registry:
+    get:
+      summary: List All Models in Registry
+      responses:
+        '200':
+          description: Array of registered models.
+
+  /v1/models/{version}:
+    get:
+      summary: Get Specific Model Version Metadata
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Model details.
+        '404':
+          description: Model version not found.
+
+  /v1/models/{version}/provenance:
+    get:
+      summary: Get Model Reproducibility & Audit Provenance Chain
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Complete provenance record with dataset/config checksums and approval sign-off.
+        '404':
+          description: Model version or provenance not found.
+
+  /v1/retraining/status:
+    get:
+      summary: Retraining Coordinator Status
+      responses:
+        '200':
+          description: Retraining state, trigger status, active jobs, and candidate info.
+
+  /v1/retraining/trigger:
+    post:
+      summary: Manually Trigger Candidate Retraining
+      security:
+        - MLOperatorAuth: []
+        - AdminAuth: []
+      parameters:
+        - name: X-Idempotency-Key
+          in: header
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - reason
+              properties:
+                reason:
+                  type: string
+                actor:
+                  type: string
+      responses:
+        '202':
+          description: Retraining job queued/started.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden (insufficient role).
+        '409':
+          description: Conflict (concurrent job, cooldown active, or idempotency conflict).
+
+  /v1/canary/status:
+    get:
+      summary: Canary Rollout Status
+      responses:
+        '200':
+          description: Target percentage, safety gate status, and circuit breaker health.
+
+  /v1/canary/control:
+    post:
+      summary: Set Canary Traffic Percentage
+      security:
+        - AdminAuth: []
+      parameters:
+        - name: X-Idempotency-Key
+          in: header
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - percentage
+                - reason
+              properties:
+                percentage:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Canary configuration updated.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+
+  /v1/operations/health:
+    get:
+      summary: Detailed Operational Component Health
+      responses:
+        '200':
+          description: Aggregated component health report.
+
+  /v1/operations/slo:
+    get:
+      summary: SLO & Error Budget Compliance
+      responses:
+        '200':
+          description: Availability, latency p95/p99 compliance, remaining error budget, and burn rate.
+
+  /v1/operations/summary:
+    get:
+      summary: Consolidated Operations Dashboard Payload
+      responses:
+        '200':
+          description: Complete operational health, SLOs, metrics, and incident status.
+
+  /v1/operations/safety:
+    get:
+      summary: Platform Safety Invariant Status
+      responses:
+        '200':
+          description: Status of all 14 platform invariants.
+
+  /v1/operations/recovery/trigger:
+    post:
+      summary: Trigger Autonomous Disaster Recovery & State Reconciliation
+      security:
+        - AdminAuth: []
+      parameters:
+        - name: X-Idempotency-Key
+          in: header
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - reason
+              properties:
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Disaster recovery report and repairs executed.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden.
+
+components:
+  securitySchemes:
+    AdminAuth:
+      type: http
+      scheme: bearer
+      description: Full administrator access token (RoleAdmin).
+    MLOperatorAuth:
+      type: http
+      scheme: bearer
+      description: ML operations access token (RoleMLOperator).
+    RiskOperatorAuth:
+      type: http
+      scheme: bearer
+      description: Risk operations access token (RoleRiskOperator).
+    ReadOnlyAuth:
+      type: http
+      scheme: bearer
+      description: Read-only auditor token (RoleReadOnly).
