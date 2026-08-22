@@ -1,0 +1,10 @@
+method,metric,mean,ci_95_lower,ci_95_upper,std_err
+raw,brier,0.1055,0.0966,0.1144,0.0046
+raw,ece,0.2002,0.1861,0.2144,0.0072
+raw,log_loss,0.3577,0.3362,0.3798,0.0114
+platt,brier,0.0435,0.0336,0.054,0.0053
+platt,ece,0.0064,0.001,0.015,0.0036
+platt,log_loss,0.1792,0.1471,0.2137,0.0174
+isotonic,brier,0.0423,0.0331,0.0523,0.0051
+isotonic,ece,0.0077,0.0022,0.0151,0.0035
+isotonic,log_loss,0.1713,0.1406,0.2068,0.017

@@ -1,0 +1,5 @@
+review_capacity_pct,review_queue_volume,precision,recall,fraud_caught,fraud_missed,review_operational_cost,total_expected_loss,loss_reduction_pct
+1%,12,0.0,0.0,0,52,1200.0,11464.9,-11.69
+5%,60,0.1,0.1154,6,46,6000.0,14868.47,-44.85
+10%,120,0.075,0.1731,9,43,12000.0,20616.45,-100.84
+20%,240,0.0625,0.2885,15,37,24000.0,30187.84,-194.09

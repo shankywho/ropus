@@ -1,0 +1,5 @@
+method,pct_allow,pct_manual_review,pct_decline,fraud_recall,fraud_precision,fraud_caught,fraud_missed,false_positives,false_negatives,total_realized_cost,expected_cost_per_txn
+raw,2.92,74.75,22.33,0.9821,0.0472,55,1,237,1,208388.82,173.66
+platt,74.67,25.33,0.0,0.5893,0.1086,33,23,0,23,34085.98,28.4
+isotonic,79.83,19.83,0.33,0.5536,0.1281,31,25,2,25,28527.46,23.77
+beta,75.33,24.67,0.0,0.5893,0.1115,33,23,0,23,33285.98,27.74

@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0.0",
+  "name": "canonical_fraud_feature_schema",
+  "description": "Canonical point-in-time safe fraud detection feature schema for IEEE-CIS and real-time production serving",
+  "created_at": "2026-08-21T09:20:00Z",
+  "features": [
+    {
+      "name": "amount",
+      "type": "float",
+      "description": "Transaction monetary amount in base currency units",
+      "source": "payload",
+      "availability": "online",
+      "training_transform": "TransactionAmt float value",
+      "serving_transform": "float(req.amount)",
+      "point_in_time_safe": true,
+      "default_value": 0.0
+    },
+    {
+      "name": "ip_velocity_1h",
+      "type": "float",
+      "description": "Number of transactions observed from client IP in preceding 1 hour [T-1h, T]",
+      "source": "redis",
+      "availability": "online",
+      "training_transform": "Chronological rolling count over 3,600s window per IP/card proxy",
+      "serving_transform": "Redis ZCOUNT vel:ip:{tenant}:{ip} [now-1h, now]",
+      "point_in_time_safe": true,
+      "default_value": 0.0
+    },
+    {
+      "name": "ip_velocity_24h",
+      "type": "float",
+      "description": "Number of transactions observed from client IP in preceding 24 hours [T-24h, T]",
+      "source": "redis",
+      "availability": "online",
+      "training_transform": "Chronological rolling count over 86,400s window per IP/card proxy",
+      "serving_transform": "Redis ZCOUNT vel:ip24:{tenant}:{ip} [now-24h, now]",
+      "point_in_time_safe": true,
+      "default_value": 0.0
+    },
+    {
+      "name": "token_velocity_24h",
+      "type": "float",
+      "description": "Number of transactions observed for payment instrument token in preceding 24 hours [T-24h, T]",
+      "source": "redis",
+      "availability": "online",
+      "training_transform": "Chronological rolling count over 86,400s window per card/token",
+      "serving_transform": "Redis ZCOUNT vel:tok:{tenant}:{token} [now-24h, now]",
+      "point_in_time_safe": true,
+      "default_value": 0.0
+    },
+    {
+      "name": "device_seen_before",
+      "type": "int",
+      "description": "1 if device fingerprint was associated with account/tenant prior to time T; 0 if novel device",
+      "source": "feature_store",
+      "availability": "online",
+      "training_transform": "Chronological stateful device first-seen lookup at time T",
+      "serving_transform": "Inferred from device registry / fallback (1 - is_new_device)",
+      "point_in_time_safe": true,
+      "default_value": 1
+    },
+    {
+      "name": "transaction_hour",
+      "type": "int",
+      "description": "Hour of day (0-23) when transaction occurred",
+      "source": "timestamp",
+      "availability": "online",
+      "training_transform": "(TransactionDT % 86400) // 3600",
+      "serving_transform": "datetime.utcnow().hour",
+      "point_in_time_safe": true,
+      "default_value": 12
+    },
+    {
+      "name": "transaction_day",
+      "type": "int",
+      "description": "Day of week (0-6) when transaction occurred",
+      "source": "timestamp",
+      "availability": "online",
+      "training_transform": "(TransactionDT // 86400) % 7",
+      "serving_transform": "datetime.utcnow().weekday()",
+      "point_in_time_safe": true,
+      "default_value": 0
+    },
+    {
+      "name": "product_cd_encoded",
+      "type": "int",
+      "description": "Ordinal encoded product category code (W, C, H, R, S)",
+      "source": "payload",
+      "availability": "online",
+      "training_transform": "Ordinal mapping based strictly on train vocabulary",
+      "serving_transform": "Ordinal mapping in serving layer",
+      "point_in_time_safe": true,
+      "default_value": 0
+    },
+    {
+      "name": "card_type_encoded",
+      "type": "int",
+      "description": "Ordinal encoded card network (visa, mastercard, discover, amex)",
+      "source": "payload",
+      "availability": "online",
+      "training_transform": "Ordinal mapping based strictly on train vocabulary",
+      "serving_transform": "Parsed from payment method type/token",
+      "point_in_time_safe": true,
+      "default_value": 0
+    },
+    {
+      "name": "card_category_encoded",
+      "type": "int",
+      "description": "Ordinal encoded card category (debit, credit, prepaid)",
+      "source": "payload",
+      "availability": "online",
+      "training_transform": "Ordinal mapping based strictly on train vocabulary",
+      "serving_transform": "Parsed from card bin lookup / default",
+      "point_in_time_safe": true,
+      "default_value": 0
+    },
+    {
+      "name": "email_domain_risk",
+      "type": "float",
+      "description": "Historical fraud risk score associated with purchaser email domain",
+      "source": "feature_store",
+      "availability": "online",
+      "training_transform": "Domain risk weighting fitted strictly on train split",
+      "serving_transform": "Heuristic domain risk map in serving layer",
+      "point_in_time_safe": true,
+      "default_value": 0.02
+    },
+    {
+      "name": "dist1_missing",
+      "type": "int",
+      "description": "Binary indicator (1 if address distance is missing/unknown, 0 otherwise)",
+      "source": "payload",
+      "availability": "online",
+      "training_transform": "int(pd.isna(dist1))",
+      "serving_transform": "1 if dist1 omitted, else 0",
+      "point_in_time_safe": true,
+      "default_value": 1
+    },
+    {
+      "name": "device_type_mobile",
+      "type": "int",
+      "description": "1 if device client is mobile, 0 if desktop or unknown",
+      "source": "payload",
+      "availability": "online",
+      "training_transform": "1 if DeviceType == 'mobile' else 0",
+      "serving_transform": "Parsed from client user-agent / telemetry",
+      "point_in_time_safe": true,
+      "default_value": 0
+    },
+    {
+      "name": "device_info_missing",
+      "type": "int",
+      "description": "Binary indicator (1 if device telemetry is missing, 0 if provided)",
+      "source": "payload",
+      "availability": "online",
+      "training_transform": "int(pd.isna(DeviceInfo))",
+      "serving_transform": "1 if device_fingerprint is empty, else 0",
+      "point_in_time_safe": true,
+      "default_value": 0
+    },
+    {
+      "name": "amount_to_mean_ratio",
+      "type": "float",
+      "description": "Ratio of transaction amount to trailing historical card mean amount",
+      "source": "feature_store",
+      "availability": "online",
+      "training_transform": "TransactionAmt / cumulative_mean(TransactionAmt | card) up to T",
+      "serving_transform": "amount / trailing_mean_amount (default 1.0)",
+      "point_in_time_safe": true,
+      "default_value": 1.0
+    }
+  ]
+}

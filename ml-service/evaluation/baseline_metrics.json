@@ -1,0 +1,50 @@
+{
+  "evaluation_timestamp": "2026-08-21T09:11:11Z",
+  "model_artifact": {
+    "path": "/app/model/fraud_model.onnx",
+    "format": "ONNX (opset 15)",
+    "size_bytes": 102147,
+    "runtime": "onnxruntime"
+  },
+  "dataset": {
+    "type": "synthetic",
+    "generator_function": "ml-service/train.py:generate_synthetic_data",
+    "random_seed": 42,
+    "total_samples": 30000,
+    "train_samples": 24000,
+    "test_samples": 6000,
+    "features": [
+      "amount",
+      "ip_velocity_1h",
+      "token_velocity_24h",
+      "is_new_device",
+      "hour_of_day"
+    ],
+    "feature_count": 5,
+    "fraud_count_total": 591,
+    "non_fraud_count_total": 29409,
+    "fraud_ratio_total": 0.0197,
+    "test_fraud_count": 118,
+    "test_non_fraud_count": 5882
+  },
+  "metrics": {
+    "decision_threshold": 0.5,
+    "roc_auc": 0.611,
+    "pr_auc": 0.2098,
+    "precision": 0.0474,
+    "recall": 0.3305,
+    "f1_score": 0.0829,
+    "true_negatives": 5098,
+    "false_positives": 784,
+    "false_negatives": 79,
+    "true_positives": 39,
+    "specificity": 0.8667
+  },
+  "latency_benchmarks_ms": {
+    "p50": 0.014,
+    "p95": 0.019,
+    "p99": 0.043,
+    "mean": 0.016,
+    "sample_size": 1000
+  }
+}

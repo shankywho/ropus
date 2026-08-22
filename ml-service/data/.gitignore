@@ -1,0 +1,8 @@
+# Ignore large raw dataset files
+*.csv
+*.parquet
+*.tar.gz
+*.zip
+raw/
+!sample_ieee_fixture.csv
+!.gitkeep

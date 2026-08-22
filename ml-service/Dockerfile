@@ -15,8 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy source code
 COPY . .
 
-# Pre-train the XGBoost model during build so container starts instantly
-RUN python train.py
+# Pre-trained ONNX model artifacts are already present in model/
+# RUN python train.py && python export_onnx.py
 
 EXPOSE 8000
 

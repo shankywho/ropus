@@ -1,0 +1,158 @@
+{
+  "contract_version": "1.0.0",
+  "name": "training_serving_feature_contract",
+  "description": "Formal contract mapping training dataset features to real-time production features and serving semantics",
+  "created_at": "2026-08-21T09:25:00Z",
+  "features": [
+    {
+      "feature_name": "amount",
+      "training_source": "IEEE-CIS TransactionAmt",
+      "production_source": "Go API request: req.Amount (converted from minor units / cents to float)",
+      "training_semantics": "Transaction amount in base currency units",
+      "production_semantics": "Transaction amount in base currency units",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "ip_velocity_1h",
+      "training_source": "Chronological rolling window: COUNT(events WHERE ip == IP AND t >= T - 3600 AND t <= T)",
+      "production_source": "Redis Sorted Set: ZCOUNT vel:ip:{tenant}:{ip} [now-1h, now]",
+      "training_semantics": "Number of transactions observed from client IP in preceding 1 hour",
+      "production_semantics": "Number of transactions observed from client IP in preceding 1 hour",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "ip_velocity_24h",
+      "training_source": "Chronological rolling window: COUNT(events WHERE ip == IP AND t >= T - 86400 AND t <= T)",
+      "production_source": "Redis Sorted Set: ZCOUNT vel:ip24:{tenant}:{ip} [now-24h, now] (or 4x 1h approximation)",
+      "training_semantics": "Number of transactions observed from client IP in preceding 24 hours",
+      "production_semantics": "Number of transactions observed from client IP in preceding 24 hours",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "token_velocity_24h",
+      "training_source": "Chronological rolling window: COUNT(events WHERE card == Card AND t >= T - 86400 AND t <= T)",
+      "production_source": "Redis Sorted Set: ZCOUNT vel:tok:{tenant}:{token} [now-24h, now]",
+      "training_semantics": "Number of transactions observed for payment instrument token in preceding 24 hours",
+      "production_semantics": "Number of transactions observed for payment instrument token in preceding 24 hours",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "device_seen_before",
+      "training_source": "Stateful lookup: 1 if DeviceID observed with User prior to time T, else 0",
+      "production_source": "Inferred from 1 - req.IsNewDevice (or device registry lookup)",
+      "training_semantics": "Whether device fingerprint has prior history with the account at time T",
+      "production_semantics": "Whether device fingerprint is recognized for this user",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "PARTIALLY_ALIGNED_GAP_DOCUMENTED"
+    },
+    {
+      "feature_name": "transaction_hour",
+      "training_source": "Extracted from TransactionDT: (TransactionDT % 86400) // 3600",
+      "production_source": "Extracted from UTC hour: datetime.utcnow().hour",
+      "training_semantics": "Hour of day (0-23)",
+      "production_semantics": "Hour of day (0-23) in UTC",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "transaction_day",
+      "training_source": "Extracted from TransactionDT: (TransactionDT // 86400) % 7",
+      "production_source": "Extracted from UTC weekday: datetime.utcnow().weekday()",
+      "training_semantics": "Day of week (0-6)",
+      "production_semantics": "Day of week (0-6)",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "product_cd_encoded",
+      "training_source": "Ordinal encoding on ProductCD: {'W': 0, 'C': 1, 'H': 2, 'R': 3, 'S': 4}",
+      "production_source": "Mapped from payment / merchant type in payload (default 0 for standard e-commerce)",
+      "training_semantics": "Product classification category",
+      "production_semantics": "Product classification category",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "card_type_encoded",
+      "training_source": "Ordinal encoding on card4: {'visa': 0, 'mastercard': 1, 'discover': 2, 'american express': 3}",
+      "production_source": "Derived from payment_method.type or token prefix ('tok_visa' -> 0, 'tok_mastercard' -> 1)",
+      "training_semantics": "Payment card network type",
+      "production_semantics": "Payment card network type",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "card_category_encoded",
+      "training_source": "Ordinal encoding on card6: {'debit': 0, 'credit': 1, 'charge': 2}",
+      "production_source": "Derived from BIN lookup or payment method metadata (default 0)",
+      "training_semantics": "Card settlement category",
+      "production_semantics": "Card settlement category",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "email_domain_risk",
+      "training_source": "Historical risk dictionary computed strictly on train split: high risk for disposable domains",
+      "production_source": "Heuristic risk mapping table in Python ML service",
+      "training_semantics": "Email domain risk score in [0.0, 1.0]",
+      "production_semantics": "Email domain risk score in [0.0, 1.0]",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "dist1_missing",
+      "training_source": "Binary indicator: 1 if pd.isna(dist1) else 0",
+      "production_source": "Binary indicator: 1 if address distance not provided else 0",
+      "training_semantics": "Missing billing address distance flag",
+      "production_semantics": "Missing billing address distance flag",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "device_type_mobile",
+      "training_source": "Binary indicator: 1 if DeviceType == 'mobile' else 0",
+      "production_source": "Extracted from client User-Agent or device metadata in payload",
+      "training_semantics": "Mobile device form factor flag",
+      "production_semantics": "Mobile device form factor flag",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "device_info_missing",
+      "training_source": "Binary indicator: 1 if pd.isna(DeviceInfo) else 0",
+      "production_source": "Binary indicator: 1 if device_fingerprint is empty else 0",
+      "training_semantics": "Missing device telemetry flag",
+      "production_semantics": "Missing device telemetry flag",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    },
+    {
+      "feature_name": "amount_to_mean_ratio",
+      "training_source": "TransactionAmt / trailing_mean(TransactionAmt | card) strictly up to time T",
+      "production_source": "Online feature store historical mean lookup or default 1.0",
+      "training_semantics": "Relative transaction deviation from cardholder historical mean",
+      "production_semantics": "Relative transaction deviation from cardholder historical mean",
+      "point_in_time_safe": true,
+      "production_available": true,
+      "skew_status": "ALIGNED"
+    }
+  ]
+}

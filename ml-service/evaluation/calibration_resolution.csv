@@ -1,0 +1,5 @@
+method,total_samples,unique_probabilities,resolution_ratio,modal_probability,modal_count,modal_share_pct,resolution_flag,modal_collapse_flag,probability_entropy,verdict
+raw,1200,1047,0.8725,0.0794,4,0.33,False,False,9.9594,HEALTHY
+platt,1200,464,0.3867,0.032,13,1.08,False,False,8.3881,HEALTHY
+isotonic,1200,8,0.0067,0.0257,894,74.5,True,True,1.2544,SEVERE_STEPWISE_COLLAPSE
+beta,1200,524,0.4367,0.0291,11,0.92,False,False,8.6346,HEALTHY

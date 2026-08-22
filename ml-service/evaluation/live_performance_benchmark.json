@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-08-21T09:23:25Z",
+  "sample_size": 300,
+  "api_evaluation": {
+    "requests": 300,
+    "successful": 300,
+    "errors": 0,
+    "degraded_count": 0,
+    "degraded_rate": 0.0,
+    "p50_ms": 4.1,
+    "p95_ms": 6.27,
+    "p99_ms": 7.21,
+    "mean_ms": 4.2,
+    "min_ms": 2.69,
+    "max_ms": 15.32
+  },
+  "ml_sidecar": {
+    "requests": 300,
+    "successful": 300,
+    "errors": 0,
+    "degraded_count": 0,
+    "degraded_rate": 0.0,
+    "p50_ms": 2.04,
+    "p95_ms": 2.43,
+    "p99_ms": 2.77,
+    "mean_ms": 2.01,
+    "min_ms": 1.37,
+    "max_ms": 4.22
+  }
+}

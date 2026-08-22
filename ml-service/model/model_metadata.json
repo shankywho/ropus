@@ -1,0 +1,291 @@
+{
+  "model_version": "fraud-xgb-25f-candidate-v1",
+  "feature_contract": "v2.5",
+  "feature_count": 25,
+  "algorithm": "XGBoost Classifier",
+  "hyperparameters": {
+    "n_estimators": 100,
+    "max_depth": 5,
+    "learning_rate": 0.08,
+    "subsample": 0.85,
+    "colsample_bytree": 0.85,
+    "scale_pos_weight": 21.04724409448819,
+    "random_state": 42,
+    "eval_metric": "logloss",
+    "tree_method": "hist"
+  },
+  "random_seed": 42,
+  "trained_at": "2026-08-21T10:49:11.520062+00:00",
+  "total_rows": 8000,
+  "split": {
+    "strategy": "strict_chronological_temporal_split",
+    "time_column": "TransactionDT",
+    "train_rows": 5600,
+    "val_rows": 1200,
+    "test_rows": 1200,
+    "train_time_range": [
+      912,
+      10779124
+    ],
+    "val_time_range": [
+      10779730,
+      13104487
+    ],
+    "test_time_range": [
+      13104601,
+      15290421
+    ],
+    "train_fraud_rate": 0.04535714285714286,
+    "val_fraud_rate": 0.04666666666666667,
+    "test_fraud_rate": 0.043333333333333335
+  },
+  "test_metrics_25f": {
+    "roc_auc": 0.5793855534709194,
+    "pr_auc": 0.06882861333677806,
+    "precision": 0.10077519379844961,
+    "recall": 0.25,
+    "f1": 0.143646408839779,
+    "fpr": 0.10104529616724739,
+    "fnr": 0.75,
+    "tp": 13,
+    "fp": 116,
+    "tn": 1032,
+    "fn": 39
+  },
+  "test_metrics_15f": {
+    "roc_auc": 0.6048646475475745,
+    "pr_auc": 0.0758180696221627,
+    "precision": 0.0783132530120482,
+    "recall": 0.25,
+    "f1": 0.11926605504587157,
+    "fpr": 0.1332752613240418,
+    "fnr": 0.75,
+    "tp": 13,
+    "fp": 153,
+    "tn": 995,
+    "fn": 39
+  },
+  "ablation_delta": {
+    "roc_auc": -0.025479094076655162,
+    "pr_auc": -0.006989456285384638,
+    "precision": 0.022461940786401416,
+    "recall": 0.0,
+    "f1": 0.024380353793907433,
+    "fpr": -0.03222996515679441,
+    "fnr": 0.0
+  },
+  "feature_importance_ranking": [
+    {
+      "index": 10,
+      "feature": "email_domain_risk",
+      "is_new_feature": false,
+      "gain": 59.47762680053711,
+      "weight": 136.0,
+      "cover": 628.0985107421875
+    },
+    {
+      "index": 7,
+      "feature": "product_cd_encoded",
+      "is_new_feature": false,
+      "gain": 57.12403869628906,
+      "weight": 92.0,
+      "cover": 649.0020141601562
+    },
+    {
+      "index": 5,
+      "feature": "transaction_hour",
+      "is_new_feature": false,
+      "gain": 33.11468505859375,
+      "weight": 268.0,
+      "cover": 419.1198425292969
+    },
+    {
+      "index": 11,
+      "feature": "dist1_missing",
+      "is_new_feature": false,
+      "gain": 30.93747901916504,
+      "weight": 32.0,
+      "cover": 214.56272888183594
+    },
+    {
+      "index": 12,
+      "feature": "device_type_mobile",
+      "is_new_feature": false,
+      "gain": 29.751850128173828,
+      "weight": 25.0,
+      "cover": 400.7303161621094
+    },
+    {
+      "index": 4,
+      "feature": "device_seen_before",
+      "is_new_feature": false,
+      "gain": 28.230459213256836,
+      "weight": 16.0,
+      "cover": 555.6366577148438
+    },
+    {
+      "index": 24,
+      "feature": "device_dispute_rate",
+      "is_new_feature": true,
+      "gain": 27.293746948242188,
+      "weight": 10.0,
+      "cover": 476.5240173339844
+    },
+    {
+      "index": 21,
+      "feature": "token_unique_devices_1h",
+      "is_new_feature": true,
+      "gain": 26.487146377563477,
+      "weight": 3.0,
+      "cover": 63.58589553833008
+    },
+    {
+      "index": 22,
+      "feature": "device_reputation_score",
+      "is_new_feature": true,
+      "gain": 26.45481300354004,
+      "weight": 32.0,
+      "cover": 603.6516723632812
+    },
+    {
+      "index": 6,
+      "feature": "transaction_day",
+      "is_new_feature": false,
+      "gain": 25.853042602539062,
+      "weight": 112.0,
+      "cover": 251.82070922851562
+    },
+    {
+      "index": 17,
+      "feature": "device_amount_sum_24h",
+      "is_new_feature": true,
+      "gain": 24.773096084594727,
+      "weight": 183.0,
+      "cover": 475.2770690917969
+    },
+    {
+      "index": 0,
+      "feature": "amount",
+      "is_new_feature": false,
+      "gain": 24.664365768432617,
+      "weight": 297.0,
+      "cover": 446.58697509765625
+    },
+    {
+      "index": 14,
+      "feature": "amount_to_mean_ratio",
+      "is_new_feature": false,
+      "gain": 23.994216918945312,
+      "weight": 302.0,
+      "cover": 480.9257507324219
+    },
+    {
+      "index": 13,
+      "feature": "device_info_missing",
+      "is_new_feature": false,
+      "gain": 22.4617977142334,
+      "weight": 5.0,
+      "cover": 33.54892349243164
+    },
+    {
+      "index": 23,
+      "feature": "device_fraud_rate",
+      "is_new_feature": true,
+      "gain": 22.252338409423828,
+      "weight": 194.0,
+      "cover": 400.2138671875
+    },
+    {
+      "index": 16,
+      "feature": "device_tx_count_1h",
+      "is_new_feature": true,
+      "gain": 21.542510986328125,
+      "weight": 22.0,
+      "cover": 255.52833557128906
+    },
+    {
+      "index": 2,
+      "feature": "ip_velocity_24h",
+      "is_new_feature": false,
+      "gain": 21.437551498413086,
+      "weight": 165.0,
+      "cover": 325.6689147949219
+    },
+    {
+      "index": 8,
+      "feature": "card_type_encoded",
+      "is_new_feature": false,
+      "gain": 21.25016975402832,
+      "weight": 27.0,
+      "cover": 142.64942932128906
+    },
+    {
+      "index": 3,
+      "feature": "token_velocity_24h",
+      "is_new_feature": false,
+      "gain": 19.292919158935547,
+      "weight": 20.0,
+      "cover": 321.11865234375
+    },
+    {
+      "index": 1,
+      "feature": "ip_velocity_1h",
+      "is_new_feature": false,
+      "gain": 18.58802604675293,
+      "weight": 44.0,
+      "cover": 168.2432403564453
+    },
+    {
+      "index": 19,
+      "feature": "device_amount_concentration_5m_1h",
+      "is_new_feature": true,
+      "gain": 18.332368850708008,
+      "weight": 5.0,
+      "cover": 1067.4522705078125
+    },
+    {
+      "index": 9,
+      "feature": "card_category_encoded",
+      "is_new_feature": false,
+      "gain": 17.091140747070312,
+      "weight": 23.0,
+      "cover": 183.54269409179688
+    },
+    {
+      "index": 20,
+      "feature": "device_unique_tokens_1h",
+      "is_new_feature": true,
+      "gain": 15.5790433883667,
+      "weight": 3.0,
+      "cover": 592.6695556640625
+    },
+    {
+      "index": 15,
+      "feature": "device_tx_count_5m",
+      "is_new_feature": true,
+      "gain": 7.416961669921875,
+      "weight": 1.0,
+      "cover": 7.042414665222168
+    },
+    {
+      "index": 18,
+      "feature": "tx_acceleration_5m_1h",
+      "is_new_feature": true,
+      "gain": 0.0,
+      "weight": 0.0,
+      "cover": 0.0
+    }
+  ],
+  "onnx_artifact": {
+    "path": "/app/model/candidates/fraud_model_25f_candidate.onnx",
+    "checksum_sha256": "1937f1c2a3a4e037ccf5a37e3d9d443a4e1b97bd16605036854e862d6424a22b",
+    "input_dimension": 25,
+    "max_parity_diff": 1.7881393432617188e-07
+  },
+  "joblib_artifact": {
+    "path": "/app/model/candidates/fraud_model_25f_candidate.joblib",
+    "checksum_sha256": "21f43b1b70875a2a44457b48d7d413c35434752c425287b9082414c3019057c8"
+  },
+  "is_production_active": false,
+  "notes": "Candidate 25-feature model for offline evaluation & shadow scoring (Phase 3.9). Does not serve live production traffic."
+}
