@@ -1,10 +1,9 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
     container_name: risk-postgres
     restart: unless-stopped
+    command: ["postgres", "-c", "wal_level=logical"]
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-risk_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-risk_password}
@@ -14,6 +13,7 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-risk_user} -d ${POSTGRES_DB:-risk_engine}"]
       interval: 5s
@@ -39,6 +39,87 @@ services:
     networks:
       - risk_network
 
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.1.8
+    container_name: risk-redpanda
+    restart: unless-stopped
+    command:
+      - redpanda
+      - start
+      - --smp=1
+      - --memory=512M
+      - --reserve-memory=0M
+      - --overprovisioned
+      - --node-id=0
+      - --check=false
+      - --kafka-addr=PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr=PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+      - --pandaproxy-addr=0.0.0.0:8082
+      - --advertise-pandaproxy-addr=localhost:8082
+    ports:
+      - "${KAFKA_PORT:-9092}:9092"
+      - "8082:8082"
+      - "9644:9644"
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true' || exit 0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - risk_network
+
+  debezium:
+    image: debezium/connect:2.5
+    container_name: risk-debezium
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      BOOTSTRAP_SERVERS: redpanda:29092
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: risk_connect_configs
+      OFFSET_STORAGE_TOPIC: risk_connect_offsets
+      STATUS_STORAGE_TOPIC: risk_connect_statuses
+      CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      STATUS_STORAGE_REPLICATION_FACTOR: 1
+      KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redpanda:
+        condition: service_started
+    networks:
+      - risk_network
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.3-alpine
+    container_name: risk-clickhouse
+    restart: unless-stopped
+    ports:
+      - "${CLICKHOUSE_HTTP_PORT:-8123}:8123"
+      - "${CLICKHOUSE_NATIVE_PORT:-9000}:9000"
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB:-default}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./infra/clickhouse_init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - risk_network
+
   ml-service:
     build:
       context: ./ml-service
@@ -48,7 +129,10 @@ services:
     ports:
       - "${ML_SERVICE_PORT:-8000}:8000"
     environment:
-      - MODEL_PATH=/app/model/fraud_model.joblib
+      - ONNX_MODEL_PATH=/app/model/fraud_model.onnx
+      - METADATA_PATH=/app/model/model_metadata.json
+    volumes:
+      - ./ml-service:/app
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 5s
@@ -57,10 +141,75 @@ services:
     networks:
       - risk_network
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: risk-backend
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      - PORT=8080
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=risk_user
+      - POSTGRES_PASSWORD=risk_password
+      - POSTGRES_DB=risk_engine
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ML_SERVICE_URL=http://ml-service:8000
+      - KAFKA_BROKER=redpanda:29092
+      - KAFKA_TOPIC=risk.events
+      - CLICKHOUSE_HOST=clickhouse
+      - CLICKHOUSE_NATIVE_PORT=9000
+      - RISK_MODEL_CANARY_ENABLED=${RISK_MODEL_CANARY_ENABLED:-false}
+      - RISK_MODEL_CANARY_PERCENT=${RISK_MODEL_CANARY_PERCENT:-0}
+      - RISK_MODEL_CANARY_VERSION=${RISK_MODEL_CANARY_VERSION:-fraud-xgb-25f-candidate-v1}
+    volumes:
+      - backend_state:/app/state
+      - backend_artifacts:/app/artifacts
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      redpanda:
+        condition: service_started
+      clickhouse:
+        condition: service_healthy
+      ml-service:
+        condition: service_healthy
+    networks:
+      - risk_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: risk-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+    depends_on:
+      - backend
+    networks:
+      - risk_network
+
 volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  redpanda_data:
+    driver: local
+  clickhouse_data:
+    driver: local
+  backend_state:
+    driver: local
+  backend_artifacts:
     driver: local
 
 networks:
