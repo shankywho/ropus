@@ -168,7 +168,7 @@ export default function FraudGraphPage() {
   const getTypeIcon = (type: GraphEntity["type"]) => {
     switch (type) {
       case "customer":
-        return <User className="w-4 h-4 text-[#38bdf8]" />;
+        return <User className="w-4 h-4 text-[#0d94fb]" />;
       case "device":
         return <Smartphone className="w-4 h-4 text-[#c084fc]" />;
       case "ip":
@@ -185,9 +185,14 @@ export default function FraudGraphPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Top Header & Hop Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2b48]">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2536]">
         <div>
-          <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Fraud Knowledge Graph</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Fraud Knowledge Graph</h1>
+            <span className="text-[10px] font-mono bg-[#0d94fb15] text-[#0d94fb] px-1.5 py-0.5 rounded-[2px] border border-[#0d94fb33]">
+              GRAPH 3.0
+            </span>
+          </div>
           <p className="text-xs text-[#97a0af] font-mono mt-0.5">
             Real-time in-memory 3-hop BFS entity resolution & syndicate ring discovery
           </p>
@@ -195,15 +200,15 @@ export default function FraudGraphPage() {
 
         {/* Hop Depth Filter Buttons */}
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-[#6b778c]">TRAVERSAL DEPTH:</span>
-          <div className="flex bg-[#0b1528] p-1 border border-[#1c2b48] rounded">
+          <span className="text-xs font-mono text-[#5e6c84]">TRAVERSAL DEPTH:</span>
+          <div className="flex bg-[#0f172a] p-1 border border-[#1c2536] rounded-[4px]">
             {[1, 2, 3].map((hop) => (
               <button
                 key={hop}
                 onClick={() => setHopFilter(hop)}
-                className={`px-3 py-1 text-xs font-mono rounded font-semibold transition-all ${
+                className={`px-3 py-1 text-xs font-mono rounded-[3px] font-semibold transition-all cursor-pointer ${
                   hopFilter === hop
-                    ? "bg-[#0d94fb] text-white"
+                    ? "bg-[#0d94fb] text-white shadow-xs"
                     : "text-[#97a0af] hover:text-[#f4f5f7]"
                 }`}
               >
@@ -217,24 +222,24 @@ export default function FraudGraphPage() {
       {/* Main Canvas & Inspector Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left 8 Cols: Interactive Visual Graph Canvas */}
-        <div className="lg:col-span-8 bg-[#0b1528] border border-[#1c2b48] rounded p-4 relative min-h-[500px] flex flex-col justify-between overflow-hidden">
+        <div className="lg:col-span-8 bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-4 relative min-h-[500px] flex flex-col justify-between overflow-hidden shadow-xs">
           {/* Canvas Badge */}
           <div className="flex items-center justify-between z-10">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono font-bold text-[#f4f5f7]">
                 Active Cluster: #SYNTHETIC-MULE-CLUSTER-99
               </span>
-              <span className="text-[10px] font-mono bg-[#f0525218] text-[#f05252] px-1.5 py-0.5 rounded border border-[#f0525233]">
+              <span className="text-[10px] font-mono bg-[#f0525218] text-[#f05252] px-1.5 py-0.5 rounded-[2px] border border-[#f0525233]">
                 CONFIRMED SYNDICATE
               </span>
             </div>
-            <span className="text-[10px] font-mono text-[#6b778c]">
+            <span className="text-[10px] font-mono text-[#5e6c84]">
               {visibleNodes.length} Nodes • {visibleLinks.length} Edges Rendered
             </span>
           </div>
 
           {/* SVG Visual Graph Rendering */}
-          <div className="relative w-full h-[440px] my-2 bg-[#070e1c] border border-[#14223d] rounded">
+          <div className="relative w-full h-[440px] my-2 bg-[#070e1c] border border-[#1c2536] rounded-[4px]">
             <svg className="absolute inset-0 w-full h-full">
               {/* Edges */}
               {visibleLinks.map((link, idx) => {
@@ -249,10 +254,10 @@ export default function FraudGraphPage() {
                       y1={sourceNode.y}
                       x2={targetNode.x}
                       y2={targetNode.y}
-                      stroke={link.hop === 1 ? "#38bdf8" : "#f05252"}
+                      stroke={link.hop === 1 ? "#0d94fb" : "#f05252"}
                       strokeWidth={link.hop === 1 ? "1.5" : "1"}
                       strokeDasharray={link.hop > 1 ? "4 4" : "none"}
-                      opacity="0.6"
+                      opacity="0.65"
                     />
                   </g>
                 );
@@ -269,12 +274,12 @@ export default function FraudGraphPage() {
                   key={node.id}
                   onClick={() => setSelectedEntity(node)}
                   style={{ left: `${node.x}px`, top: `${node.y}px` }}
-                  className={`absolute -translate-x-1/2 -translate-y-1/2 p-2.5 rounded border text-left cursor-pointer transition-all shadow-md ${
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 p-2.5 rounded-[4px] border text-left cursor-pointer transition-all shadow-md ${
                     isSelected
-                      ? "bg-[#0f1c34] border-[#0d94fb] ring-2 ring-[#0d94fb55] z-20 scale-105"
+                      ? "bg-[#0a1324] border-[#0d94fb] ring-2 ring-[#0d94fb55] z-20 scale-105"
                       : isRoot
-                      ? "bg-[#0b1528] border-[#38bdf8] hover:border-[#0d94fb] z-10"
-                      : "bg-[#0b1528] border-[#1c2b48] hover:border-[#2c3e66]"
+                      ? "bg-[#0f172a] border-[#0d94fb] hover:border-[#0d94fb] z-10"
+                      : "bg-[#0f172a] border-[#1c2536] hover:border-[#2c3b52]"
                   }`}
                 >
                   <div className="flex items-center gap-1.5 mb-1">
@@ -295,10 +300,10 @@ export default function FraudGraphPage() {
           </div>
 
           {/* Canvas Bottom Legend */}
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#6b778c] pt-2 border-t border-[#1c2b48]">
+          <div className="flex items-center justify-between text-[11px] font-mono text-[#5e6c84] pt-2 border-t border-[#1c2536]">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1">
-                <span className="w-2 h-0.5 bg-[#38bdf8] inline-block" /> 1-Hop Direct
+                <span className="w-2 h-0.5 bg-[#0d94fb] inline-block" /> 1-Hop Direct
               </span>
               <span className="flex items-center gap-1">
                 <span className="w-2 h-0.5 bg-[#f05252] inline-block border-t border-dashed" /> 2/3-Hop Shared Canvas / CIDR
@@ -309,13 +314,13 @@ export default function FraudGraphPage() {
         </div>
 
         {/* Right 4 Cols: Compact Entity Inspector */}
-        <div className="lg:col-span-4 bg-[#0b1528] border border-[#1c2b48] rounded p-5 flex flex-col justify-between">
+        <div className="lg:col-span-4 bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-5 flex flex-col justify-between shadow-xs">
           <div>
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1c2b48]">
-              <span className="text-xs font-mono font-bold tracking-wider text-[#38bdf8] uppercase">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1c2536]">
+              <span className="text-xs font-mono font-bold tracking-wider text-[#0d94fb] uppercase">
                 Entity Inspector
               </span>
-              <span className="text-[10px] font-mono bg-[#14223d] text-[#97a0af] px-1.5 py-0.5 rounded uppercase">
+              <span className="text-[10px] font-mono bg-[#142036] text-[#97a0af] px-1.5 py-0.5 rounded-[2px] uppercase">
                 {selectedEntity.type}
               </span>
             </div>
@@ -329,11 +334,11 @@ export default function FraudGraphPage() {
             </div>
 
             {/* Core Metrics */}
-            <div className="space-y-2.5 p-3 bg-[#070e1c] border border-[#1c2b48] rounded mb-4 font-mono text-xs">
+            <div className="space-y-2.5 p-3 bg-[#0a1324] border border-[#1c2536] rounded-[4px] mb-4 font-mono text-xs">
               <div className="flex items-center justify-between">
-                <span className="text-[#6b778c]">RISK STATUS:</span>
+                <span className="text-[#5e6c84]">RISK STATUS:</span>
                 <span
-                  className={`font-bold px-1.5 py-0.2 rounded text-[10px] ${
+                  className={`font-bold px-1.5 py-0.2 rounded-[2px] text-[10px] ${
                     selectedEntity.riskStatus === "HIGH_RISK"
                       ? "bg-[#f0525215] text-[#f05252] border border-[#f0525233]"
                       : "bg-[#04db7c15] text-[#04db7c] border border-[#04db7c33]"
@@ -343,33 +348,33 @@ export default function FraudGraphPage() {
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#6b778c]">DEGREE CENTRALITY:</span>
+                <span className="text-[#5e6c84]">DEGREE CENTRALITY:</span>
                 <span className="text-[#f4f5f7] font-semibold">{selectedEntity.connectionsCount} Linked Edges</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#6b778c]">HOP DISTANCE:</span>
+                <span className="text-[#5e6c84]">HOP DISTANCE:</span>
                 <span className="text-[#f4f5f7]">{selectedEntity.hopLevel} Hops from Root</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#6b778c]">FIRST OBSERVED:</span>
+                <span className="text-[#5e6c84]">FIRST OBSERVED:</span>
                 <span className="text-[#97a0af]">{selectedEntity.firstSeen}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#6b778c]">LAST ACTIVE:</span>
+                <span className="text-[#5e6c84]">LAST ACTIVE:</span>
                 <span className="text-[#97a0af]">{selectedEntity.lastSeen}</span>
               </div>
             </div>
 
             {/* Signals on this Entity */}
             <div>
-              <span className="text-[11px] font-mono font-bold text-[#6b778c] uppercase block mb-2">
+              <span className="text-[11px] font-mono font-bold text-[#5e6c84] uppercase block mb-2">
                 Correlated Graph Signals
               </span>
               <ul className="space-y-2">
                 {selectedEntity.signals.map((sig, i) => (
                   <li
                     key={i}
-                    className="p-2 bg-[#0f1c34] border border-[#1c2b48] rounded text-xs text-[#f4f5f7] leading-relaxed flex items-start gap-2"
+                    className="p-2 bg-[#070e1c] border border-[#1c2536] rounded-[4px] text-xs text-[#f4f5f7] leading-relaxed flex items-start gap-2"
                   >
                     <ShieldAlert className="w-3.5 h-3.5 text-[#f05252] shrink-0 mt-0.5" />
                     <span>{sig}</span>
@@ -379,8 +384,8 @@ export default function FraudGraphPage() {
             </div>
           </div>
 
-          <div className="pt-4 mt-4 border-t border-[#1c2b48] text-[11px] text-[#6b778c] font-mono">
-            Graph traversal latency: <span className="text-[#04db7c]">1.10 ms</span>
+          <div className="pt-4 mt-4 border-t border-[#1c2536] text-[11px] text-[#5e6c84] font-mono">
+            Graph traversal latency: <span className="text-[#04db7c] font-semibold">1.10 ms</span>
           </div>
         </div>
       </div>

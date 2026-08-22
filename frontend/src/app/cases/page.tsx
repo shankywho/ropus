@@ -130,48 +130,53 @@ export default function CasesPage() {
   const getPriorityBadge = (p: CaseItem["priority"]) => {
     switch (p) {
       case "P0_CRITICAL":
-        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f0525215] text-[#f05252] border border-[#f0525233] rounded">P0 CRITICAL</span>;
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f0525215] text-[#f05252] border border-[#f0525233] rounded-[2px]">P0 CRITICAL</span>;
       case "P1_HIGH":
-        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f9731615] text-[#f97316] border border-[#f9731633] rounded">P1 HIGH</span>;
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f9731615] text-[#f97316] border border-[#f9731633] rounded-[2px]">P1 HIGH</span>;
       case "P2_MEDIUM":
-        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f59e0b15] text-[#f59e0b] border border-[#f59e0b33] rounded">P2 MED</span>;
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f59e0b15] text-[#f59e0b] border border-[#f59e0b33] rounded-[2px]">P2 MED</span>;
     }
   };
 
   const getStatusBadge = (s: CaseItem["status"]) => {
     switch (s) {
       case "OPEN":
-        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f0525215] text-[#f05252] border border-[#f0525233] rounded">OPEN</span>;
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f0525215] text-[#f05252] border border-[#f0525233] rounded-[2px]">OPEN</span>;
       case "IN_REVIEW":
-        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f59e0b15] text-[#f59e0b] border border-[#f59e0b33] rounded">IN REVIEW</span>;
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f59e0b15] text-[#f59e0b] border border-[#f59e0b33] rounded-[2px]">IN REVIEW</span>;
       case "CONFIRMED_FRAUD":
-        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#04db7c15] text-[#04db7c] border border-[#04db7c33] rounded">CONFIRMED FRAUD</span>;
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#04db7c15] text-[#04db7c] border border-[#04db7c33] rounded-[2px]">CONFIRMED FRAUD</span>;
       case "OVERRIDDEN":
-        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#6b778c15] text-[#6b778c] border border-[#6b778c33] rounded">OVERRIDDEN</span>;
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#5e6c8415] text-[#97a0af] border border-[#5e6c8433] rounded-[2px]">OVERRIDDEN</span>;
     }
   };
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2b48]">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2536]">
         <div>
-          <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Case Review & AI Investigation</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Case Review & AI Investigation</h1>
+            <span className="text-[10px] font-mono bg-[#0d94fb15] text-[#0d94fb] px-1.5 py-0.5 rounded-[2px] border border-[#0d94fb33]">
+              HUMAN GOVERNANCE
+            </span>
+          </div>
           <p className="text-xs text-[#97a0af] font-mono mt-0.5">
             Human-in-the-loop governance, multi-agent dossiers & immutable SHA-256 audit ledger
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-[#6b778c]">QUEUE METRIC:</span>
-          <span className="px-2.5 py-1 text-xs font-mono bg-[#0b1528] border border-[#1c2b48] text-[#f4f5f7] rounded font-bold">
+          <span className="text-xs font-mono text-[#5e6c84]">QUEUE METRIC:</span>
+          <span className="px-2.5 py-1 text-xs font-mono bg-[#0f172a] border border-[#1c2536] text-[#f4f5f7] rounded-[4px] font-bold shadow-xs">
             1 P0 Active • 0 Breached SLAs
           </span>
         </div>
       </div>
 
       {actionNotice && (
-        <div className="p-3 bg-[#04db7c15] border border-[#04db7c44] text-[#04db7c] font-mono text-xs rounded flex items-center justify-between">
+        <div className="p-3 bg-[#04db7c15] border border-[#04db7c44] text-[#04db7c] font-mono text-xs rounded-[4px] flex items-center justify-between">
           <span>✓ {actionNotice}</span>
         </div>
       )}
@@ -179,13 +184,13 @@ export default function CasesPage() {
       {/* Main Grid: Left Review Queue List / Right Detailed Active Case */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left 4 Cols: Review Queue Table */}
-        <div className="lg:col-span-4 bg-[#0b1528] border border-[#1c2b48] rounded p-4 flex flex-col justify-between">
+        <div className="lg:col-span-4 bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-4 flex flex-col justify-between shadow-xs">
           <div>
-            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2b48]">
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2536]">
               <span className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider">
                 Review Cases ({casesList.length})
               </span>
-              <span className="text-[10px] font-mono text-[#6b778c]">Tier 1 Queue</span>
+              <span className="text-[10px] font-mono text-[#5e6c84]">Tier 1 Queue</span>
             </div>
 
             <div className="space-y-2">
@@ -195,10 +200,10 @@ export default function CasesPage() {
                   <button
                     key={c.id}
                     onClick={() => setSelectedCaseId(c.id)}
-                    className={`w-full p-3 rounded border text-left transition-all ${
+                    className={`w-full p-3 rounded-[4px] border text-left transition-all cursor-pointer ${
                       isSelected
-                        ? "bg-[#0f1c34] border-[#0d94fb] ring-1 ring-[#0d94fb]"
-                        : "bg-[#070e1c] border-[#1c2b48] hover:border-[#2c3e66]"
+                        ? "bg-[#0a1324] border-[#0d94fb] ring-1 ring-[#0d94fb]"
+                        : "bg-[#070e1c] border-[#1c2536] hover:border-[#2c3b52]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2 mb-1.5">
@@ -213,7 +218,7 @@ export default function CasesPage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-[10px] font-mono text-[#6b778c]">
+                    <div className="flex items-center justify-between text-[10px] font-mono text-[#5e6c84]">
                       <span>Score: {c.riskScore.toFixed(2)}</span>
                       {getStatusBadge(c.status)}
                     </div>
@@ -223,7 +228,7 @@ export default function CasesPage() {
             </div>
           </div>
 
-          <div className="pt-3 mt-3 border-t border-[#1c2b48] text-[10px] font-mono text-[#6b778c] text-center">
+          <div className="pt-3 mt-3 border-t border-[#1c2536] text-[10px] font-mono text-[#5e6c84] text-center">
             Persisted in PostgreSQL • Redis Cache Active
           </div>
         </div>
@@ -231,8 +236,8 @@ export default function CasesPage() {
         {/* Right 8 Cols: Active Case Investigation & Governance Actions */}
         <div className="lg:col-span-8 space-y-6">
           {/* Active Case Header Box */}
-          <div className="bg-[#0b1528] border border-[#1c2b48] rounded p-5">
-            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-[#1c2b48]">
+          <div className="bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-5 shadow-xs">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-[#1c2536]">
               <div className="flex items-center gap-3">
                 <span className="text-base font-bold font-mono text-[#f4f5f7]">{activeCase.id}</span>
                 {getPriorityBadge(activeCase.priority)}
@@ -246,44 +251,44 @@ export default function CasesPage() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono text-xs mb-4">
               <div>
-                <span className="text-[10px] text-[#6b778c] block">TRANSACTION ID</span>
+                <span className="text-[10px] text-[#5e6c84] block">TRANSACTION ID</span>
                 <span className="text-[#f4f5f7] font-semibold">{activeCase.transactionId}</span>
               </div>
               <div>
-                <span className="text-[10px] text-[#6b778c] block">AMOUNT</span>
+                <span className="text-[10px] text-[#5e6c84] block">AMOUNT</span>
                 <span className="text-[#f4f5f7] font-bold">
                   ${activeCase.amount.toLocaleString()} {activeCase.currency}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-[#6b778c] block">EVALUATED SCORE</span>
+                <span className="text-[10px] text-[#5e6c84] block">EVALUATED SCORE</span>
                 <span className="text-[#f05252] font-bold">{activeCase.riskScore.toFixed(2)} (BLOCK)</span>
               </div>
               <div>
-                <span className="text-[10px] text-[#6b778c] block">OPENED AT</span>
+                <span className="text-[10px] text-[#5e6c84] block">OPENED AT</span>
                 <span className="text-[#97a0af]">{activeCase.createdAt}</span>
               </div>
             </div>
 
-            {/* Analyst Action Buttons */}
-            <div className="pt-3 border-t border-[#1c2b48] flex flex-wrap items-center justify-between gap-3">
-              <span className="text-xs font-mono text-[#6b778c]">EXECUTE GOVERNANCE ACTION:</span>
+            {/* Analyst Action Buttons (Razorpay Blade Styling) */}
+            <div className="pt-3 border-t border-[#1c2536] flex flex-wrap items-center justify-between gap-3">
+              <span className="text-xs font-mono text-[#5e6c84]">EXECUTE GOVERNANCE ACTION:</span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleAnalystVerdict("CONFIRM_FRAUD")}
-                  className="px-3 py-1.5 text-xs font-mono font-bold bg-[#f05252] hover:bg-[#f05252ee] text-white rounded active:scale-95"
+                  className="px-3 py-1.5 text-xs font-mono font-bold bg-[#f05252] hover:bg-[#d93b3b] text-white rounded-[4px] active:scale-95 shadow-xs cursor-pointer"
                 >
                   Confirm Fraud Block
                 </button>
                 <button
                   onClick={() => handleAnalystVerdict("ESCALATE_AML")}
-                  className="px-3 py-1.5 text-xs font-mono font-semibold bg-[#f59e0b18] hover:bg-[#f59e0b28] text-[#f59e0b] border border-[#f59e0b44] rounded active:scale-95"
+                  className="px-3 py-1.5 text-xs font-mono font-semibold bg-[#f59e0b18] hover:bg-[#f59e0b28] text-[#f59e0b] border border-[#f59e0b44] rounded-[4px] active:scale-95 cursor-pointer"
                 >
                   Escalate SAR
                 </button>
                 <button
                   onClick={() => handleAnalystVerdict("OVERRIDE")}
-                  className="px-3 py-1.5 text-xs font-mono bg-[#14223d] hover:bg-[#1c2b48] text-[#97a0af] hover:text-[#f4f5f7] border border-[#1c2b48] rounded active:scale-95"
+                  className="px-3 py-1.5 text-xs font-mono bg-[#142036] hover:bg-[#1c2b48] text-[#97a0af] hover:text-[#f4f5f7] border border-[#1c2536] rounded-[4px] active:scale-95 cursor-pointer"
                 >
                   Mark False Positive
                 </button>
@@ -292,15 +297,15 @@ export default function CasesPage() {
           </div>
 
           {/* AI Investigator Dossier (Observed / Inferred / Recommended) */}
-          <div className="bg-[#0b1528] border border-[#1c2b48] rounded p-5">
-            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2b48]">
+          <div className="bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-5 shadow-xs">
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2536]">
               <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[#38bdf8]" />
+                <FileText className="w-4 h-4 text-[#0d94fb]" />
                 <h2 className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider">
                   AI Investigator Council Dossier
                 </h2>
               </div>
-              <span className="text-[10px] font-mono text-[#6b778c]">Multi-Persona Consensus (Subsystem 07)</span>
+              <span className="text-[10px] font-mono text-[#5e6c84]">Multi-Persona Consensus (Subsystem 07)</span>
             </div>
 
             <EvidenceList
@@ -312,15 +317,15 @@ export default function CasesPage() {
           </div>
 
           {/* Immutable Audit Timeline */}
-          <div className="bg-[#0b1528] border border-[#1c2b48] rounded p-5">
-            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2b48]">
+          <div className="bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-5 shadow-xs">
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2536]">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-[#04db7c]" />
                 <h2 className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider">
                   Immutable Cryptographic Audit Trail
                 </h2>
               </div>
-              <span className="text-[10px] font-mono text-[#6b778c]">SHA-256 Hash Chain (Subsystem 08)</span>
+              <span className="text-[10px] font-mono text-[#5e6c84]">SHA-256 Hash Chain (Subsystem 08)</span>
             </div>
 
             <CaseTimeline entries={timeline} />

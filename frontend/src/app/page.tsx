@@ -97,9 +97,14 @@ export default function OverviewPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2b48]">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2536]">
         <div>
-          <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">System Control Plane</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">System Control Plane</h1>
+            <span className="text-[10px] font-mono bg-[#04db7c15] text-[#04db7c] px-1.5 py-0.5 rounded-[2px] border border-[#04db7c33]">
+              CLUSTER 100% OPERATIONAL
+            </span>
+          </div>
           <p className="text-xs text-[#97a0af] font-mono mt-0.5">
             Synchronous evaluation telemetry, live stream ingestion & cluster health
           </p>
@@ -108,72 +113,72 @@ export default function OverviewPage() {
         {/* Clickable System Health Badge -> Opens Breaker Inspector */}
         <button
           onClick={() => setIsHealthModalOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 bg-[#0b1528] hover:bg-[#0f1c34] border border-[#04db7c44] rounded text-xs font-mono text-[#04db7c] transition-all cursor-pointer shadow-xs active:scale-95"
+          className="flex items-center gap-2 px-3 py-1.5 bg-[#0f172a] hover:bg-[#142036] border border-[#04db7c44] rounded-[4px] text-xs font-mono text-[#04db7c] transition-all cursor-pointer shadow-xs active:scale-95"
         >
           <span className="w-2 h-2 rounded-full bg-[#04db7c] animate-pulse" />
-          <span className="font-bold">ALL SYSTEMS NORMAL (CIRCUIT BREAKERS CLOSED)</span>
-          <span className="text-[10px] text-[#97a0af] underline ml-1">Inspect</span>
+          <span className="font-bold">CIRCUIT BREAKERS CLOSED (8/8)</span>
+          <span className="text-[10px] text-[#0d94fb] underline ml-1">Inspect</span>
         </button>
       </div>
 
-      {/* 6 Core Metrics Grid (Clean, Calm, Anti-Clutter) */}
+      {/* 6 Core Metrics Grid (Razorpay Blade 4px Elevation) */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="p-3.5 bg-[#0b1528] border border-[#1c2b48] rounded">
-          <span className="text-[11px] font-mono text-[#6b778c] block">EVALUATIONS (24H)</span>
+        <div className="p-3.5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] shadow-xs">
+          <span className="text-[11px] font-mono text-[#5e6c84] block uppercase">EVALUATIONS (24H)</span>
           <span className="text-lg font-mono font-bold text-[#f4f5f7] mt-1 block">1,842,910</span>
           <span className="text-[10px] font-mono text-[#04db7c]">100% SLA Met</span>
         </div>
 
-        <div className="p-3.5 bg-[#0b1528] border border-[#1c2b48] rounded">
-          <span className="text-[11px] font-mono text-[#6b778c] block">APPROVE RATE</span>
+        <div className="p-3.5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] shadow-xs">
+          <span className="text-[11px] font-mono text-[#5e6c84] block uppercase">APPROVE RATE</span>
           <span className="text-lg font-mono font-bold text-[#04db7c] mt-1 block">98.42%</span>
-          <span className="text-[10px] font-mono text-[#6b778c]">1,813,792 txns</span>
+          <span className="text-[10px] font-mono text-[#5e6c84]">1,813,792 txns</span>
         </div>
 
-        <div className="p-3.5 bg-[#0b1528] border border-[#1c2b48] rounded">
-          <span className="text-[11px] font-mono text-[#6b778c] block">BLOCK / CHALLENGE</span>
+        <div className="p-3.5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] shadow-xs">
+          <span className="text-[11px] font-mono text-[#5e6c84] block uppercase">BLOCK / CHALLENGE</span>
           <span className="text-lg font-mono font-bold text-[#f05252] mt-1 block">1.58%</span>
-          <span className="text-[10px] font-mono text-[#6b778c]">29,118 intercepted</span>
+          <span className="text-[10px] font-mono text-[#5e6c84]">29,118 intercepted</span>
         </div>
 
-        <div className="p-3.5 bg-[#0b1528] border border-[#1c2b48] rounded">
-          <span className="text-[11px] font-mono text-[#6b778c] block">AVG RISK SCORE</span>
-          <span className="text-lg font-mono font-bold text-[#38bdf8] mt-1 block">0.078</span>
-          <span className="text-[10px] font-mono text-[#6b778c]">Calibrated Posterior</span>
+        <div className="p-3.5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] shadow-xs">
+          <span className="text-[11px] font-mono text-[#5e6c84] block uppercase">AVG RISK SCORE</span>
+          <span className="text-lg font-mono font-bold text-[#0d94fb] mt-1 block">0.078</span>
+          <span className="text-[10px] font-mono text-[#5e6c84]">Calibrated Posterior</span>
         </div>
 
-        <div className="p-3.5 bg-[#0b1528] border border-[#1c2b48] rounded">
-          <span className="text-[11px] font-mono text-[#6b778c] block">P99 LATENCY</span>
+        <div className="p-3.5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] shadow-xs">
+          <span className="text-[11px] font-mono text-[#5e6c84] block uppercase">P99 LATENCY</span>
           <span className="text-lg font-mono font-bold text-[#04db7c] mt-1 block">1.42 ms</span>
-          <span className="text-[10px] font-mono text-[#6b778c]">&lt; 10.0ms Target</span>
+          <span className="text-[10px] font-mono text-[#5e6c84]">&lt; 10.0ms Target</span>
         </div>
 
         <div
           onClick={() => setIsHealthModalOpen(true)}
-          className="p-3.5 bg-[#0b1528] border border-[#1c2b48] hover:border-[#04db7c44] rounded cursor-pointer transition-colors"
+          className="p-3.5 bg-[#0f172a] border border-[#1c2536] hover:border-[#0d94fb44] rounded-[4px] cursor-pointer transition-colors shadow-xs"
         >
-          <span className="text-[11px] font-mono text-[#6b778c] block">HEALTH STATUS</span>
+          <span className="text-[11px] font-mono text-[#5e6c84] block uppercase">HEALTH STATUS</span>
           <span className="text-lg font-mono font-bold text-[#04db7c] mt-1 block">100.0%</span>
           <span className="text-[10px] font-mono text-[#0d94fb] underline">8/8 Breakers</span>
         </div>
       </div>
 
       {/* Live Recent Risk Decisions Feed (Kafka Egress Proof) */}
-      <div className="bg-[#0b1528] border border-[#1c2b48] rounded p-5">
-        <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1c2b48]">
+      <div className="bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-5 shadow-xs">
+        <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1c2536]">
           <div className="flex items-center gap-2">
-            <Radio className="w-4 h-4 text-[#38bdf8] animate-pulse" />
+            <Radio className="w-4 h-4 text-[#0d94fb] animate-pulse" />
             <h2 className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider">
-              Live Decision Stream (Kafka Real-Time Feed)
+              Live Decision Stream (Kafka Real-Time Egress)
             </h2>
           </div>
-          <span className="text-[10px] font-mono text-[#6b778c]">Append-Only Telemetry</span>
+          <span className="text-[10px] font-mono text-[#5e6c84]">Append-Only Telemetry</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-mono">
             <thead>
-              <tr className="border-b border-[#1c2b48] text-[#6b778c]">
+              <tr className="border-b border-[#1c2536] text-[#5e6c84]">
                 <th className="pb-2.5 font-medium">TRANSACTION ID</th>
                 <th className="pb-2.5 font-medium">CUSTOMER</th>
                 <th className="pb-2.5 font-medium">AMOUNT</th>
@@ -183,9 +188,9 @@ export default function OverviewPage() {
                 <th className="pb-2.5 font-medium text-right">ACTION</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1c2b48]">
+            <tbody className="divide-y divide-[#1c2536]">
               {decisions.map((dec) => (
-                <tr key={dec.id} className="hover:bg-[#0f1c34] transition-colors">
+                <tr key={dec.id} className="hover:bg-[#142036] transition-colors">
                   <td className="py-3 text-[#f4f5f7] font-semibold">{dec.transactionId}</td>
                   <td className="py-3 text-[#97a0af]">{dec.customerId}</td>
                   <td className="py-3 text-[#f4f5f7] font-bold">
@@ -211,7 +216,7 @@ export default function OverviewPage() {
                   <td className="py-3 text-right">
                     <Link
                       href="/transactions"
-                      className="inline-flex items-center gap-1 text-[11px] text-[#0d94fb] hover:underline"
+                      className="inline-flex items-center gap-1 text-[11px] text-[#0d94fb] hover:underline font-semibold"
                     >
                       Inspect <ArrowUpRight className="w-3 h-3" />
                     </Link>

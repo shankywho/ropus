@@ -30,21 +30,26 @@ export default function RiskDecisionPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Top Header / Switcher */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2b48]">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2536]">
         <div>
-          <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Risk Decision Intelligence</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Risk Decision Intelligence</h1>
+            <span className="text-[10px] font-mono bg-[#0d94fb15] text-[#0d94fb] px-1.5 py-0.5 rounded-[2px] border border-[#0d94fb33]">
+              LIVE INFERENCE
+            </span>
+          </div>
           <p className="text-xs text-[#97a0af] font-mono mt-0.5">
             Single-loop synchronous evaluation pipeline & additive factor attribution
           </p>
         </div>
 
         {/* Toggle between canonical attack scenario and organic benign purchase */}
-        <div className="flex items-center gap-2 bg-[#0b1528] p-1 border border-[#1c2b48] rounded">
+        <div className="flex items-center gap-1.5 bg-[#0f172a] p-1 border border-[#1c2536] rounded-[4px]">
           <button
             onClick={() => setSelectedScenario("BLOCKED")}
-            className={`px-3 py-1 text-xs font-mono rounded font-semibold transition-all ${
+            className={`px-3 py-1.5 text-xs font-mono rounded-[3px] font-semibold transition-all cursor-pointer ${
               selectedScenario === "BLOCKED"
-                ? "bg-[#f0525222] text-[#f05252] border border-[#f0525244]"
+                ? "bg-[#f05252] text-white shadow-xs"
                 : "text-[#97a0af] hover:text-[#f4f5f7]"
             }`}
           >
@@ -52,9 +57,9 @@ export default function RiskDecisionPage() {
           </button>
           <button
             onClick={() => setSelectedScenario("APPROVED")}
-            className={`px-3 py-1 text-xs font-mono rounded font-semibold transition-all ${
+            className={`px-3 py-1.5 text-xs font-mono rounded-[3px] font-semibold transition-all cursor-pointer ${
               selectedScenario === "APPROVED"
-                ? "bg-[#04db7c22] text-[#04db7c] border border-[#04db7c44]"
+                ? "bg-[#04db7c] text-[#011638] font-bold shadow-xs"
                 : "text-[#97a0af] hover:text-[#f4f5f7]"
             }`}
           >
@@ -64,7 +69,7 @@ export default function RiskDecisionPage() {
       </div>
 
       {actionFeedback && (
-        <div className="p-3 bg-[#04db7c15] border border-[#04db7c44] text-[#04db7c] font-mono text-xs rounded flex items-center justify-between">
+        <div className="p-3 bg-[#04db7c15] border border-[#04db7c44] text-[#04db7c] font-mono text-xs rounded-[4px] flex items-center justify-between">
           <span>✓ {actionFeedback}</span>
         </div>
       )}
@@ -86,15 +91,15 @@ export default function RiskDecisionPage() {
       {/* 2. Middle Grid: Additive Risk Factors & Triggered Rules */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left 7 cols: Additive Risk Factors */}
-        <div className="lg:col-span-7 bg-[#0b1528] border border-[#1c2b48] rounded p-5">
-          <div className="flex items-center justify-between pb-3 mb-2 border-b border-[#1c2b48]">
+        <div className="lg:col-span-7 bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-5 shadow-xs">
+          <div className="flex items-center justify-between pb-3 mb-2 border-b border-[#1c2536]">
             <div className="flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#38bdf8]" />
+              <Layers className="w-4 h-4 text-[#0d94fb]" />
               <h2 className="text-xs font-mono font-bold tracking-wider text-[#f4f5f7] uppercase">
                 Additive Factor Attribution (Sum = {decision.riskScore.toFixed(2)})
               </h2>
             </div>
-            <span className="text-[10px] font-mono text-[#6b778c]">Exact Parity</span>
+            <span className="text-[10px] font-mono text-[#5e6c84]">Exact Parity</span>
           </div>
 
           <div className="space-y-1">
@@ -107,21 +112,21 @@ export default function RiskDecisionPage() {
         {/* Right 5 cols: Triggered Rules & Direct Action Controls */}
         <div className="lg:col-span-5 flex flex-col gap-6">
           {/* Triggered Rules Box */}
-          <div className="bg-[#0b1528] border border-[#1c2b48] rounded p-5 flex-1">
-            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2b48]">
+          <div className="bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-5 flex-1 shadow-xs">
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2536]">
               <div className="flex items-center gap-2">
                 <FileCode2 className="w-4 h-4 text-[#f59e0b]" />
                 <h2 className="text-xs font-mono font-bold tracking-wider text-[#f4f5f7] uppercase">
                   Triggered Policy Rules
                 </h2>
               </div>
-              <span className="text-[10px] font-mono bg-[#14223d] text-[#97a0af] px-1.5 py-0.5 rounded">
+              <span className="text-[10px] font-mono bg-[#142036] text-[#97a0af] px-1.5 py-0.5 rounded-[2px]">
                 Rules Engine
               </span>
             </div>
 
             {decision.triggeredRules.length === 0 ? (
-              <div className="py-6 text-center text-xs text-[#6b778c] font-mono">
+              <div className="py-6 text-center text-xs text-[#5e6c84] font-mono">
                 No policy rule violations triggered for this transaction.
               </div>
             ) : (
@@ -129,11 +134,11 @@ export default function RiskDecisionPage() {
                 {decision.triggeredRules.map((rule, idx) => (
                   <div
                     key={idx}
-                    className="p-2.5 bg-[#070e1c] border border-[#1c2b48] rounded font-mono text-xs"
+                    className="p-2.5 bg-[#0a1324] border border-[#1c2536] rounded-[4px] font-mono text-xs"
                   >
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <span className="font-bold text-[#f59e0b]">{rule.id}</span>
-                      <span className="text-[10px] bg-[#f0525215] text-[#f05252] px-1.5 py-0.2 rounded border border-[#f0525233]">
+                      <span className="text-[10px] bg-[#f0525215] text-[#f05252] px-1.5 py-0.2 rounded-[2px] border border-[#f0525233]">
                         {rule.action}
                       </span>
                     </div>
@@ -146,20 +151,20 @@ export default function RiskDecisionPage() {
           </div>
 
           {/* Quick Analyst Actions */}
-          <div className="bg-[#0b1528] border border-[#1c2b48] rounded p-4">
-            <span className="text-[11px] font-mono font-bold text-[#6b778c] uppercase block mb-2.5">
+          <div className="bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-4 shadow-xs">
+            <span className="text-[11px] font-mono font-bold text-[#5e6c84] uppercase block mb-2.5">
               Analyst Authority Actions
             </span>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => handleAction("CONFIRM_FRAUD_BLOCK")}
-                className="px-3 py-2 text-xs font-mono font-bold bg-[#f0525218] hover:bg-[#f0525228] text-[#f05252] border border-[#f0525244] rounded active:scale-95 text-center"
+                className="px-3 py-2 text-xs font-mono font-bold bg-[#f05252] hover:bg-[#d93b3b] text-white rounded-[4px] active:scale-95 text-center shadow-xs cursor-pointer"
               >
                 Confirm Block
               </button>
               <button
                 onClick={() => handleAction("OVERRIDE_FALSE_POSITIVE")}
-                className="px-3 py-2 text-xs font-mono font-bold bg-[#04db7c18] hover:bg-[#04db7c28] text-[#04db7c] border border-[#04db7c44] rounded active:scale-95 text-center"
+                className="px-3 py-2 text-xs font-mono font-bold bg-[#142036] hover:bg-[#1c2b48] text-[#04db7c] border border-[#04db7c44] rounded-[4px] active:scale-95 text-center cursor-pointer"
               >
                 Override
               </button>
@@ -184,39 +189,39 @@ export default function RiskDecisionPage() {
         />
       </div>
 
-      {/* 4. Collapsed by Default Technical Details Panel */}
-      <div className="bg-[#0b1528] border border-[#1c2b48] rounded overflow-hidden">
+      {/* 4. Collapsed Technical Details Panel */}
+      <div className="bg-[#0f172a] border border-[#1c2536] rounded-[4px] overflow-hidden shadow-xs">
         <button
           onClick={() => setIsTechDetailsOpen(!isTechDetailsOpen)}
-          className="w-full px-5 py-3.5 flex items-center justify-between text-left hover:bg-[#0f1c34] transition-colors"
+          className="w-full px-5 py-3.5 flex items-center justify-between text-left hover:bg-[#142036] transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-[#6b778c]" />
+            <Terminal className="w-4 h-4 text-[#0d94fb]" />
             <span className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider">
               Technical Details & Subsystem Inspection
             </span>
-            <span className="text-[10px] font-mono text-[#6b778c]">
-              (ML Features, Threat Intel Dump, Graph Snapshot, Webhooks, Audit Chain)
+            <span className="text-[10px] font-mono text-[#5e6c84]">
+              (ML 25-Feature Vector, Threat Intel Dump, Graph Snapshot, Signed Webhooks, Audit Chain)
             </span>
           </div>
           {isTechDetailsOpen ? (
-            <ChevronDown className="w-4 h-4 text-[#6b778c]" />
+            <ChevronDown className="w-4 h-4 text-[#5e6c84]" />
           ) : (
-            <ChevronRight className="w-4 h-4 text-[#6b778c]" />
+            <ChevronRight className="w-4 h-4 text-[#5e6c84]" />
           )}
         </button>
 
         {isTechDetailsOpen && (
-          <div className="p-5 border-t border-[#1c2b48] bg-[#070e1c] space-y-6">
+          <div className="p-5 border-t border-[#1c2536] bg-[#070e1c] space-y-6">
             {/* Grid 1: ML Features & Threat Intel Dump */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* ML Features */}
-              <div className="p-4 bg-[#0b1528] border border-[#1c2b48] rounded">
-                <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#1c2b48]">
+              <div className="p-4 bg-[#0f172a] border border-[#1c2536] rounded-[4px]">
+                <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#1c2536]">
                   <span className="text-xs font-mono font-bold text-[#c084fc]">
                     XGBoost 25-Feature Extractor Vector
                   </span>
-                  <span className="text-[10px] font-mono text-[#6b778c]">Subsystem 04</span>
+                  <span className="text-[10px] font-mono text-[#5e6c84]">Subsystem 04</span>
                 </div>
                 <div className="space-y-1.5 font-mono text-xs">
                   {Object.entries(decision.technicalDetails.mlFeatures).map(([k, v]) => (
@@ -229,12 +234,12 @@ export default function RiskDecisionPage() {
               </div>
 
               {/* Threat Intel Signal Dump */}
-              <div className="p-4 bg-[#0b1528] border border-[#1c2b48] rounded">
-                <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#1c2b48]">
+              <div className="p-4 bg-[#0f172a] border border-[#1c2536] rounded-[4px]">
+                <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#1c2536]">
                   <span className="text-xs font-mono font-bold text-[#f59e0b]">
                     Threat Intelligence Telemetry
                   </span>
-                  <span className="text-[10px] font-mono text-[#6b778c]">Subsystem 06</span>
+                  <span className="text-[10px] font-mono text-[#5e6c84]">Subsystem 06</span>
                 </div>
                 <div className="space-y-1.5 font-mono text-xs">
                   <div className="flex items-center justify-between text-[11px]">
@@ -270,12 +275,12 @@ export default function RiskDecisionPage() {
             {/* Grid 2: Graph Context & Webhook Delivery Record */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Graph Snapshot */}
-              <div className="p-4 bg-[#0b1528] border border-[#1c2b48] rounded">
-                <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#1c2b48]">
+              <div className="p-4 bg-[#0f172a] border border-[#1c2536] rounded-[4px]">
+                <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#1c2536]">
                   <span className="text-xs font-mono font-bold text-[#f472b6]">
                     Fraud Graph 3-Hop Traversal Snapshot
                   </span>
-                  <span className="text-[10px] font-mono text-[#6b778c]">Subsystem 05</span>
+                  <span className="text-[10px] font-mono text-[#5e6c84]">Subsystem 05</span>
                 </div>
                 <div className="space-y-1.5 font-mono text-xs">
                   <div className="flex items-center justify-between text-[11px]">
@@ -300,12 +305,12 @@ export default function RiskDecisionPage() {
               </div>
 
               {/* Webhook Delivery Record */}
-              <div className="p-4 bg-[#0b1528] border border-[#1c2b48] rounded">
-                <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#1c2b48]">
-                  <span className="text-xs font-mono font-bold text-[#38bdf8]">
+              <div className="p-4 bg-[#0f172a] border border-[#1c2536] rounded-[4px]">
+                <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#1c2536]">
+                  <span className="text-xs font-mono font-bold text-[#0d94fb]">
                     Webhook Signed Delivery Record
                   </span>
-                  <span className="text-[10px] font-mono text-[#6b778c]">Subsystem 13</span>
+                  <span className="text-[10px] font-mono text-[#5e6c84]">Subsystem 13</span>
                 </div>
                 <div className="space-y-1.5 font-mono text-xs">
                   <div className="flex items-center justify-between text-[11px]">
@@ -331,14 +336,14 @@ export default function RiskDecisionPage() {
             </div>
 
             {/* Raw JSON Request */}
-            <div className="p-4 bg-[#0b1528] border border-[#1c2b48] rounded">
-              <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#1c2b48]">
-                <span className="text-xs font-mono font-bold text-[#6b778c]">
+            <div className="p-4 bg-[#0f172a] border border-[#1c2536] rounded-[4px]">
+              <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#1c2536]">
+                <span className="text-xs font-mono font-bold text-[#5e6c84]">
                   CANONICAL INGRESS PAYLOAD (POST /v1/risk/evaluate)
                 </span>
-                <span className="text-[10px] font-mono text-[#6b778c]">SHA-256 Chain: {decision.technicalDetails.auditHashChain.slice(0, 16)}...</span>
+                <span className="text-[10px] font-mono text-[#5e6c84]">SHA-256 Chain: {decision.technicalDetails.auditHashChain.slice(0, 16)}...</span>
               </div>
-              <pre className="text-[11px] font-mono text-[#38bdf8] overflow-x-auto p-2 bg-[#070e1c] rounded">
+              <pre className="text-[11px] font-mono text-[#0d94fb] overflow-x-auto p-2 bg-[#070e1c] rounded-[4px]">
                 {JSON.stringify(decision.technicalDetails.rawPayload, null, 2)}
               </pre>
             </div>
