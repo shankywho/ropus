@@ -1,219 +1,387 @@
 "use client";
 
 import React, { useState } from "react";
-import { Network, ShieldAlert, ZoomIn, ZoomOut } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import {
+  User,
+  Smartphone,
+  Globe,
+  CreditCard,
+  Building,
+  ShieldAlert,
+} from "lucide-react";
 
-interface GraphNode {
+interface GraphEntity {
   id: string;
+  type: "customer" | "device" | "ip" | "transaction" | "payout_account" | "connected_account";
   label: string;
-  type: "USER" | "DEVICE" | "ACCOUNT" | "MERCHANT" | "CAMPAIGN";
-  riskScore: number;
+  sublabel: string;
+  riskStatus: "HIGH_RISK" | "BENIGN" | "SUSPICIOUS";
+  firstSeen: string;
+  lastSeen: string;
+  connectionsCount: number;
+  hopLevel: number;
+  signals: string[];
   x: number;
   y: number;
 }
 
-interface GraphEdge {
-  from: string;
-  to: string;
-  relationship: string;
+interface GraphLink {
+  source: string;
+  target: string;
+  relation: string;
+  hop: number;
 }
 
-const mockNodes: GraphNode[] = [
-  { id: "usr_synth_01", label: "usr_synthetic_01", type: "USER", riskScore: 94, x: 180, y: 120 },
-  { id: "usr_synth_02", label: "usr_synthetic_02", type: "USER", riskScore: 91, x: 280, y: 80 },
-  { id: "usr_synth_03", label: "usr_synthetic_03", type: "USER", riskScore: 89, x: 380, y: 130 },
-  { id: "dev_emul_root", label: "dev_emulator_root_pool", type: "DEVICE", riskScore: 98, x: 280, y: 220 },
-  { id: "acc_mule_layer", label: "acc_mule_layer_99", type: "ACCOUNT", riskScore: 95, x: 160, y: 320 },
-  { id: "camp_phantom", label: "CAMP-PHANTOM-CARDING", type: "CAMPAIGN", riskScore: 99, x: 420, y: 300 },
-  { id: "merch_crypto", label: "CryptoLiquidityExpress", type: "MERCHANT", riskScore: 65, x: 280, y: 380 },
+const INITIAL_NODES: GraphEntity[] = [
+  {
+    id: "usr_sarah_connor",
+    type: "customer",
+    label: "Sarah Connor",
+    sublabel: "usr_sarah_connor",
+    riskStatus: "HIGH_RISK",
+    firstSeen: "2024-03-12",
+    lastSeen: "2026-08-22 17:42:00",
+    connectionsCount: 4,
+    hopLevel: 0,
+    signals: ["Target of ATO liquidity drain", "Monetary Spike: $14,500"],
+    x: 350,
+    y: 180,
+  },
+  {
+    id: "dev_mule_cluster_99",
+    type: "device",
+    label: "Hardware Canvas Mule #99",
+    sublabel: "dev_mule_cluster_99",
+    riskStatus: "HIGH_RISK",
+    firstSeen: "2026-08-01",
+    lastSeen: "2026-08-22 17:42:00",
+    connectionsCount: 14,
+    hopLevel: 1,
+    signals: ["Shared canvas hash across 14 synthetic accounts", "WebGL entropy 0.94"],
+    x: 180,
+    y: 90,
+  },
+  {
+    id: "ip_198_51_100_44",
+    type: "ip",
+    label: "198.51.100.44",
+    sublabel: "Datacenter Proxy (CY)",
+    riskStatus: "HIGH_RISK",
+    firstSeen: "2026-08-22 17:20:00",
+    lastSeen: "2026-08-22 17:42:00",
+    connectionsCount: 8,
+    hopLevel: 1,
+    signals: ["Bulletproof VPN Subnet", "Impossible travel velocity (8,420 km/h)"],
+    x: 520,
+    y: 90,
+  },
+  {
+    id: "tx_order_88419",
+    type: "transaction",
+    label: "Wire Transfer #88419",
+    sublabel: "$14,500.00 USD",
+    riskStatus: "HIGH_RISK",
+    firstSeen: "2026-08-22 17:42:00",
+    lastSeen: "2026-08-22 17:42:00",
+    connectionsCount: 2,
+    hopLevel: 1,
+    signals: ["Velocity anomaly (>400% baseline)", "Blocked in 1.42ms"],
+    x: 350,
+    y: 300,
+  },
+  {
+    id: "payout_offshore_882",
+    type: "payout_account",
+    label: "Offshore IBAN Mule",
+    sublabel: "CY88...9124",
+    riskStatus: "HIGH_RISK",
+    firstSeen: "2026-08-20",
+    lastSeen: "2026-08-22 17:42:00",
+    connectionsCount: 3,
+    hopLevel: 2,
+    signals: ["Newly linked offshore payout rail", "Recipient of 3 prior fraudulent transfers"],
+    x: 350,
+    y: 410,
+  },
+  // 2-Hop / 3-Hop Nodes
+  {
+    id: "usr_synthetic_mule_12",
+    type: "connected_account",
+    label: "Synthetic Mule Account #12",
+    sublabel: "usr_mule_12",
+    riskStatus: "HIGH_RISK",
+    firstSeen: "2026-08-15",
+    lastSeen: "2026-08-21 11:15:00",
+    connectionsCount: 3,
+    hopLevel: 2,
+    signals: ["Created using shared canvas hash", "Confirmed chargeback loss $8,200"],
+    x: 60,
+    y: 60,
+  },
+  {
+    id: "usr_synthetic_mule_14",
+    type: "connected_account",
+    label: "Synthetic Mule Account #14",
+    sublabel: "usr_mule_14",
+    riskStatus: "HIGH_RISK",
+    firstSeen: "2026-08-18",
+    lastSeen: "2026-08-22 09:30:00",
+    connectionsCount: 2,
+    hopLevel: 2,
+    signals: ["Created using shared canvas hash", "Dispute pending"],
+    x: 60,
+    y: 160,
+  },
+  {
+    id: "ip_cluster_proxy_pool",
+    type: "ip",
+    label: "198.51.100.0/24 Subnet",
+    sublabel: "Proxy Farm",
+    riskStatus: "HIGH_RISK",
+    firstSeen: "2026-07-10",
+    lastSeen: "2026-08-22 17:42:00",
+    connectionsCount: 42,
+    hopLevel: 3,
+    signals: ["Coordinated proxy rotation pool", "Host to 14 confirmed fraud syndicates"],
+    x: 640,
+    y: 60,
+  },
 ];
 
-const mockEdges: GraphEdge[] = [
-  { from: "usr_synth_01", to: "dev_emul_root", relationship: "SHARED_DEVICE" },
-  { from: "usr_synth_02", to: "dev_emul_root", relationship: "SHARED_DEVICE" },
-  { from: "usr_synth_03", to: "dev_emul_root", relationship: "SHARED_DEVICE" },
-  { from: "usr_synth_01", to: "acc_mule_layer", relationship: "TRANSFERS_FUNDS" },
-  { from: "dev_emul_root", to: "camp_phantom", relationship: "INFRASTRUCTURE_FOR" },
-  { from: "acc_mule_layer", to: "merch_crypto", relationship: "CASHOUT_RAIL" },
+const INITIAL_LINKS: GraphLink[] = [
+  { source: "usr_sarah_connor", target: "dev_mule_cluster_99", relation: "USED_DEVICE", hop: 1 },
+  { source: "usr_sarah_connor", target: "ip_198_51_100_44", relation: "USED_IP", hop: 1 },
+  { source: "usr_sarah_connor", target: "tx_order_88419", relation: "INITIATED_TX", hop: 1 },
+  { source: "tx_order_88419", target: "payout_offshore_882", relation: "DESTINATION_PAYOUT", hop: 2 },
+  { source: "dev_mule_cluster_99", target: "usr_synthetic_mule_12", relation: "MATCHES_CANVAS", hop: 2 },
+  { source: "dev_mule_cluster_99", target: "usr_synthetic_mule_14", relation: "MATCHES_CANVAS", hop: 2 },
+  { source: "ip_198_51_100_44", target: "ip_cluster_proxy_pool", relation: "BELONGS_TO_CIDR", hop: 3 },
 ];
 
-export default function FraudGraphExplorerPage() {
-  const [selectedNode, setSelectedNode] = useState<GraphNode | null>(mockNodes[3]);
+export default function FraudGraphPage() {
+  const [hopFilter, setHopFilter] = useState<number>(2);
+  const [selectedEntity, setSelectedEntity] = useState<GraphEntity>(INITIAL_NODES[0]);
+
+  const visibleNodes = INITIAL_NODES.filter((n) => n.hopLevel <= hopFilter);
+  const visibleLinks = INITIAL_LINKS.filter((l) => l.hop <= hopFilter);
+
+  const getTypeIcon = (type: GraphEntity["type"]) => {
+    switch (type) {
+      case "customer":
+        return <User className="w-4 h-4 text-[#38bdf8]" />;
+      case "device":
+        return <Smartphone className="w-4 h-4 text-[#c084fc]" />;
+      case "ip":
+        return <Globe className="w-4 h-4 text-[#f59e0b]" />;
+      case "transaction":
+        return <CreditCard className="w-4 h-4 text-[#f05252]" />;
+      case "payout_account":
+        return <Building className="w-4 h-4 text-[#f472b6]" />;
+      case "connected_account":
+        return <ShieldAlert className="w-4 h-4 text-[#f05252]" />;
+    }
+  };
 
   return (
-    <div className="flex-1 p-6 md:p-8 space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+    <div className="max-w-6xl mx-auto space-y-6">
+      {/* Top Header & Hop Controls */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2b48]">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <Network className="size-6 text-indigo-400" />
-            <span>Fraud Graph Explorer</span>
-          </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Real-time entity resolution, syndicate cluster visualization, and shared identifier lineages.
+          <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Fraud Knowledge Graph</h1>
+          <p className="text-xs text-[#97a0af] font-mono mt-0.5">
+            Real-time in-memory 3-hop BFS entity resolution & syndicate ring discovery
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Badge className="bg-rose-500/20 text-rose-300 border-rose-500/30 text-xs px-3 py-1 font-mono">
-            Active Syndicate Ring (Degree: 14)
-          </Badge>
+
+        {/* Hop Depth Filter Buttons */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono text-[#6b778c]">TRAVERSAL DEPTH:</span>
+          <div className="flex bg-[#0b1528] p-1 border border-[#1c2b48] rounded">
+            {[1, 2, 3].map((hop) => (
+              <button
+                key={hop}
+                onClick={() => setHopFilter(hop)}
+                className={`px-3 py-1 text-xs font-mono rounded font-semibold transition-all ${
+                  hopFilter === hop
+                    ? "bg-[#0d94fb] text-white"
+                    : "text-[#97a0af] hover:text-[#f4f5f7]"
+                }`}
+              >
+                {hop}-Hop {hop === 1 ? "(Direct)" : hop === 2 ? "(Syndicate)" : "(Cluster)"}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Main Grid: Interactive Graph on Left, Node Details on Right */}
+      {/* Main Canvas & Inspector Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Graph Canvas */}
-        <div className="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between min-h-[500px] shadow-2xl">
-          {/* Top Controls */}
+        {/* Left 8 Cols: Interactive Visual Graph Canvas */}
+        <div className="lg:col-span-8 bg-[#0b1528] border border-[#1c2b48] rounded p-4 relative min-h-[500px] flex flex-col justify-between overflow-hidden">
+          {/* Canvas Badge */}
           <div className="flex items-center justify-between z-10">
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-rose-500" /> Critical Risk</span>
-              <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-indigo-500" /> Infrastructure</span>
-              <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-amber-500" /> Accounts</span>
-            </div>
             <div className="flex items-center gap-2">
-              <Button size="icon" variant="outline" className="size-7 bg-slate-800 border-slate-700 text-slate-200">
-                <ZoomIn className="size-3.5" />
-              </Button>
-              <Button size="icon" variant="outline" className="size-7 bg-slate-800 border-slate-700 text-slate-200">
-                <ZoomOut className="size-3.5" />
-              </Button>
+              <span className="text-xs font-mono font-bold text-[#f4f5f7]">
+                Active Cluster: #SYNTHETIC-MULE-CLUSTER-99
+              </span>
+              <span className="text-[10px] font-mono bg-[#f0525218] text-[#f05252] px-1.5 py-0.5 rounded border border-[#f0525233]">
+                CONFIRMED SYNDICATE
+              </span>
             </div>
+            <span className="text-[10px] font-mono text-[#6b778c]">
+              {visibleNodes.length} Nodes • {visibleLinks.length} Edges Rendered
+            </span>
           </div>
 
-          {/* SVG Graph Visualization */}
-          <svg className="w-full h-full absolute inset-0 pointer-events-auto">
-            {/* Draw Edges */}
-            {mockEdges.map((e, idx) => {
-              const src = mockNodes.find((n) => n.id === e.from);
-              const dst = mockNodes.find((n) => n.id === e.to);
-              if (!src || !dst) return null;
-              return (
-                <g key={idx}>
-                  <line
-                    x1={src.x}
-                    y1={src.y}
-                    x2={dst.x}
-                    y2={dst.y}
-                    stroke="#475569"
-                    strokeWidth="2"
-                    strokeDasharray="4 2"
-                  />
-                  <text
-                    x={(src.x + dst.x) / 2}
-                    y={(src.y + dst.y) / 2 - 6}
-                    fill="#94a3b8"
-                    fontSize="9"
-                    textAnchor="middle"
-                    className="font-mono select-none"
-                  >
-                    {e.relationship}
-                  </text>
-                </g>
-              );
-            })}
+          {/* SVG Visual Graph Rendering */}
+          <div className="relative w-full h-[440px] my-2 bg-[#070e1c] border border-[#14223d] rounded">
+            <svg className="absolute inset-0 w-full h-full">
+              {/* Edges */}
+              {visibleLinks.map((link, idx) => {
+                const sourceNode = visibleNodes.find((n) => n.id === link.source);
+                const targetNode = visibleNodes.find((n) => n.id === link.target);
+                if (!sourceNode || !targetNode) return null;
 
-            {/* Draw Nodes */}
-            {mockNodes.map((node) => {
-              const isSelected = selectedNode?.id === node.id;
-              const fillColor =
-                node.type === "DEVICE"
-                  ? "#6366f1"
-                  : node.type === "CAMPAIGN"
-                  ? "#f43f5e"
-                  : node.type === "ACCOUNT"
-                  ? "#f59e0b"
-                  : "#10b981";
+                return (
+                  <g key={idx}>
+                    <line
+                      x1={sourceNode.x}
+                      y1={sourceNode.y}
+                      x2={targetNode.x}
+                      y2={targetNode.y}
+                      stroke={link.hop === 1 ? "#38bdf8" : "#f05252"}
+                      strokeWidth={link.hop === 1 ? "1.5" : "1"}
+                      strokeDasharray={link.hop > 1 ? "4 4" : "none"}
+                      opacity="0.6"
+                    />
+                  </g>
+                );
+              })}
+            </svg>
+
+            {/* Nodes */}
+            {visibleNodes.map((node) => {
+              const isSelected = selectedEntity.id === node.id;
+              const isRoot = node.id === "usr_sarah_connor";
 
               return (
-                <g
+                <button
                   key={node.id}
-                  onClick={() => setSelectedNode(node)}
-                  className="cursor-pointer"
+                  onClick={() => setSelectedEntity(node)}
+                  style={{ left: `${node.x}px`, top: `${node.y}px` }}
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 p-2.5 rounded border text-left cursor-pointer transition-all shadow-md ${
+                    isSelected
+                      ? "bg-[#0f1c34] border-[#0d94fb] ring-2 ring-[#0d94fb55] z-20 scale-105"
+                      : isRoot
+                      ? "bg-[#0b1528] border-[#38bdf8] hover:border-[#0d94fb] z-10"
+                      : "bg-[#0b1528] border-[#1c2b48] hover:border-[#2c3e66]"
+                  }`}
                 >
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={isSelected ? 22 : 18}
-                    fill={fillColor}
-                    fillOpacity={0.2}
-                    stroke={fillColor}
-                    strokeWidth={isSelected ? 3 : 2}
-                    className="transition-all"
-                  />
-                  <circle cx={node.x} cy={node.y} r={6} fill={fillColor} />
-                  <text
-                    x={node.x}
-                    y={node.y + 30}
-                    fill="#f1f5f9"
-                    fontSize="11"
-                    fontWeight="bold"
-                    textAnchor="middle"
-                    className="font-mono select-none"
-                  >
-                    {node.label}
-                  </text>
-                </g>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    {getTypeIcon(node.type)}
+                    <span className="text-xs font-mono font-bold text-[#f4f5f7] whitespace-nowrap">
+                      {node.label}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 text-[10px] font-mono text-[#97a0af]">
+                    <span>{node.sublabel}</span>
+                    <span className={node.riskStatus === "HIGH_RISK" ? "text-[#f05252] font-bold" : "text-[#04db7c]"}>
+                      {node.connectionsCount} links
+                    </span>
+                  </div>
+                </button>
               );
             })}
-          </svg>
+          </div>
 
-          {/* Bottom Banner */}
-          <div className="z-10 bg-slate-950/80 border border-slate-800 p-3 rounded-xl flex items-center justify-between text-xs">
-            <span className="text-slate-400">Transnational Syndicate Cluster: <span className="text-indigo-300 font-bold">Phantom-Carding-09</span></span>
-            <span className="font-mono text-emerald-400">Graph Ingestion SLA: 2.75M ops/sec</span>
+          {/* Canvas Bottom Legend */}
+          <div className="flex items-center justify-between text-[11px] font-mono text-[#6b778c] pt-2 border-t border-[#1c2b48]">
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-0.5 bg-[#38bdf8] inline-block" /> 1-Hop Direct
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-0.5 bg-[#f05252] inline-block border-t border-dashed" /> 2/3-Hop Shared Canvas / CIDR
+              </span>
+            </div>
+            <span>Click any node to inspect entity signals</span>
           </div>
         </div>
 
-        {/* Node Detail Inspector */}
-        <div className="lg:col-span-4">
-          <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl h-full flex flex-col justify-between">
-            <CardHeader className="border-b border-slate-800 p-5">
-              <CardTitle className="text-base font-semibold flex items-center gap-2">
-                <ShieldAlert className="size-5 text-indigo-400" />
-                <span>Entity Inspector</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-5 space-y-5 flex-1">
-              {selectedNode ? (
-                <>
-                  <div>
-                    <div className="text-xs text-slate-400 font-mono">Entity Identifier</div>
-                    <div className="text-sm font-bold font-mono text-white mt-0.5">{selectedNode.label}</div>
-                  </div>
+        {/* Right 4 Cols: Compact Entity Inspector */}
+        <div className="lg:col-span-4 bg-[#0b1528] border border-[#1c2b48] rounded p-5 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1c2b48]">
+              <span className="text-xs font-mono font-bold tracking-wider text-[#38bdf8] uppercase">
+                Entity Inspector
+              </span>
+              <span className="text-[10px] font-mono bg-[#14223d] text-[#97a0af] px-1.5 py-0.5 rounded uppercase">
+                {selectedEntity.type}
+              </span>
+            </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800">
-                      <div className="text-[11px] text-slate-400">Node Type</div>
-                      <div className="text-xs font-bold text-indigo-300 mt-1">{selectedNode.type}</div>
-                    </div>
-                    <div className="p-3 rounded-lg bg-slate-950/60 border border-slate-800">
-                      <div className="text-[11px] text-slate-400">Cluster Risk</div>
-                      <div className="text-xs font-bold text-rose-400 mt-1">{selectedNode.riskScore}%</div>
-                    </div>
-                  </div>
+            {/* Entity Header */}
+            <div className="mb-4">
+              <h3 className="text-base font-bold text-[#f4f5f7] font-mono leading-snug">
+                {selectedEntity.label}
+              </h3>
+              <p className="text-xs text-[#97a0af] font-mono mt-0.5">{selectedEntity.id}</p>
+            </div>
 
-                  <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 text-xs text-slate-300 space-y-2">
-                    <div className="font-semibold text-slate-200">Syndicate Linkage Summary:</div>
-                    <p>
-                      This entity serves as a central hub connecting 3 synthetic user identities, routing funds across 1 mule account to merchant cashout rails.
-                    </p>
-                  </div>
+            {/* Core Metrics */}
+            <div className="space-y-2.5 p-3 bg-[#070e1c] border border-[#1c2b48] rounded mb-4 font-mono text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-[#6b778c]">RISK STATUS:</span>
+                <span
+                  className={`font-bold px-1.5 py-0.2 rounded text-[10px] ${
+                    selectedEntity.riskStatus === "HIGH_RISK"
+                      ? "bg-[#f0525215] text-[#f05252] border border-[#f0525233]"
+                      : "bg-[#04db7c15] text-[#04db7c] border border-[#04db7c33]"
+                  }`}
+                >
+                  {selectedEntity.riskStatus}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#6b778c]">DEGREE CENTRALITY:</span>
+                <span className="text-[#f4f5f7] font-semibold">{selectedEntity.connectionsCount} Linked Edges</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#6b778c]">HOP DISTANCE:</span>
+                <span className="text-[#f4f5f7]">{selectedEntity.hopLevel} Hops from Root</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#6b778c]">FIRST OBSERVED:</span>
+                <span className="text-[#97a0af]">{selectedEntity.firstSeen}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#6b778c]">LAST ACTIVE:</span>
+                <span className="text-[#97a0af]">{selectedEntity.lastSeen}</span>
+              </div>
+            </div>
 
-                  <Button className="w-full bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold">
-                    Freeze Entire Cluster (7 Entities)
-                  </Button>
-                </>
-              ) : (
-                <div className="text-center py-12 text-slate-500 text-xs">
-                  Click on any node in the graph to inspect entity attributes and lineage.
-                </div>
-              )}
-            </CardContent>
-          </Card>
+            {/* Signals on this Entity */}
+            <div>
+              <span className="text-[11px] font-mono font-bold text-[#6b778c] uppercase block mb-2">
+                Correlated Graph Signals
+              </span>
+              <ul className="space-y-2">
+                {selectedEntity.signals.map((sig, i) => (
+                  <li
+                    key={i}
+                    className="p-2 bg-[#0f1c34] border border-[#1c2b48] rounded text-xs text-[#f4f5f7] leading-relaxed flex items-start gap-2"
+                  >
+                    <ShieldAlert className="w-3.5 h-3.5 text-[#f05252] shrink-0 mt-0.5" />
+                    <span>{sig}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="pt-4 mt-4 border-t border-[#1c2b48] text-[11px] text-[#6b778c] font-mono">
+            Graph traversal latency: <span className="text-[#04db7c]">1.10 ms</span>
+          </div>
         </div>
       </div>
     </div>

@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --bg-primary: #070e1c;
+  --bg-surface: #0b1528;
+  --bg-card: #0f1c34;
+  --bg-subtle: #14223d;
+  
+  --fg-primary: #f4f5f7;
+  --fg-secondary: #97a0af;
+  --fg-muted: #6b778c;
+  
+  --border-subtle: #1c2b48;
+  --border-strong: #2c3e66;
+  
+  --brand: #0d94fb;
+  --brand-muted: #0d94fb22;
+  
+  --success: #04db7c;
+  --success-muted: #04db7c18;
+  --success-border: #04db7c44;
+  
+  --warning: #f59e0b;
+  --warning-muted: #f59e0b18;
+  --warning-border: #f59e0b44;
+  
+  --danger: #f05252;
+  --danger-muted: #f0525218;
+  --danger-border: #f0525244;
+  
+  --info: #38bdf8;
+  --info-muted: #38bdf818;
+  
+  --font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--fg-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Monospace Utilities */
+.font-mono {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+
+/* Custom Scrollbar for Dense Feeds */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* Clean Transitions */
+* {
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }

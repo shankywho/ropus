@@ -1,377 +1,332 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { EvidenceList } from "@/components/ropus/EvidenceList";
+import { CaseTimeline, TimelineEntry } from "@/components/ropus/CaseTimeline";
+import { CANONICAL_BLOCKED_DECISION } from "@/lib/fixtures";
 import {
-  FolderKanban,
-  AlertTriangle,
+  FileText,
   Clock,
-  CheckCircle2,
-  XCircle,
-  Eye,
-  RefreshCw,
-  Search,
-  Filter,
-  UserCheck,
-  ShieldAlert,
-  ArrowUpRight,
 } from "lucide-react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
-} from "@/components/ui/table";
-import { api, CaseItem, CaseStatus } from "@/lib/api";
 
-export default function CasesQueuePage() {
-  const router = useRouter();
-  const [cases, setCases] = useState<CaseItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [claimingId, setClaimingId] = useState<string | null>(null);
+interface CaseItem {
+  id: string;
+  transactionId: string;
+  customerId: string;
+  amount: number;
+  currency: string;
+  riskScore: number;
+  priority: "P0_CRITICAL" | "P1_HIGH" | "P2_MEDIUM";
+  status: "OPEN" | "IN_REVIEW" | "CONFIRMED_FRAUD" | "OVERRIDDEN";
+  createdAt: string;
+  assignedTo: string;
+}
 
-  // Fallback demo mock cases if backend has no active cases yet
-  const mockFallbackCases: CaseItem[] = [
-    {
-      case_id: "case_8f7b2c1a-4d3e-4b2a",
-      tenant_id: "00000000-0000-0000-0000-000000000001",
-      decision_id: "dec_99a8b7c6",
-      transaction_id: "txn_demo_9821734",
-      status: "OPEN",
-      priority: "HIGH",
-      sla_expires_at: new Date(Date.now() + 18 * 3600 * 1000).toISOString(),
-      created_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-    },
-    {
-      case_id: "case_3a1e9d2f-5c4b-4a1d",
-      tenant_id: "00000000-0000-0000-0000-000000000001",
-      decision_id: "dec_11f2e3d4",
-      transaction_id: "txn_velocity_spike_55",
-      status: "UNDER_REVIEW",
-      priority: "CRITICAL",
-      assigned_to: "analyst_sarah",
-      sla_expires_at: new Date(Date.now() + 8 * 3600 * 1000).toISOString(),
-      created_at: new Date(Date.now() - 6 * 3600 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
-    },
-    {
-      case_id: "case_7e4d1b8c-9a2f-4e3b",
-      tenant_id: "00000000-0000-0000-0000-000000000001",
-      decision_id: "dec_77b6c5d4",
-      transaction_id: "txn_safe_cleared_001",
-      status: "RESOLVED_ALLOW",
-      priority: "MEDIUM",
-      assigned_to: "analyst_sarah",
-      resolution_reason: "Verified user identity via two-factor call confirm.",
-      resolved_at: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
-      sla_expires_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-      created_at: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
-    },
-  ];
+const INITIAL_CASES: CaseItem[] = [
+  {
+    id: "CASE-88419",
+    transactionId: "tx_order_88419",
+    customerId: "usr_sarah_connor",
+    amount: 14500.0,
+    currency: "USD",
+    riskScore: 0.96,
+    priority: "P0_CRITICAL",
+    status: "OPEN",
+    createdAt: "2026-08-22 17:42:02",
+    assignedTo: "Lead Analyst (You)",
+  },
+  {
+    id: "CASE-88415",
+    transactionId: "tx_order_88415",
+    customerId: "usr_alex_murphy",
+    amount: 8200.0,
+    currency: "USD",
+    riskScore: 0.88,
+    priority: "P1_HIGH",
+    status: "IN_REVIEW",
+    createdAt: "2026-08-22 16:30:10",
+    assignedTo: "Compliance Team",
+  },
+  {
+    id: "CASE-88390",
+    transactionId: "tx_order_88390",
+    customerId: "usr_ellen_ripley",
+    amount: 320.0,
+    currency: "USD",
+    riskScore: 0.52,
+    priority: "P2_MEDIUM",
+    status: "CONFIRMED_FRAUD",
+    createdAt: "2026-08-22 11:15:40",
+    assignedTo: "Auto-Rules Action",
+  },
+];
 
-  const fetchCases = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await api.getCases();
-      if (data && data.cases && data.cases.length > 0) {
-        setCases(data.cases);
-      } else {
-        // Use initial demo cases if empty
-        setCases(mockFallbackCases);
-      }
-    } catch (err: any) {
-      console.warn("Could not fetch cases from backend, using fallback queue:", err.message);
-      setCases(mockFallbackCases);
-    } finally {
-      setLoading(false);
+const INITIAL_TIMELINE: TimelineEntry[] = [
+  {
+    id: "tl_001",
+    timestamp: "2026-08-22 17:42:01.420",
+    actor: "UnifiedRiskPipeline",
+    action: "EVALUATION_COMPLETED",
+    details: "Risk Score 0.96 (BLOCK) evaluated in 1.42ms. Rule RULE-VELOCITY-04 matched.",
+    sha256Hash: "4f8a1e9c7a2b5d8e3f1c6d39a04b12ef7a2b5d8e3f1c6d39a04b12ef8a19bc7f",
+  },
+  {
+    id: "tl_002",
+    timestamp: "2026-08-22 17:42:02.100",
+    actor: "AIAgentCouncil",
+    action: "DOSSIER_SYNTHESIZED",
+    details: "Threat Hunter, Graph Analyst, and AML Officer synthesized tripartite evidentiary dossier.",
+    sha256Hash: "8e3f1c6d39a04b12ef7a2b5d8e3f1c6d39a04b12ef8a19bc7f4f8a1e9c7a2b5d",
+  },
+  {
+    id: "tl_003",
+    timestamp: "2026-08-22 17:42:02.500",
+    actor: "CaseManager",
+    action: "CASE_OPENED_P0",
+    details: "Case #CASE-88419 opened with P0 Critical priority; assigned to Lead Analyst.",
+    sha256Hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  },
+];
+
+export default function CasesPage() {
+  const [casesList, setCasesList] = useState<CaseItem[]>(INITIAL_CASES);
+  const [selectedCaseId, setSelectedCaseId] = useState<string>("CASE-88419");
+  const [timeline, setTimeline] = useState<TimelineEntry[]>(INITIAL_TIMELINE);
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
+
+  const activeCase = casesList.find((c) => c.id === selectedCaseId) || casesList[0];
+
+  const handleAnalystVerdict = (verdict: "CONFIRM_FRAUD" | "ESCALATE_AML" | "OVERRIDE") => {
+    const updatedStatus =
+      verdict === "CONFIRM_FRAUD"
+        ? "CONFIRMED_FRAUD"
+        : verdict === "OVERRIDE"
+        ? "OVERRIDDEN"
+        : "IN_REVIEW";
+
+    setCasesList((prev) =>
+      prev.map((c) => (c.id === activeCase.id ? { ...c, status: updatedStatus } : c))
+    );
+
+    const newLog: TimelineEntry = {
+      id: `tl_${Date.now()}`,
+      timestamp: new Date().toISOString().replace("T", " ").slice(0, 19),
+      actor: "Lead Analyst (You)",
+      action: verdict === "CONFIRM_FRAUD" ? "ANALYST_CONFIRMED_FRAUD" : verdict === "ESCALATE_AML" ? "ESCALATED_TO_AML_SAR" : "OVERRIDDEN_FALSE_POSITIVE",
+      details:
+        verdict === "CONFIRM_FRAUD"
+          ? "Confirmed unauthorized ATO transaction. Wire transfer halted, session revoked, SAR drafted."
+          : verdict === "ESCALATE_AML"
+          ? "Escalated to AML Compliance Unit with complete evidentiary dossier attached."
+          : "Overridden by human analyst as authorized high-value business wire.",
+      sha256Hash: "a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef0",
+    };
+
+    setTimeline((prev) => [newLog, ...prev]);
+    setActionNotice(`Case ${activeCase.id} updated: ${verdict} recorded.`);
+    setTimeout(() => setActionNotice(null), 4000);
+  };
+
+  const getPriorityBadge = (p: CaseItem["priority"]) => {
+    switch (p) {
+      case "P0_CRITICAL":
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f0525215] text-[#f05252] border border-[#f0525233] rounded">P0 CRITICAL</span>;
+      case "P1_HIGH":
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f9731615] text-[#f97316] border border-[#f9731633] rounded">P1 HIGH</span>;
+      case "P2_MEDIUM":
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f59e0b15] text-[#f59e0b] border border-[#f59e0b33] rounded">P2 MED</span>;
     }
   };
 
-  useEffect(() => {
-    fetchCases();
-  }, []);
-
-  const handleClaimCase = async (caseId: string) => {
-    setClaimingId(caseId);
-    try {
-      await api.claimCase(caseId, "analyst_sarah");
-      // Redirect to case detail page
-      router.push(`/cases/${caseId}`);
-    } catch (err: any) {
-      console.warn("Claim API failed, proceeding to case detail view:", err.message);
-      router.push(`/cases/${caseId}`);
-    } finally {
-      setClaimingId(null);
-    }
-  };
-
-  // Filter cases based on status and search query
-  const filteredCases = cases.filter((c) => {
-    const matchesSearch =
-      c.case_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.transaction_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (c.assigned_to && c.assigned_to.toLowerCase().includes(searchQuery.toLowerCase()));
-
-    if (!matchesSearch) return false;
-
-    if (statusFilter === "ALL") return true;
-    if (statusFilter === "RESOLVED") {
-      return c.status === "RESOLVED_ALLOW" || c.status === "RESOLVED_DECLINE" || c.status === "CLOSED";
-    }
-    return c.status === statusFilter;
-  });
-
-  const renderStatusBadge = (status: CaseStatus) => {
-    switch (status) {
+  const getStatusBadge = (s: CaseItem["status"]) => {
+    switch (s) {
       case "OPEN":
-        return (
-          <Badge variant="warning" className="gap-1 bg-amber-500/15 text-amber-400 border-amber-500/30">
-            <AlertTriangle className="size-3" />
-            OPEN
-          </Badge>
-        );
-      case "UNDER_REVIEW":
-        return (
-          <Badge variant="info" className="gap-1 bg-blue-500/15 text-blue-400 border-blue-500/30">
-            <UserCheck className="size-3" />
-            UNDER_REVIEW
-          </Badge>
-        );
-      case "RESOLVED_ALLOW":
-        return (
-          <Badge variant="success" className="gap-1 bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
-            <CheckCircle2 className="size-3" />
-            ALLOW
-          </Badge>
-        );
-      case "RESOLVED_DECLINE":
-        return (
-          <Badge variant="danger" className="gap-1 bg-rose-500/15 text-rose-400 border-rose-500/30">
-            <XCircle className="size-3" />
-            DECLINE
-          </Badge>
-        );
-      default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f0525215] text-[#f05252] border border-[#f0525233] rounded">OPEN</span>;
+      case "IN_REVIEW":
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#f59e0b15] text-[#f59e0b] border border-[#f59e0b33] rounded">IN REVIEW</span>;
+      case "CONFIRMED_FRAUD":
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#04db7c15] text-[#04db7c] border border-[#04db7c33] rounded">CONFIRMED FRAUD</span>;
+      case "OVERRIDDEN":
+        return <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-[#6b778c15] text-[#6b778c] border border-[#6b778c33] rounded">OVERRIDDEN</span>;
     }
-  };
-
-  const formatTimeRemaining = (slaExpiry: string) => {
-    const expiry = new Date(slaExpiry).getTime();
-    const now = Date.now();
-    const diffHours = Math.round((expiry - now) / (1000 * 60 * 60));
-
-    if (diffHours <= 0) {
-      return <span className="text-rose-400 font-mono font-medium">SLA Breached</span>;
-    }
-    if (diffHours < 4) {
-      return <span className="text-amber-400 font-mono font-medium">{diffHours}h remaining</span>;
-    }
-    return <span className="text-slate-300 font-mono">{diffHours}h remaining</span>;
   };
 
   return (
-    <div className="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+    <div className="max-w-6xl mx-auto space-y-6">
+      {/* Top Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2b48]">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-              <FolderKanban className="size-6 text-amber-400" />
-              Manual Review Queue
-            </h1>
-            <Badge variant="warning">24h SLA Active</Badge>
-          </div>
-          <p className="text-sm text-slate-400">
-            Flagged transactions asynchronously dispatched by Kafka for human investigation and decision overrides.
+          <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Case Review & AI Investigation</h1>
+          <p className="text-xs text-[#97a0af] font-mono mt-0.5">
+            Human-in-the-loop governance, multi-agent dossiers & immutable SHA-256 audit ledger
           </p>
         </div>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={fetchCases}
-          disabled={loading}
-          className="gap-2 bg-slate-900 border-slate-700 hover:bg-slate-800 text-slate-200"
-        >
-          <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
-          Refresh Queue
-        </Button>
-      </div>
-
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-        {/* Status Filter Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-900/80 border border-slate-800 rounded-lg">
-          {["ALL", "OPEN", "UNDER_REVIEW", "RESOLVED"].map((status) => (
-            <button
-              key={status}
-              type="button"
-              onClick={() => setStatusFilter(status)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                statusFilter === status
-                  ? "bg-indigo-600 text-white shadow-sm"
-                  : "text-slate-400 hover:text-white hover:bg-slate-800/60"
-              }`}
-            >
-              {status.replace("_", " ")}
-            </button>
-          ))}
-        </div>
-
-        {/* Search Input */}
-        <div className="relative w-full sm:w-72">
-          <Search className="size-4 absolute left-3 top-2.5 text-slate-500" />
-          <Input
-            type="text"
-            placeholder="Search by Case or Txn ID..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 bg-slate-900/60 border-slate-800 text-xs text-white placeholder:text-slate-500 font-mono"
-          />
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono text-[#6b778c]">QUEUE METRIC:</span>
+          <span className="px-2.5 py-1 text-xs font-mono bg-[#0b1528] border border-[#1c2b48] text-[#f4f5f7] rounded font-bold">
+            1 P0 Active • 0 Breached SLAs
+          </span>
         </div>
       </div>
 
-      {/* Cases Table */}
-      <Card className="bg-slate-900/70 border-slate-800 shadow-xl overflow-hidden backdrop-blur">
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-slate-950/70 border-b border-slate-800">
-              <TableRow className="border-slate-800 hover:bg-transparent">
-                <TableHead className="text-slate-400 font-semibold text-xs py-3.5 pl-6">Case ID</TableHead>
-                <TableHead className="text-slate-400 font-semibold text-xs py-3.5">Transaction ID</TableHead>
-                <TableHead className="text-slate-400 font-semibold text-xs py-3.5">Status</TableHead>
-                <TableHead className="text-slate-400 font-semibold text-xs py-3.5">Priority</TableHead>
-                <TableHead className="text-slate-400 font-semibold text-xs py-3.5">SLA Expiration</TableHead>
-                <TableHead className="text-slate-400 font-semibold text-xs py-3.5">Assigned To</TableHead>
-                <TableHead className="text-slate-400 font-semibold text-xs py-3.5 text-right pr-6">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow className="border-slate-800">
-                  <TableCell colSpan={7} className="text-center py-12 text-slate-400">
-                    <RefreshCw className="size-5 animate-spin mx-auto mb-2 text-indigo-400" />
-                    Loading investigation queue...
-                  </TableCell>
-                </TableRow>
-              ) : filteredCases.length > 0 ? (
-                filteredCases.map((c) => (
-                  <TableRow
-                    key={c.case_id}
-                    className="border-slate-800/80 hover:bg-slate-800/40 transition-colors"
+      {actionNotice && (
+        <div className="p-3 bg-[#04db7c15] border border-[#04db7c44] text-[#04db7c] font-mono text-xs rounded flex items-center justify-between">
+          <span>✓ {actionNotice}</span>
+        </div>
+      )}
+
+      {/* Main Grid: Left Review Queue List / Right Detailed Active Case */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left 4 Cols: Review Queue Table */}
+        <div className="lg:col-span-4 bg-[#0b1528] border border-[#1c2b48] rounded p-4 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2b48]">
+              <span className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider">
+                Review Cases ({casesList.length})
+              </span>
+              <span className="text-[10px] font-mono text-[#6b778c]">Tier 1 Queue</span>
+            </div>
+
+            <div className="space-y-2">
+              {casesList.map((c) => {
+                const isSelected = selectedCaseId === c.id;
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => setSelectedCaseId(c.id)}
+                    className={`w-full p-3 rounded border text-left transition-all ${
+                      isSelected
+                        ? "bg-[#0f1c34] border-[#0d94fb] ring-1 ring-[#0d94fb]"
+                        : "bg-[#070e1c] border-[#1c2b48] hover:border-[#2c3e66]"
+                    }`}
                   >
-                    {/* Case ID */}
-                    <TableCell className="font-mono text-xs text-indigo-400 font-medium pl-6">
-                      <Link
-                        href={`/cases/${c.case_id}`}
-                        className="hover:underline flex items-center gap-1"
-                      >
-                        {c.case_id.slice(0, 18)}...
-                      </Link>
-                    </TableCell>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <span className="text-xs font-mono font-bold text-[#f4f5f7]">{c.id}</span>
+                      {getPriorityBadge(c.priority)}
+                    </div>
 
-                    {/* Transaction ID */}
-                    <TableCell className="font-mono text-xs text-slate-200">
-                      {c.transaction_id}
-                    </TableCell>
+                    <div className="flex items-center justify-between text-xs font-mono text-[#97a0af] mb-1">
+                      <span>{c.customerId}</span>
+                      <span className="text-[#f4f5f7] font-bold">
+                        ${c.amount.toLocaleString()} {c.currency}
+                      </span>
+                    </div>
 
-                    {/* Status Badge */}
-                    <TableCell>{renderStatusBadge(c.status)}</TableCell>
+                    <div className="flex items-center justify-between text-[10px] font-mono text-[#6b778c]">
+                      <span>Score: {c.riskScore.toFixed(2)}</span>
+                      {getStatusBadge(c.status)}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-                    {/* Priority */}
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={`text-[10px] uppercase font-mono ${
-                          c.priority === "CRITICAL"
-                            ? "border-rose-500/50 text-rose-400 bg-rose-500/10"
-                            : c.priority === "HIGH"
-                            ? "border-amber-500/50 text-amber-400 bg-amber-500/10"
-                            : "border-slate-700 text-slate-400"
-                        }`}
-                      >
-                        {c.priority || "NORMAL"}
-                      </Badge>
-                    </TableCell>
+          <div className="pt-3 mt-3 border-t border-[#1c2b48] text-[10px] font-mono text-[#6b778c] text-center">
+            Persisted in PostgreSQL • Redis Cache Active
+          </div>
+        </div>
 
-                    {/* SLA Expiration */}
-                    <TableCell className="text-xs">
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="size-3.5 text-slate-500 shrink-0" />
-                        {formatTimeRemaining(c.sla_expires_at)}
-                      </div>
-                    </TableCell>
+        {/* Right 8 Cols: Active Case Investigation & Governance Actions */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Active Case Header Box */}
+          <div className="bg-[#0b1528] border border-[#1c2b48] rounded p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-[#1c2b48]">
+              <div className="flex items-center gap-3">
+                <span className="text-base font-bold font-mono text-[#f4f5f7]">{activeCase.id}</span>
+                {getPriorityBadge(activeCase.priority)}
+                {getStatusBadge(activeCase.status)}
+              </div>
 
-                    {/* Assigned Analyst */}
-                    <TableCell className="text-xs font-mono text-slate-400">
-                      {c.assigned_to ? (
-                        <span className="text-slate-200">{c.assigned_to}</span>
-                      ) : (
-                        <span className="text-slate-600 italic">Unassigned</span>
-                      )}
-                    </TableCell>
+              <div className="text-xs font-mono text-[#97a0af]">
+                Assigned: <span className="text-[#f4f5f7] font-semibold">{activeCase.assignedTo}</span>
+              </div>
+            </div>
 
-                    {/* Action */}
-                    <TableCell className="text-right pr-6">
-                      {c.status === "OPEN" ? (
-                        <Button
-                          size="sm"
-                          onClick={() => handleClaimCase(c.case_id)}
-                          disabled={claimingId === c.case_id}
-                          className="h-7 px-3 text-xs bg-indigo-600 hover:bg-indigo-500 text-white"
-                        >
-                          {claimingId === c.case_id ? (
-                            <RefreshCw className="size-3 animate-spin" />
-                          ) : (
-                            "Claim Case"
-                          )}
-                        </Button>
-                      ) : (
-                        <Link href={`/cases/${c.case_id}`}>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-7 px-3 text-xs bg-slate-900 border-slate-700 hover:bg-slate-800 text-slate-300 gap-1"
-                          >
-                            <Eye className="size-3" />
-                            Investigate
-                          </Button>
-                        </Link>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow className="border-slate-800">
-                  <TableCell colSpan={7} className="text-center py-12 text-slate-500">
-                    No cases match the current filter criteria.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono text-xs mb-4">
+              <div>
+                <span className="text-[10px] text-[#6b778c] block">TRANSACTION ID</span>
+                <span className="text-[#f4f5f7] font-semibold">{activeCase.transactionId}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-[#6b778c] block">AMOUNT</span>
+                <span className="text-[#f4f5f7] font-bold">
+                  ${activeCase.amount.toLocaleString()} {activeCase.currency}
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] text-[#6b778c] block">EVALUATED SCORE</span>
+                <span className="text-[#f05252] font-bold">{activeCase.riskScore.toFixed(2)} (BLOCK)</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-[#6b778c] block">OPENED AT</span>
+                <span className="text-[#97a0af]">{activeCase.createdAt}</span>
+              </div>
+            </div>
+
+            {/* Analyst Action Buttons */}
+            <div className="pt-3 border-t border-[#1c2b48] flex flex-wrap items-center justify-between gap-3">
+              <span className="text-xs font-mono text-[#6b778c]">EXECUTE GOVERNANCE ACTION:</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleAnalystVerdict("CONFIRM_FRAUD")}
+                  className="px-3 py-1.5 text-xs font-mono font-bold bg-[#f05252] hover:bg-[#f05252ee] text-white rounded active:scale-95"
+                >
+                  Confirm Fraud Block
+                </button>
+                <button
+                  onClick={() => handleAnalystVerdict("ESCALATE_AML")}
+                  className="px-3 py-1.5 text-xs font-mono font-semibold bg-[#f59e0b18] hover:bg-[#f59e0b28] text-[#f59e0b] border border-[#f59e0b44] rounded active:scale-95"
+                >
+                  Escalate SAR
+                </button>
+                <button
+                  onClick={() => handleAnalystVerdict("OVERRIDE")}
+                  className="px-3 py-1.5 text-xs font-mono bg-[#14223d] hover:bg-[#1c2b48] text-[#97a0af] hover:text-[#f4f5f7] border border-[#1c2b48] rounded active:scale-95"
+                >
+                  Mark False Positive
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* AI Investigator Dossier (Observed / Inferred / Recommended) */}
+          <div className="bg-[#0b1528] border border-[#1c2b48] rounded p-5">
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2b48]">
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-[#38bdf8]" />
+                <h2 className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider">
+                  AI Investigator Council Dossier
+                </h2>
+              </div>
+              <span className="text-[10px] font-mono text-[#6b778c]">Multi-Persona Consensus (Subsystem 07)</span>
+            </div>
+
+            <EvidenceList
+              observed={CANONICAL_BLOCKED_DECISION.evidence.observed}
+              inferred={CANONICAL_BLOCKED_DECISION.evidence.inferred}
+              recommended={CANONICAL_BLOCKED_DECISION.evidence.recommended}
+              onActionConfirm={() => handleAnalystVerdict("CONFIRM_FRAUD")}
+            />
+          </div>
+
+          {/* Immutable Audit Timeline */}
+          <div className="bg-[#0b1528] border border-[#1c2b48] rounded p-5">
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1c2b48]">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-[#04db7c]" />
+                <h2 className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider">
+                  Immutable Cryptographic Audit Trail
+                </h2>
+              </div>
+              <span className="text-[10px] font-mono text-[#6b778c]">SHA-256 Hash Chain (Subsystem 08)</span>
+            </div>
+
+            <CaseTimeline entries={timeline} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
