@@ -1,26 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Mono, RiskScore, VerdictBadge } from "@/components/ropus/core";
-import { DataGrid, MetricStrip, Page, PageHead, SectionHead } from "@/components/ropus/page";
-import { decisionsQuery, overviewQuery } from "@/lib/ropus/api";
-import { casesQuery } from "@/lib/ropus/api";
-import type { ServiceState, Verdict } from "@/lib/ropus/contracts";
-import { cn } from "@/lib/utils";
+import { DataGrid, Page, PageHead, SectionHead } from "@/components/ropus/page";
+import { decisionsQuery, overviewQuery, casesQuery } from "@/lib/ropus/api";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Risk Intelligence Overview — ROPUS" },
+      { title: "Risk Control Plane Overview — ROPUS" },
       {
         name: "description",
-        content:
-          "Live view of transaction decisions, verdict distribution, decision latency, open cases and platform health.",
+        content: "Monitor risk decisions, identify threats, and manage investigations.",
       },
-      { property: "og:title", content: "Risk Intelligence Overview — ROPUS" },
+      { property: "og:title", content: "Risk Control Plane Overview — ROPUS" },
       {
         property: "og:description",
-        content:
-          "Transaction decisions, verdict distribution, open investigations and platform health.",
+        content: "Monitor risk decisions, identify threats, and manage investigations.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -35,20 +30,6 @@ export const Route = createFileRoute("/")({
   component: Overview,
 });
 
-const verdictBar: Record<Verdict, string> = {
-  APPROVE: "bg-approve",
-  REVIEW: "bg-review",
-  CHALLENGE: "bg-challenge",
-  BLOCK: "bg-block",
-};
-
-const stateTone: Record<ServiceState, string> = {
-  HEALTHY: "text-muted-foreground",
-  DEGRADED: "text-warning",
-  UNAVAILABLE: "text-block",
-};
-
-const pct = (n: number) => `${(n * 100).toFixed(2)}%`;
 const time = (iso: string) => iso.slice(11, 19) + "Z";
 
 function Overview() {
@@ -56,211 +37,97 @@ function Overview() {
   const { data: decisions } = useSuspenseQuery(decisionsQuery());
   const { data: cases } = useSuspenseQuery(casesQuery());
 
-  const total = metrics.distribution.reduce((s, d) => s + d.count, 0);
-  const degraded = metrics.services.filter((s) => s.state !== "HEALTHY");
   const queue = cases.filter((c) => c.status !== "CLOSED");
+  const highRiskDec = decisions.find((d) => d.riskScore >= 0.8) ?? decisions[0];
 
   return (
     <Page>
       <PageHead
         title="Overview"
-        subtitle="Decisioning throughput, verdict mix, open investigations and the health of the synchronous decision path."
+        subtitle="Monitor risk decisions, identify threats, and manage investigations."
       />
 
-      <MetricStrip
-        items={[
-          {
-            label: "Evaluations",
-            value: metrics.evaluations.toLocaleString(),
-            sub: metrics.windowLabel,
-          },
-          { label: "Block rate", value: pct(metrics.blockRate), sub: "of evaluations" },
-          { label: "Review rate", value: pct(metrics.reviewRate), sub: "of evaluations" },
-          {
-            label: "p99 latency",
-            value: `${metrics.p99LatencyMs.toFixed(1)} ms`,
-            sub: "decision API",
-          },
-          { label: "Open cases", value: String(metrics.openCases), sub: "investigation queue" },
-        ]}
-      />
-
-      {/* Latest High-Risk Incident Callout */}
-      <section
-        aria-label="Latest high-risk incident"
-        className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded border border-block/40 bg-block/5 px-4 py-3"
-      >
-        <div className="flex items-center gap-3">
-          <span className="flex size-2 rounded-full bg-block" />
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[11px] font-bold text-block">
-                LATEST HIGH-RISK INCIDENT
-              </span>
-              <span className="font-mono text-[11px] text-muted-foreground">
-                · 14,500.00 USD Outbound Wire
-              </span>
-            </div>
-            <p className="mt-0.5 text-[12.5px] text-foreground">
-              <Mono className="font-bold">txn_order_88419</Mono> blocked due to impossible travel
-              &amp; proxy ASN (Score: <span className="font-bold text-block font-mono">0.96</span>).
-            </p>
-          </div>
+      {/* ------------------------------------------------ Top 3 Metrics */}
+      <dl className="mt-4 grid grid-cols-1 divide-y divide-border border-b border-border sm:grid-cols-3 sm:divide-y-0 sm:divide-x">
+        <div className="py-4 sm:pr-6">
+          <dt className="text-[11.5px] font-semibold tracking-wider text-muted-foreground uppercase">
+            Evaluations (24h)
+          </dt>
+          <dd className="mt-1.5 font-mono text-[28px] leading-none font-bold text-foreground tabular">
+            {metrics.evaluations.toLocaleString()}
+          </dd>
         </div>
-        <div className="flex items-center gap-3">
-          <Link
-            to="/decisions/$decisionId"
-            params={{ decisionId: "dec_01HZK4JR7T2QW8NP3V6M9X1B2C" }}
-            className="rounded border border-block/40 bg-surface px-2.5 py-1 font-mono text-[11.5px] font-bold text-block hover:bg-block hover:text-white transition-colors"
-          >
-            Inspect Decision →
-          </Link>
-          <Link
-            to="/cases/$caseId"
-            params={{ caseId: "CASE-88419" }}
-            className="rounded bg-block px-2.5 py-1 font-mono text-[11.5px] font-bold text-white hover:bg-block/90 transition-colors"
-          >
-            Review Case P0 →
-          </Link>
+        <div className="py-4 sm:px-6">
+          <dt className="text-[11.5px] font-semibold tracking-wider text-muted-foreground uppercase">
+            Block rate
+          </dt>
+          <dd className="mt-1.5 font-mono text-[28px] leading-none font-bold text-foreground tabular">
+            {(metrics.blockRate * 100).toFixed(2)}%
+          </dd>
         </div>
-      </section>
+        <div className="py-4 sm:pl-6">
+          <dt className="text-[11.5px] font-semibold tracking-wider text-muted-foreground uppercase">
+            Open cases
+          </dt>
+          <dd className="mt-1.5 font-mono text-[28px] leading-none font-bold text-foreground tabular">
+            {metrics.openCases ?? queue.length}
+          </dd>
+        </div>
+      </dl>
 
-      {degraded.length > 0 && (
+      {/* ------------------------------------------------ High-Risk Incident Banner */}
+      {highRiskDec && (
         <section
-          aria-label="System alert"
-          className="mt-4 flex flex-wrap items-baseline gap-x-8 gap-y-1.5 border-y border-border border-l-2 border-l-warning bg-surface py-2 pl-3"
+          aria-label="Latest high-risk incident"
+          className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded border border-block/40 bg-block/5 px-4 py-3.5"
         >
-          <span className="text-[10.5px] font-semibold tracking-[0.08em] text-warning uppercase">
-            System alert
-          </span>
-          <span className="text-[12.5px] font-semibold">{degraded.length} services degraded</span>
-          {degraded.map((s) => (
-            <span key={s.name} className="text-[12.5px] text-muted-foreground">
-              <span className="text-foreground/80">{s.name}</span> — {s.detail.toLowerCase()}
-            </span>
-          ))}
-          <span className="ml-auto pr-3 text-[12px] text-muted-foreground">
-            Synchronous decisioning is unaffected.
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="flex size-2.5 shrink-0 rounded-full bg-block" />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[11px] font-bold tracking-wider text-block uppercase">
+                  LATEST HIGH-RISK INCIDENT
+                </span>
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  · {highRiskDec.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}{" "}
+                  {highRiskDec.currency}
+                </span>
+              </div>
+              <p className="mt-0.5 text-[13px] text-foreground">
+                <Mono className="font-bold">{highRiskDec.transactionId}</Mono> blocked due to{" "}
+                {highRiskDec.primarySignal.toLowerCase()}. Score:{" "}
+                <span className="font-mono font-bold text-block">
+                  {highRiskDec.riskScore.toFixed(2)}
+                </span>
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <Link
+              to="/decisions/$decisionId"
+              params={{ decisionId: highRiskDec.decisionId }}
+              className="rounded border border-block/40 bg-surface px-3 py-1.5 font-mono text-[12px] font-bold text-block transition-colors hover:bg-block hover:text-white"
+            >
+              Inspect Decision
+            </Link>
+            <Link
+              to="/cases/$caseId"
+              params={{ caseId: highRiskDec.caseId ?? "CASE-88419" }}
+              className="rounded bg-block px-3 py-1.5 font-mono text-[12px] font-bold text-white transition-colors hover:bg-block/90"
+            >
+              Review Case
+            </Link>
+          </div>
         </section>
       )}
 
-      <div className="mt-6 grid gap-8 xl:grid-cols-[minmax(0,1fr)_300px_300px] xl:gap-10">
-        <section className="min-w-0">
-          <SectionHead
-            title="Verdict distribution"
-            meta={`${total.toLocaleString()} evaluations`}
-          />
-          <div className="mt-3 flex h-1.5 w-full overflow-hidden">
-            {metrics.distribution.map((d) => (
-              <div
-                key={d.verdict}
-                className={verdictBar[d.verdict]}
-                style={{ width: `${(d.count / total) * 100}%` }}
-                title={`${d.verdict} ${((d.count / total) * 100).toFixed(2)}%`}
-              />
-            ))}
-          </div>
-          <dl className="mt-4 grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-4">
-            {metrics.distribution.map((d) => (
-              <div key={d.verdict}>
-                <div className="flex items-center gap-1.5">
-                  <span aria-hidden className={cn("size-1.5", verdictBar[d.verdict])} />
-                  <dt className="text-[10.5px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">
-                    {d.verdict}
-                  </dt>
-                </div>
-                <dd className="mt-1.5 font-mono text-[16px] leading-none font-semibold tabular">
-                  {((d.count / total) * 100).toFixed(2)}%
-                </dd>
-                <dd className="mt-1 font-mono text-[11px] text-muted-foreground tabular">
-                  {d.count.toLocaleString()}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-
-        <section className="min-w-0">
-          <SectionHead
-            title="System status"
-            meta={degraded.length ? `${degraded.length} degraded` : "all healthy"}
-          />
-          <table className="mt-1 w-full text-[12.5px]">
-            <caption className="sr-only">Component health and p99 latency</caption>
-            <tbody>
-              {metrics.services.map((s) => (
-                <tr key={s.name} className="border-b border-border last:border-b-0">
-                  <td className="py-[7px] pr-3">{s.name}</td>
-                  <td
-                    className={cn(
-                      "py-[7px] pr-3 text-[10.5px] font-semibold tracking-[0.06em]",
-                      stateTone[s.state],
-                    )}
-                  >
-                    {s.state}
-                  </td>
-                  <td className="py-[7px] text-right">
-                    <Mono className="text-muted-foreground">
-                      {s.p99Ms ? `${s.p99Ms.toFixed(1)}ms` : "—"}
-                    </Mono>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-
-        <section className="min-w-0">
-          <SectionHead
-            title="Case queue"
-            right={
-              <Link to="/cases" className="text-[11.5px] text-primary hover:underline">
-                All cases →
-              </Link>
-            }
-          />
-          <ul className="mt-1 text-[12.5px]">
-            {queue.slice(0, 6).map((c) => (
-              <li key={c.caseId} className="border-b border-border py-[7px] last:border-b-0">
-                <div className="flex items-baseline justify-between gap-3">
-                  <Link
-                    to="/cases/$caseId"
-                    params={{ caseId: c.caseId }}
-                    className="font-mono text-[12px] text-primary hover:underline"
-                  >
-                    {c.caseId}
-                  </Link>
-                  <span
-                    className={cn(
-                      "font-mono text-[11.5px] font-semibold",
-                      c.priority === "P1" ? "text-block" : "text-muted-foreground",
-                    )}
-                  >
-                    {c.priority}
-                  </span>
-                  <Mono className="ml-auto truncate text-muted-foreground">
-                    {c.assignee ?? "unassigned"}
-                  </Mono>
-                </div>
-                <p className="mt-0.5 truncate text-muted-foreground">{c.summary}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-
+      {/* ------------------------------------------------ Recent Decisions */}
       <section className="mt-8">
         <SectionHead
           title="Recent decisions"
-          meta={`${decisions.length} of ${metrics.evaluations.toLocaleString()}`}
-          right={
-            <Link to="/decisions" className="text-[11.5px] text-primary hover:underline">
-              All decisions →
-            </Link>
-          }
+          meta={`${Math.min(decisions.length, 8)} of ${metrics.evaluations.toLocaleString()}`}
         />
-        <div className="mt-1">
+        <div className="mt-2">
           <DataGrid
             columns={[
               { key: "time", label: "Time" },
@@ -270,37 +137,23 @@ function Overview() {
               { key: "risk", label: "Risk", align: "right" },
               { key: "verdict", label: "Verdict" },
               { key: "signal", label: "Primary signal" },
-              { key: "latency", label: "Latency", align: "right" },
-              { key: "case", label: "Case" },
             ]}
-            rows={decisions.map((d) => ({
+            rows={decisions.slice(0, 8).map((d) => ({
               id: d.decisionId,
               cells: [
                 <Mono className="text-muted-foreground">{time(d.evaluatedAt)}</Mono>,
                 <Link
                   to="/decisions/$decisionId"
                   params={{ decisionId: d.decisionId }}
-                  className="font-mono text-[12px] text-primary hover:underline"
+                  className="font-mono text-[12.5px] text-primary hover:underline"
                 >
                   {d.transactionId}
                 </Link>,
                 <Mono className="text-muted-foreground">{d.customerId}</Mono>,
-                <Mono>{d.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</Mono>,
+                <Mono>{`${d.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} ${d.currency}`}</Mono>,
                 <RiskScore value={d.riskScore} />,
                 <VerdictBadge verdict={d.verdict} />,
                 <span className="text-muted-foreground">{d.primarySignal}</span>,
-                <Mono className="text-muted-foreground">{d.latencyMs.toFixed(1)}ms</Mono>,
-                d.caseId ? (
-                  <Link
-                    to="/cases/$caseId"
-                    params={{ caseId: d.caseId }}
-                    className="font-mono text-[12px] text-primary hover:underline"
-                  >
-                    {d.caseId}
-                  </Link>
-                ) : (
-                  <span className="text-muted-foreground">—</span>
-                ),
               ],
             }))}
           />

@@ -4,13 +4,13 @@ import { cn } from "@/lib/utils";
 import { useSession } from "@/lib/rbac";
 import { DATA_SOURCE } from "@/lib/ropus-data";
 
-const primaryNav: Array<{ label: string; to: string; badge?: string }> = [
+const primaryNav: Array<{ label: string; to: string }> = [
   { label: "Overview", to: "/" },
   { label: "Risk Decisions", to: "/decisions" },
   { label: "Fraud Graph", to: "/graph" },
   { label: "Investigations", to: "/investigations" },
   { label: "Cases", to: "/cases" },
-  { label: "Demo", to: "/demo", badge: "7-Stage Replay" },
+  { label: "Demo", to: "/demo" },
 ];
 
 const secondaryNav: Array<{ label: string; to: string }> = [
