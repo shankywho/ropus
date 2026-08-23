@@ -4,35 +4,23 @@ import { cn } from "@/lib/utils";
 import { useSession } from "@/lib/rbac";
 import { DATA_SOURCE } from "@/lib/ropus-data";
 
-const primaryNav: Array<{ label: string; to: string }> = [
+const controlPlaneNav = [
   { label: "Overview", to: "/" },
-  { label: "Risk Decisions", to: "/decisions" },
   { label: "Fraud Graph", to: "/graph" },
-  { label: "Investigations", to: "/investigations" },
-  { label: "Cases", to: "/cases" },
   { label: "Demo", to: "/demo" },
 ];
 
-const secondaryNav: Array<{ label: string; to: string }> = [
-  { label: "Rules Engine", to: "/rules" },
-  { label: "ML Models", to: "/models" },
-  { label: "Threat Intelligence", to: "/threat-intelligence" },
-  { label: "Operations & SLO", to: "/operations" },
-  { label: "Security & Ledger", to: "/security" },
-  { label: "Webhooks", to: "/webhooks" },
-  { label: "API Keys", to: "/api-keys" },
-  { label: "API Reference", to: "/api" },
-  { label: "Settings", to: "/settings" },
+const platformServicesNav = [
+  { label: "Rules", to: "/rules" },
+  { label: "Models", to: "/models" },
+  { label: "Cases", to: "/cases" },
+  { label: "Operations", to: "/operations" },
+  { label: "Security", to: "/security" },
 ];
 
 function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   const session = useSession();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const [showAdvanced, setShowAdvanced] = useState(false);
-
-  const isSecondaryActive = secondaryNav.some((item) =>
-    item.to === "/" ? pathname === "/" : pathname.startsWith(item.to),
-  );
 
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
@@ -60,14 +48,15 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
       </div>
 
       <nav aria-label="Primary" className="flex-1 overflow-y-auto py-2">
-        <div className="mb-3">
+        {/* Control Plane Group */}
+        <div className="mb-4">
           <div className="bg-black/40 px-4 py-1.5">
             <span className="text-[9.5px] font-semibold tracking-[0.12em] text-sidebar-muted/80 uppercase">
               Control Plane
             </span>
           </div>
           <ul className="mt-1 space-y-0.5">
-            {primaryNav.map((item) => {
+            {controlPlaneNav.map((item) => {
               const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
               return (
                 <li key={item.to}>
@@ -80,13 +69,12 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
                       active
                         ? "border-l-sidebar-primary bg-sidebar-accent font-semibold text-white"
                         : "border-l-transparent text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-white",
+                      item.to === "/demo" && !active && "text-sidebar-foreground/90 font-medium",
                     )}
                   >
                     <span>{item.label}</span>
-                    {item.badge && (
-                      <span className="rounded bg-primary/20 px-1.5 py-0.5 font-mono text-[9px] font-bold text-primary">
-                        {item.badge}
-                      </span>
+                    {item.to === "/demo" && (
+                      <span className="font-mono text-[10px] text-primary">●</span>
                     )}
                   </Link>
                 </li>
@@ -95,41 +83,35 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
           </ul>
         </div>
 
-        <div className="mt-4 border-t border-sidebar-border/40 pt-2">
-          <button
-            type="button"
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            className="flex w-full items-center justify-between px-4 py-1.5 text-left text-[10px] font-semibold tracking-[0.08em] text-sidebar-muted uppercase hover:text-sidebar-foreground"
-          >
-            <span>Platform Services</span>
-            <span className="font-mono text-[10px]">
-              {showAdvanced || isSecondaryActive ? "−" : "+"}
+        {/* Platform Services Group */}
+        <div>
+          <div className="bg-black/40 px-4 py-1.5">
+            <span className="text-[9.5px] font-semibold tracking-[0.12em] text-sidebar-muted/80 uppercase">
+              Platform Services
             </span>
-          </button>
-          {(showAdvanced || isSecondaryActive) && (
-            <ul className="mt-1 space-y-0.5">
-              {secondaryNav.map((item) => {
-                const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-                return (
-                  <li key={item.to}>
-                    <Link
-                      to={item.to}
-                      onClick={onNavigate}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "flex items-center border-l-2 px-4 py-[4px] text-[11.5px] transition-colors",
-                        active
-                          ? "border-l-sidebar-primary bg-sidebar-accent/60 font-semibold text-white"
-                          : "border-l-transparent text-sidebar-muted hover:text-white",
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          </div>
+          <ul className="mt-1 space-y-0.5">
+            {platformServicesNav.map((item) => {
+              const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+              return (
+                <li key={item.to}>
+                  <Link
+                    to={item.to}
+                    onClick={onNavigate}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "flex items-center border-l-2 px-4 py-[5px] text-[12.5px] transition-colors",
+                      active
+                        ? "border-l-sidebar-primary bg-sidebar-accent font-semibold text-white"
+                        : "border-l-transparent text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-white",
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </nav>
 
