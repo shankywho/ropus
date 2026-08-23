@@ -5,6 +5,7 @@ import { Page } from "@/components/ropus/page";
 import { blockedDecision, baselineDecision } from "@/lib/ropus/fixtures";
 import { fraudGraph } from "@/lib/ropus/graph-fixture";
 import { demoControls, demoStages, useDemoState, type DemoStageInfo } from "@/lib/ropus/demo-store";
+import { evaluateRisk, type LiveEvaluationResponse } from "@/lib/ropus/api";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/demo")({
@@ -64,6 +65,27 @@ function DemoPage() {
   const current: DemoStageInfo = demoStages[stage] || demoStages[0];
   const tweenedScore = useTweenedScore(current.simulatedScore);
   const [confirmedBlock, setConfirmedBlock] = useState(false);
+  const [liveEvalResult, setLiveEvalResult] = useState<LiveEvaluationResponse | null>(null);
+  const [liveLoading, setLiveLoading] = useState(false);
+
+  const handleLiveEvaluate = async () => {
+    setLiveLoading(true);
+    try {
+      const res = await evaluateRisk({
+        transaction_id: "txn_order_88419",
+        customer_id: "cus_4471029",
+        amount: 1450000,
+        currency: "USD",
+        ip_address: "198.51.100.44",
+        device_id: "9f8a84b12c",
+      });
+      setLiveEvalResult(res);
+    } catch (e) {
+      console.error("Live evaluate failed", e);
+    } finally {
+      setLiveLoading(false);
+    }
+  };
 
   // Reset confirmation state when leaving stage 7 or resetting
   useEffect(() => {
@@ -349,7 +371,7 @@ function DemoPage() {
               <div className="space-y-4">
                 <div className="rounded border border-block/40 bg-block/5 p-3">
                   <div className="font-mono text-[11px] font-bold text-block">
-                    INBOUND API INGRESS: POST /v1/risk/evaluate
+                    INBOUND API INGRESS: POST /v1/risk-evaluations
                   </div>
                   <div className="mt-1 text-[13px] text-foreground font-semibold">
                     Amount: $14,500.00 USD (Wire Transfer to Beneficiary PA-77120)
@@ -357,20 +379,61 @@ function DemoPage() {
                 </div>
 
                 <div className="border border-border p-3 font-mono text-[11.5px] bg-accent/20 rounded">
-                  <div className="text-muted-foreground font-semibold">// Raw Payload Ingress</div>
-                  <pre className="mt-1 text-foreground overflow-x-auto">
+                  <div className="flex items-center justify-between text-muted-foreground font-semibold">
+                    <span>// Inbound JSON Payload Contract</span>
+                    <button
+                      type="button"
+                      onClick={handleLiveEvaluate}
+                      disabled={liveLoading}
+                      className="rounded bg-primary px-2.5 py-1 text-[11px] font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                    >
+                      {liveLoading
+                        ? "Evaluating on Go Backend..."
+                        : "⚡ Execute Live Backend Evaluation"}
+                    </button>
+                  </div>
+                  <pre className="mt-2 text-foreground overflow-x-auto">
                     {`{
   "transaction_id": "txn_order_88419",
   "customer_id": "cus_4471029",
-  "amount": 14500.00,
+  "amount": 1450000,
   "currency": "USD",
-  "channel": "OUTBOUND_WIRE",
   "ip_address": "198.51.100.44",
-  "device_id": "dev_emulator_linux_9f8a",
-  "beneficiary_iban": "CY120020012800000012056PA77120"
+  "device_fingerprint": "9f8a84b12c"
 }`}
                   </pre>
                 </div>
+
+                {liveEvalResult && (
+                  <div className="rounded border border-approve/50 bg-approve/10 p-3 font-mono text-[12px] text-foreground">
+                    <div className="flex items-center justify-between text-approve font-bold">
+                      <span className="flex items-center gap-1.5">
+                        <span className="size-2 rounded-full bg-approve" />
+                        LIVE GO ORCHESTRATOR RESPONSE
+                      </span>
+                      <span className="text-muted-foreground font-normal">
+                        Latency: {liveEvalResult.latency_ms}ms
+                      </span>
+                    </div>
+                    <div className="mt-2 grid grid-cols-2 gap-2 text-[11.5px]">
+                      <div>
+                        Decision:{" "}
+                        <span className="font-bold text-primary">{liveEvalResult.decision_id}</span>
+                      </div>
+                      <div>
+                        Action:{" "}
+                        <span className="font-bold text-block">
+                          {liveEvalResult.recommended_action}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-1 text-[11px] text-muted-foreground">
+                      Signals:{" "}
+                      {liveEvalResult.reason_codes?.join(" · ") ||
+                        "RULE_SIGNAL:HIGH_TRANSACTION_AMOUNT"}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

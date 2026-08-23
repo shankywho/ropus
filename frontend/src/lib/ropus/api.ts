@@ -200,23 +200,42 @@ export const fetchGraph = async (decisionId: string): Promise<FraudGraph> => {
   );
 };
 
+export interface LiveEvaluationResponse {
+  decision_id: string;
+  transaction_id: string;
+  recommended_action: string;
+  risk_score: number;
+  reason_codes: string[];
+  latency_ms: number;
+  features?: {
+    ml_feature_contract?: {
+      canonical_version?: string;
+      canonical_25?: Record<string, number>;
+    };
+  };
+  evaluated_at: string;
+}
+
 export const evaluateRisk = async (payload: {
   transaction_id: string;
   customer_id: string;
   amount: number;
   currency: string;
-  payment_method?: string;
   ip_address?: string;
   device_id?: string;
-  billing_country?: string;
-  shipping_country?: string;
-}) => {
+}): Promise<LiveEvaluationResponse> => {
+  const amountCents =
+    payload.amount > 100000 ? Math.round(payload.amount) : Math.round(payload.amount * 100);
   const res = await fetch(`${BASE}/v1/risk-evaluations`, {
     method: "POST",
     headers: DEFAULT_HEADERS,
     body: JSON.stringify({
-      ...payload,
-      amount: Math.round(payload.amount),
+      transaction_id: payload.transaction_id,
+      customer_id: payload.customer_id,
+      amount: amountCents,
+      currency: payload.currency || "USD",
+      ip_address: payload.ip_address || "198.51.100.44",
+      device_fingerprint: payload.device_id || "9f8a84b12c",
     }),
   });
 
@@ -225,7 +244,7 @@ export const evaluateRisk = async (payload: {
     throw new Error(`Evaluation failed with status ${res.status}: ${errBody}`);
   }
 
-  return await res.json();
+  return (await res.json()) as LiveEvaluationResponse;
 };
 
 /* ------------------------------------------------------------ query options */
