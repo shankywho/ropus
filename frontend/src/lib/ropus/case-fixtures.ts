@@ -80,7 +80,8 @@ export const caseFixtures: CaseRecord[] = [
     openedAt: "2026-08-22T15:22:04.000Z",
     updatedAt: "2026-08-22T15:22:04.000Z",
     slaMinutesRemaining: 46,
-    summary: "Card-not-present purchase flagged for velocity across three merchants within nine minutes.",
+    summary:
+      "Card-not-present purchase flagged for velocity across three merchants within nine minutes.",
     timeline: [
       {
         id: "ev_1",

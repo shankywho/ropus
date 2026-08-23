@@ -1,7 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
-import { DemoTag, EntityNode, GraphInspector, Mono, RelationshipInspector, entityRiskMeta } from "@/components/ropus/core";
+import {
+  DemoTag,
+  EntityNode,
+  GraphInspector,
+  Mono,
+  RelationshipInspector,
+  entityRiskMeta,
+} from "@/components/ropus/core";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { graphQuery } from "@/lib/ropus/api";
 import { blockedDecision } from "@/lib/ropus/fixtures";
@@ -25,7 +32,8 @@ export const Route = createFileRoute("/graph")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(graphQuery(blockedDecision.decisionId)),
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(graphQuery(blockedDecision.decisionId)),
   component: FraudGraphPage,
 });
 
@@ -49,7 +57,8 @@ function FraudGraphPage() {
   }, [hops, pathOnly]);
 
   const selected =
-    fraudGraph.entities.find((e) => e.id === selectedId && visible.ids.has(e.id)) ?? fraudGraph.entities[0]!;
+    fraudGraph.entities.find((e) => e.id === selectedId && visible.ids.has(e.id)) ??
+    fraudGraph.entities[0]!;
 
   const selectedEdge =
     visible.relationships.find((r) => `${r.source}-${r.target}` === edgeKey) ?? null;
@@ -74,7 +83,6 @@ function FraudGraphPage() {
     const e = fraudGraph.entities.find((n) => n.id === id)!;
     return { x: e.x * 10, y: e.y * 5.6 };
   };
-
 
   return (
     <div className="mx-auto w-full max-w-[1560px] px-5 py-5 lg:px-7">
@@ -109,7 +117,9 @@ function FraudGraphPage() {
                 aria-pressed={hops === h}
                 className={cn(
                   "-ml-px border border-border px-2.5 py-1 font-mono text-[11.5px] first:ml-0",
-                  hops === h ? "border-foreground bg-foreground text-background" : "hover:bg-accent",
+                  hops === h
+                    ? "border-foreground bg-foreground text-background"
+                    : "hover:bg-accent",
                 )}
               >
                 {h}-hop
@@ -173,7 +183,11 @@ function FraudGraphPage() {
                     x2={b.x}
                     y2={b.y}
                     stroke={
-                      key === edgeKey ? "var(--primary)" : active ? "var(--foreground)" : "var(--border-strong)"
+                      key === edgeKey
+                        ? "var(--primary)"
+                        : active
+                          ? "var(--foreground)"
+                          : "var(--border-strong)"
                     }
                     strokeWidth={active ? 1.5 : 0.75}
                     opacity={r.onDecisionPath ? (active ? 1 : 0.8) : active ? 0.85 : 0.4}
@@ -210,14 +224,16 @@ function FraudGraphPage() {
                 onHover={setHoverId}
               />
             ))}
-
           </svg>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-3">
             {risks.map((r) => {
               const meta = entityRiskMeta(r);
               return (
-                <span key={r} className="flex items-center gap-1.5 text-[11px] tracking-[0.06em] text-muted-foreground uppercase">
+                <span
+                  key={r}
+                  className="flex items-center gap-1.5 text-[11px] tracking-[0.06em] text-muted-foreground uppercase"
+                >
                   <span aria-hidden className="h-3 w-1" style={{ background: meta.fill }} />
                   {meta.label}
                 </span>
@@ -230,7 +246,10 @@ function FraudGraphPage() {
               <span
                 aria-hidden
                 className="h-px w-5"
-                style={{ backgroundImage: "repeating-linear-gradient(90deg,var(--border-strong) 0 4px,transparent 4px 8px)" }}
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(90deg,var(--border-strong) 0 4px,transparent 4px 8px)",
+                }}
               />
               contextual
             </span>
@@ -248,7 +267,11 @@ function FraudGraphPage() {
               onClear={() => setEdgeKey(null)}
             />
           ) : (
-            <GraphInspector entity={selected} relationships={relationships} onSelect={setSelectedId} />
+            <GraphInspector
+              entity={selected}
+              relationships={relationships}
+              onSelect={setSelectedId}
+            />
           )}
         </aside>
       </div>

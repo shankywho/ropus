@@ -1,16 +1,17 @@
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { DATA_SOURCE } from "@/lib/ropus/fixtures";
-import type {
-  EvidenceItem,
-  FactorSource,
-  RiskFactorRecord,
-  Verdict,
-} from "@/lib/ropus/contracts";
+import type { EvidenceItem, FactorSource, RiskFactorRecord, Verdict } from "@/lib/ropus/contracts";
 
 /* ------------------------------------------------------------------ mono id */
 
-export function Mono({ children, className }: { children: ReactNode; className?: string | undefined }) {
+export function Mono({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string | undefined;
+}) {
   return <span className={cn("font-mono text-[12.5px] tabular", className)}>{children}</span>;
 }
 
@@ -75,7 +76,11 @@ export function RiskScore({
       </div>
     );
   }
-  return <span className={cn("font-mono text-[12.5px] font-semibold tabular", band.tone)}>{value.toFixed(2)}</span>;
+  return (
+    <span className={cn("font-mono text-[12.5px] font-semibold tabular", band.tone)}>
+      {value.toFixed(2)}
+    </span>
+  );
 }
 
 /* ------------------------------------------------------------ verdict badge */
@@ -116,7 +121,12 @@ export function StatusIndicator({
     DOWN: "bg-block text-block",
   } as const;
   return (
-    <span className={cn("inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.06em]", map[state].split(" ")[1])}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.06em]",
+        map[state].split(" ")[1],
+      )}
+    >
       <span aria-hidden className={cn("size-1.5", map[state].split(" ")[0])} />
       {label ?? state}
     </span>
@@ -155,7 +165,9 @@ export function RiskFactor({ factor, max }: { factor: RiskFactorRecord; max: num
         </div>
       </div>
       {factor.detail && (
-        <p className="mt-0.5 font-mono text-[11.5px] text-muted-foreground tabular">{factor.detail}</p>
+        <p className="mt-0.5 font-mono text-[11.5px] text-muted-foreground tabular">
+          {factor.detail}
+        </p>
       )}
       <div className="mt-2 h-[2px] w-full bg-neutral-surface">
         <div
@@ -249,7 +261,13 @@ const kindMeta = {
  * observed is a plain fact list, inferred is labelled model output, recommended
  * is a list of actions that require explicit confirmation.
  */
-export function EvidenceList({ items, kind }: { items: EvidenceItem[]; kind: keyof typeof kindMeta }) {
+export function EvidenceList({
+  items,
+  kind,
+}: {
+  items: EvidenceItem[];
+  kind: keyof typeof kindMeta;
+}) {
   const meta = kindMeta[kind];
   const rows = items.filter((i) => i.kind === kind);
 
@@ -284,7 +302,9 @@ export function EvidenceList({ items, kind }: { items: EvidenceItem[]; kind: key
           </li>
         ))}
         {rows.length === 0 && (
-          <li className="py-2.5 text-[12.5px] text-muted-foreground">None recorded for this decision.</li>
+          <li className="py-2.5 text-[12.5px] text-muted-foreground">
+            None recorded for this decision.
+          </li>
         )}
       </ul>
     </section>
@@ -298,7 +318,9 @@ export function Metric({ label, value, sub }: { label: string; value: string; su
     <div>
       <div className="font-mono text-[22px] leading-none font-semibold tabular">{value}</div>
       <div className="mt-2 text-[11.5px] text-muted-foreground">{label}</div>
-      {sub && <div className="mt-0.5 font-mono text-[11px] text-muted-foreground tabular">{sub}</div>}
+      {sub && (
+        <div className="mt-0.5 font-mono text-[11px] text-muted-foreground tabular">{sub}</div>
+      )}
     </div>
   );
 }
@@ -309,7 +331,13 @@ export function Metric({ label, value, sub }: { label: string; value: string; su
  * Compact technical record of the decision. Deliberately a definition table,
  * not a grid of KPI cards.
  */
-export function DecisionSummary({ decision, amount }: { decision: import("@/lib/ropus/contracts").RiskDecision; amount: string }) {
+export function DecisionSummary({
+  decision,
+  amount,
+}: {
+  decision: import("@/lib/ropus/contracts").RiskDecision;
+  amount: string;
+}) {
   const rows: Array<[string, ReactNode]> = [
     ["Verdict", <VerdictBadge key="v" verdict={decision.verdict} />],
     ["Risk score", <Mono key="s">{decision.riskScore.toFixed(2)}</Mono>],
@@ -421,7 +449,9 @@ export function EntityNode({
         width={half * 2}
         height={half * 2}
         fill={selected ? "var(--accent)" : "var(--surface)"}
-        stroke={selected ? "var(--foreground)" : highlighted ? "var(--primary)" : "var(--border-strong)"}
+        stroke={
+          selected ? "var(--foreground)" : highlighted ? "var(--primary)" : "var(--border-strong)"
+        }
         strokeWidth={selected || highlighted ? 1.5 : 1}
       />
       <rect x={x - half} y={y - half} width={5} height={half * 2} fill={meta.fill} />
@@ -471,15 +501,23 @@ export function RelationshipInspector({
       </div>
       <div className="mt-1 text-[14px] font-semibold">{relationship.label}</div>
       <dl className="mt-4 border-t border-border">
-        {([
-          ["Source", relationship.source],
-          ["Target", relationship.target],
-          ["Path", relationship.onDecisionPath ? "decision path" : "contextual"],
-        ] as Array<[string, string]>).map(([k, v]) => (
-          <div key={k} className="flex items-baseline justify-between gap-4 border-b border-border py-1.5">
+        {(
+          [
+            ["Source", relationship.source],
+            ["Target", relationship.target],
+            ["Path", relationship.onDecisionPath ? "decision path" : "contextual"],
+          ] as Array<[string, string]>
+        ).map(([k, v]) => (
+          <div
+            key={k}
+            className="flex items-baseline justify-between gap-4 border-b border-border py-1.5"
+          >
             <dt className="text-[12.5px] text-muted-foreground">{k}</dt>
             <dd>
-              <button onClick={() => onSelect(v)} className="font-mono text-[12px] text-primary hover:underline">
+              <button
+                onClick={() => onSelect(v)}
+                className="font-mono text-[12px] text-primary hover:underline"
+              >
                 {v}
               </button>
             </dd>
@@ -489,7 +527,6 @@ export function RelationshipInspector({
     </div>
   );
 }
-
 
 /** Right-hand detail surface for the selected entity. */
 export function GraphInspector({
@@ -507,7 +544,9 @@ export function GraphInspector({
       <div className="label-xs">Entity</div>
       <div className="mt-1 flex items-baseline justify-between gap-3">
         <Mono className="text-[14px] font-semibold">{entity.id}</Mono>
-        <span className={cn("text-[10.5px] font-semibold tracking-[0.08em] uppercase", meta.text)}>{meta.label}</span>
+        <span className={cn("text-[10.5px] font-semibold tracking-[0.08em] uppercase", meta.text)}>
+          {meta.label}
+        </span>
       </div>
       <p className="mt-0.5 text-[12.5px] text-muted-foreground">{entity.label}</p>
 
@@ -519,7 +558,10 @@ export function GraphInspector({
           ["Last seen", entity.lastSeen],
           ...entity.attributes,
         ].map(([k, v]) => (
-          <div key={k} className="flex items-baseline justify-between gap-4 border-b border-border py-1.5">
+          <div
+            key={k}
+            className="flex items-baseline justify-between gap-4 border-b border-border py-1.5"
+          >
             <dt className="text-[12.5px] text-muted-foreground">{k}</dt>
             <dd className="text-right">
               <Mono className="text-[12px]">{v}</Mono>
@@ -531,11 +573,17 @@ export function GraphInspector({
       <div className="mt-5 label-xs">Relationships</div>
       <ul className="mt-1.5">
         {relationships.map((r) => (
-          <li key={r.id + r.label} className="flex items-baseline justify-between gap-3 border-b border-border py-1.5">
+          <li
+            key={r.id + r.label}
+            className="flex items-baseline justify-between gap-3 border-b border-border py-1.5"
+          >
             <span className="text-[12.5px] text-muted-foreground">
               {r.direction === "out" ? "→" : "←"} {r.label}
             </span>
-            <button onClick={() => onSelect(r.id)} className="font-mono text-[12px] text-primary hover:underline">
+            <button
+              onClick={() => onSelect(r.id)}
+              className="font-mono text-[12px] text-primary hover:underline"
+            >
               {r.id}
             </button>
           </li>
@@ -545,7 +593,10 @@ export function GraphInspector({
       <div className="mt-5 label-xs">Observed signals</div>
       <ul className="mt-1.5 space-y-2">
         {entity.signals.map((s) => (
-          <li key={s} className="border-l-2 border-l-border-strong pl-3 text-[12.5px] leading-relaxed">
+          <li
+            key={s}
+            className="border-l-2 border-l-border-strong pl-3 text-[12.5px] leading-relaxed"
+          >
             {s}
           </li>
         ))}
@@ -568,15 +619,19 @@ const caseStatusMeta: Record<
 
 export function CaseStatusTag({ status }: { status: import("@/lib/ropus/contracts").CaseStatus }) {
   const meta = caseStatusMeta[status];
-  return (
-    <span className={cn("text-[12.5px] font-medium", meta.tone)}>{meta.label}</span>
-  );
+  return <span className={cn("text-[12.5px] font-medium", meta.tone)}>{meta.label}</span>;
 }
 
-export function PriorityTag({ priority }: { priority: import("@/lib/ropus/contracts").CasePriority }) {
+export function PriorityTag({
+  priority,
+}: {
+  priority: import("@/lib/ropus/contracts").CasePriority;
+}) {
   const tone =
     priority === "P1" ? "text-block" : priority === "P2" ? "text-warning" : "text-muted-foreground";
-  return <span className={cn("font-mono text-[12px] font-semibold tabular", tone)}>{priority}</span>;
+  return (
+    <span className={cn("font-mono text-[12px] font-semibold tabular", tone)}>{priority}</span>
+  );
 }
 
 export function SlaTag({ minutes }: { minutes: number }) {
@@ -585,7 +640,9 @@ export function SlaTag({ minutes }: { minutes: number }) {
   const abs = Math.abs(minutes);
   const text = `${Math.floor(abs / 60)}h ${abs % 60}m${breached ? " over" : ""}`;
   return (
-    <Mono className={breached ? "text-block" : abs <= 60 ? "text-warning" : "text-muted-foreground"}>
+    <Mono
+      className={breached ? "text-block" : abs <= 60 ? "text-warning" : "text-muted-foreground"}
+    >
       {text}
     </Mono>
   );
@@ -610,11 +667,17 @@ export function CaseTimeline({ events }: { events: import("@/lib/ropus/contracts
             aria-hidden
             className={cn(
               "absolute top-[18px] -left-[3.5px] size-[6px] rounded-full",
-              e.actorKind === "AI" ? "bg-warning" : e.actorKind === "ANALYST" ? "bg-primary" : "bg-border-strong",
+              e.actorKind === "AI"
+                ? "bg-warning"
+                : e.actorKind === "ANALYST"
+                  ? "bg-primary"
+                  : "bg-border-strong",
             )}
           />
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <Mono className="text-[11.5px] text-muted-foreground">{e.at.replace("T", " ").replace("Z", "Z")}</Mono>
+            <Mono className="text-[11.5px] text-muted-foreground">
+              {e.at.replace("T", " ").replace("Z", "Z")}
+            </Mono>
             <span className="font-mono text-[10px] tracking-[0.08em] text-muted-foreground uppercase">
               {actorMeta[e.actorKind]}
             </span>

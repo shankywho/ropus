@@ -134,8 +134,18 @@ export const fraudGraph: FraudGraph = {
   ],
   relationships: [
     { source: "cus_4471029", target: "txn_9f3c21ab7d", label: "initiated", onDecisionPath: true },
-    { source: "cus_4471029", target: "dvc_5b91e0", label: "authenticated on", onDecisionPath: true },
-    { source: "cus_4471029", target: "185.220.101.44", label: "session origin", onDecisionPath: true },
+    {
+      source: "cus_4471029",
+      target: "dvc_5b91e0",
+      label: "authenticated on",
+      onDecisionPath: true,
+    },
+    {
+      source: "cus_4471029",
+      target: "185.220.101.44",
+      label: "session origin",
+      onDecisionPath: true,
+    },
     { source: "dvc_5b91e0", target: "185.220.101.44", label: "observed together" },
     { source: "txn_9f3c21ab7d", target: "PA-77120", label: "pays out to", onDecisionPath: true },
     { source: "PA-77120", target: "cus_8830114", label: "shared with" },

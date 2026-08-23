@@ -19,7 +19,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Risk Intelligence Overview — ROPUS" },
       {
         property: "og:description",
-        content: "Transaction decisions, verdict distribution, open investigations and platform health.",
+        content:
+          "Transaction decisions, verdict distribution, open investigations and platform health.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -68,20 +69,70 @@ function Overview() {
 
       <MetricStrip
         items={[
-          { label: "Evaluations", value: metrics.evaluations.toLocaleString(), sub: metrics.windowLabel },
+          {
+            label: "Evaluations",
+            value: metrics.evaluations.toLocaleString(),
+            sub: metrics.windowLabel,
+          },
           { label: "Block rate", value: pct(metrics.blockRate), sub: "of evaluations" },
           { label: "Review rate", value: pct(metrics.reviewRate), sub: "of evaluations" },
-          { label: "p99 latency", value: `${metrics.p99LatencyMs.toFixed(1)} ms`, sub: "decision API" },
+          {
+            label: "p99 latency",
+            value: `${metrics.p99LatencyMs.toFixed(1)} ms`,
+            sub: "decision API",
+          },
           { label: "Open cases", value: String(metrics.openCases), sub: "investigation queue" },
         ]}
       />
+
+      {/* Latest High-Risk Incident Callout */}
+      <section
+        aria-label="Latest high-risk incident"
+        className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded border border-block/40 bg-block/5 px-4 py-3"
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex size-2 rounded-full bg-block" />
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[11px] font-bold text-block">
+                LATEST HIGH-RISK INCIDENT
+              </span>
+              <span className="font-mono text-[11px] text-muted-foreground">
+                · 14,500.00 USD Outbound Wire
+              </span>
+            </div>
+            <p className="mt-0.5 text-[12.5px] text-foreground">
+              <Mono className="font-bold">txn_order_88419</Mono> blocked due to impossible travel
+              &amp; proxy ASN (Score: <span className="font-bold text-block font-mono">0.96</span>).
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/decisions/$decisionId"
+            params={{ decisionId: "dec_01HZK4JR7T2QW8NP3V6M9X1B2C" }}
+            className="rounded border border-block/40 bg-surface px-2.5 py-1 font-mono text-[11.5px] font-bold text-block hover:bg-block hover:text-white transition-colors"
+          >
+            Inspect Decision →
+          </Link>
+          <Link
+            to="/cases/$caseId"
+            params={{ caseId: "CASE-88419" }}
+            className="rounded bg-block px-2.5 py-1 font-mono text-[11.5px] font-bold text-white hover:bg-block/90 transition-colors"
+          >
+            Review Case P0 →
+          </Link>
+        </div>
+      </section>
 
       {degraded.length > 0 && (
         <section
           aria-label="System alert"
           className="mt-4 flex flex-wrap items-baseline gap-x-8 gap-y-1.5 border-y border-border border-l-2 border-l-warning bg-surface py-2 pl-3"
         >
-          <span className="text-[10.5px] font-semibold tracking-[0.08em] text-warning uppercase">System alert</span>
+          <span className="text-[10.5px] font-semibold tracking-[0.08em] text-warning uppercase">
+            System alert
+          </span>
           <span className="text-[12.5px] font-semibold">{degraded.length} services degraded</span>
           {degraded.map((s) => (
             <span key={s.name} className="text-[12.5px] text-muted-foreground">
@@ -94,10 +145,12 @@ function Overview() {
         </section>
       )}
 
-
       <div className="mt-6 grid gap-8 xl:grid-cols-[minmax(0,1fr)_300px_300px] xl:gap-10">
         <section className="min-w-0">
-          <SectionHead title="Verdict distribution" meta={`${total.toLocaleString()} evaluations`} />
+          <SectionHead
+            title="Verdict distribution"
+            meta={`${total.toLocaleString()} evaluations`}
+          />
           <div className="mt-3 flex h-1.5 w-full overflow-hidden">
             {metrics.distribution.map((d) => (
               <div
@@ -129,18 +182,28 @@ function Overview() {
         </section>
 
         <section className="min-w-0">
-          <SectionHead title="System status" meta={degraded.length ? `${degraded.length} degraded` : "all healthy"} />
+          <SectionHead
+            title="System status"
+            meta={degraded.length ? `${degraded.length} degraded` : "all healthy"}
+          />
           <table className="mt-1 w-full text-[12.5px]">
             <caption className="sr-only">Component health and p99 latency</caption>
             <tbody>
               {metrics.services.map((s) => (
                 <tr key={s.name} className="border-b border-border last:border-b-0">
                   <td className="py-[7px] pr-3">{s.name}</td>
-                  <td className={cn("py-[7px] pr-3 text-[10.5px] font-semibold tracking-[0.06em]", stateTone[s.state])}>
+                  <td
+                    className={cn(
+                      "py-[7px] pr-3 text-[10.5px] font-semibold tracking-[0.06em]",
+                      stateTone[s.state],
+                    )}
+                  >
                     {s.state}
                   </td>
                   <td className="py-[7px] text-right">
-                    <Mono className="text-muted-foreground">{s.p99Ms ? `${s.p99Ms.toFixed(1)}ms` : "—"}</Mono>
+                    <Mono className="text-muted-foreground">
+                      {s.p99Ms ? `${s.p99Ms.toFixed(1)}ms` : "—"}
+                    </Mono>
                   </td>
                 </tr>
               ))}
@@ -176,13 +239,14 @@ function Overview() {
                   >
                     {c.priority}
                   </span>
-                  <Mono className="ml-auto truncate text-muted-foreground">{c.assignee ?? "unassigned"}</Mono>
+                  <Mono className="ml-auto truncate text-muted-foreground">
+                    {c.assignee ?? "unassigned"}
+                  </Mono>
                 </div>
                 <p className="mt-0.5 truncate text-muted-foreground">{c.summary}</p>
               </li>
             ))}
           </ul>
-
         </section>
       </div>
 

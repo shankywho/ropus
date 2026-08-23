@@ -8,9 +8,16 @@ export const Route = createFileRoute("/threat-intelligence")({
   head: () => ({
     meta: [
       { title: "Threat Intelligence — ROPUS" },
-      { name: "description", content: "Indicator register: IPs, networks, devices, payout accounts and BINs with feed provenance and confidence." },
+      {
+        name: "description",
+        content:
+          "Indicator register: IPs, networks, devices, payout accounts and BINs with feed provenance and confidence.",
+      },
       { property: "og:title", content: "Threat Intelligence — ROPUS" },
-      { property: "og:description", content: "Indicators of compromise feeding the risk score, with provenance and confidence." },
+      {
+        property: "og:description",
+        content: "Indicators of compromise feeding the risk score, with provenance and confidence.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -25,10 +32,20 @@ const classTone: Record<IndicatorRecord["classification"], string> = {
 };
 
 const feeds = [
-  { name: "internal-graph", records: "1,204,884", refreshed: "2026-08-22 17:40Z", state: "HEALTHY" },
+  {
+    name: "internal-graph",
+    records: "1,204,884",
+    refreshed: "2026-08-22 17:40Z",
+    state: "HEALTHY",
+  },
   { name: "consortium-fraud", records: "88,412", refreshed: "2026-08-22 06:00Z", state: "HEALTHY" },
   { name: "proxy-registry", records: "412,009", refreshed: "2026-08-22 00:15Z", state: "HEALTHY" },
-  { name: "internal-device", records: "9,884,201", refreshed: "2026-08-22 17:41Z", state: "HEALTHY" },
+  {
+    name: "internal-device",
+    records: "9,884,201",
+    refreshed: "2026-08-22 17:41Z",
+    state: "HEALTHY",
+  },
   { name: "issuer-registry", records: "301,884", refreshed: "2026-08-18 04:00Z", state: "STALE" },
 ];
 
@@ -43,8 +60,16 @@ function ThreatIntelPage() {
       <MetricStrip
         items={[
           { label: "Indicators", value: "1,986,506", sub: "across five feeds" },
-          { label: "Malicious", value: String(indicators.filter((i) => i.classification === "MALICIOUS").length), sub: "matched in last 24h" },
-          { label: "Matches", value: indicators.reduce((s, i) => s + i.hits24h, 0).toLocaleString(), sub: "last 24 hours" },
+          {
+            label: "Malicious",
+            value: String(indicators.filter((i) => i.classification === "MALICIOUS").length),
+            sub: "matched in last 24h",
+          },
+          {
+            label: "Matches",
+            value: indicators.reduce((s, i) => s + i.hits24h, 0).toLocaleString(),
+            sub: "last 24 hours",
+          },
           { label: "Feeds healthy", value: "4 / 5", sub: "issuer-registry is stale" },
           { label: "Score ceiling", value: "+0.14", sub: "max threat-intel contribution" },
         ]}
@@ -52,7 +77,10 @@ function ThreatIntelPage() {
 
       <div className="mt-6 grid gap-8 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-10">
         <section className="min-w-0">
-          <SectionHead title="Indicators matched in this window" meta={`${indicators.length} records`} />
+          <SectionHead
+            title="Indicators matched in this window"
+            meta={`${indicators.length} records`}
+          />
           <div className="mt-1">
             <DataGrid
               columns={[
@@ -70,7 +98,12 @@ function ThreatIntelPage() {
                 cells: [
                   <Mono className="font-semibold">{i.value}</Mono>,
                   <span className="text-muted-foreground">{i.type}</span>,
-                  <span className={cn("text-[11px] font-semibold tracking-[0.06em]", classTone[i.classification])}>
+                  <span
+                    className={cn(
+                      "text-[11px] font-semibold tracking-[0.06em]",
+                      classTone[i.classification],
+                    )}
+                  >
                     {i.classification}
                   </span>,
                   <Mono className="text-muted-foreground">{i.feed}</Mono>,
@@ -109,8 +142,8 @@ function ThreatIntelPage() {
             </tbody>
           </table>
           <p className="mt-3 text-[11.5px] text-muted-foreground">
-            issuer-registry last refreshed 2026-08-18; BIN classifications older than 72 hours are ignored by the
-            scoring path.
+            issuer-registry last refreshed 2026-08-18; BIN classifications older than 72 hours are
+            ignored by the scoring path.
           </p>
         </aside>
       </div>

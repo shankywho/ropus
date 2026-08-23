@@ -19,13 +19,14 @@ import { decisionList, overviewMetrics } from "./overview-fixtures";
  * Single data access layer for every ROPUS surface.
  * Connects directly to the Go Chi backend at /v1 via Vite proxy / Docker network.
  */
-const BASE = (import.meta.env["VITE_ROPUS_API_URL"] as string | undefined)?.replace(/\/$/, "") ?? "";
+const BASE =
+  (import.meta.env["VITE_ROPUS_API_URL"] as string | undefined)?.replace(/\/$/, "") ?? "";
 
 export const isLiveBackend = true;
 
 const DEFAULT_HEADERS = {
   "Content-Type": "application/json",
-  "Accept": "application/json",
+  Accept: "application/json",
   "X-Tenant-ID": "00000000-0000-0000-0000-000000000001",
   "X-API-Key": "test-api-key-12345",
   "X-Admin-API-Key": "admin-secret-key-risk-ops-2026",
@@ -50,21 +51,55 @@ async function get<T>(path: string, fallback: () => T): Promise<T> {
 
 /* --------------------------------------------------------------- endpoints */
 
+interface BackendSummaryComponent {
+  status?: string;
+  latency_ms?: number;
+  message?: string;
+}
+
+interface BackendSummaryPayload {
+  health?: {
+    components?: Record<string, BackendSummaryComponent>;
+  };
+  active_incidents?: unknown[];
+  slo?: {
+    overall_status?: string;
+    measurements?: {
+      slo_p99_latency?: { current_value?: number };
+    };
+  };
+}
+
+interface BackendCaseItem {
+  case_id?: string;
+  decision_id?: string;
+  transaction_id?: string;
+  sla_expires_at?: string;
+  priority?: string;
+  status?: string;
+  resolution_reason?: string;
+  assigned_to?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export const fetchOverview = async (): Promise<OverviewMetrics> => {
   return get<OverviewMetrics>("/v1/operations/summary", () => overviewMetrics).then((data) => {
-    // If backend returns raw operations summary, map components to OverviewMetrics
-    if ((data as any)?.health?.components) {
-      const raw = data as any;
+    const raw = data as unknown as BackendSummaryPayload;
+    if (raw?.health?.components) {
       const comps = raw.health.components;
-      const services = Object.entries(comps).map(([key, val]: [string, any]) => ({
+      const services = Object.entries(comps).map(([key, val]) => ({
         name: key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
-        state: (val.status === "HEALTHY" ? "HEALTHY" : val.status === "DEGRADED" ? "DEGRADED" : "UNAVAILABLE") as ServiceState,
+        state: (val.status === "HEALTHY"
+          ? "HEALTHY"
+          : val.status === "DEGRADED"
+            ? "DEGRADED"
+            : "UNAVAILABLE") as ServiceState,
         p99Ms: val.latency_ms || 12.4,
         detail: val.message || "Operational",
       }));
 
       const activeIncidents = raw.active_incidents?.length || 0;
-      const sloWarning = raw.slo?.overall_status === "WARNING";
 
       return {
         windowLabel: "Last 24 hours (Live Engine)",
@@ -86,32 +121,36 @@ export const fetchDecisions = async (): Promise<DecisionListItem[]> => {
 };
 
 export const fetchDecision = async (decisionId: string): Promise<RiskDecision> => {
-  return get<RiskDecision>(`/v1/risk/decisions/${decisionId}`, () => decisionFixtures[decisionId] ?? blockedDecision);
+  return get<RiskDecision>(
+    `/v1/risk/decisions/${decisionId}`,
+    () => decisionFixtures[decisionId] ?? blockedDecision,
+  );
 };
 
 export const fetchCases = async (): Promise<CaseRecord[]> => {
-  return get<{ cases: any[] }>("/v1/cases", () => ({ cases: [] })).then((data) => {
+  return get<{ cases: BackendCaseItem[] }>("/v1/cases", () => ({ cases: [] })).then((data) => {
     if (data && data.cases && data.cases.length > 0) {
-      return data.cases.map((c: any, idx: number): CaseRecord => {
+      return data.cases.map((c, idx): CaseRecord => {
         const slaMinutes = c.sla_expires_at
           ? Math.round((new Date(c.sla_expires_at).getTime() - Date.now()) / 60000)
           : 120;
 
         const pStr = (c.priority || "P2").toUpperCase();
-        const priority: CasePriority = pStr.includes("1") || pStr.includes("HIGH")
-          ? "P1"
-          : pStr.includes("3") || pStr.includes("LOW")
-          ? "P3"
-          : "P2";
+        const priority: CasePriority =
+          pStr.includes("1") || pStr.includes("HIGH")
+            ? "P1"
+            : pStr.includes("3") || pStr.includes("LOW")
+              ? "P3"
+              : "P2";
 
         const sStr = (c.status || "OPEN").toUpperCase();
         const status: CaseStatus = sStr.includes("REVIEW")
           ? "IN_REVIEW"
           : sStr.includes("ESCALAT")
-          ? "ESCALATED"
-          : sStr.includes("RESOLV") || sStr.includes("CLOSE")
-          ? "CLOSED"
-          : "OPEN";
+            ? "ESCALATED"
+            : sStr.includes("RESOLV") || sStr.includes("CLOSE")
+              ? "CLOSED"
+              : "OPEN";
 
         return {
           caseId: c.case_id || `CASE-${88400 + idx}`,
@@ -130,7 +169,9 @@ export const fetchCases = async (): Promise<CaseRecord[]> => {
           openedAt: c.created_at || new Date().toISOString(),
           updatedAt: c.updated_at || new Date().toISOString(),
           slaMinutesRemaining: slaMinutes,
-          summary: c.resolution_reason || "Transaction flagged by risk policy for anomalous travel velocity.",
+          summary:
+            c.resolution_reason ||
+            "Transaction flagged by risk policy for anomalous travel velocity.",
           timeline: [
             {
               id: `ev_${c.case_id}_1`,
@@ -153,7 +194,10 @@ export const fetchCase = async (caseId: string): Promise<CaseRecord | undefined>
 };
 
 export const fetchGraph = async (decisionId: string): Promise<FraudGraph> => {
-  return get<FraudGraph>(`/v1/graph?decisionId=${encodeURIComponent(decisionId)}`, () => fraudGraph);
+  return get<FraudGraph>(
+    `/v1/graph?decisionId=${encodeURIComponent(decisionId)}`,
+    () => fraudGraph,
+  );
 };
 
 export const evaluateRisk = async (payload: {
@@ -186,8 +230,7 @@ export const evaluateRisk = async (payload: {
 
 /* ------------------------------------------------------------ query options */
 
-export const overviewQuery = () =>
-  queryOptions({ queryKey: ["overview"], queryFn: fetchOverview });
+export const overviewQuery = () => queryOptions({ queryKey: ["overview"], queryFn: fetchOverview });
 
 export const decisionsQuery = () =>
   queryOptions({ queryKey: ["decisions"], queryFn: fetchDecisions });

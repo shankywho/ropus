@@ -1,6 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { DataGrid, InspectorRow, Page, PageHead, SectionHead, TelemetryStrip } from "@/components/ropus/page";
+import {
+  DataGrid,
+  InspectorRow,
+  Page,
+  PageHead,
+  SectionHead,
+  TelemetryStrip,
+} from "@/components/ropus/page";
 import { Mono } from "@/components/ropus/core";
 import { rules, ruleDetails, type RuleRecord } from "@/lib/ropus/platform-fixtures";
 import { cn } from "@/lib/utils";
@@ -9,9 +16,16 @@ export const Route = createFileRoute("/rules")({
   head: () => ({
     meta: [
       { title: "Rules — ROPUS" },
-      { name: "description", content: "Deterministic decisioning rules, their policies, weights, hit volume and precision." },
+      {
+        name: "description",
+        content:
+          "Deterministic decisioning rules, their policies, weights, hit volume and precision.",
+      },
       { property: "og:title", content: "Rules — ROPUS" },
-      { property: "og:description", content: "Policy rules with weight, state, 24h hit volume and precision." },
+      {
+        property: "og:description",
+        content: "Policy rules with weight, state, 24h hit volume and precision.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -68,10 +82,26 @@ function RulesPage() {
       <TelemetryStrip
         items={[
           { label: "Rules", value: String(rules.length), sub: "in this tenant" },
-          { label: "Enabled", value: String(rules.filter((r) => r.state === "ENABLED").length), sub: "scoring live traffic" },
-          { label: "Shadow", value: String(rules.filter((r) => r.state === "SHADOW").length), sub: "evaluated, not applied" },
-          { label: "Hits", value: rules.reduce((s, r) => s + r.hits24h, 0).toLocaleString(), sub: "last 24 hours" },
-          { label: "Hard stops", value: String(rules.filter((r) => r.action === "BLOCK").length), sub: "action = BLOCK" },
+          {
+            label: "Enabled",
+            value: String(rules.filter((r) => r.state === "ENABLED").length),
+            sub: "scoring live traffic",
+          },
+          {
+            label: "Shadow",
+            value: String(rules.filter((r) => r.state === "SHADOW").length),
+            sub: "evaluated, not applied",
+          },
+          {
+            label: "Hits",
+            value: rules.reduce((s, r) => s + r.hits24h, 0).toLocaleString(),
+            sub: "last 24 hours",
+          },
+          {
+            label: "Hard stops",
+            value: String(rules.filter((r) => r.action === "BLOCK").length),
+            sub: "action = BLOCK",
+          },
         ]}
       />
 
@@ -130,9 +160,18 @@ function RulesPage() {
                   cells: [
                     <Mono className="text-[12px] font-semibold whitespace-nowrap">{r.id}</Mono>,
                     <span className="text-muted-foreground">{r.name}</span>,
-                    ...(selected ? [] : [<Mono className="text-[11.5px] text-muted-foreground">{r.policy}</Mono>]),
-                    <span className="text-[11px] tracking-[0.06em] text-muted-foreground uppercase">{r.scope}</span>,
-                    <span className={cn("text-[11px] font-semibold tracking-[0.06em]", actionTone[r.action])}>
+                    ...(selected
+                      ? []
+                      : [<Mono className="text-[11.5px] text-muted-foreground">{r.policy}</Mono>]),
+                    <span className="text-[11px] tracking-[0.06em] text-muted-foreground uppercase">
+                      {r.scope}
+                    </span>,
+                    <span
+                      className={cn(
+                        "text-[11px] font-semibold tracking-[0.06em]",
+                        actionTone[r.action],
+                      )}
+                    >
                       {r.action}
                     </span>,
                     <Mono className="font-semibold">+{r.weight.toFixed(2)}</Mono>,
@@ -145,7 +184,10 @@ function RulesPage() {
                       ? []
                       : [
                           <span className="whitespace-nowrap text-muted-foreground">
-                            <Mono className="text-[11.5px] text-muted-foreground">{r.updatedAt}</Mono> · {r.updatedBy}
+                            <Mono className="text-[11.5px] text-muted-foreground">
+                              {r.updatedAt}
+                            </Mono>{" "}
+                            · {r.updatedBy}
                           </span>,
                         ]),
                   ],
@@ -154,13 +196,16 @@ function RulesPage() {
             </div>
           </div>
           <p className="mt-2.5 border-l-2 border-l-border-strong pl-2.5 text-[11px] text-muted-foreground">
-            Low-precision rules are retained deliberately: they contribute score rather than a verdict, and are only
-            decisive in combination.
+            Low-precision rules are retained deliberately: they contribute score rather than a
+            verdict, and are only decisive in combination.
           </p>
         </section>
 
         {selected && (
-          <aside aria-label="Rule inspector" className="min-w-0 xl:border-l xl:border-border xl:pl-6">
+          <aside
+            aria-label="Rule inspector"
+            className="min-w-0 xl:border-l xl:border-border xl:pl-6"
+          >
             <SectionHead
               title="Rule"
               right={
@@ -189,7 +234,12 @@ function RulesPage() {
                 <span className="text-[11px] tracking-[0.06em] uppercase">{selected.scope}</span>
               </InspectorRow>
               <InspectorRow label="Action">
-                <span className={cn("text-[11px] font-semibold tracking-[0.06em]", actionTone[selected.action])}>
+                <span
+                  className={cn(
+                    "text-[11px] font-semibold tracking-[0.06em]",
+                    actionTone[selected.action],
+                  )}
+                >
                   {selected.action}
                 </span>
               </InspectorRow>

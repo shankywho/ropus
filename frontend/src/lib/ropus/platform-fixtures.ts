@@ -583,11 +583,51 @@ export type WebhookDelivery = {
 };
 
 export const webhookDeliveries: WebhookDelivery[] = [
-  { id: "dlv_88419a", endpoint: "whk_cases_02", event: "case.opened", status: 200, attempt: 1, at: "2026-08-22 17:42:11Z", latencyMs: 182.4 },
-  { id: "dlv_9f3c21", endpoint: "whk_ledger_01", event: "decision.returned", status: 200, attempt: 1, at: "2026-08-22 17:41:09Z", latencyMs: 141.7 },
-  { id: "dlv_5b81de", endpoint: "whk_ledger_01", event: "decision.returned", status: 200, attempt: 1, at: "2026-08-22 15:22:03Z", latencyMs: 133.2 },
-  { id: "dlv_siem14", endpoint: "whk_siem_03", event: "decision.returned", status: 504, attempt: 4, at: "2026-08-20 03:12:44Z", latencyMs: 30_000 },
-  { id: "dlv_1c04ff", endpoint: "whk_ledger_01", event: "decision.returned", status: 200, attempt: 1, at: "2026-08-22 11:04:51Z", latencyMs: 155.9 },
+  {
+    id: "dlv_88419a",
+    endpoint: "whk_cases_02",
+    event: "case.opened",
+    status: 200,
+    attempt: 1,
+    at: "2026-08-22 17:42:11Z",
+    latencyMs: 182.4,
+  },
+  {
+    id: "dlv_9f3c21",
+    endpoint: "whk_ledger_01",
+    event: "decision.returned",
+    status: 200,
+    attempt: 1,
+    at: "2026-08-22 17:41:09Z",
+    latencyMs: 141.7,
+  },
+  {
+    id: "dlv_5b81de",
+    endpoint: "whk_ledger_01",
+    event: "decision.returned",
+    status: 200,
+    attempt: 1,
+    at: "2026-08-22 15:22:03Z",
+    latencyMs: 133.2,
+  },
+  {
+    id: "dlv_siem14",
+    endpoint: "whk_siem_03",
+    event: "decision.returned",
+    status: 504,
+    attempt: 4,
+    at: "2026-08-20 03:12:44Z",
+    latencyMs: 30_000,
+  },
+  {
+    id: "dlv_1c04ff",
+    endpoint: "whk_ledger_01",
+    event: "decision.returned",
+    status: 200,
+    attempt: 1,
+    at: "2026-08-22 11:04:51Z",
+    latencyMs: 155.9,
+  },
 ];
 
 export type ApiEndpointDoc = {
@@ -600,12 +640,54 @@ export type ApiEndpointDoc = {
 };
 
 export const apiEndpoints: ApiEndpointDoc[] = [
-  { method: "POST", path: "/v1/risk/evaluate", summary: "Score a transaction and return a verdict synchronously.", p99Ms: 62.4, calls24h: 1_284_392, errorRate: 0.0003 },
-  { method: "GET", path: "/v1/risk/decisions/{decisionId}", summary: "Fetch a decision with factors and evidence.", p99Ms: 28.1, calls24h: 41_220, errorRate: 0.0001 },
-  { method: "GET", path: "/v1/graph", summary: "Entity neighbourhood for a decision or entity.", p99Ms: 411.0, calls24h: 9_804, errorRate: 0.0142 },
-  { method: "GET", path: "/v1/cases", summary: "List investigation cases for the tenant.", p99Ms: 74.9, calls24h: 6_112, errorRate: 0.0002 },
-  { method: "POST", path: "/v1/cases/{caseId}/resolve", summary: "Record an analyst outcome on a case.", p99Ms: 88.3, calls24h: 214, errorRate: 0 },
-  { method: "GET", path: "/v1/metrics/overview", summary: "Aggregated decisioning and health metrics.", p99Ms: 96.7, calls24h: 3_400, errorRate: 0 },
+  {
+    method: "POST",
+    path: "/v1/risk/evaluate",
+    summary: "Score a transaction and return a verdict synchronously.",
+    p99Ms: 62.4,
+    calls24h: 1_284_392,
+    errorRate: 0.0003,
+  },
+  {
+    method: "GET",
+    path: "/v1/risk/decisions/{decisionId}",
+    summary: "Fetch a decision with factors and evidence.",
+    p99Ms: 28.1,
+    calls24h: 41_220,
+    errorRate: 0.0001,
+  },
+  {
+    method: "GET",
+    path: "/v1/graph",
+    summary: "Entity neighbourhood for a decision or entity.",
+    p99Ms: 411.0,
+    calls24h: 9_804,
+    errorRate: 0.0142,
+  },
+  {
+    method: "GET",
+    path: "/v1/cases",
+    summary: "List investigation cases for the tenant.",
+    p99Ms: 74.9,
+    calls24h: 6_112,
+    errorRate: 0.0002,
+  },
+  {
+    method: "POST",
+    path: "/v1/cases/{caseId}/resolve",
+    summary: "Record an analyst outcome on a case.",
+    p99Ms: 88.3,
+    calls24h: 214,
+    errorRate: 0,
+  },
+  {
+    method: "GET",
+    path: "/v1/metrics/overview",
+    summary: "Aggregated decisioning and health metrics.",
+    p99Ms: 96.7,
+    calls24h: 3_400,
+    errorRate: 0,
+  },
 ];
 
 export const evaluateSample = `curl -X POST https://api.ropus.io/v1/risk/evaluate \\
@@ -641,18 +723,72 @@ export type OpsEvent = {
 };
 
 export const opsEvents: OpsEvent[] = [
-  { id: "ops_9931", at: "2026-08-22 17:38:02Z", component: "Graph service", severity: "WARN", text: "3-hop traversals queued; p99 411ms against a 250ms objective." },
-  { id: "ops_9930", at: "2026-08-22 16:55:41Z", component: "Decision stream", severity: "WARN", text: "Consumer lag on partition 6 reached 42,118 records." },
-  { id: "ops_9927", at: "2026-08-22 14:10:19Z", component: "Model serving", severity: "INFO", text: "mdl_wire_risk v4.3.0-rc2 promoted to shadow at 10% mirrored traffic." },
-  { id: "ops_9921", at: "2026-08-22 09:02:07Z", component: "Rules engine", severity: "INFO", text: "rule_mule_fanout_01 deployed in shadow mode by s.ibrahim." },
-  { id: "ops_9914", at: "2026-08-21 22:47:33Z", component: "Webhook delivery", severity: "CRITICAL", text: "whk_siem_03 paused after 4 consecutive 504 responses." },
+  {
+    id: "ops_9931",
+    at: "2026-08-22 17:38:02Z",
+    component: "Graph service",
+    severity: "WARN",
+    text: "3-hop traversals queued; p99 411ms against a 250ms objective.",
+  },
+  {
+    id: "ops_9930",
+    at: "2026-08-22 16:55:41Z",
+    component: "Decision stream",
+    severity: "WARN",
+    text: "Consumer lag on partition 6 reached 42,118 records.",
+  },
+  {
+    id: "ops_9927",
+    at: "2026-08-22 14:10:19Z",
+    component: "Model serving",
+    severity: "INFO",
+    text: "mdl_wire_risk v4.3.0-rc2 promoted to shadow at 10% mirrored traffic.",
+  },
+  {
+    id: "ops_9921",
+    at: "2026-08-22 09:02:07Z",
+    component: "Rules engine",
+    severity: "INFO",
+    text: "rule_mule_fanout_01 deployed in shadow mode by s.ibrahim.",
+  },
+  {
+    id: "ops_9914",
+    at: "2026-08-21 22:47:33Z",
+    component: "Webhook delivery",
+    severity: "CRITICAL",
+    text: "whk_siem_03 paused after 4 consecutive 504 responses.",
+  },
 ];
 
 export const slos = [
-  { name: "Decision API availability", target: "99.99%", actual: "99.995%", budget: 0.42, healthy: true },
-  { name: "Decision p99 latency", target: "< 80 ms", actual: "62.4 ms", budget: 0.18, healthy: true },
-  { name: "Graph traversal p99", target: "< 250 ms", actual: "411.0 ms", budget: 1, healthy: false },
-  { name: "Webhook delivery success", target: "> 99.5%", actual: "99.62%", budget: 0.31, healthy: true },
+  {
+    name: "Decision API availability",
+    target: "99.99%",
+    actual: "99.995%",
+    budget: 0.42,
+    healthy: true,
+  },
+  {
+    name: "Decision p99 latency",
+    target: "< 80 ms",
+    actual: "62.4 ms",
+    budget: 0.18,
+    healthy: true,
+  },
+  {
+    name: "Graph traversal p99",
+    target: "< 250 ms",
+    actual: "411.0 ms",
+    budget: 1,
+    healthy: false,
+  },
+  {
+    name: "Webhook delivery success",
+    target: "> 99.5%",
+    actual: "99.62%",
+    budget: 0.31,
+    healthy: true,
+  },
 ];
 
 export type AccessEvent = {
@@ -666,28 +802,106 @@ export type AccessEvent = {
 };
 
 export const accessEvents: AccessEvent[] = [
-  { id: "aud_44120", at: "2026-08-22 17:44:02Z", actor: "m.okafor", action: "case.view", target: "CASE-88419", ip: "10.14.7.22", result: "ALLOWED" },
-  { id: "aud_44119", at: "2026-08-22 17:42:55Z", actor: "svc_case_worker", action: "case.create", target: "CASE-88419", ip: "10.20.1.9", result: "ALLOWED" },
-  { id: "aud_44112", at: "2026-08-22 16:31:10Z", actor: "r.duarte", action: "rule.update", target: "rule_velocity_geo_07", ip: "10.14.7.51", result: "ALLOWED" },
-  { id: "aud_44108", at: "2026-08-22 15:04:48Z", actor: "t.novak", action: "apikey.reveal", target: "key_9f21ab", ip: "10.14.9.3", result: "DENIED" },
-  { id: "aud_44101", at: "2026-08-22 11:22:36Z", actor: "s.ibrahim", action: "model.promote", target: "mdl_wire_risk v4.3.0-rc2", ip: "10.14.7.31", result: "ALLOWED" },
+  {
+    id: "aud_44120",
+    at: "2026-08-22 17:44:02Z",
+    actor: "m.okafor",
+    action: "case.view",
+    target: "CASE-88419",
+    ip: "10.14.7.22",
+    result: "ALLOWED",
+  },
+  {
+    id: "aud_44119",
+    at: "2026-08-22 17:42:55Z",
+    actor: "svc_case_worker",
+    action: "case.create",
+    target: "CASE-88419",
+    ip: "10.20.1.9",
+    result: "ALLOWED",
+  },
+  {
+    id: "aud_44112",
+    at: "2026-08-22 16:31:10Z",
+    actor: "r.duarte",
+    action: "rule.update",
+    target: "rule_velocity_geo_07",
+    ip: "10.14.7.51",
+    result: "ALLOWED",
+  },
+  {
+    id: "aud_44108",
+    at: "2026-08-22 15:04:48Z",
+    actor: "t.novak",
+    action: "apikey.reveal",
+    target: "key_9f21ab",
+    ip: "10.14.9.3",
+    result: "DENIED",
+  },
+  {
+    id: "aud_44101",
+    at: "2026-08-22 11:22:36Z",
+    actor: "s.ibrahim",
+    action: "model.promote",
+    target: "mdl_wire_risk v4.3.0-rc2",
+    ip: "10.14.7.31",
+    result: "ALLOWED",
+  },
 ];
 
 export const securityPosture = [
   { control: "SSO (SAML 2.0)", state: "Enforced", detail: "Okta — northbank.okta.example" },
   { control: "MFA", state: "Enforced", detail: "WebAuthn required for analyst and admin roles" },
   { control: "Key rotation", state: "90 days", detail: "1 key currently rotating (key_7c8de2)" },
-  { control: "Data residency", state: "eu-central-1", detail: "Decision payloads retained 400 days" },
-  { control: "PII redaction", state: "Enabled", detail: "Beneficiary names masked in decision payloads" },
+  {
+    control: "Data residency",
+    state: "eu-central-1",
+    detail: "Decision payloads retained 400 days",
+  },
+  {
+    control: "PII redaction",
+    state: "Enabled",
+    detail: "Beneficiary names masked in decision payloads",
+  },
   { control: "Audit export", state: "Streaming", detail: "SIEM endpoint paused — whk_siem_03" },
 ];
 
 export const teamMembers = [
-  { user: "m.okafor", name: "M. Okafor", role: "Risk Analyst", scopes: "cases:write, decisions:read", lastActive: "2026-08-22 17:44Z" },
-  { user: "s.ibrahim", name: "S. Ibrahim", role: "Fraud Strategy", scopes: "rules:write, models:write", lastActive: "2026-08-22 16:12Z" },
-  { user: "r.duarte", name: "R. Duarte", role: "Risk Engineering", scopes: "rules:write, api:admin", lastActive: "2026-08-22 16:31Z" },
-  { user: "t.novak", name: "T. Novak", role: "Operations", scopes: "decisions:read", lastActive: "2026-08-22 15:04Z" },
-  { user: "svc_case_worker", name: "Case automation", role: "Service account", scopes: "cases:write", lastActive: "2026-08-22 17:42Z" },
+  {
+    user: "m.okafor",
+    name: "M. Okafor",
+    role: "Risk Analyst",
+    scopes: "cases:write, decisions:read",
+    lastActive: "2026-08-22 17:44Z",
+  },
+  {
+    user: "s.ibrahim",
+    name: "S. Ibrahim",
+    role: "Fraud Strategy",
+    scopes: "rules:write, models:write",
+    lastActive: "2026-08-22 16:12Z",
+  },
+  {
+    user: "r.duarte",
+    name: "R. Duarte",
+    role: "Risk Engineering",
+    scopes: "rules:write, api:admin",
+    lastActive: "2026-08-22 16:31Z",
+  },
+  {
+    user: "t.novak",
+    name: "T. Novak",
+    role: "Operations",
+    scopes: "decisions:read",
+    lastActive: "2026-08-22 15:04Z",
+  },
+  {
+    user: "svc_case_worker",
+    name: "Case automation",
+    role: "Service account",
+    scopes: "cases:write",
+    lastActive: "2026-08-22 17:42Z",
+  },
 ];
 
 export const tenantSettings = [

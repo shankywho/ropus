@@ -8,9 +8,16 @@ export const Route = createFileRoute("/webhooks")({
   head: () => ({
     meta: [
       { title: "Webhooks — ROPUS" },
-      { name: "description", content: "Webhook endpoints, subscribed events, delivery success rates and recent delivery attempts." },
+      {
+        name: "description",
+        content:
+          "Webhook endpoints, subscribed events, delivery success rates and recent delivery attempts.",
+      },
       { property: "og:title", content: "Webhooks — ROPUS" },
-      { property: "og:description", content: "Endpoint health and recent delivery attempts for decision and case events." },
+      {
+        property: "og:description",
+        content: "Endpoint health and recent delivery attempts for decision and case events.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -55,10 +62,17 @@ function WebhooksPage() {
                 <Mono className="text-muted-foreground">{e.id}</Mono>,
                 <Mono className="font-medium">{e.url}</Mono>,
                 <span className="text-muted-foreground">{e.events.join(", ")}</span>,
-                <Mono className={e.successRate < 0.99 ? "text-warning" : undefined}>{(e.successRate * 100).toFixed(2)}%</Mono>,
+                <Mono className={e.successRate < 0.99 ? "text-warning" : undefined}>
+                  {(e.successRate * 100).toFixed(2)}%
+                </Mono>,
                 <Mono className="text-muted-foreground">{e.p95Ms.toFixed(1)}ms</Mono>,
                 <Mono className="text-muted-foreground">{e.lastDelivery}</Mono>,
-                <span className={cn("text-[11px] font-semibold tracking-[0.06em]", e.state === "ACTIVE" ? "text-approve" : "text-warning")}>
+                <span
+                  className={cn(
+                    "text-[11px] font-semibold tracking-[0.06em]",
+                    e.state === "ACTIVE" ? "text-approve" : "text-warning",
+                  )}
+                >
                   {e.state}
                 </span>,
               ],
@@ -89,8 +103,12 @@ function WebhooksPage() {
                   <Mono>{d.id}</Mono>,
                   <Mono className="text-muted-foreground">{d.endpoint}</Mono>,
                   <span className="text-muted-foreground">{d.event}</span>,
-                  <Mono className={d.attempt > 1 ? "text-warning" : "text-muted-foreground"}>{d.attempt}</Mono>,
-                  <Mono className={d.status >= 400 ? "text-block" : "text-approve"}>{d.status}</Mono>,
+                  <Mono className={d.attempt > 1 ? "text-warning" : "text-muted-foreground"}>
+                    {d.attempt}
+                  </Mono>,
+                  <Mono className={d.status >= 400 ? "text-block" : "text-approve"}>
+                    {d.status}
+                  </Mono>,
                   <Mono className="text-muted-foreground">{(d.latencyMs / 1000).toFixed(2)}s</Mono>,
                 ],
               }))}

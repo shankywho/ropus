@@ -15,7 +15,10 @@ export const Route = createFileRoute("/decisions/")({
         content: "Search and filter every risk decision returned by the ROPUS evaluation API.",
       },
       { property: "og:title", content: "Risk Decisions — ROPUS" },
-      { property: "og:description", content: "Search and filter risk decisions returned by the evaluation API." },
+      {
+        property: "og:description",
+        content: "Search and filter risk decisions returned by the evaluation API.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -51,8 +54,8 @@ function Decisions() {
         <div>
           <h1 className="text-[19px] font-semibold tracking-tight">Risk decisions</h1>
           <p className="mt-1 max-w-[62ch] text-[13px] text-muted-foreground">
-            Every evaluation returned by <Mono>POST /v1/risk/evaluate</Mono>, with the verdict, score and served
-            latency. Open a decision for its full attribution.
+            Every evaluation returned by <Mono>POST /v1/risk/evaluate</Mono>, with the verdict,
+            score and served latency. Open a decision for its full attribution.
           </p>
         </div>
         {!isLiveBackend && <DemoTag />}
@@ -68,7 +71,9 @@ function Decisions() {
               aria-pressed={verdict === f}
               className={cn(
                 "text-[12.5px]",
-                verdict === f ? "font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
+                verdict === f
+                  ? "font-semibold text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
               {f === "ALL" ? "All" : f}
@@ -88,20 +93,28 @@ function Decisions() {
         <caption className="sr-only">Risk decisions</caption>
         <thead>
           <tr className="border-b border-border">
-            {["Evaluated", "Decision", "Transaction", "Customer", "Amount", "Risk", "Verdict", "Latency", "Case"].map(
-              (h, i) => (
-                <th
-                  key={h}
-                  scope="col"
-                  className={cn(
-                    "label-xs py-2 pr-4 font-semibold whitespace-nowrap",
-                    i === 4 || i === 5 || i === 7 ? "text-right" : "text-left",
-                  )}
-                >
-                  {h}
-                </th>
-              ),
-            )}
+            {[
+              "Evaluated",
+              "Decision",
+              "Transaction",
+              "Customer",
+              "Amount",
+              "Risk",
+              "Verdict",
+              "Latency",
+              "Case",
+            ].map((h, i) => (
+              <th
+                key={h}
+                scope="col"
+                className={cn(
+                  "label-xs py-2 pr-4 font-semibold whitespace-nowrap",
+                  i === 4 || i === 5 || i === 7 ? "text-right" : "text-left",
+                )}
+              >
+                {h}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>

@@ -33,7 +33,8 @@ export const Route = createFileRoute("/decisions/$decisionId")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  loader: ({ context, params }) => context.queryClient.ensureQueryData(decisionQuery(params.decisionId)),
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(decisionQuery(params.decisionId)),
   component: DecisionDetail,
 });
 
@@ -78,10 +79,15 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
               ["Customer", d.customerId],
               ["Transaction", d.transactionId],
               ["Decision", d.decisionId],
-              ["Evaluated", new Date(d.evaluatedAt).toISOString().replace("T", " ").slice(0, 19) + "Z"],
+              [
+                "Evaluated",
+                new Date(d.evaluatedAt).toISOString().replace("T", " ").slice(0, 19) + "Z",
+              ],
             ].map(([k, v]) => (
               <div key={k}>
-                <dt className="text-[10.5px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">{k}</dt>
+                <dt className="text-[10.5px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                  {k}
+                </dt>
                 <dd className="mt-0.5">
                   <Mono>{v}</Mono>
                 </dd>
@@ -97,7 +103,9 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
             <dl className="mt-3 space-y-1 text-[11.5px] text-muted-foreground">
               <div className="flex justify-between gap-6">
                 <dt>Confidence</dt>
-                <dd className="font-mono text-foreground tabular">{(d.confidence * 100).toFixed(0)}%</dd>
+                <dd className="font-mono text-foreground tabular">
+                  {(d.confidence * 100).toFixed(0)}%
+                </dd>
               </div>
               <div className="flex justify-between gap-6">
                 <dt>Policy</dt>
@@ -114,13 +122,10 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
 
       {/* ------------------------------------------------------ two columns */}
       <div className="grid gap-x-12 gap-y-8 pt-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-
         {/* left: the story */}
         <div className="space-y-10">
           <section>
-            <h2 className="text-[11px] font-bold tracking-[0.08em] uppercase">
-              Why this decision
-            </h2>
+            <h2 className="text-[11px] font-bold tracking-[0.08em] uppercase">Why this decision</h2>
             <p className="mt-2 max-w-[62ch] text-[13.5px] leading-relaxed text-foreground/90">
               {d.evidence.find((e) => e.kind === "INFERRED")?.text ??
                 "No elevated pattern detected; the transaction matches the customer baseline."}
@@ -145,12 +150,14 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
               <div className="pt-1">
                 <p className="text-[12.5px] text-muted-foreground">
                   Predicted fraud probability{" "}
-                  <Mono className="text-foreground">{d.inference.probability.toFixed(4)}</Mono>. Feature
-                  contributions are model attributions, not observed facts.
+                  <Mono className="text-foreground">{d.inference.probability.toFixed(4)}</Mono>.
+                  Feature contributions are model attributions, not observed facts.
                 </p>
                 <KeyValue
                   rows={d.inference.features.map((f) => [
-                    <span key={f.name} className="font-mono text-[12px]">{f.name}</span>,
+                    <span key={f.name} className="font-mono text-[12px]">
+                      {f.name}
+                    </span>,
                     <Mono key={`${f.name}-v`}>+{f.contribution.toFixed(2)}</Mono>,
                   ])}
                 />
@@ -185,7 +192,9 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
         <aside className="space-y-9">
           <section>
             <div className="flex items-baseline justify-between">
-              <h2 className="text-[11px] font-bold tracking-[0.08em] uppercase">Score attribution</h2>
+              <h2 className="text-[11px] font-bold tracking-[0.08em] uppercase">
+                Score attribution
+              </h2>
               <Mono className="text-muted-foreground">
                 {d.baseScore.toFixed(2)} → {d.riskScore.toFixed(2)}
               </Mono>
@@ -237,7 +246,12 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
             <KeyValue
               rows={[
                 ["IP", <Mono key="ip">{d.threatIntel.ip}</Mono>],
-                ["Network", <span key="asn" className="text-[12.5px]">{d.threatIntel.asn}</span>],
+                [
+                  "Network",
+                  <span key="asn" className="text-[12.5px]">
+                    {d.threatIntel.asn}
+                  </span>,
+                ],
                 [
                   "IP reputation",
                   <span
@@ -259,7 +273,12 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
                       .join(" · ")}
                   </Mono>,
                 ],
-                ["Device", <span key="dev" className="text-[12.5px]">{d.threatIntel.deviceNovelty}</span>],
+                [
+                  "Device",
+                  <span key="dev" className="text-[12.5px]">
+                    {d.threatIntel.deviceNovelty}
+                  </span>,
+                ],
               ]}
             />
           </section>
@@ -267,10 +286,20 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
           <section className="border-t border-border pt-6">
             <h2 className="text-[11px] font-bold tracking-[0.08em] uppercase">Delivery</h2>
             <div className="mt-3 grid grid-cols-2 gap-6">
-              <Metric label="Webhook status" value={String(d.webhook.status)} sub={`attempt ${d.webhook.attempt}`} />
-              <Metric label="Evaluation latency" value={`${d.latencyMs.toFixed(1)}`} sub="milliseconds" />
+              <Metric
+                label="Webhook status"
+                value={String(d.webhook.status)}
+                sub={`attempt ${d.webhook.attempt}`}
+              />
+              <Metric
+                label="Evaluation latency"
+                value={`${d.latencyMs.toFixed(1)}`}
+                sub="milliseconds"
+              />
             </div>
-            <p className="mt-3 truncate font-mono text-[11px] text-muted-foreground">{d.webhook.endpoint}</p>
+            <p className="mt-3 truncate font-mono text-[11px] text-muted-foreground">
+              {d.webhook.endpoint}
+            </p>
           </section>
 
           {d.caseId && (

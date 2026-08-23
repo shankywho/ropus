@@ -8,9 +8,15 @@ export const Route = createFileRoute("/api-keys")({
   head: () => ({
     meta: [
       { title: "API Keys — ROPUS" },
-      { name: "description", content: "Issued API keys, scopes, environments, rotation state and last use." },
+      {
+        name: "description",
+        content: "Issued API keys, scopes, environments, rotation state and last use.",
+      },
       { property: "og:title", content: "API Keys — ROPUS" },
-      { property: "og:description", content: "Key inventory with scopes, rotation state and last use." },
+      {
+        property: "og:description",
+        content: "Key inventory with scopes, rotation state and last use.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -34,9 +40,21 @@ function ApiKeysPage() {
 
       <MetricStrip
         items={[
-          { label: "Active keys", value: String(apiKeys.filter((k) => k.state === "ACTIVE").length), sub: "production and sandbox" },
-          { label: "Rotating", value: String(apiKeys.filter((k) => k.state === "ROTATING").length), sub: "overlap window open" },
-          { label: "Revoked", value: String(apiKeys.filter((k) => k.state === "REVOKED").length), sub: "retained for audit" },
+          {
+            label: "Active keys",
+            value: String(apiKeys.filter((k) => k.state === "ACTIVE").length),
+            sub: "production and sandbox",
+          },
+          {
+            label: "Rotating",
+            value: String(apiKeys.filter((k) => k.state === "ROTATING").length),
+            sub: "overlap window open",
+          },
+          {
+            label: "Revoked",
+            value: String(apiKeys.filter((k) => k.state === "REVOKED").length),
+            sub: "retained for audit",
+          },
           { label: "Rotation policy", value: "90 days", sub: "enforced" },
           { label: "Oldest active", value: "343 days", sub: "key_9f21ab" },
         ]}
@@ -62,20 +80,29 @@ function ApiKeysPage() {
                 <Mono className="text-muted-foreground">{k.id}</Mono>,
                 <span className="font-medium">{k.label}</span>,
                 <Mono>{k.prefix}</Mono>,
-                <span className={cn("text-[11px] font-semibold tracking-[0.06em]", k.environment === "PRODUCTION" ? "text-foreground" : "text-muted-foreground")}>
+                <span
+                  className={cn(
+                    "text-[11px] font-semibold tracking-[0.06em]",
+                    k.environment === "PRODUCTION" ? "text-foreground" : "text-muted-foreground",
+                  )}
+                >
                   {k.environment}
                 </span>,
                 <Mono className="text-muted-foreground">{k.scopes.join(", ")}</Mono>,
                 <Mono className="text-muted-foreground">{k.created}</Mono>,
                 <Mono className="text-muted-foreground">{k.lastUsed}</Mono>,
-                <span className={cn("text-[11px] font-semibold tracking-[0.06em]", stateTone[k.state])}>{k.state}</span>,
+                <span
+                  className={cn("text-[11px] font-semibold tracking-[0.06em]", stateTone[k.state])}
+                >
+                  {k.state}
+                </span>,
               ],
             }))}
           />
         </div>
         <p className="mt-3 text-[11.5px] text-muted-foreground">
-          key_7c8de2 is mid-rotation; its replacement has served traffic since 2026-08-21 and the old key expires
-          2026-08-23 16:00Z.
+          key_7c8de2 is mid-rotation; its replacement has served traffic since 2026-08-21 and the
+          old key expires 2026-08-23 16:00Z.
         </p>
       </div>
     </Page>

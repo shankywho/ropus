@@ -8,9 +8,16 @@ export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
       { title: "Settings — ROPUS" },
-      { name: "description", content: "Tenant configuration: decision thresholds, timeout behaviour, case automation and retention." },
+      {
+        name: "description",
+        content:
+          "Tenant configuration: decision thresholds, timeout behaviour, case automation and retention.",
+      },
       { property: "og:title", content: "Settings — ROPUS" },
-      { property: "og:description", content: "Thresholds, fallback behaviour and retention for this tenant." },
+      {
+        property: "og:description",
+        content: "Thresholds, fallback behaviour and retention for this tenant.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -59,8 +66,14 @@ const thresholds = [
 
 const settingGroups: Array<{ title: string; keys: string[] }> = [
   { title: "Identity", keys: ["Tenant", "Legal entity", "Default policy"] },
-  { title: "Decision thresholds", keys: ["Block threshold", "Review threshold", "Challenge threshold"] },
-  { title: "Runtime behaviour", keys: ["Decision timeout", "Fallback on timeout", "Case auto-open"] },
+  {
+    title: "Decision thresholds",
+    keys: ["Block threshold", "Review threshold", "Challenge threshold"],
+  },
+  {
+    title: "Runtime behaviour",
+    keys: ["Decision timeout", "Fallback on timeout", "Case auto-open"],
+  },
   { title: "Data", keys: ["Retention"] },
 ];
 
@@ -80,7 +93,9 @@ function SettingsPage() {
           <div className="mt-3 space-y-5">
             {settingGroups.map((g) => (
               <div key={g.title}>
-                <div className="text-[10px] font-bold tracking-[0.1em] text-muted-foreground uppercase">{g.title}</div>
+                <div className="text-[10px] font-bold tracking-[0.1em] text-muted-foreground uppercase">
+                  {g.title}
+                </div>
                 <dl className="mt-1">
                   {g.keys.map((k) => (
                     <div
@@ -123,16 +138,28 @@ function SettingsPage() {
                   {p.toFixed(2)}
                 </span>
               ))}
-              <span className="absolute left-0 font-mono text-[10.5px] text-muted-foreground">0.00</span>
-              <span className="absolute right-0 font-mono text-[10.5px] text-muted-foreground">1.00</span>
+              <span className="absolute left-0 font-mono text-[10.5px] text-muted-foreground">
+                0.00
+              </span>
+              <span className="absolute right-0 font-mono text-[10.5px] text-muted-foreground">
+                1.00
+              </span>
             </div>
           </div>
 
           <dl className="mt-4">
             {thresholds.map((t) => (
-              <div key={t.verdict} className="border-b border-border py-2.5 last:border-b-0 hover:bg-accent">
+              <div
+                key={t.verdict}
+                className="border-b border-border py-2.5 last:border-b-0 hover:bg-accent"
+              >
                 <div className="flex items-baseline justify-between gap-4">
-                  <dt className={cn("flex items-baseline gap-2 text-[11px] font-bold tracking-[0.08em] uppercase", t.tone)}>
+                  <dt
+                    className={cn(
+                      "flex items-baseline gap-2 text-[11px] font-bold tracking-[0.08em] uppercase",
+                      t.tone,
+                    )}
+                  >
                     <span aria-hidden className={cn("size-[6px] translate-y-[-1px]", t.bar)} />
                     {t.verdict}
                   </dt>
@@ -150,8 +177,8 @@ function SettingsPage() {
               Human in the loop
             </div>
             <p className="mt-1 text-[12px] text-muted-foreground">
-              Recommended actions are never executed automatically at any threshold. A human confirms every
-              irreversible action.
+              Recommended actions are never executed automatically at any threshold. A human
+              confirms every irreversible action.
             </p>
           </div>
         </section>

@@ -8,7 +8,11 @@ import { isLiveBackend } from "@/lib/ropus/api";
  * same table. One spacing system, no per-page improvisation.
  */
 export function Page({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("mx-auto w-full max-w-[1560px] px-5 py-5 lg:px-7", className)}>{children}</div>;
+  return (
+    <div className={cn("mx-auto w-full max-w-[1560px] px-5 py-5 lg:px-7", className)}>
+      {children}
+    </div>
+  );
 }
 
 export function PageHead({
@@ -25,9 +29,15 @@ export function PageHead({
   return (
     <header className="flex flex-wrap items-start justify-between gap-x-8 gap-y-3 border-b border-border pb-4">
       <div className="min-w-0">
-        {breadcrumb && <div className="mb-1.5 flex items-center gap-2 text-[11.5px] text-muted-foreground">{breadcrumb}</div>}
+        {breadcrumb && (
+          <div className="mb-1.5 flex items-center gap-2 text-[11.5px] text-muted-foreground">
+            {breadcrumb}
+          </div>
+        )}
         <h1 className="text-[20px] leading-tight font-bold tracking-[-0.01em]">{title}</h1>
-        {subtitle && <p className="mt-1 max-w-[78ch] text-[12.5px] text-muted-foreground">{subtitle}</p>}
+        {subtitle && (
+          <p className="mt-1 max-w-[78ch] text-[12.5px] text-muted-foreground">{subtitle}</p>
+        )}
       </div>
       <div className="flex shrink-0 items-center gap-3">
         {actions}
@@ -49,7 +59,12 @@ export function SectionHead({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-1.5", className)}>
+    <div
+      className={cn(
+        "flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-1.5",
+        className,
+      )}
+    >
       <div className="flex items-baseline gap-3">
         <h2 className="text-[11px] font-bold tracking-[0.08em] uppercase">{title}</h2>
         {meta && <span className="text-[11.5px] text-muted-foreground">{meta}</span>}
@@ -131,7 +146,10 @@ export function DataGrid({
                 )}
               >
                 {selectedId === r.id && i === 0 && (
-                  <span aria-hidden className="absolute top-0 bottom-0 -left-2 w-[2px] bg-primary" />
+                  <span
+                    aria-hidden
+                    className="absolute top-0 bottom-0 -left-2 w-[2px] bg-primary"
+                  />
                 )}
                 {cell}
               </td>
@@ -160,7 +178,9 @@ export function MetricStrip({
     <dl className="grid grid-cols-2 divide-x divide-border border-b border-border sm:grid-cols-3 lg:grid-cols-5">
       {items.map((m, i) => (
         <div key={m.label} className={cn("px-5 py-3.5", i === 0 && "pl-0")}>
-          <dd className={cn("font-mono text-[21px] leading-none font-bold tabular", m.tone)}>{m.value}</dd>
+          <dd className={cn("font-mono text-[21px] leading-none font-bold tabular", m.tone)}>
+            {m.value}
+          </dd>
           <dt className="mt-2 text-[11.5px] font-medium">{m.label}</dt>
           {m.sub && <dd className="mt-0.5 text-[11px] text-muted-foreground">{m.sub}</dd>}
         </div>
@@ -184,7 +204,9 @@ export function TelemetryStrip({
     <dl className={cn("flex flex-wrap divide-x divide-border border-b border-border", className)}>
       {items.map((m, i) => (
         <div key={m.label} className={cn("px-4 py-2.5", i === 0 && "pl-0")}>
-          <dd className={cn("font-mono text-[17px] leading-none font-bold tabular", m.tone)}>{m.value}</dd>
+          <dd className={cn("font-mono text-[17px] leading-none font-bold tabular", m.tone)}>
+            {m.value}
+          </dd>
           <dt className="mt-1.5 text-[10.5px] font-semibold tracking-[0.07em] text-muted-foreground uppercase">
             {m.label}
           </dt>

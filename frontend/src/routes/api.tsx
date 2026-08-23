@@ -9,9 +9,16 @@ export const Route = createFileRoute("/api")({
   head: () => ({
     meta: [
       { title: "API — ROPUS" },
-      { name: "description", content: "Decision API reference: synchronous evaluation, decision retrieval, graph traversal and case endpoints." },
+      {
+        name: "description",
+        content:
+          "Decision API reference: synchronous evaluation, decision retrieval, graph traversal and case endpoints.",
+      },
       { property: "og:title", content: "API — ROPUS" },
-      { property: "og:description", content: "Synchronous risk evaluation endpoints with live latency and error rates." },
+      {
+        property: "og:description",
+        content: "Synchronous risk evaluation endpoints with live latency and error rates.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -53,12 +60,19 @@ function ApiPage() {
               rows={apiEndpoints.map((e) => ({
                 id: e.path,
                 cells: [
-                  <span className={cn("font-mono text-[11px] font-bold", e.method === "POST" ? "text-primary" : "text-muted-foreground")}>
+                  <span
+                    className={cn(
+                      "font-mono text-[11px] font-bold",
+                      e.method === "POST" ? "text-primary" : "text-muted-foreground",
+                    )}
+                  >
                     {e.method}
                   </span>,
                   <Mono className="font-medium">{e.path}</Mono>,
                   <span className="text-muted-foreground">{e.summary}</span>,
-                  <Mono className={e.p99Ms > 250 ? "text-warning" : "text-muted-foreground"}>{e.p99Ms.toFixed(1)}ms</Mono>,
+                  <Mono className={e.p99Ms > 250 ? "text-warning" : "text-muted-foreground"}>
+                    {e.p99Ms.toFixed(1)}ms
+                  </Mono>,
                   <Mono className="text-muted-foreground">{e.calls24h.toLocaleString()}</Mono>,
                   <Mono className={e.errorRate > 0.01 ? "text-warning" : "text-muted-foreground"}>
                     {(e.errorRate * 100).toFixed(2)}%
@@ -72,10 +86,19 @@ function ApiPage() {
             <SectionHead title="Integration notes" />
             <dl className="mt-1 divide-y divide-border text-[12.5px]">
               {[
-                ["Authentication", "Bearer key, scoped per environment. Keys are pinned to one API version."],
-                ["Idempotency", "Repeat a transaction_id within 24h to receive the original decision, not a new evaluation."],
+                [
+                  "Authentication",
+                  "Bearer key, scoped per environment. Keys are pinned to one API version.",
+                ],
+                [
+                  "Idempotency",
+                  "Repeat a transaction_id within 24h to receive the original decision, not a new evaluation.",
+                ],
                 ["Timeouts", "The gateway must fail open to REVIEW if ROPUS exceeds 120 ms."],
-                ["Webhooks", "decision.returned is delivered after the synchronous response; never gate a payment on it."],
+                [
+                  "Webhooks",
+                  "decision.returned is delivered after the synchronous response; never gate a payment on it.",
+                ],
                 ["Rate limit", "1,200 requests per second per production key; burst 2,000."],
               ].map(([k, v]) => (
                 <div key={k} className="flex gap-6 py-2">
@@ -103,8 +126,8 @@ function ApiPage() {
             </div>
           </div>
           <p className="mt-3 text-[11.5px] text-muted-foreground">
-            The response carries the verdict only. Factors, evidence and the graph neighbourhood are fetched from the
-            decision endpoint by the console, not by the payment path.
+            The response carries the verdict only. Factors, evidence and the graph neighbourhood are
+            fetched from the decision endpoint by the console, not by the payment path.
           </p>
         </aside>
       </div>

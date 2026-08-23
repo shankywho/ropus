@@ -11,9 +11,16 @@ export const Route = createFileRoute("/operations")({
   head: () => ({
     meta: [
       { title: "Operations — ROPUS" },
-      { name: "description", content: "Service health, error budgets and the operational event log for the decision path." },
+      {
+        name: "description",
+        content:
+          "Service health, error budgets and the operational event log for the decision path.",
+      },
       { property: "og:title", content: "Operations — ROPUS" },
-      { property: "og:description", content: "Component health, SLO budgets and recent operational events." },
+      {
+        property: "og:description",
+        content: "Component health, SLO budgets and recent operational events.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -69,7 +76,11 @@ function OperationsPage() {
             sub: degraded.map((d) => d.name).join(", ") || "none",
             tone: degraded.length ? "text-warning" : "",
           },
-          { label: "Decision p99", value: `${metrics.p99LatencyMs.toFixed(1)} ms`, sub: "objective < 80 ms" },
+          {
+            label: "Decision p99",
+            value: `${metrics.p99LatencyMs.toFixed(1)} ms`,
+            sub: "objective < 80 ms",
+          },
           { label: "Availability", value: "99.995%", sub: "trailing 30 days" },
           { label: "Open incidents", value: "1", sub: "graph traversal latency" },
         ]}
@@ -78,12 +89,16 @@ function OperationsPage() {
       {degraded.length > 0 && (
         <div className="mt-4 border border-border border-l-2 border-l-warning bg-warning/[0.06] px-4 py-3">
           <div className="flex items-baseline gap-2">
-            <span className="text-[10.5px] font-bold tracking-[0.08em] text-warning uppercase">Current impact</span>
-            <Mono className="text-[11px] text-muted-foreground">{degraded.length} components degraded</Mono>
+            <span className="text-[10.5px] font-bold tracking-[0.08em] text-warning uppercase">
+              Current impact
+            </span>
+            <Mono className="text-[11px] text-muted-foreground">
+              {degraded.length} components degraded
+            </Mono>
           </div>
           <p className="mt-1 max-w-[110ch] text-[12.5px] text-muted-foreground">
-            Synchronous decisioning remains healthy. Graph context is delayed and 3-hop traversals are queued. Decision
-            stream consumer lag is isolated to partition 6.
+            Synchronous decisioning remains healthy. Graph context is delayed and 3-hop traversals
+            are queued. Decision stream consumer lag is isolated to partition 6.
           </p>
         </div>
       )}
@@ -121,18 +136,30 @@ function OperationsPage() {
                       )}
                     >
                       <td className="relative py-2.5 pr-4 align-middle">
-                        {bad && <span aria-hidden className="absolute top-0 bottom-0 -left-2 w-[2px] bg-warning" />}
+                        {bad && (
+                          <span
+                            aria-hidden
+                            className="absolute top-0 bottom-0 -left-2 w-[2px] bg-warning"
+                          />
+                        )}
                         <span className="text-[13px] font-semibold">{s.name}</span>
                       </td>
                       <td className="py-2.5 pr-4 align-middle">
                         <StateBadge state={s.state} />
                       </td>
                       <td className="py-2.5 pr-4 text-right align-middle">
-                        <Mono className={cn("font-semibold", bad ? "text-warning" : "text-muted-foreground")}>
+                        <Mono
+                          className={cn(
+                            "font-semibold",
+                            bad ? "text-warning" : "text-muted-foreground",
+                          )}
+                        >
                           {s.p99Ms ? `${s.p99Ms.toFixed(1)} ms` : "—"}
                         </Mono>
                       </td>
-                      <td className="py-2.5 align-middle text-[12px] text-muted-foreground">{s.detail}</td>
+                      <td className="py-2.5 align-middle text-[12px] text-muted-foreground">
+                        {s.detail}
+                      </td>
                     </tr>
                   );
                 })}
@@ -150,12 +177,24 @@ function OperationsPage() {
                     key={e.id}
                     className="flex items-baseline gap-4 border-b border-border py-2.5 last:border-b-0 hover:bg-accent"
                   >
-                    <span aria-hidden className={cn("h-3 w-[2px] shrink-0 self-center", tone.rail)} />
-                    <Mono className="w-[150px] shrink-0 text-[11.5px] text-muted-foreground">{e.at}</Mono>
-                    <span className={cn("w-[70px] shrink-0 text-[10px] font-bold tracking-[0.08em]", tone.text)}>
+                    <span
+                      aria-hidden
+                      className={cn("h-3 w-[2px] shrink-0 self-center", tone.rail)}
+                    />
+                    <Mono className="w-[150px] shrink-0 text-[11.5px] text-muted-foreground">
+                      {e.at}
+                    </Mono>
+                    <span
+                      className={cn(
+                        "w-[70px] shrink-0 text-[10px] font-bold tracking-[0.08em]",
+                        tone.text,
+                      )}
+                    >
                       {e.severity}
                     </span>
-                    <span className="w-[140px] shrink-0 text-[12.5px] font-semibold">{e.component}</span>
+                    <span className="w-[140px] shrink-0 text-[12.5px] font-semibold">
+                      {e.component}
+                    </span>
                     <span className="min-w-0 text-[12.5px] text-muted-foreground">{e.text}</span>
                   </li>
                 );
@@ -174,11 +213,16 @@ function OperationsPage() {
                 <div key={s.name} className="border-b border-border py-2.5 last:border-b-0">
                   <div className="flex items-baseline justify-between gap-4">
                     <span className="text-[12.5px] font-medium">{s.name}</span>
-                    <Mono className={cn("font-semibold", s.healthy ? undefined : "text-warning")}>{s.actual}</Mono>
+                    <Mono className={cn("font-semibold", s.healthy ? undefined : "text-warning")}>
+                      {s.actual}
+                    </Mono>
                   </div>
                   <div className="mt-1.5 h-[6px] w-full bg-neutral-surface">
                     <div
-                      className={cn("h-full", exhausted ? "bg-block" : s.healthy ? "bg-approve" : "bg-warning")}
+                      className={cn(
+                        "h-full",
+                        exhausted ? "bg-block" : s.healthy ? "bg-approve" : "bg-warning",
+                      )}
                       style={{ width: `${used * 100}%` }}
                     />
                   </div>
@@ -188,7 +232,8 @@ function OperationsPage() {
                     </span>
                     <span>
                       <Mono className="text-[11px]">{(used * 100).toFixed(0)}%</Mono> consumed ·{" "}
-                      <Mono className="text-[11px]">{((1 - used) * 100).toFixed(0)}%</Mono> remaining
+                      <Mono className="text-[11px]">{((1 - used) * 100).toFixed(0)}%</Mono>{" "}
+                      remaining
                     </span>
                   </div>
                   {exhausted && (
@@ -227,8 +272,8 @@ function OperationsPage() {
                 ))}
               </dl>
               <p className="mt-2 text-[11.5px] text-muted-foreground">
-                Graph traversal has consumed its full budget for this window. 3-hop traversals are queued behind 1- and
-                2-hop requests until the backlog clears.
+                Graph traversal has consumed its full budget for this window. 3-hop traversals are
+                queued behind 1- and 2-hop requests until the backlog clears.
               </p>
             </div>
           </div>

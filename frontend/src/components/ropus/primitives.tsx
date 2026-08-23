@@ -25,9 +25,7 @@ export function Panel({
         <header className="flex items-start justify-between gap-4 border-b border-border px-4 py-2.5">
           <div>
             <h2 className="text-[13px] font-bold tracking-tight">{title}</h2>
-            {description && (
-              <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>
-            )}
+            {description && <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>}
           </div>
           {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
         </header>
@@ -53,7 +51,11 @@ export function PageHeader({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-2xl">
           <h1 className="text-[22px] leading-tight font-bold tracking-tight">{title}</h1>
-          {description && <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">{description}</p>}
+          {description && (
+            <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
+              {description}
+            </p>
+          )}
           {meta}
         </div>
         {controls && <div className="flex flex-wrap items-center gap-2">{controls}</div>}
@@ -138,7 +140,12 @@ export function HealthIndicator({ state }: { state: Health }) {
   } as const;
   const s = map[state];
   return (
-    <span className={cn("inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.05em]", s.text)}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.05em]",
+        s.text,
+      )}
+    >
       <span aria-hidden className={cn("size-2", s.tone)} />
       {state}
     </span>
@@ -147,19 +154,32 @@ export function HealthIndicator({ state }: { state: Health }) {
 
 export function RiskScore({ value, size = "sm" }: { value: number; size?: "sm" | "xl" }) {
   const tone =
-    value >= 0.8 ? "text-block" : value >= 0.55 ? "text-review" : value >= 0.35 ? "text-challenge" : "text-approve";
-  const band = value >= 0.8 ? "Critical" : value >= 0.55 ? "Elevated" : value >= 0.35 ? "Moderate" : "Low";
+    value >= 0.8
+      ? "text-block"
+      : value >= 0.55
+        ? "text-review"
+        : value >= 0.35
+          ? "text-challenge"
+          : "text-approve";
+  const band =
+    value >= 0.8 ? "Critical" : value >= 0.55 ? "Elevated" : value >= 0.35 ? "Moderate" : "Low";
   if (size === "xl") {
     return (
       <div>
-        <div className={cn("font-mono text-4xl leading-none font-bold tabular", tone)}>{value.toFixed(2)}</div>
+        <div className={cn("font-mono text-4xl leading-none font-bold tabular", tone)}>
+          {value.toFixed(2)}
+        </div>
         <div className="mt-1 text-[11px] font-semibold tracking-[0.06em] text-muted-foreground uppercase">
           {band} risk
         </div>
       </div>
     );
   }
-  return <span className={cn("font-mono text-[12.5px] font-semibold tabular", tone)}>{value.toFixed(2)}</span>;
+  return (
+    <span className={cn("font-mono text-[12.5px] font-semibold tabular", tone)}>
+      {value.toFixed(2)}
+    </span>
+  );
 }
 
 /* ----------------------------------------------------------------- metrics */
@@ -232,7 +252,12 @@ export function DataTable({
 
 export function Row({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <tr className={cn("border-b border-border transition-colors last:border-b-0 hover:bg-accent", className)}>
+    <tr
+      className={cn(
+        "border-b border-border transition-colors last:border-b-0 hover:bg-accent",
+        className,
+      )}
+    >
       {children}
     </tr>
   );
@@ -248,7 +273,13 @@ export function Cell({
   className?: string;
 }) {
   return (
-    <td className={cn("px-3 py-2 align-middle first:pl-0 last:pr-0", align === "right" && "text-right", className)}>
+    <td
+      className={cn(
+        "px-3 py-2 align-middle first:pl-0 last:pr-0",
+        align === "right" && "text-right",
+        className,
+      )}
+    >
       {children}
     </td>
   );
@@ -256,11 +287,20 @@ export function Cell({
 
 /* -------------------------------------------------------------- key/values */
 
-export function KeyValue({ rows, columns = 1 }: { rows: Array<[ReactNode, ReactNode]>; columns?: 1 | 2 }) {
+export function KeyValue({
+  rows,
+  columns = 1,
+}: {
+  rows: Array<[ReactNode, ReactNode]>;
+  columns?: 1 | 2;
+}) {
   return (
     <dl className={cn("grid", columns === 2 ? "sm:grid-cols-2" : "grid-cols-1")}>
       {rows.map(([k, v], i) => (
-        <div key={i} className="flex items-baseline justify-between gap-4 border-b border-border px-4 py-2 last:border-b-0">
+        <div
+          key={i}
+          className="flex items-baseline justify-between gap-4 border-b border-border px-4 py-2 last:border-b-0"
+        >
           <dt className="text-[12px] text-muted-foreground">{k}</dt>
           <dd className="text-right text-[13px] font-medium">{v}</dd>
         </div>
@@ -311,7 +351,9 @@ export function EvidenceGroup({
       <ul className="divide-y divide-border">
         {items.map((it, i) => (
           <li key={i} className="flex gap-3 px-4 py-2 text-[13px]">
-            <span className="font-mono text-[11px] text-muted-foreground tabular">{String(i + 1).padStart(2, "0")}</span>
+            <span className="font-mono text-[11px] text-muted-foreground tabular">
+              {String(i + 1).padStart(2, "0")}
+            </span>
             <span>{it}</span>
           </li>
         ))}
@@ -322,7 +364,15 @@ export function EvidenceGroup({
 
 /* ------------------------------------------------------------------ states */
 
-export function EmptyState({ title, description, action }: { title: string; description: string; action?: ReactNode }) {
+export function EmptyState({
+  title,
+  description,
+  action,
+}: {
+  title: string;
+  description: string;
+  action?: ReactNode;
+}) {
   return (
     <div className="flex flex-col items-start gap-2 border border-dashed border-border-strong bg-card px-5 py-8">
       <h3 className="text-[13px] font-bold">{title}</h3>
@@ -332,9 +382,20 @@ export function EmptyState({ title, description, action }: { title: string; desc
   );
 }
 
-export function ErrorState({ title, detail, code }: { title: string; detail: string; code?: string }) {
+export function ErrorState({
+  title,
+  detail,
+  code,
+}: {
+  title: string;
+  detail: string;
+  code?: string;
+}) {
   return (
-    <div role="alert" className="border border-block/40 border-l-2 border-l-block bg-block-surface px-5 py-4">
+    <div
+      role="alert"
+      className="border border-block/40 border-l-2 border-l-block bg-block-surface px-5 py-4"
+    >
       <div className="flex items-center gap-2">
         <StatusBadge tone="danger">Error</StatusBadge>
         {code && <Mono className="text-block">{code}</Mono>}
@@ -351,7 +412,11 @@ export function LoadingState({ rows = 4, label = "Loading" }: { rows?: number; l
       <span className="sr-only">{label}</span>
       <div className="space-y-2">
         {Array.from({ length: rows }).map((_, i) => (
-          <div key={i} className="h-4 animate-pulse bg-neutral-surface" style={{ width: `${100 - i * 9}%` }} />
+          <div
+            key={i}
+            className="h-4 animate-pulse bg-neutral-surface"
+            style={{ width: `${100 - i * 9}%` }}
+          />
         ))}
       </div>
     </div>
@@ -430,7 +495,9 @@ export function Section({
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-2">
         <div>
           <h2 className="text-[13px] font-bold tracking-tight">{title}</h2>
-          {description && <p className="mt-0.5 text-[12.5px] text-muted-foreground">{description}</p>}
+          {description && (
+            <p className="mt-0.5 text-[12.5px] text-muted-foreground">{description}</p>
+          )}
         </div>
         {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
       </div>
@@ -458,14 +525,20 @@ export function Disclosure({
   defaultOpen?: boolean;
 }) {
   return (
-    <details open={defaultOpen} className="group border-t border-border py-3 first:border-t-0 [&_summary::-webkit-details-marker]:hidden">
+    <details
+      open={defaultOpen}
+      className="group border-t border-border py-3 first:border-t-0 [&_summary::-webkit-details-marker]:hidden"
+    >
       <summary className="flex cursor-pointer list-none items-baseline justify-between gap-4">
         <span>
           <span className="text-[13px] font-semibold">{summary}</span>
           {detail && <span className="ml-2 text-[12.5px] text-muted-foreground">{detail}</span>}
         </span>
         <span className="shrink-0 text-[12.5px] font-medium text-primary">
-          {cta} <span aria-hidden className="inline-block transition-transform group-open:rotate-90">→</span>
+          {cta}{" "}
+          <span aria-hidden className="inline-block transition-transform group-open:rotate-90">
+            →
+          </span>
         </span>
       </summary>
       <div className="pt-3">{children}</div>

@@ -1,23 +1,99 @@
 import { useSyncExternalStore } from "react";
 
-/**
- * Deterministic demo playback. No randomness, no simulated network jitter —
- * the controller only advances a stage index; every surface derives what it
- * shows from that index.
- */
-export const demoStages = [
-  { id: 0, label: "Idle", note: "No traffic replayed yet." },
-  { id: 1, label: "Baseline activity", note: "Customer cus_4471029 transacting within their normal profile." },
-  { id: 2, label: "Session anomaly", note: "Login from an unrecognised device in Limassol, CY." },
-  { id: 3, label: "Beneficiary added", note: "Payout account PA-77120 attached to the customer." },
-  { id: 4, label: "Wire submitted", note: "Outbound wire of 14,500 USD enters the decision path." },
-  { id: 5, label: "Signals evaluated", note: "Rules, model, device and threat-intel factors returned." },
-  { id: 6, label: "Graph expanded", note: "Payout account resolves to two confirmed-fraud accounts." },
-  { id: 7, label: "Score escalated", note: "Risk score reaches 0.96 and the policy threshold is crossed." },
-  { id: 8, label: "Decision returned", note: "BLOCK returned to the payments gateway in 38.4 ms." },
-  { id: 9, label: "Case opened", note: "CASE-88419 opened at P1 and routed to the analyst queue." },
-  { id: 10, label: "Analyst review", note: "Human confirms the block. Nothing executed automatically." },
-] as const;
+export type DemoStageInfo = {
+  id: number;
+  stageNumber: number;
+  label: string;
+  shortExplanation: string;
+  technicalDetails: string;
+  activeSurface: "baseline" | "transaction" | "rules" | "ml" | "graph" | "investigator" | "case";
+  simulatedScore: number;
+  verdict: "APPROVE" | "REVIEW" | "CHALLENGE" | "BLOCK";
+};
+
+export const demoStages: DemoStageInfo[] = [
+  {
+    id: 0,
+    stageNumber: 1,
+    label: "Normal Customer Baseline",
+    shortExplanation: "Customer cus_4471029 transacts normally within their historical baseline.",
+    technicalDetails:
+      "Regular $50.00 grocery spend from Singapore (103.82°E, 1.35°N) on registered Safari iOS device (dev_safari_01). 0 disputes, normal velocity (1.2 tx/day).",
+    activeSurface: "baseline",
+    simulatedScore: 0.02,
+    verdict: "APPROVE",
+  },
+  {
+    id: 1,
+    stageNumber: 2,
+    label: "Attack Transaction Ingress",
+    shortExplanation:
+      "A high-value outbound wire request arrives from an unrecognised device and location.",
+    technicalDetails:
+      "POST /v1/risk/evaluate receives $14,500.00 USD transfer from Limassol, Cyprus IP 198.51.100.44 (Datacenter ASN 13335) on a Linux emulator canvas fingerprint.",
+    activeSurface: "transaction",
+    simulatedScore: 0.28,
+    verdict: "REVIEW",
+  },
+  {
+    id: 2,
+    stageNumber: 3,
+    label: "Rules Engine Deterministic Triggers",
+    shortExplanation:
+      "Declarative AST rules detect velocity surges and impossible physical travel.",
+    technicalDetails:
+      "AST evaluation in 0.4ms fires 3 deterministic rules: Velocity Surge (+412% in 1hr), Impossible Travel (51,350 km/h from Singapore 12m ago), and Datacenter Proxy CIDR.",
+    activeSurface: "rules",
+    simulatedScore: 0.65,
+    verdict: "CHALLENGE",
+  },
+  {
+    id: 3,
+    stageNumber: 4,
+    label: "ML Inference & Calibrated Probability",
+    shortExplanation: "25-feature ONNX XGBoost model evaluates non-linear attack interactions.",
+    technicalDetails:
+      "Python sidecar executes ONNX tree traversal in 2.1ms. Raw probability = 0.8712; Beta Calibration yields posterior P(fraud|x) = 0.9418. Expected Loss = $13,656.10.",
+    activeSurface: "ml",
+    simulatedScore: 0.88,
+    verdict: "BLOCK",
+  },
+  {
+    id: 4,
+    stageNumber: 5,
+    label: "Fraud Knowledge Graph Traversal",
+    shortExplanation: "In-memory 3-hop BFS discovers multi-account syndicate linkage.",
+    technicalDetails:
+      "Graph traversal expands customer -> device canvas 9f8a... -> 14 synthetic mule accounts with prior chargebacks. Degree centrality = 16. Confirmed syndicate ring.",
+    activeSurface: "graph",
+    simulatedScore: 0.94,
+    verdict: "BLOCK",
+  },
+  {
+    id: 5,
+    stageNumber: 6,
+    label: "AI Investigator Synthesizes Dossier",
+    shortExplanation:
+      "Autonomous Agent Council structures tripartite evidence and opens Priority 0 Case.",
+    technicalDetails:
+      "Council agents (Threat Hunter, Graph Analyst, AML Officer, Lead) generate Tripartite Dossier (Observed Facts vs Inferred Patterns vs Recommended Action). Opens CASE-88419 (P0 Critical).",
+    activeSurface: "investigator",
+    simulatedScore: 0.96,
+    verdict: "BLOCK",
+  },
+  {
+    id: 6,
+    stageNumber: 7,
+    label: "Human Analyst Confirms Block",
+    shortExplanation:
+      "Fraud analyst verifies the evidentiary dossier and confirms the permanent freeze.",
+    technicalDetails:
+      "Analyst reviews tripartite dossier in Control Plane and executes 'CONFIRM BLOCK & FREEZE'. Action commits to SHA-256 hash-chained audit ledger and routes ground-truth label to closed-loop ML retraining.",
+    activeSurface: "case",
+    simulatedScore: 0.96,
+    verdict: "BLOCK",
+  },
+];
 
 export type DemoState = {
   stage: number;
@@ -25,7 +101,7 @@ export type DemoState = {
   intervalMs: number;
 };
 
-let state: DemoState = { stage: 0, playing: false, intervalMs: 1400 };
+let state: DemoState = { stage: 0, playing: false, intervalMs: 2500 };
 let timer: ReturnType<typeof setInterval> | null = null;
 const listeners = new Set<() => void>();
 

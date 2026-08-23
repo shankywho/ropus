@@ -70,7 +70,6 @@ function CaseBody({ record }: { record: CaseRecord }) {
 
   const closed = record.status === "CLOSED" || resolution !== null;
 
-
   const resolve = (label: string, text: string) => {
     setResolution(label);
     setExtra((prev) => [
@@ -165,7 +164,8 @@ function CaseBody({ record }: { record: CaseRecord }) {
                   ["SLA", <SlaTag key="s" minutes={record.slaMinutesRemaining} />],
                   [
                     "Outcome",
-                    resolution ?? (record.outcome ? record.outcome.replace("_", " ").toLowerCase() : "pending"),
+                    resolution ??
+                      (record.outcome ? record.outcome.replace("_", " ").toLowerCase() : "pending"),
                   ],
                 ] as Array<[string, React.ReactNode]>
               ).map(([k, v]) => (
@@ -178,38 +178,61 @@ function CaseBody({ record }: { record: CaseRecord }) {
           </section>
 
           <section>
-            <h2 className="label-xs">Resolution</h2>
+            <h2 className="label-xs">Analyst Action</h2>
             <p className="mt-1 text-[12px] text-muted-foreground">
-              Requires a case outcome. The backend remains the authority on whether the action is permitted.
+              Human analyst sign-off required to finalize case outcome and append to the
+              cryptographic ledger.
             </p>
             {closed ? (
-              <p className="mt-3 text-[12.5px]">
-                Closed —{" "}
-                <span className="font-medium">
-                  {resolution ?? record.outcome?.replace("_", " ").toLowerCase()}
-                </span>
-              </p>
+              <div className="mt-3 rounded border border-approve/40 bg-approve/10 p-3">
+                <div className="flex items-center gap-1.5 font-mono text-[12px] font-bold text-approve">
+                  <span>✓</span> Case Resolved: {resolution?.toUpperCase() ?? record.outcome}
+                </div>
+                <p className="mt-1 text-[11.5px] text-muted-foreground">
+                  Action signed by <Mono className="text-foreground">m.okafor</Mono> and committed
+                  to the tenant audit trail.
+                </p>
+              </div>
             ) : (
               <div className="mt-3 flex flex-col gap-2">
-                {([
-                  ["Confirm fraud", "Confirmed fraud. Transaction held and payee added to the deny list."],
-                  ["Release transaction", "Released the transaction to settlement after verification."],
-                  ["Issue challenge", "Issued a step-up challenge to the customer."],
-                ] as Array<[string, string]>).map(([label, text], i) => (
+                <button
+                  type="button"
+                  onClick={() =>
+                    resolve(
+                      "CONFIRMED_FRAUD",
+                      "Analyst confirmed Account Takeover. Outbound wire permanently blocked and recipient IBAN quarantined.",
+                    )
+                  }
+                  className="rounded bg-block px-3 py-2.5 text-center font-mono text-[12px] font-bold text-block-foreground shadow-xs hover:bg-block/90 active:scale-[0.99]"
+                >
+                  CONFIRM BLOCK &amp; FREEZE
+                </button>
+                <div className="grid grid-cols-2 gap-1.5 pt-1">
                   <button
-                    key={label}
                     type="button"
-                    onClick={() => resolve(label.toLowerCase(), text)}
-                    className={cn(
-                      "border px-3 py-1.5 text-left text-[12.5px] font-medium",
-                      i === 0
-                        ? "border-block text-block hover:bg-block/5"
-                        : "border-border-strong hover:bg-accent",
-                    )}
+                    onClick={() =>
+                      resolve(
+                        "RELEASED",
+                        "Released transaction to settlement following manual customer phone verification.",
+                      )
+                    }
+                    className="rounded border border-border bg-surface px-2 py-1.5 text-center font-mono text-[11px] font-medium text-foreground hover:bg-accent"
                   >
-                    {label}
+                    Release Wire
                   </button>
-                ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      resolve(
+                        "CHALLENGE_ISSUED",
+                        "Issued hardware token MFA challenge to customer.",
+                      )
+                    }
+                    className="rounded border border-border bg-surface px-2 py-1.5 text-center font-mono text-[11px] font-medium text-foreground hover:bg-accent"
+                  >
+                    Issue Step-Up
+                  </button>
+                </div>
               </div>
             )}
           </section>

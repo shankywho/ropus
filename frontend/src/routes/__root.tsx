@@ -18,7 +18,9 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-6">
       <div className="max-w-md border border-border bg-card p-6">
-        <span className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">HTTP 404</span>
+        <span className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">
+          HTTP 404
+        </span>
         <h1 className="mt-2 text-lg font-bold">Route not found</h1>
         <p className="mt-1 text-[13px] text-muted-foreground">
           No control-plane surface is registered at this path.
@@ -44,7 +46,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-6">
       <div className="max-w-md border border-block/40 border-l-2 border-l-block bg-card p-6">
-        <span className="font-mono text-[11px] tracking-[0.08em] text-block uppercase">Render failure</span>
+        <span className="font-mono text-[11px] tracking-[0.08em] text-block uppercase">
+          Render failure
+        </span>
         <h1 className="mt-2 text-lg font-bold">This surface did not load</h1>
         <p className="mt-1 text-[13px] text-muted-foreground">
           The view failed before data could be rendered. Retry, or return to the Overview.
@@ -59,7 +63,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           >
             Retry
           </button>
-          <a href="/" className="border border-border-strong bg-surface px-3 py-1.5 text-[13px] font-medium hover:bg-accent">
+          <a
+            href="/"
+            className="border border-border-strong bg-surface px-3 py-1.5 text-[13px] font-medium hover:bg-accent"
+          >
             Overview
           </a>
         </div>
@@ -82,7 +89,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "ROPUS — Risk Intelligence Control Plane" },
       {
         property: "og:description",
-        content: "Transaction risk decisioning, fraud investigation and platform operations in one control surface.",
+        content:
+          "Transaction risk decisioning, fraud investigation and platform operations in one control surface.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

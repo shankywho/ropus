@@ -8,9 +8,16 @@ export const Route = createFileRoute("/security")({
   head: () => ({
     meta: [
       { title: "Security — ROPUS" },
-      { name: "description", content: "Access controls, tenant security posture and the immutable audit trail for analyst and service actions." },
+      {
+        name: "description",
+        content:
+          "Access controls, tenant security posture and the immutable audit trail for analyst and service actions.",
+      },
       { property: "og:title", content: "Security — ROPUS" },
-      { property: "og:description", content: "Posture, operators and the audit trail for this tenant." },
+      {
+        property: "og:description",
+        content: "Posture, operators and the audit trail for this tenant.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -31,7 +38,9 @@ function ResultTag({ result }: { result: "ALLOWED" | "DENIED" }) {
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-[3px] border px-1.5 py-[1px] text-[10px] font-bold tracking-[0.07em] uppercase",
-        denied ? "border-block/45 bg-block/12 text-block" : "border-approve/35 bg-approve/10 text-approve",
+        denied
+          ? "border-block/45 bg-block/12 text-block"
+          : "border-approve/35 bg-approve/10 text-approve",
       )}
     >
       <span aria-hidden className="size-[5px] bg-current" />
@@ -53,7 +62,11 @@ function SecurityPage() {
       <TelemetryStrip
         className="mt-3"
         items={[
-          { label: "Operators", value: String(teamMembers.length), sub: "including 1 service account" },
+          {
+            label: "Operators",
+            value: String(teamMembers.length),
+            sub: "including 1 service account",
+          },
           { label: "Audit events", value: "44,120", sub: "trailing 30 days" },
           {
             label: "Denied actions",
@@ -67,13 +80,17 @@ function SecurityPage() {
       />
 
       <div className="mt-4 border border-border border-l-2 border-l-warning bg-warning/[0.06] px-4 py-3">
-        <div className="text-[10.5px] font-bold tracking-[0.08em] text-warning uppercase">Security attention</div>
+        <div className="text-[10.5px] font-bold tracking-[0.08em] text-warning uppercase">
+          Security attention
+        </div>
         <p className="mt-1 text-[12.5px]">
           <span className="font-semibold">1 denied action in the last 24 hours.</span>{" "}
           <span className="text-muted-foreground">
-            <Mono className="text-[12px]">t.novak</Mono> attempted to reveal <Mono className="text-[12px]">key_9f21ab</Mono>{" "}
-            without the <Mono className="text-[12px]">api:admin</Mono> scope. Audit export to{" "}
-            <Mono className="text-[12px]">whk_siem_03</Mono> is paused, so events are buffered locally.
+            <Mono className="text-[12px]">t.novak</Mono> attempted to reveal{" "}
+            <Mono className="text-[12px]">key_9f21ab</Mono> without the{" "}
+            <Mono className="text-[12px]">api:admin</Mono> scope. Audit export to{" "}
+            <Mono className="text-[12px]">whk_siem_03</Mono> is paused, so events are buffered
+            locally.
           </span>
         </p>
       </div>
@@ -102,10 +119,18 @@ function SecurityPage() {
                   return (
                     <tr
                       key={e.id}
-                      className={cn("border-b border-border last:border-b-0 hover:bg-accent", bad && "bg-block/[0.05]")}
+                      className={cn(
+                        "border-b border-border last:border-b-0 hover:bg-accent",
+                        bad && "bg-block/[0.05]",
+                      )}
                     >
                       <td className="relative py-2.5 pr-4 align-middle">
-                        {bad && <span aria-hidden className="absolute top-0 bottom-0 -left-2 w-[2px] bg-block" />}
+                        {bad && (
+                          <span
+                            aria-hidden
+                            className="absolute top-0 bottom-0 -left-2 w-[2px] bg-block"
+                          />
+                        )}
                         <Mono className="text-[11.5px] text-muted-foreground">{e.at}</Mono>
                       </td>
                       <td className="py-2.5 pr-4 align-middle">
@@ -154,7 +179,10 @@ function SecurityPage() {
                   {teamMembers.map((m) => {
                     const service = m.role === "Service account";
                     return (
-                      <tr key={m.user} className="border-b border-border last:border-b-0 hover:bg-accent">
+                      <tr
+                        key={m.user}
+                        className="border-b border-border last:border-b-0 hover:bg-accent"
+                      >
                         <td className="py-2.5 pr-4 align-middle">
                           <div className="flex items-baseline gap-2">
                             <Mono className="text-[12.5px] font-semibold">{m.user}</Mono>
@@ -189,7 +217,9 @@ function SecurityPage() {
                           </div>
                         </td>
                         <td className="py-2.5 text-right align-middle">
-                          <Mono className="text-[11.5px] text-muted-foreground">{m.lastActive}</Mono>
+                          <Mono className="text-[11.5px] text-muted-foreground">
+                            {m.lastActive}
+                          </Mono>
                         </td>
                       </tr>
                     );
@@ -214,14 +244,22 @@ function SecurityPage() {
                         aria-hidden
                         className={cn(
                           "size-[6px] translate-y-[-1px]",
-                          tone === "text-approve" ? "bg-approve" : tone === "text-warning" ? "bg-warning" : "bg-border-strong",
+                          tone === "text-approve"
+                            ? "bg-approve"
+                            : tone === "text-warning"
+                              ? "bg-warning"
+                              : "bg-border-strong",
                         )}
                       />
                       {p.control}
                     </dt>
-                    <dd className={cn("font-mono text-[12px] font-semibold tabular", tone)}>{state}</dd>
+                    <dd className={cn("font-mono text-[12px] font-semibold tabular", tone)}>
+                      {state}
+                    </dd>
                   </div>
-                  <dd className="mt-0.5 pl-[14px] text-[11.5px] text-muted-foreground">{p.detail}</dd>
+                  <dd className="mt-0.5 pl-[14px] text-[11.5px] text-muted-foreground">
+                    {p.detail}
+                  </dd>
                 </div>
               );
             })}

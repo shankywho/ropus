@@ -63,8 +63,8 @@ function CaseQueue() {
         <div>
           <h1 className="text-[19px] font-semibold tracking-tight">Cases</h1>
           <p className="mt-1 max-w-[62ch] text-[13px] text-muted-foreground">
-            Every case originates from a decision. Nothing is closed without a recorded outcome and an
-            append-only history.
+            Every case originates from a decision. Nothing is closed without a recorded outcome and
+            an append-only history.
           </p>
         </div>
         <DemoTag />
@@ -107,21 +107,29 @@ function CaseQueue() {
         <caption className="sr-only">Case queue</caption>
         <thead>
           <tr className="border-b border-border">
-            {["Case", "Pri", "Customer", "Amount", "Risk", "Verdict", "Assignee", "Status", "SLA"].map(
-              (h, i) => (
-                <th
-                  key={h}
-                  scope="col"
-                  className={cn(
-                    "label-xs py-2 pr-4 font-semibold whitespace-nowrap",
-                    i > 3 && i < 6 ? "text-right" : "text-left",
-                    i === 8 && "pr-0 text-right",
-                  )}
-                >
-                  {h}
-                </th>
-              ),
-            )}
+            {[
+              "Case",
+              "Pri",
+              "Customer",
+              "Amount",
+              "Risk",
+              "Verdict",
+              "Assignee",
+              "Status",
+              "SLA",
+            ].map((h, i) => (
+              <th
+                key={h}
+                scope="col"
+                className={cn(
+                  "label-xs py-2 pr-4 font-semibold whitespace-nowrap",
+                  i > 3 && i < 6 ? "text-right" : "text-left",
+                  i === 8 && "pr-0 text-right",
+                )}
+              >
+                {h}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>

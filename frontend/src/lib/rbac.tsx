@@ -63,18 +63,16 @@ export function PermissionGate({
   children: ReactNode;
   fallback?: ReactNode;
 }) {
-  const allowed = useCan(permission);
+  const session = useSession();
+  const allowed = session.permissions.includes(permission);
+
   if (allowed) return <>{children}</>;
   if (fallback) return <>{fallback}</>;
   if (mode === "hide") return null;
   return (
     <p className="border border-border border-l-2 border-l-border-strong bg-neutral-surface px-3 py-2 text-[12px] text-muted-foreground">
-      Requires <span className="font-mono">{permission}</span>. Your role ({useSessionRole()}) does not hold this
-      grant. Backend authorization remains authoritative.
+      Requires <span className="font-mono">{permission}</span>. Your role ({session.role}) does not
+      hold this grant. Backend authorization remains authoritative.
     </p>
   );
-}
-
-function useSessionRole() {
-  return useSession().role;
 }
