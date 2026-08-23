@@ -192,7 +192,10 @@ services:
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
     environment:
+      - BACKEND_INTERNAL_URL=http://backend:8080
       - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - ADMIN_API_KEY=${ADMIN_API_KEY:-adm_risk_super_secret_key_98765}
+      - DEFAULT_TENANT_ID=${DEFAULT_TENANT_ID:-00000000-0000-0000-0000-000000000001}
     depends_on:
       - backend
     networks:

@@ -1,0 +1,221 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * ROPUS design tokens.
+ * Institutional fintech control plane: precise, dense, low-decoration.
+ * All colors oklch. Status colors are semantic only — never decorative.
+ */
+
+@theme inline {
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
+
+  --font-sans: Mulish, Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-navy: var(--navy);
+  --color-navy-foreground: var(--navy-foreground);
+
+  --color-approve: var(--approve);
+  --color-approve-surface: var(--approve-surface);
+  --color-review: var(--review);
+  --color-review-surface: var(--review-surface);
+  --color-challenge: var(--challenge);
+  --color-challenge-surface: var(--challenge-surface);
+  --color-block: var(--block);
+  --color-block-surface: var(--block-surface);
+  --color-critical: var(--critical);
+  --color-critical-surface: var(--critical-surface);
+  --color-warning: var(--warning);
+  --color-warning-surface: var(--warning-surface);
+  --color-neutral-surface: var(--neutral-surface);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-accent-foreground: var(--sidebar-foreground);
+
+  --color-chart-1: var(--approve);
+  --color-chart-2: var(--review);
+  --color-chart-3: var(--challenge);
+  --color-chart-4: var(--block);
+  --color-chart-5: var(--muted-foreground);
+}
+
+:root {
+  --radius: 4px;
+
+  /* ROPUS palette — light. Hex values are the contract from the design system. */
+  --background: #ffffff;
+  --foreground: #172b4d;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --card-foreground: #172b4d;
+  --popover: #ffffff;
+  --popover-foreground: #172b4d;
+
+  --primary: #0d94fb;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f5f7;
+  --secondary-foreground: #172b4d;
+  --muted: #f4f5f7;
+  --muted-foreground: #5e6c84;
+  --accent: #f1f4f8;
+  --accent-foreground: #172b4d;
+  --destructive: #de350b;
+  --destructive-foreground: #ffffff;
+
+  --border: #ebecf0;
+  --border-strong: #dfe1e6;
+  --input: #dfe1e6;
+  --ring: #0d94fb;
+
+  --navy: #012652;
+  --navy-foreground: #f4f5f7;
+
+  /* Color budget: brand blue, success green, danger red, warning amber. */
+  --approve: #0a7a52; /* accessible text weight of success #04db7c */
+  --approve-surface: #e6faf1;
+  --review: #a35b00; /* accessible text weight of warning amber */
+  --review-surface: #fff5e6;
+  --challenge: #0d94fb;
+  --challenge-surface: #e7f4ff;
+  --block: #c9310a;
+  --block-surface: #fdeae5;
+  --critical: #9e2708;
+  --critical-surface: #fbdfd8;
+  --warning: #a35b00;
+  --warning-surface: #fff5e6;
+  --neutral-surface: #f4f5f7;
+
+  --sidebar: #012652;
+  --sidebar-foreground: #f4f5f7;
+  --sidebar-muted: #8fa3bd;
+  --sidebar-border: #123361;
+  --sidebar-accent: #0a3163;
+  --sidebar-primary: #0d94fb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-ring: #0d94fb;
+}
+
+.dark {
+  --background: #070e1c;
+  --foreground: #f4f5f7;
+  --surface: #0f172a;
+  --card: #0f172a;
+  --card-foreground: #f4f5f7;
+  --popover: #0f172a;
+  --popover-foreground: #f4f5f7;
+  --primary: #0d94fb;
+  --primary-foreground: #ffffff;
+  --secondary: #131e33;
+  --secondary-foreground: #f4f5f7;
+  --muted: #131e33;
+  --muted-foreground: #97a0af;
+  --accent: #16223a;
+  --accent-foreground: #f4f5f7;
+  --border: #1c2536;
+  --border-strong: #2a3550;
+  --input: #26314a;
+  --neutral-surface: #131e33;
+
+  --approve: #04db7c;
+  --approve-surface: #06291d;
+  --review: #ff991f;
+  --review-surface: #2e1f06;
+  --challenge: #0d94fb;
+  --challenge-surface: #071f33;
+  --block: #ff6b4a;
+  --block-surface: #2e1109;
+  --critical: #ff6b4a;
+  --critical-surface: #2e1109;
+  --warning: #ff991f;
+  --warning-surface: #2e1f06;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 1px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border: 3px solid var(--color-background);
+    border-radius: 6px;
+  }
+}
+
+@utility label-xs {
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
