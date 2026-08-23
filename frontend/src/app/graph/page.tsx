@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { DataProvenanceBadge } from "@/components/ropus/DataProvenanceBadge";
 import {
   User,
   Smartphone,
@@ -8,6 +9,8 @@ import {
   CreditCard,
   Building,
   ShieldAlert,
+  Layers,
+  Info,
 } from "lucide-react";
 
 interface GraphEntity {
@@ -99,293 +102,248 @@ const INITIAL_NODES: GraphEntity[] = [
     lastSeen: "2026-08-22 17:42:00",
     connectionsCount: 3,
     hopLevel: 2,
-    signals: ["Newly linked offshore payout rail", "Recipient of 3 prior fraudulent transfers"],
-    x: 350,
-    y: 410,
+    signals: ["Recipient IBAN quarantined across 3 institutional banks"],
+    x: 520,
+    y: 300,
   },
-  // 2-Hop / 3-Hop Nodes
   {
-    id: "usr_synthetic_mule_12",
+    id: "usr_mule_alex_m",
     type: "connected_account",
-    label: "Synthetic Mule Account #12",
-    sublabel: "usr_mule_12",
-    riskStatus: "HIGH_RISK",
-    firstSeen: "2026-08-15",
-    lastSeen: "2026-08-21 11:15:00",
+    label: "Alex Murphy (Compromised)",
+    sublabel: "usr_alex_murphy",
+    riskStatus: "SUSPICIOUS",
+    firstSeen: "2025-11-04",
+    lastSeen: "2026-08-22 16:30:00",
     connectionsCount: 3,
     hopLevel: 2,
-    signals: ["Created using shared canvas hash", "Confirmed chargeback loss $8,200"],
-    x: 60,
-    y: 60,
-  },
-  {
-    id: "usr_synthetic_mule_14",
-    type: "connected_account",
-    label: "Synthetic Mule Account #14",
-    sublabel: "usr_mule_14",
-    riskStatus: "HIGH_RISK",
-    firstSeen: "2026-08-18",
-    lastSeen: "2026-08-22 09:30:00",
-    connectionsCount: 2,
-    hopLevel: 2,
-    signals: ["Created using shared canvas hash", "Dispute pending"],
-    x: 60,
-    y: 160,
-  },
-  {
-    id: "ip_cluster_proxy_pool",
-    type: "ip",
-    label: "198.51.100.0/24 Subnet",
-    sublabel: "Proxy Farm",
-    riskStatus: "HIGH_RISK",
-    firstSeen: "2026-07-10",
-    lastSeen: "2026-08-22 17:42:00",
-    connectionsCount: 42,
-    hopLevel: 3,
-    signals: ["Coordinated proxy rotation pool", "Host to 14 confirmed fraud syndicates"],
-    x: 640,
-    y: 60,
+    signals: ["Co-occurred on device dev_mule_cluster_99 2 hours prior"],
+    x: 80,
+    y: 220,
   },
 ];
 
 const INITIAL_LINKS: GraphLink[] = [
-  { source: "usr_sarah_connor", target: "dev_mule_cluster_99", relation: "USED_DEVICE", hop: 1 },
-  { source: "usr_sarah_connor", target: "ip_198_51_100_44", relation: "USED_IP", hop: 1 },
-  { source: "usr_sarah_connor", target: "tx_order_88419", relation: "INITIATED_TX", hop: 1 },
-  { source: "tx_order_88419", target: "payout_offshore_882", relation: "DESTINATION_PAYOUT", hop: 2 },
-  { source: "dev_mule_cluster_99", target: "usr_synthetic_mule_12", relation: "MATCHES_CANVAS", hop: 2 },
-  { source: "dev_mule_cluster_99", target: "usr_synthetic_mule_14", relation: "MATCHES_CANVAS", hop: 2 },
-  { source: "ip_198_51_100_44", target: "ip_cluster_proxy_pool", relation: "BELONGS_TO_CIDR", hop: 3 },
+  { source: "usr_sarah_connor", target: "dev_mule_cluster_99", relation: "LOGIN_DEVICE", hop: 1 },
+  { source: "usr_sarah_connor", target: "ip_198_51_100_44", relation: "SESSION_IP", hop: 1 },
+  { source: "usr_sarah_connor", target: "tx_order_88419", relation: "INITIATED_TXN", hop: 1 },
+  { source: "tx_order_88419", target: "payout_offshore_882", relation: "BENEFICIARY_IBAN", hop: 2 },
+  { source: "dev_mule_cluster_99", target: "usr_mule_alex_m", relation: "SHARED_FINGERPRINT", hop: 2 },
 ];
 
 export default function FraudGraphPage() {
-  const [hopFilter, setHopFilter] = useState<number>(2);
-  const [selectedEntity, setSelectedEntity] = useState<GraphEntity>(INITIAL_NODES[0]);
+  const [nodes] = useState<GraphEntity[]>(INITIAL_NODES);
+  const [links] = useState<GraphLink[]>(INITIAL_LINKS);
+  const [selectedEntityId, setSelectedEntityId] = useState<string>("usr_sarah_connor");
+  const [hopFilter, setHopFilter] = useState<number>(3);
 
-  const visibleNodes = INITIAL_NODES.filter((n) => n.hopLevel <= hopFilter);
-  const visibleLinks = INITIAL_LINKS.filter((l) => l.hop <= hopFilter);
+  const selectedNode = nodes.find((n) => n.id === selectedEntityId) || nodes[0];
+  const filteredNodes = nodes.filter((n) => n.hopLevel <= hopFilter);
+  const filteredLinks = links.filter((l) => l.hop <= hopFilter);
 
-  const getTypeIcon = (type: GraphEntity["type"]) => {
+  const getEntityIcon = (type: GraphEntity["type"]) => {
     switch (type) {
       case "customer":
-        return <User className="w-4 h-4 text-[#0d94fb]" />;
+        return <User className="w-3.5 h-3.5" />;
       case "device":
-        return <Smartphone className="w-4 h-4 text-[#c084fc]" />;
+        return <Smartphone className="w-3.5 h-3.5" />;
       case "ip":
-        return <Globe className="w-4 h-4 text-[#f59e0b]" />;
+        return <Globe className="w-3.5 h-3.5" />;
       case "transaction":
-        return <CreditCard className="w-4 h-4 text-[#f05252]" />;
+        return <CreditCard className="w-3.5 h-3.5" />;
       case "payout_account":
-        return <Building className="w-4 h-4 text-[#f472b6]" />;
+        return <Building className="w-3.5 h-3.5" />;
       case "connected_account":
-        return <ShieldAlert className="w-4 h-4 text-[#f05252]" />;
+        return <ShieldAlert className="w-3.5 h-3.5" />;
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      {/* Top Header & Hop Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2536]">
+    <div className="space-y-5">
+      {/* 1. Top Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-3.5 border-b border-[#1c2536]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Fraud Knowledge Graph</h1>
-            <span className="text-[10px] font-mono bg-[#0d94fb15] text-[#0d94fb] px-1.5 py-0.5 rounded-[2px] border border-[#0d94fb33]">
-              GRAPH 3.0
-            </span>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-lg font-bold text-[#f4f5f7] tracking-tight font-mono uppercase">
+              Forensic Graph Visualization
+            </h1>
+            <DataProvenanceBadge type="ANALYTICAL_VIEW" sublabel="BFS Entity Topology" />
           </div>
-          <p className="text-xs text-[#97a0af] font-mono mt-0.5">
-            Real-time in-memory 3-hop BFS entity resolution & syndicate ring discovery
+          <p className="text-xs text-[#5e6c84] font-mono mt-1">
+            Multi-hop relational syndication across Account &bull; Device &bull; IP &bull; Beneficiary nodes
           </p>
         </div>
 
-        {/* Hop Depth Filter Buttons */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-[#5e6c84]">TRAVERSAL DEPTH:</span>
-          <div className="flex bg-[#0f172a] p-1 border border-[#1c2536] rounded-[4px]">
-            {[1, 2, 3].map((hop) => (
-              <button
-                key={hop}
-                onClick={() => setHopFilter(hop)}
-                className={`px-3 py-1 text-xs font-mono rounded-[3px] font-semibold transition-all cursor-pointer ${
-                  hopFilter === hop
-                    ? "bg-[#0d94fb] text-white shadow-xs"
-                    : "text-[#97a0af] hover:text-[#f4f5f7]"
-                }`}
-              >
-                {hop}-Hop {hop === 1 ? "(Direct)" : hop === 2 ? "(Syndicate)" : "(Cluster)"}
-              </button>
-            ))}
-          </div>
+        {/* Hop Filter */}
+        <div className="flex items-center gap-1.5 bg-[#0f172a] p-1 border border-[#1c2536] rounded-[4px] font-mono text-xs">
+          <span className="text-[#5e6c84] text-[10px] pl-1.5 uppercase">Depth:</span>
+          {[1, 2, 3].map((hop) => (
+            <button
+              key={hop}
+              onClick={() => setHopFilter(hop)}
+              className={`px-2.5 py-1 rounded-[3px] font-semibold transition-all cursor-pointer ${
+                hopFilter === hop
+                  ? "bg-[#0d94fb] text-white shadow-xs"
+                  : "text-[#97a0af] hover:text-[#f4f5f7]"
+              }`}
+            >
+              {hop}-Hop
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Main Canvas & Inspector Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left 8 Cols: Interactive Visual Graph Canvas */}
-        <div className="lg:col-span-8 bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-4 relative min-h-[500px] flex flex-col justify-between overflow-hidden shadow-xs">
-          {/* Canvas Badge */}
-          <div className="flex items-center justify-between z-10">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold text-[#f4f5f7]">
-                Active Cluster: #SYNTHETIC-MULE-CLUSTER-99
-              </span>
-              <span className="text-[10px] font-mono bg-[#f0525218] text-[#f05252] px-1.5 py-0.5 rounded-[2px] border border-[#f0525233]">
-                CONFIRMED SYNDICATE
-              </span>
-            </div>
-            <span className="text-[10px] font-mono text-[#5e6c84]">
-              {visibleNodes.length} Nodes • {visibleLinks.length} Edges Rendered
+      {/* Analytical View Notice */}
+      <div className="p-3 bg-[#0d94fb10] border border-[#0d94fb33] rounded-[4px] font-mono text-xs flex items-center gap-2 text-[#0d94fb]">
+        <Info className="w-4 h-4 shrink-0" />
+        <span>
+          <strong>Forensic Visualization View:</strong> Graph relationships shown here represent an analytical topology. Live risk evaluations evaluate graph features directly in Redis feature stores.
+        </span>
+      </div>
+
+      {/* 2. Main Two-Column Canvas */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Left 8 Cols: Interactive SVG Entity Topology */}
+        <div className="lg:col-span-8 bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-4 relative min-h-[460px] flex flex-col justify-between font-mono">
+          <div className="flex items-center justify-between border-b border-[#1c2536] pb-2 text-xs">
+            <span className="font-bold text-[#f4f5f7] uppercase tracking-wider text-[11px]">
+              Multi-Hop Topology ({filteredNodes.length} Nodes &bull; {filteredLinks.length} Edges)
             </span>
+            <span className="text-[#5e6c84] text-[10px]">BFS Subgraph</span>
           </div>
 
-          {/* SVG Visual Graph Rendering */}
-          <div className="relative w-full h-[440px] my-2 bg-[#070e1c] border border-[#1c2536] rounded-[4px]">
-            <svg className="absolute inset-0 w-full h-full">
+          <div className="relative flex-1 flex items-center justify-center my-4 overflow-hidden">
+            <svg className="w-full h-80" viewBox="0 0 600 380">
               {/* Edges */}
-              {visibleLinks.map((link, idx) => {
-                const sourceNode = visibleNodes.find((n) => n.id === link.source);
-                const targetNode = visibleNodes.find((n) => n.id === link.target);
-                if (!sourceNode || !targetNode) return null;
-
+              {filteredLinks.map((link, idx) => {
+                const s = nodes.find((n) => n.id === link.source);
+                const t = nodes.find((n) => n.id === link.target);
+                if (!s || !t) return null;
                 return (
                   <g key={idx}>
                     <line
-                      x1={sourceNode.x}
-                      y1={sourceNode.y}
-                      x2={targetNode.x}
-                      y2={targetNode.y}
-                      stroke={link.hop === 1 ? "#0d94fb" : "#f05252"}
-                      strokeWidth={link.hop === 1 ? "1.5" : "1"}
-                      strokeDasharray={link.hop > 1 ? "4 4" : "none"}
-                      opacity="0.65"
+                      x1={s.x}
+                      y1={s.y}
+                      x2={t.x}
+                      y2={t.y}
+                      stroke="#1c2536"
+                      strokeWidth={1.5}
+                      strokeDasharray={link.hop === 2 ? "3,3" : "none"}
                     />
+                    <text
+                      x={(s.x + t.x) / 2}
+                      y={(s.y + t.y) / 2 - 4}
+                      fill="#5e6c84"
+                      fontSize="9"
+                      textAnchor="middle"
+                      className="font-mono"
+                    >
+                      {link.relation}
+                    </text>
+                  </g>
+                );
+              })}
+
+              {/* Nodes */}
+              {filteredNodes.map((node) => {
+                const isSelected = node.id === selectedEntityId;
+                return (
+                  <g
+                    key={node.id}
+                    transform={`translate(${node.x}, ${node.y})`}
+                    onClick={() => setSelectedEntityId(node.id)}
+                    className="cursor-pointer"
+                  >
+                    <circle
+                      r={isSelected ? 22 : 18}
+                      fill={node.riskStatus === "HIGH_RISK" ? "#f0525220" : "#0d94fb20"}
+                      stroke={
+                        isSelected
+                          ? "#0d94fb"
+                          : node.riskStatus === "HIGH_RISK"
+                          ? "#f05252"
+                          : "#0d94fb"
+                      }
+                      strokeWidth={isSelected ? 2.5 : 1.5}
+                    />
+                    <text
+                      y={4}
+                      textAnchor="middle"
+                      fill={node.riskStatus === "HIGH_RISK" ? "#f05252" : "#0d94fb"}
+                      fontSize="10"
+                      fontWeight="bold"
+                    >
+                      {node.type.substring(0, 2).toUpperCase()}
+                    </text>
+                    <text
+                      y={32}
+                      textAnchor="middle"
+                      fill="#f4f5f7"
+                      fontSize="10"
+                      fontWeight="bold"
+                    >
+                      {node.label}
+                    </text>
                   </g>
                 );
               })}
             </svg>
-
-            {/* Nodes */}
-            {visibleNodes.map((node) => {
-              const isSelected = selectedEntity.id === node.id;
-              const isRoot = node.id === "usr_sarah_connor";
-
-              return (
-                <button
-                  key={node.id}
-                  onClick={() => setSelectedEntity(node)}
-                  style={{ left: `${node.x}px`, top: `${node.y}px` }}
-                  className={`absolute -translate-x-1/2 -translate-y-1/2 p-2.5 rounded-[4px] border text-left cursor-pointer transition-all shadow-md ${
-                    isSelected
-                      ? "bg-[#0a1324] border-[#0d94fb] ring-2 ring-[#0d94fb55] z-20 scale-105"
-                      : isRoot
-                      ? "bg-[#0f172a] border-[#0d94fb] hover:border-[#0d94fb] z-10"
-                      : "bg-[#0f172a] border-[#1c2536] hover:border-[#2c3b52]"
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5 mb-1">
-                    {getTypeIcon(node.type)}
-                    <span className="text-xs font-mono font-bold text-[#f4f5f7] whitespace-nowrap">
-                      {node.label}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-3 text-[10px] font-mono text-[#97a0af]">
-                    <span>{node.sublabel}</span>
-                    <span className={node.riskStatus === "HIGH_RISK" ? "text-[#f05252] font-bold" : "text-[#04db7c]"}>
-                      {node.connectionsCount} links
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
           </div>
 
-          {/* Canvas Bottom Legend */}
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#5e6c84] pt-2 border-t border-[#1c2536]">
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-0.5 bg-[#0d94fb] inline-block" /> 1-Hop Direct
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-0.5 bg-[#f05252] inline-block border-t border-dashed" /> 2/3-Hop Shared Canvas / CIDR
-              </span>
-            </div>
-            <span>Click any node to inspect entity signals</span>
+          <div className="pt-2 border-t border-[#1c2536] flex items-center justify-between text-[10px] text-[#5e6c84]">
+            <span>Click any node to inspect forensic attributes &bull; Scroll to zoom</span>
+            <span>Syndicate Cluster Risk: CRITICAL</span>
           </div>
         </div>
 
-        {/* Right 4 Cols: Compact Entity Inspector */}
-        <div className="lg:col-span-4 bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-5 flex flex-col justify-between shadow-xs">
-          <div>
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1c2536]">
-              <span className="text-xs font-mono font-bold tracking-wider text-[#0d94fb] uppercase">
-                Entity Inspector
-              </span>
-              <span className="text-[10px] font-mono bg-[#142036] text-[#97a0af] px-1.5 py-0.5 rounded-[2px] uppercase">
-                {selectedEntity.type}
-              </span>
-            </div>
+        {/* Right 4 Cols: Selected Entity Inspector */}
+        <div className="lg:col-span-4 bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-4 space-y-4 font-mono text-xs">
+          <div className="flex items-center justify-between pb-2 border-b border-[#1c2536]">
+            <span className="font-bold text-[#f4f5f7] uppercase tracking-wider text-[11px]">
+              Entity Inspector
+            </span>
+            <span
+              className={`text-[10px] font-bold px-1.5 py-0.5 rounded-[2px] border ${
+                selectedNode.riskStatus === "HIGH_RISK"
+                  ? "bg-[#f0525215] text-[#f05252] border-[#f0525233]"
+                  : "bg-[#0d94fb15] text-[#0d94fb] border-[#0d94fb33]"
+              }`}
+            >
+              {selectedNode.riskStatus}
+            </span>
+          </div>
 
-            {/* Entity Header */}
-            <div className="mb-4">
-              <h3 className="text-base font-bold text-[#f4f5f7] font-mono leading-snug">
-                {selectedEntity.label}
-              </h3>
-              <p className="text-xs text-[#97a0af] font-mono mt-0.5">{selectedEntity.id}</p>
-            </div>
-
-            {/* Core Metrics */}
-            <div className="space-y-2.5 p-3 bg-[#0a1324] border border-[#1c2536] rounded-[4px] mb-4 font-mono text-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-[#5e6c84]">RISK STATUS:</span>
-                <span
-                  className={`font-bold px-1.5 py-0.2 rounded-[2px] text-[10px] ${
-                    selectedEntity.riskStatus === "HIGH_RISK"
-                      ? "bg-[#f0525215] text-[#f05252] border border-[#f0525233]"
-                      : "bg-[#04db7c15] text-[#04db7c] border border-[#04db7c33]"
-                  }`}
-                >
-                  {selectedEntity.riskStatus}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#5e6c84]">DEGREE CENTRALITY:</span>
-                <span className="text-[#f4f5f7] font-semibold">{selectedEntity.connectionsCount} Linked Edges</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#5e6c84]">HOP DISTANCE:</span>
-                <span className="text-[#f4f5f7]">{selectedEntity.hopLevel} Hops from Root</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#5e6c84]">FIRST OBSERVED:</span>
-                <span className="text-[#97a0af]">{selectedEntity.firstSeen}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#5e6c84]">LAST ACTIVE:</span>
-                <span className="text-[#97a0af]">{selectedEntity.lastSeen}</span>
-              </div>
-            </div>
-
-            {/* Signals on this Entity */}
+          <div className="space-y-2.5">
             <div>
-              <span className="text-[11px] font-mono font-bold text-[#5e6c84] uppercase block mb-2">
-                Correlated Graph Signals
+              <span className="text-[#5e6c84] text-[10px] block">ENTITY LABEL</span>
+              <span className="text-[#f4f5f7] font-bold text-sm">{selectedNode.label}</span>
+            </div>
+
+            <div>
+              <span className="text-[#5e6c84] text-[10px] block">IDENTIFIER</span>
+              <span className="text-[#0d94fb]">{selectedNode.sublabel}</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <div className="p-2 bg-[#0a1324] border border-[#1c2536] rounded-[3px]">
+                <span className="text-[#5e6c84] text-[10px] block">TYPE</span>
+                <span className="text-[#f4f5f7] font-bold uppercase text-[11px]">{selectedNode.type}</span>
+              </div>
+              <div className="p-2 bg-[#0a1324] border border-[#1c2536] rounded-[3px]">
+                <span className="text-[#5e6c84] text-[10px] block">CONNECTIONS</span>
+                <span className="text-[#f05252] font-bold text-[11px]">{selectedNode.connectionsCount} Linked</span>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-[#1c2536]">
+              <span className="text-[#5e6c84] text-[10px] block mb-1.5 uppercase font-bold">
+                Observed Risk Signals
               </span>
-              <ul className="space-y-2">
-                {selectedEntity.signals.map((sig, i) => (
-                  <li
-                    key={i}
-                    className="p-2 bg-[#070e1c] border border-[#1c2536] rounded-[4px] text-xs text-[#f4f5f7] leading-relaxed flex items-start gap-2"
-                  >
-                    <ShieldAlert className="w-3.5 h-3.5 text-[#f05252] shrink-0 mt-0.5" />
-                    <span>{sig}</span>
-                  </li>
+              <ul className="space-y-1 text-[11px] text-[#97a0af] list-disc list-inside">
+                {selectedNode.signals.map((s, idx) => (
+                  <li key={idx}>{s}</li>
                 ))}
               </ul>
             </div>
-          </div>
-
-          <div className="pt-4 mt-4 border-t border-[#1c2536] text-[11px] text-[#5e6c84] font-mono">
-            Graph traversal latency: <span className="text-[#04db7c] font-semibold">1.10 ms</span>
           </div>
         </div>
       </div>

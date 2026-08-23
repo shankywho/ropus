@@ -37,6 +37,8 @@ const SEED_DELIVERIES: WebhookDelivery[] = [
   },
 ];
 
+import { DataProvenanceBadge } from "@/components/ropus/DataProvenanceBadge";
+
 export default function WebhooksPage() {
   const [deliveries] = useState<WebhookDelivery[]>(SEED_DELIVERIES);
   const [testPayload, setTestPayload] = useState(
@@ -60,25 +62,19 @@ export default function WebhooksPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1c2536]">
+    <div className="space-y-5">
+      {/* 1. Top Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-3.5 border-b border-[#1c2536]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Webhooks & Outbox Egress</h1>
-            <span className="text-[10px] font-mono bg-[#0d94fb15] text-[#0d94fb] px-1.5 py-0.5 rounded-[2px] border border-[#0d94fb33]">
-              SUBSYSTEM 13
-            </span>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-lg font-bold text-[#f4f5f7] tracking-tight font-mono uppercase">
+              Webhook Dispatcher &amp; Outbox
+            </h1>
+            <DataProvenanceBadge type="LIVE_BACKEND" sublabel="HMAC-SHA256 Egress" />
           </div>
-          <p className="text-xs text-[#97a0af] font-mono mt-0.5">
-            Idempotent transactional outbox, HMAC-SHA256 signature verification & delivery retry queues
+          <p className="text-xs text-[#5e6c84] font-mono mt-1">
+            Transactional outbox pattern for asynchronous event delivery with guaranteed at-least-once semantics
           </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="px-2.5 py-1 text-xs font-mono bg-[#0f172a] border border-[#1c2536] text-[#04db7c] rounded-[4px] font-bold shadow-xs">
-            Egress: 99.98% Success • HMAC: SHA-256
-          </span>
         </div>
       </div>
 

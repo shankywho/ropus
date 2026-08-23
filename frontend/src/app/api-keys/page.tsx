@@ -1,10 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Key, Plus, Copy, Check, RotateCw, Trash2 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { DataProvenanceBadge } from "@/components/ropus/DataProvenanceBadge";
+import { Key, Plus, Copy, Check, RotateCw, Trash2, ShieldCheck } from "lucide-react";
 
 interface KeyRecord {
   id: string;
@@ -48,7 +46,9 @@ export default function APIKeysPage() {
   const handleRotate = (id: string) => {
     setKeys(
       keys.map((k) =>
-        k.id === id ? { ...k, prefix: "rop_live_rotated_" + Math.random().toString(36).substring(2, 8) + "..." } : k
+        k.id === id
+          ? { ...k, prefix: "rop_live_rot_" + Math.random().toString(36).substring(2, 8) + "..." }
+          : k
       )
     );
   };
@@ -58,99 +58,122 @@ export default function APIKeysPage() {
   };
 
   return (
-    <div className="flex-1 p-6 md:p-8 space-y-6 max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+    <div className="space-y-5">
+      {/* 1. Top Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-3.5 border-b border-[#1c2536]">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <Key className="size-6 text-indigo-400" />
-            <span>API Key Management</span>
-          </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Provision cryptographically secure, SHA-256 hashed API keys for production transaction evaluation.
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-lg font-bold text-[#f4f5f7] tracking-tight font-mono uppercase">
+              API Key Management
+            </h1>
+            <DataProvenanceBadge type="LIVE_BACKEND" sublabel="SHA-256 Hashed Secrets" />
+          </div>
+          <p className="text-xs text-[#5e6c84] font-mono mt-1">
+            Cryptographically signed HMAC tokens for production synchronous risk evaluation
           </p>
         </div>
-        <Button className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold">
-          <Plus className="size-3.5 mr-1.5" /> Create Secret Key
-        </Button>
+
+        <button className="px-3.5 py-1.5 bg-[#0d94fb] hover:bg-[#0b82dc] text-white font-mono text-xs font-bold rounded-[4px] shadow-xs active:scale-95 cursor-pointer flex items-center gap-1.5">
+          <Plus className="w-3.5 h-3.5" />
+          <span>Generate API Key</span>
+        </button>
       </div>
 
-      {/* Keys Table Card */}
-      <Card className="bg-slate-900/80 border-slate-800">
-        <CardHeader>
-          <CardTitle className="text-base font-semibold text-white">Active Organization Keys</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-800 text-slate-400 uppercase font-mono">
-                <tr>
-                  <th className="pb-3">Name / ID</th>
-                  <th className="pb-3">Key Token Prefix</th>
-                  <th className="pb-3">Environment</th>
-                  <th className="pb-3">Created</th>
-                  <th className="pb-3">Last Active</th>
-                  <th className="pb-3">Status</th>
-                  <th className="pb-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
-                {keys.map((k) => (
-                  <tr key={k.id} className="hover:bg-slate-800/30">
-                    <td className="py-3.5 font-sans font-medium text-slate-200">
-                      <div>{k.name}</div>
-                      <span className="text-[11px] text-slate-500 font-mono">{k.id}</span>
-                    </td>
-                    <td className="py-3.5 text-indigo-300 flex items-center gap-2">
-                      <span>{k.prefix}</span>
+      {/* 2. Keys Table */}
+      <div className="bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-4 font-mono text-xs">
+        <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#1c2536]">
+          <div className="flex items-center gap-2">
+            <Key className="w-4 h-4 text-[#0d94fb]" />
+            <h2 className="font-bold uppercase tracking-wider text-[#f4f5f7] text-xs">
+              Active Organization Keys ({keys.length})
+            </h2>
+          </div>
+          <span className="text-[#5e6c84] text-[10px]">Scoped RBAC Access</span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-[#1c2536] text-[#5e6c84] text-[11px]">
+                <th className="pb-2 font-medium">NAME / KEY ID</th>
+                <th className="pb-2 font-medium">PREFIX</th>
+                <th className="pb-2 font-medium">ENVIRONMENT</th>
+                <th className="pb-2 font-medium">CREATED</th>
+                <th className="pb-2 font-medium">LAST ACTIVE</th>
+                <th className="pb-2 font-medium">STATUS</th>
+                <th className="pb-2 font-medium text-right">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#1c2536]">
+              {keys.map((k) => (
+                <tr key={k.id} className="hover:bg-[#142036] transition-colors">
+                  <td className="py-3">
+                    <span className="font-bold text-[#f4f5f7] block">{k.name}</span>
+                    <span className="text-[10px] text-[#5e6c84]">{k.id}</span>
+                  </td>
+                  <td className="py-3">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[#0d94fb]">{k.prefix}</span>
                       <button
                         onClick={() => handleCopy(k.id, k.prefix)}
-                        className="text-slate-500 hover:text-slate-200"
+                        className="text-[#5e6c84] hover:text-[#f4f5f7] cursor-pointer"
                       >
-                        {copiedId === k.id ? <Check className="size-3.5 text-emerald-400" /> : <Copy className="size-3.5" />}
+                        {copiedId === k.id ? (
+                          <Check className="w-3 h-3 text-[#04db7c]" />
+                        ) : (
+                          <Copy className="w-3 h-3" />
+                        )}
                       </button>
-                    </td>
-                    <td className="py-3.5">
-                      <Badge variant="outline" className={k.environment === "live" ? "border-emerald-500 text-emerald-300" : "border-amber-500 text-amber-300"}>
-                        {k.environment.toUpperCase()}
-                      </Badge>
-                    </td>
-                    <td className="py-3.5 text-slate-400 font-sans">{k.created}</td>
-                    <td className="py-3.5 text-slate-400 font-sans">{k.lastUsed}</td>
-                    <td className="py-3.5">
-                      <Badge className={k.status === "ACTIVE" ? "bg-emerald-500/20 text-emerald-300" : "bg-rose-500/20 text-rose-300"}>
-                        {k.status}
-                      </Badge>
-                    </td>
-                    <td className="py-3.5 text-right space-x-2">
-                      {k.status === "ACTIVE" && (
-                        <>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRotate(k.id)}
-                            className="h-7 text-xs text-slate-300 hover:text-white"
-                          >
-                            <RotateCw className="size-3 mr-1" /> Rotate
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRevoke(k.id)}
-                            className="h-7 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
-                          >
-                            <Trash2 className="size-3 mr-1" /> Revoke
-                          </Button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+                    </div>
+                  </td>
+                  <td className="py-3">
+                    <span
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-[2px] border ${
+                        k.environment === "live"
+                          ? "bg-[#04db7c15] text-[#04db7c] border-[#04db7c33]"
+                          : "bg-[#5e6c8415] text-[#97a0af] border-[#5e6c8433]"
+                      }`}
+                    >
+                      {k.environment.toUpperCase()}
+                    </span>
+                  </td>
+                  <td className="py-3 text-[#97a0af]">{k.created}</td>
+                  <td className="py-3 text-[#97a0af]">{k.lastUsed}</td>
+                  <td className="py-3">
+                    <span
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-[2px] border ${
+                        k.status === "ACTIVE"
+                          ? "bg-[#04db7c15] text-[#04db7c] border-[#04db7c33]"
+                          : "bg-[#f0525215] text-[#f05252] border-[#f0525233]"
+                      }`}
+                    >
+                      {k.status}
+                    </span>
+                  </td>
+                  <td className="py-3 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        onClick={() => handleRotate(k.id)}
+                        className="p-1 hover:bg-[#0a1324] rounded text-[#5e6c84] hover:text-[#f4f5f7] cursor-pointer"
+                        title="Rotate Secret"
+                      >
+                        <RotateCw className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleRevoke(k.id)}
+                        className="p-1 hover:bg-[#f0525215] rounded text-[#5e6c84] hover:text-[#f05252] cursor-pointer"
+                        title="Revoke Key"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

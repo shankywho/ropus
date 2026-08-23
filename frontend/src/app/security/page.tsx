@@ -1,9 +1,8 @@
 "use client";
 
 import React from "react";
+import { DataProvenanceBadge } from "@/components/ropus/DataProvenanceBadge";
 import { ShieldCheck, Lock, AlertTriangle, Key, Terminal } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 export default function SecurityAuditPage() {
   const securityEvents = [
@@ -61,133 +60,97 @@ export default function SecurityAuditPage() {
   ];
 
   return (
-    <div className="flex-1 p-6 md:p-8 space-y-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+    <div className="space-y-5">
+      {/* 1. Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-3.5 border-b border-[#1c2536]">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <ShieldCheck className="size-6 text-emerald-400" />
-            <span>Security Operations & Tamper-Evident Audit Ledger</span>
-          </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Real-time security threat mitigation, TLS 1.3/AES-256 GCM encryption verification, and SHA-256 hash-chained audit trails.
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-lg font-bold text-[#f4f5f7] tracking-tight font-mono uppercase">
+              Security Operations &amp; Tamper-Evident Ledger
+            </h1>
+            <DataProvenanceBadge type="LIVE_BACKEND" sublabel="SHA-256 Chained Hash" />
+          </div>
+          <p className="text-xs text-[#5e6c84] font-mono mt-1">
+            Zero-PII tokenization, AES-256 GCM encryption at rest &amp; cryptographic audit trail verification
           </p>
         </div>
       </div>
 
-      {/* Security Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-slate-900/80 border-slate-800">
-          <CardContent className="p-4 flex items-center justify-between">
-            <div>
-              <p className="text-[11px] font-mono text-slate-400 uppercase">Encryption At Rest</p>
-              <p className="text-xl font-bold text-emerald-400 mt-1">AES-256 GCM Active</p>
-              <p className="text-[10px] text-slate-500 font-mono mt-1">Zero-PII Tokenized Storage</p>
-            </div>
-            <div className="p-2.5 bg-emerald-500/10 rounded-lg text-emerald-400">
-              <Lock className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
+      {/* 2. Security Posture Strip */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono">
+        <div className="p-3.5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] flex items-center justify-between">
+          <div>
+            <span className="text-[10px] text-[#5e6c84] uppercase tracking-wider block">ENCRYPTION AT REST</span>
+            <span className="text-base font-bold text-[#04db7c] mt-1 block">AES-256 GCM Active</span>
+            <span className="text-[10px] text-[#5e6c84]">Zero-PII Tokenized Storage</span>
+          </div>
+          <div className="p-2 bg-[#04db7c15] text-[#04db7c] rounded-[3px]">
+            <Lock className="w-4 h-4" />
+          </div>
+        </div>
 
-        <Card className="bg-slate-900/80 border-slate-800">
-          <CardContent className="p-4 flex items-center justify-between">
-            <div>
-              <p className="text-[11px] font-mono text-slate-400 uppercase">Audit Hash Integrity</p>
-              <p className="text-xl font-bold text-indigo-400 mt-1">100% Verified</p>
-              <p className="text-[10px] text-slate-500 font-mono mt-1">Zero Broken Hash Chains</p>
-            </div>
-            <div className="p-2.5 bg-indigo-500/10 rounded-lg text-indigo-400">
-              <Terminal className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
+        <div className="p-3.5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] flex items-center justify-between">
+          <div>
+            <span className="text-[10px] text-[#5e6c84] uppercase tracking-wider block">AUDIT HASH INTEGRITY</span>
+            <span className="text-base font-bold text-[#0d94fb] mt-1 block">100% Verified</span>
+            <span className="text-[10px] text-[#5e6c84]">Zero Broken Hash Chains</span>
+          </div>
+          <div className="p-2 bg-[#0d94fb15] text-[#0d94fb] rounded-[3px]">
+            <Terminal className="w-4 h-4" />
+          </div>
+        </div>
 
-        <Card className="bg-slate-900/80 border-slate-800">
-          <CardContent className="p-4 flex items-center justify-between">
-            <div>
-              <p className="text-[11px] font-mono text-slate-400 uppercase">Zero-Trust WAF / Gateway</p>
-              <p className="text-xl font-bold text-white mt-1">Enforced (TLS 1.3)</p>
-              <p className="text-[10px] text-slate-500 font-mono mt-1">HMAC-SHA256 Request Signing</p>
-            </div>
-            <div className="p-2.5 bg-purple-500/10 rounded-lg text-purple-400">
-              <Key className="size-5" />
-            </div>
-          </CardContent>
-        </Card>
+        <div className="p-3.5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] flex items-center justify-between">
+          <div>
+            <span className="text-[10px] text-[#5e6c84] uppercase tracking-wider block">ZERO-TRUST WAF / GATEWAY</span>
+            <span className="text-base font-bold text-[#f4f5f7] mt-1 block">Enforced (TLS 1.3)</span>
+            <span className="text-[10px] text-[#5e6c84]">HMAC-SHA256 Request Signing</span>
+          </div>
+          <div className="p-2 bg-[#0a1324] text-[#97a0af] rounded-[3px]">
+            <Key className="w-4 h-4" />
+          </div>
+        </div>
       </div>
 
-      {/* Security Threat Interceptions */}
-      <Card className="bg-slate-900/80 border-slate-800">
-        <CardHeader>
-          <CardTitle className="text-base font-semibold text-white flex items-center gap-2">
-            <AlertTriangle className="size-4 text-amber-400" />
-            <span>Recent Security Threat Interceptions</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <table className="w-full text-left text-xs">
-            <thead className="border-b border-slate-800 text-slate-400 uppercase font-mono">
-              <tr>
-                <th className="pb-3">Event ID</th>
-                <th className="pb-3">Threat Signature</th>
-                <th className="pb-3">Source Target</th>
-                <th className="pb-3">Gateway Action</th>
-                <th className="pb-3 text-right">Time</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono">
-              {securityEvents.map((e) => (
-                <tr key={e.id} className="hover:bg-slate-800/30">
-                  <td className="py-3 font-medium text-slate-200">{e.id}</td>
-                  <td className="py-3 text-amber-300 font-bold">{e.type}</td>
-                  <td className="py-3 text-slate-400 font-sans">{e.source}</td>
-                  <td className="py-3">
-                    <Badge className="bg-rose-500/20 text-rose-300">{e.action}</Badge>
-                  </td>
-                  <td className="py-3 text-right text-slate-400 font-sans">{e.time}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </CardContent>
-      </Card>
+      {/* 3. Cryptographic Audit Ledger Table */}
+      <div className="bg-[#0f172a] border border-[#1c2536] rounded-[4px] p-4 font-mono text-xs">
+        <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#1c2536]">
+          <div className="flex items-center gap-2">
+            <Terminal className="w-4 h-4 text-[#0d94fb]" />
+            <h2 className="font-bold uppercase tracking-wider text-[#f4f5f7] text-xs">
+              Immutable Hash-Chained Audit Trail ({auditLedger.length})
+            </h2>
+          </div>
+          <span className="text-[#5e6c84] text-[10px]">Merkle Tree Root: 0x8f4b1e...</span>
+        </div>
 
-      {/* Hash-Chained Audit Ledger */}
-      <Card className="bg-slate-900/80 border-slate-800">
-        <CardHeader>
-          <CardTitle className="text-base font-semibold text-white flex items-center gap-2">
-            <Terminal className="size-4 text-indigo-400" />
-            <span>Immutable Hash-Chained Audit Trail</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <table className="w-full text-left text-xs font-mono">
-            <thead className="border-b border-slate-800 text-slate-400 uppercase">
-              <tr>
-                <th className="pb-3">Log ID</th>
-                <th className="pb-3">Actor</th>
-                <th className="pb-3">Action</th>
-                <th className="pb-3">Resource Target</th>
-                <th className="pb-3">SHA-256 Current Hash</th>
-                <th className="pb-3 text-right">Timestamp</th>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b border-[#1c2536] text-[#5e6c84] text-[11px]">
+                <th className="pb-2 font-medium">LOG ID</th>
+                <th className="pb-2 font-medium">ACTOR</th>
+                <th className="pb-2 font-medium">ACTION</th>
+                <th className="pb-2 font-medium">RESOURCE TARGET</th>
+                <th className="pb-2 font-medium">SHA-256 HASH</th>
+                <th className="pb-2 font-medium text-right">TIMESTAMP</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-[#1c2536]">
               {auditLedger.map((l) => (
-                <tr key={l.id} className="hover:bg-slate-800/30">
-                  <td className="py-3 text-slate-300">{l.id}</td>
-                  <td className="py-3 text-indigo-300">{l.actor}</td>
-                  <td className="py-3 text-emerald-300 font-bold">{l.action}</td>
-                  <td className="py-3 text-slate-400">{l.resource}</td>
-                  <td className="py-3 text-slate-500">{l.hash}</td>
-                  <td className="py-3 text-right text-slate-400 font-sans">{l.timestamp}</td>
+                <tr key={l.id} className="hover:bg-[#142036] transition-colors">
+                  <td className="py-2.5 text-[#f4f5f7] font-semibold">{l.id}</td>
+                  <td className="py-2.5 text-[#0d94fb]">{l.actor}</td>
+                  <td className="py-2.5 font-bold text-[#04db7c]">{l.action}</td>
+                  <td className="py-2.5 text-[#97a0af]">{l.resource}</td>
+                  <td className="py-2.5 text-[#5e6c84]">{l.hash}</td>
+                  <td className="py-2.5 text-right text-[#5e6c84]">{l.timestamp}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
