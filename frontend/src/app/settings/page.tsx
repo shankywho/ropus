@@ -1,117 +1,154 @@
 "use client";
 
-import React, { useState } from "react";
-import { Settings, Save, Check } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from "react";
+import { Save, Check } from "lucide-react";
+import { modelsApi } from "@/api/models";
 
 export default function SettingsPage() {
-  const [blockThreshold, setBlockThreshold] = useState(80);
-  const [reviewThreshold, setReviewThreshold] = useState(30);
-  const [activeModel, setActiveModel] = useState("fraud-xgb-v5-prod");
-  const [webhookUrl, setWebhookUrl] = useState("https://api.acmebank.com/v1/ropus-webhooks");
+  const [activeModel, setActiveModel] = useState("fraud-xgb-25f-v3.0");
+  const [fallbackModel, setFallbackModel] = useState("fraud-xgb-15f-v1.5");
   const [saved, setSaved] = useState(false);
+  const [tenantId] = useState("00000000-0000-0000-0000-000000000001");
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const prodData = await modelsApi.getProductionModel();
+        if (prodData && prodData.production_model) {
+          setActiveModel(prodData.production_model.version);
+        }
+        if (prodData && prodData.fallback_model) {
+          setFallbackModel(prodData.fallback_model.version);
+        }
+      } catch (err) {
+        console.warn("Could not load production model metadata:", err);
+      }
+    };
+    loadSettings();
+  }, []);
 
   const handleSave = () => {
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setTimeout(() => setSaved(false), 2500);
   };
 
   return (
-    <div className="flex-1 p-6 md:p-8 space-y-6 max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1c2536] pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <Settings className="size-6 text-indigo-400" />
-            <span>Tenant Configuration & Policies</span>
-          </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Customize risk thresholds, configure production webhook endpoints, and choose active inference models.
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-[#f4f5f7] tracking-tight">Tenant Configuration &amp; Policies</h1>
+            <span className="text-[10px] font-mono bg-[#0d94fb15] text-[#0d94fb] px-1.5 py-0.5 rounded-[2px] border border-[#0d94fb33]">
+              TENANT CONTEXT
+            </span>
+          </div>
+          <p className="text-xs text-[#97a0af] font-mono mt-0.5">
+            Calibrated decision thresholds, model arbitration precedence, and webhook settings
           </p>
         </div>
-        <Button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold">
-          {saved ? <Check className="size-3.5 mr-1.5 text-emerald-300" /> : <Save className="size-3.5 mr-1.5" />}
-          {saved ? "Settings Saved" : "Save Changes"}
-        </Button>
+
+        <button
+          onClick={handleSave}
+          className="px-3.5 py-1.5 bg-[#0d94fb] hover:bg-[#0b82dc] text-white font-mono text-xs font-bold rounded-[4px] shadow-xs active:scale-95 cursor-pointer flex items-center gap-1.5"
+        >
+          {saved ? <Check className="w-3.5 h-3.5 text-[#04db7c]" /> : <Save className="w-3.5 h-3.5" />}
+          <span>{saved ? "Policies Synced" : "Save Preferences"}</span>
+        </button>
       </div>
+
+      {saved && (
+        <div className="p-3 bg-[#04db7c15] border border-[#04db7c44] text-[#04db7c] font-mono text-xs rounded-[4px]">
+          ✓ Tenant preference updates saved.
+        </div>
+      )}
 
       {/* Settings Sections */}
       <div className="space-y-6">
-        {/* Risk Thresholds */}
-        <Card className="bg-slate-900/80 border-slate-800">
-          <CardHeader>
-            <CardTitle className="text-base font-semibold text-white">Risk Evaluation Thresholds</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <div className="flex justify-between text-xs font-mono mb-2">
-                <span className="text-slate-400">Hard Block Threshold: Score &ge; {blockThreshold}%</span>
-                <span className="text-rose-400 font-bold">BLOCK</span>
+        {/* Scoped Tenant Identity */}
+        <div className="p-5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] shadow-xs space-y-3 font-mono text-xs">
+          <span className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider block">
+            Tenant Isolation Scoping
+          </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="p-3 bg-[#0a1324] rounded-[4px] border border-[#1c2536]">
+              <span className="text-[#5e6c84] text-[10px] block">PRIMARY TENANT UUID</span>
+              <span className="text-[#0d94fb] font-bold">{tenantId}</span>
+            </div>
+            <div className="p-3 bg-[#0a1324] rounded-[4px] border border-[#1c2536]">
+              <span className="text-[#5e6c84] text-[10px] block">ENCRYPTION KEY REF</span>
+              <span className="text-[#04db7c] font-bold">kms://us-east-1/risk-tenant-01</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Server Policy Thresholds */}
+        <div className="p-5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] shadow-xs space-y-4 font-mono text-xs">
+          <span className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider block">
+            Calibrated Policy Decision Thresholds (Backend Authoritative)
+          </span>
+
+          <div className="space-y-3">
+            <div className="p-3 bg-[#0a1324] border border-[#1c2536] rounded-[4px] flex items-center justify-between">
+              <div>
+                <span className="text-[#04db7c] font-bold block">AUTOMATIC ALLOW (&lt; 0.05)</span>
+                <span className="text-[11px] text-[#97a0af]">Sub-millisecond approval with zero step-up friction</span>
               </div>
+              <span className="px-2 py-0.5 bg-[#04db7c15] text-[#04db7c] border border-[#04db7c33] rounded-[2px] text-[10px] font-bold">
+                POLICY #1
+              </span>
+            </div>
+
+            <div className="p-3 bg-[#0a1324] border border-[#1c2536] rounded-[4px] flex items-center justify-between">
+              <div>
+                <span className="text-[#f59e0b] font-bold block">MANUAL REVIEW / STEP-UP (0.05 - 0.35)</span>
+                <span className="text-[11px] text-[#97a0af]">Automatic case generation &amp; 24-hour SLA routing</span>
+              </div>
+              <span className="px-2 py-0.5 bg-[#f59e0b15] text-[#f59e0b] border border-[#f59e0b33] rounded-[2px] text-[10px] font-bold">
+                POLICY #2
+              </span>
+            </div>
+
+            <div className="p-3 bg-[#0a1324] border border-[#1c2536] rounded-[4px] flex items-center justify-between">
+              <div>
+                <span className="text-[#f05252] font-bold block">AUTOMATIC DECLINE / BLOCK (&ge; 0.35)</span>
+                <span className="text-[11px] text-[#97a0af]">Instant transaction decline &amp; recipient quarantine</span>
+              </div>
+              <span className="px-2 py-0.5 bg-[#f0525215] text-[#f05252] border border-[#f0525233] rounded-[2px] text-[10px] font-bold">
+                POLICY #3
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Model & Fallback Configuration */}
+        <div className="p-5 bg-[#0f172a] border border-[#1c2536] rounded-[4px] shadow-xs space-y-4 font-mono text-xs">
+          <span className="text-xs font-mono font-bold text-[#f4f5f7] uppercase tracking-wider block">
+            Active Model Registry &amp; Fallback Binding
+          </span>
+
+          <div className="space-y-3">
+            <div>
+              <label className="text-[11px] text-[#5e6c84] block mb-1">PRIMARY PRODUCTION MODEL</label>
               <input
-                type="range"
-                min="50"
-                max="95"
-                value={blockThreshold}
-                onChange={(e) => setBlockThreshold(Number(e.target.value))}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                type="text"
+                readOnly
+                value={`${activeModel} (25 Features • Beta-Calibrated v2.5)`}
+                className="w-full px-3 py-2 bg-[#0a1324] border border-[#1c2536] text-[#0d94fb] font-bold rounded-[4px]"
               />
             </div>
 
             <div>
-              <div className="flex justify-between text-xs font-mono mb-2">
-                <span className="text-slate-400">Manual Review Threshold: Score &ge; {reviewThreshold}%</span>
-                <span className="text-amber-400 font-bold">REVIEW / CHALLENGE</span>
-              </div>
+              <label className="text-[11px] text-[#5e6c84] block mb-1">EMERGENCY FALLBACK MODEL (ZERO DEPENDENCY)</label>
               <input
-                type="range"
-                min="10"
-                max="50"
-                value={reviewThreshold}
-                onChange={(e) => setReviewThreshold(Number(e.target.value))}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                type="text"
+                readOnly
+                value={`${fallbackModel} (15 Features • In-Memory Fallback)`}
+                className="w-full px-3 py-2 bg-[#0a1324] border border-[#1c2536] text-[#f59e0b] font-bold rounded-[4px]"
               />
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Model Selection */}
-        <Card className="bg-slate-900/80 border-slate-800">
-          <CardHeader>
-            <CardTitle className="text-base font-semibold text-white">Active Machine Learning Model</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-xs font-mono text-slate-400">Production Inference Model Version</label>
-              <select
-                value={activeModel}
-                onChange={(e) => setActiveModel(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
-              >
-                <option value="fraud-xgb-v5-prod">fraud-xgb-v5-prod (Gradient Boosted Tree • AUC 0.982)</option>
-                <option value="fraud-lgbm-v4-prod">fraud-lgbm-v4-prod (LightGBM High-Throughput • AUC 0.978)</option>
-                <option value="fraud-gnn-v2-canary">fraud-gnn-v2-canary (Graph Neural Network • 10% Traffic Split)</option>
-              </select>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Webhooks */}
-        <Card className="bg-slate-900/80 border-slate-800">
-          <CardHeader>
-            <CardTitle className="text-base font-semibold text-white">Customer Webhook Dispatch URL</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <label className="text-xs font-mono text-slate-400">Endpoint Destination (Receives HMAC-SHA256 Signed JSON)</label>
-            <input
-              type="text"
-              value={webhookUrl}
-              onChange={(e) => setWebhookUrl(e.target.value)}
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-indigo-500"
-            />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

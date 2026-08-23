@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import {
   Sliders,
@@ -31,6 +31,73 @@ import {
 } from "@/components/ui/table";
 import { api, Rule, RuleStatus } from "@/lib/api";
 
+// Fallback demo mock rules
+const mockFallbackRules: Rule[] = [
+  {
+    rule_id: "rule_01_high_velocity_block",
+    tenant_id: "00000000-0000-0000-0000-000000000001",
+    name: "High IP Velocity & Amount Block",
+    description: "Hard decline if amount > 50,000 and 1h IP transactions >= 5",
+    dsl_ast: {
+      action: "DECLINE_RECOMMENDATION",
+      reason_code: "HIGH_IP_VELOCITY_BLOCK",
+      condition: {
+        AND: [
+          { field: "amount", operator: ">", value: 50000 },
+          { field: "velocity.ip.1hr", operator: ">=", value: 5 },
+        ],
+      },
+    },
+    status: "ACTIVE",
+    version: 1,
+    created_by: "analyst_a",
+    approved_by: "analyst_b",
+    created_at: new Date(Date.now() - 72 * 3600 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 48 * 3600 * 1000).toISOString(),
+  },
+  {
+    rule_id: "rule_02_new_device_review",
+    tenant_id: "00000000-0000-0000-0000-000000000001",
+    name: "Untrusted Device High Ticket Review",
+    description: "Send to analyst queue if device is new and amount > 30,000",
+    dsl_ast: {
+      action: "MANUAL_REVIEW",
+      reason_code: "NEW_DEVICE_HIGH_TICKET",
+      condition: {
+        AND: [
+          { field: "device_fingerprint", operator: "==", value: "new_device" },
+          { field: "amount", operator: ">", value: 30000 },
+        ],
+      },
+    },
+    status: "PENDING_APPROVAL",
+    version: 1,
+    created_by: "analyst_a",
+    created_at: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
+  },
+  {
+    rule_id: "rule_03_token_burst_draft",
+    tenant_id: "00000000-0000-0000-0000-000000000001",
+    name: "Token 24h Velocity Spike Guard",
+    description: "Flag card tokens with over 10 transactions in 24 hours",
+    dsl_ast: {
+      action: "MANUAL_REVIEW",
+      reason_code: "TOKEN_VELOCITY_SPIKE",
+      condition: {
+        field: "velocity.token.24hr",
+        operator: ">=",
+        value: 10,
+      },
+    },
+    status: "DRAFT",
+    version: 1,
+    created_by: "analyst_b",
+    created_at: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
+  },
+];
+
 export default function RulesManagementPage() {
   const [rules, setRules] = useState<Rule[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -38,74 +105,7 @@ export default function RulesManagementPage() {
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
-  // Fallback demo mock rules
-  const mockFallbackRules: Rule[] = [
-    {
-      rule_id: "rule_01_high_velocity_block",
-      tenant_id: "00000000-0000-0000-0000-000000000001",
-      name: "High IP Velocity & Amount Block",
-      description: "Hard decline if amount > 50,000 and 1h IP transactions >= 5",
-      dsl_ast: {
-        action: "DECLINE_RECOMMENDATION",
-        reason_code: "HIGH_IP_VELOCITY_BLOCK",
-        condition: {
-          AND: [
-            { field: "amount", operator: ">", value: 50000 },
-            { field: "velocity.ip.1hr", operator: ">=", value: 5 },
-          ],
-        },
-      },
-      status: "ACTIVE",
-      version: 1,
-      created_by: "analyst_a",
-      approved_by: "analyst_b",
-      created_at: new Date(Date.now() - 72 * 3600 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 48 * 3600 * 1000).toISOString(),
-    },
-    {
-      rule_id: "rule_02_new_device_review",
-      tenant_id: "00000000-0000-0000-0000-000000000001",
-      name: "Untrusted Device High Ticket Review",
-      description: "Send to analyst queue if device is new and amount > 30,000",
-      dsl_ast: {
-        action: "MANUAL_REVIEW",
-        reason_code: "NEW_DEVICE_HIGH_TICKET",
-        condition: {
-          AND: [
-            { field: "device_fingerprint", operator: "==", value: "new_device" },
-            { field: "amount", operator: ">", value: 30000 },
-          ],
-        },
-      },
-      status: "PENDING_APPROVAL",
-      version: 1,
-      created_by: "analyst_a",
-      created_at: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
-    },
-    {
-      rule_id: "rule_03_token_burst_draft",
-      tenant_id: "00000000-0000-0000-0000-000000000001",
-      name: "Token 24h Velocity Spike Guard",
-      description: "Flag card tokens with over 10 transactions in 24 hours",
-      dsl_ast: {
-        action: "MANUAL_REVIEW",
-        reason_code: "TOKEN_VELOCITY_SPIKE",
-        condition: {
-          field: "velocity.token.24hr",
-          operator: ">=",
-          value: 10,
-        },
-      },
-      status: "DRAFT",
-      version: 1,
-      created_by: "analyst_b",
-      created_at: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
-    },
-  ];
-
-  const fetchRules = async () => {
+  const fetchRules = useCallback(async () => {
     setLoading(true);
     try {
       const data = await api.getRules();
@@ -120,11 +120,11 @@ export default function RulesManagementPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchRules();
-  }, []);
+  }, [fetchRules]);
 
   const handleTransition = async (ruleId: string, newStatus: RuleStatus) => {
     setActionLoadingId(ruleId);

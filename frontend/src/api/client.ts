@@ -1,11 +1,10 @@
 /**
  * Base HTTP Client for ROPUS Control Plane.
- * Communicates with the local Go backend on port 8080.
+ * Communicates with the local Go backend directly or via secure Next.js server proxy.
  */
 
 export interface ApiClientConfig {
   baseUrl?: string;
-  adminApiKey?: string;
   tenantId?: string;
   timeoutMs?: number;
 }
@@ -24,20 +23,23 @@ export class ApiError extends Error {
 
 export class HttpClient {
   private baseUrl: string;
-  private adminApiKey: string;
   private tenantId: string;
   private timeoutMs: number;
 
   constructor(config?: ApiClientConfig) {
-    this.baseUrl =
-      config?.baseUrl ||
-      process.env.NEXT_PUBLIC_API_URL ||
-      process.env.VITE_API_BASE_URL ||
-      "http://localhost:8080";
-    this.adminApiKey =
-      config?.adminApiKey ||
-      process.env.NEXT_PUBLIC_ADMIN_API_KEY ||
-      "adm_risk_super_secret_key_98765";
+    if (config?.baseUrl) {
+      this.baseUrl = config.baseUrl;
+    } else if (typeof window !== "undefined") {
+      // In browser, route via secure server-side Next.js proxy to protect secrets
+      this.baseUrl = "/api/proxy";
+    } else {
+      // In server runtime, call backend directly
+      this.baseUrl =
+        process.env.BACKEND_INTERNAL_URL ||
+        process.env.NEXT_PUBLIC_API_URL ||
+        "http://localhost:8080";
+    }
+
     this.tenantId =
       config?.tenantId ||
       process.env.NEXT_PUBLIC_TENANT_ID ||
@@ -57,12 +59,12 @@ export class HttpClient {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
 
-    const url = `${this.baseUrl}${endpoint.startsWith("/") ? endpoint : "/" + endpoint}`;
+    const cleanEndpoint = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+    const url = `${this.baseUrl}${cleanEndpoint}`;
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       "X-Tenant-ID": this.tenantId,
-      "X-Admin-API-Key": this.adminApiKey,
       ...(options.headers as Record<string, string>),
       ...customHeaders,
     };
