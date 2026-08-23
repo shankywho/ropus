@@ -13,10 +13,8 @@ import {
   RefreshCw,
   Code2,
   Lock,
-  ArrowRight,
   Info,
   CheckCircle2,
-  XCircle,
   Fingerprint,
   Radio,
 } from "lucide-react";

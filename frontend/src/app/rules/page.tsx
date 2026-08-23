@@ -5,17 +5,12 @@ import Link from "next/link";
 import {
   Sliders,
   PlusCircle,
-  ShieldCheck,
   ShieldAlert,
   AlertTriangle,
   CheckCircle2,
-  XCircle,
   Users,
   RefreshCw,
-  ArrowRight,
-  Code2,
   Lock,
-  Info,
 } from "lucide-react";
 import {
   Card,

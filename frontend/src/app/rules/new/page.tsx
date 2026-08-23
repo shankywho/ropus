@@ -9,8 +9,6 @@ import {
   Plus,
   Trash2,
   Code2,
-  CheckCircle2,
-  AlertTriangle,
   RefreshCw,
   Sparkles,
   Zap,
@@ -158,6 +156,13 @@ export default function NewRulePage() {
           </p>
         </div>
       </div>
+
+      {/* Error Alert */}
+      {error && (
+        <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono rounded">
+          {error}
+        </div>
+      )}
 
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

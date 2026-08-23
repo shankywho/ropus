@@ -656,6 +656,21 @@ func main() {
 	// 6. HTTP Router Setup
 	r := chi.NewRouter()
 
+	// CORS Middleware for frontend integration
+	r.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
+			w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, X-CSRF-Token, X-Tenant-ID, X-Admin-API-Key, X-Actor-ID, X-Correlation-ID, X-Idempotency-Key")
+			w.Header().Set("Access-Control-Expose-Headers", "Link, X-Total-Count, X-Correlation-ID, X-Latency-Ms")
+			if r.Method == "OPTIONS" {
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+			next.ServeHTTP(w, r)
+		})
+	})
+
 	r.Use(utils.CorrelationIDMiddleware)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)

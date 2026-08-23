@@ -4,22 +4,15 @@ import React, { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  FolderKanban,
   ArrowLeft,
-  ShieldCheck,
   ShieldAlert,
-  AlertTriangle,
   Clock,
-  Cpu,
   UserCheck,
   CheckCircle2,
   XCircle,
-  FileText,
   Lock,
   Code2,
   RefreshCw,
-  Sparkles,
-  Info,
 } from "lucide-react";
 import {
   Card,
@@ -27,7 +20,6 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,9 +29,45 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+const defaultMockDetail: CaseDetail = {
+  case_id: "CASE-88419",
+  tenant_id: "00000000-0000-0000-0000-000000000001",
+  decision_id: "dec_78e9b0c1-23a4",
+  transaction_id: "txn_flagged_velocity_99",
+  amount: 48000,
+  currency: "INR",
+  risk_score: 72,
+  recommended_action: "MANUAL_REVIEW",
+  reason_codes: ["HIGH_IP_VELOCITY_1H", "HIGH_TRANSACTION_AMOUNT", "NEW_DEVICE_FINGERPRINT"],
+  status: "UNDER_REVIEW",
+  priority: "HIGH",
+  assigned_to: "analyst_sarah",
+  sla_expires_at: new Date(Date.now() + 14 * 3600 * 1000).toISOString(),
+  created_at: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
+  updated_at: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
+  feature_snapshot: {
+    amount: 48000,
+    currency: "INR",
+    "velocity.ip.1hr": 5,
+    "velocity.token.24hr": 8,
+    ip_address: "192.168.1.100",
+    device_fingerprint: "fp_linux_emu_v4",
+    _encryption: "AES-256-GCM",
+    _snapshot_ref: "snap_99a8b7c6d5",
+  },
+  raw_payload: {
+    transaction_id: "txn_flagged_velocity_99",
+    amount: 48000,
+    currency: "INR",
+    payment_method: { type: "card", token: "tok_visa_high_risk_88" },
+    device_fingerprint: "fp_linux_emu_v4",
+    ip_address: "192.168.1.100",
+  },
+};
+
 export default function CaseDetailPage({ params }: PageProps) {
-  const resolvedParams = use(params);
-  const caseId = resolvedParams.id;
+  const unwrappedParams = use(params);
+  const caseId = unwrappedParams.id;
   const router = useRouter();
 
   const [caseData, setCaseData] = useState<CaseDetail | null>(null);
@@ -49,43 +77,6 @@ export default function CaseDetailPage({ params }: PageProps) {
   const [resolvedSuccess, setResolvedSuccess] = useState<string | null>(null);
   const [showRawJson, setShowRawJson] = useState<boolean>(false);
 
-  // Fallback mock detail in case Postgres does not have this specific record
-  const mockFallbackDetail: CaseDetail = {
-    case_id: caseId,
-    tenant_id: "00000000-0000-0000-0000-000000000001",
-    decision_id: "dec_78e9b0c1-23a4",
-    transaction_id: "txn_flagged_velocity_99",
-    amount: 48000,
-    currency: "INR",
-    risk_score: 72,
-    recommended_action: "MANUAL_REVIEW",
-    reason_codes: ["HIGH_IP_VELOCITY_1H", "HIGH_TRANSACTION_AMOUNT", "NEW_DEVICE_FINGERPRINT"],
-    status: "UNDER_REVIEW",
-    priority: "HIGH",
-    assigned_to: "analyst_sarah",
-    sla_expires_at: new Date(Date.now() + 14 * 3600 * 1000).toISOString(),
-    created_at: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
-    feature_snapshot: {
-      amount: 48000,
-      currency: "INR",
-      "velocity.ip.1hr": 5,
-      "velocity.token.24hr": 8,
-      ip_address: "192.168.1.100",
-      device_fingerprint: "fp_linux_emu_v4",
-      _encryption: "AES-256-GCM",
-      _snapshot_ref: "snap_99a8b7c6d5",
-    },
-    raw_payload: {
-      transaction_id: "txn_flagged_velocity_99",
-      amount: 48000,
-      currency: "INR",
-      payment_method: { type: "card", token: "tok_visa_high_risk_88" },
-      device_fingerprint: "fp_linux_emu_v4",
-      ip_address: "192.168.1.100",
-    },
-  };
-
   useEffect(() => {
     const loadCase = async () => {
       setLoading(true);
@@ -94,11 +85,11 @@ export default function CaseDetailPage({ params }: PageProps) {
         if (detail && detail.case_id) {
           setCaseData(detail);
         } else {
-          setCaseData(mockFallbackDetail);
+          setCaseData({ ...defaultMockDetail, case_id: caseId });
         }
       } catch (err: any) {
         console.warn("Could not fetch case from API, using fallback detail:", err.message);
-        setCaseData(mockFallbackDetail);
+        setCaseData({ ...defaultMockDetail, case_id: caseId });
       } finally {
         setLoading(false);
       }
@@ -118,13 +109,9 @@ export default function CaseDetailPage({ params }: PageProps) {
       setResolvedSuccess(action === "ALLOW" ? "RESOLVED_ALLOW" : "RESOLVED_DECLINE");
       setTimeout(() => {
         router.push("/cases");
-      }, 1500);
+      }, 1200);
     } catch (err: any) {
-      console.warn("Resolve API call error, marking resolved locally:", err.message);
-      setResolvedSuccess(action === "ALLOW" ? "RESOLVED_ALLOW" : "RESOLVED_DECLINE");
-      setTimeout(() => {
-        router.push("/cases");
-      }, 1500);
+      alert(`Resolution error: ${err.message}`);
     } finally {
       setResolving(false);
     }
@@ -139,7 +126,7 @@ export default function CaseDetailPage({ params }: PageProps) {
     );
   }
 
-  const c = caseData || mockFallbackDetail;
+  const c = caseData || { ...defaultMockDetail, case_id: caseId };
 
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto w-full space-y-8">
@@ -216,7 +203,7 @@ export default function CaseDetailPage({ params }: PageProps) {
                   {(c.reason_codes && c.reason_codes.length > 0
                     ? c.reason_codes
                     : ["HIGH_IP_VELOCITY_1H", "HIGH_TRANSACTION_AMOUNT"]
-                  ).map((code, idx) => (
+                  ).map((code: string, idx: number) => (
                     <Badge
                       key={idx}
                       variant="outline"
