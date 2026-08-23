@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { useSession } from "@/lib/rbac";
-import { DATA_SOURCE } from "@/lib/ropus-data";
+import { isLiveBackend } from "@/lib/ropus/api";
 
 const controlPlaneNav = [
   { label: "Overview", to: "/" },
@@ -189,12 +189,21 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="hidden font-mono text-[11px] tracking-[0.06em] text-muted-foreground sm:inline">
               {session.organization} / {session.tenantId}
             </span>
-            <span
-              title={DATA_SOURCE.note}
-              className="border border-warning/40 bg-warning-surface px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-warning uppercase"
-            >
-              {DATA_SOURCE.label}
-            </span>
+            {isLiveBackend ? (
+              <span
+                title="Connected to authoritative Go API at localhost:8080"
+                className="border border-approve/40 bg-approve/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-approve uppercase"
+              >
+                LIVE BACKEND
+              </span>
+            ) : (
+              <span
+                title="Offline fixtures rendered locally"
+                className="border border-warning/40 bg-warning/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-warning uppercase"
+              >
+                DEMO DATA
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <span className="hidden items-center gap-1.5 text-[11px] font-semibold tracking-[0.06em] text-review md:inline-flex">

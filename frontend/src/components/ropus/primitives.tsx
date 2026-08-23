@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
-import { DATA_SOURCE, type Health, type Verdict } from "@/lib/ropus-data";
+import type { Verdict, ServiceState as Health } from "@/lib/ropus/contracts";
+import { isLiveBackend } from "@/lib/ropus/api";
 
 /* ---------------------------------------------------------------- surfaces */
 
@@ -69,16 +70,27 @@ export function Mono({ children, className }: { children: ReactNode; className?:
 }
 
 export function DemoBadge({ className }: { className?: string }) {
-  return (
+  return isLiveBackend ? (
     <span
-      title={DATA_SOURCE.note}
+      title="Connected to authoritative Go API at localhost:8080"
+      className={cn(
+        "inline-flex items-center gap-1.5 border border-approve/40 bg-approve/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-approve uppercase",
+        className,
+      )}
+    >
+      <span aria-hidden className="size-1.5 rounded-full bg-approve" />
+      LIVE BACKEND
+    </span>
+  ) : (
+    <span
+      title="Offline fixtures rendered locally"
       className={cn(
         "inline-flex items-center gap-1.5 border border-warning/40 bg-warning-surface px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-warning uppercase",
         className,
       )}
     >
       <span aria-hidden className="size-1.5 rounded-full bg-warning" />
-      {DATA_SOURCE.label}
+      DEMO DATA
     </span>
   );
 }
