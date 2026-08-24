@@ -25,13 +25,13 @@ flowchart TD
         UI["Control Plane Dashboard :3000"] <-->|REST API| API
     end
 
-    subgraph Synchronous_Path ["Synchronous Decision Pipeline (Sub-100ms SLA)"]
+    subgraph Synchronous_Path ["Synchronous Decision Pipeline - Sub-100ms SLA"]
         API --> ORCH["Risk Orchestrator"]
         ORCH <-->|ZADD / ZCOUNT| REDIS[("Redis 7 Feature Store")]
         ORCH <-->|Fetch Active Rules| PG_DB[("PostgreSQL 16")]
-        ORCH -->|POST /predict (50ms Deadline)| ONNX["ONNX ML Sidecar :8000"]
-        ORCH -->|Derive DEK & Encrypt PII| KMS["Mock KMS AES-256"]
-        ORCH -->|Atomic Commit (Decision + Outbox)| PG_DB
+        ORCH -->|POST /predict - 50ms Deadline| ONNX["ONNX ML Sidecar :8000"]
+        ORCH -->|Derive DEK and Encrypt PII| KMS["Mock KMS AES-256"]
+        ORCH -->|Atomic Commit - Decision and Outbox| PG_DB
     end
 
     subgraph Asynchronous_Streaming ["Asynchronous CDC & Event Streaming"]
