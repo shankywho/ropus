@@ -19,28 +19,28 @@ The system orchestrates multi-stage synchronous fraud decisioning (**<100ms p95 
 
 ```mermaid
 flowchart TD
-    subgraph Edge_and_Ingestion [Edge & Ingestion]
-        M[Merchant / Payment Gateway] -->|POST /v1/risk-evaluations| API[Go API Gateway :8080]
-        PG[Payment Provider] -->|POST /webhooks/provider| API
-        UI[Next.js 15 Analyst Dashboard :3000] <-->|REST API| API
+    subgraph Edge_and_Ingestion ["Edge & Ingestion"]
+        M["Merchant / Payment Gateway"] -->|POST /v1/risk-evaluations| API["Go API Gateway :8080"]
+        PG["Payment Provider"] -->|POST /webhooks/provider| API
+        UI["Control Plane Dashboard :3000"] <-->|REST API| API
     end
 
-    subgraph Synchronous_Path [Synchronous Decision Pipeline (<100ms SLA)]
-        API --> ORCH[Risk Orchestrator]
-        ORCH <-->|ZADD / ZCOUNT| REDIS[(Redis 7 Feature Store)]
-        ORCH <-->|Fetch Active Rules| PG_DB[(PostgreSQL 16)]
-        ORCH -->|POST /predict (50ms Deadline)| ONNX[ONNX ML Sidecar :8000]
-        ORCH -->|Derive DEK & Encrypt PII| KMS[Mock KMS AES-256]
+    subgraph Synchronous_Path ["Synchronous Decision Pipeline (Sub-100ms SLA)"]
+        API --> ORCH["Risk Orchestrator"]
+        ORCH <-->|ZADD / ZCOUNT| REDIS[("Redis 7 Feature Store")]
+        ORCH <-->|Fetch Active Rules| PG_DB[("PostgreSQL 16")]
+        ORCH -->|POST /predict (50ms Deadline)| ONNX["ONNX ML Sidecar :8000"]
+        ORCH -->|Derive DEK & Encrypt PII| KMS["Mock KMS AES-256"]
         ORCH -->|Atomic Commit (Decision + Outbox)| PG_DB
     end
 
-    subgraph Asynchronous_Streaming [Asynchronous CDC & Event Streaming]
-        PG_DB -.->|Logical WAL Replication| DEB[Debezium Connect :8083]
-        DEB -->|EventRouter| REDP[Redpanda / Kafka :9092]
-        REDP -->|risk.events| CASE_C[Case Manager Consumer]
-        REDP -->|risk.events| AUDIT_C[Audit OLAP Consumer]
+    subgraph Asynchronous_Streaming ["Asynchronous CDC & Event Streaming"]
+        PG_DB -.->|Logical WAL Replication| DEB["Debezium Connect :8083"]
+        DEB -->|EventRouter| REDP["Redpanda / Kafka :9092"]
+        REDP -->|risk.events| CASE_C["Case Manager Consumer"]
+        REDP -->|risk.events| AUDIT_C["Audit OLAP Consumer"]
         CASE_C -->|Provision 24h SLA Case| PG_DB
-        AUDIT_C -->|Batch / Stream Insert| CH[(ClickHouse OLAP :9000)]
+        AUDIT_C -->|Batch / Stream Insert| CH[("ClickHouse OLAP :9000")]
     end
 ```
 

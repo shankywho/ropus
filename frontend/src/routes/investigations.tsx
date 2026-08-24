@@ -61,8 +61,8 @@ function InvestigationsPage() {
           },
           {
             label: "Exposure",
-            value: usd(open.reduce((s, i) => s + i.exposure, 0)),
-            sub: "USD at risk, open only",
+            value: `₹${usd(open.reduce((s, i) => s + i.exposure * 100, 0))}`,
+            sub: "INR at risk, open only",
           },
           { label: "Oldest open", value: "18 days", sub: "inv_2026_0166" },
         ]}
@@ -88,7 +88,9 @@ function InvestigationsPage() {
             <p className="mt-0.5 text-[12.5px] text-muted-foreground">
               Lead Analyst: <Mono className="text-foreground font-bold">{activeInv.owner}</Mono> ·
               Total Syndicate Exposure:{" "}
-              <Mono className="text-foreground font-bold">${usd(activeInv.exposure)} USD</Mono>
+              <Mono className="text-foreground font-bold">
+                ₹{usd(activeInv.exposure * 100)} INR
+              </Mono>
             </p>
           </div>
 
@@ -102,45 +104,47 @@ function InvestigationsPage() {
           </div>
         </div>
 
-        {/* Tripartite Evidence Structure */}
-        <div className="mt-4 grid gap-4 md:grid-cols-3">
-          <div className="rounded border-l-2 border-primary bg-accent/20 p-3.5">
-            <div className="font-mono text-[11px] font-bold tracking-wider text-primary uppercase">
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3 text-[12.5px]">
+          <div className="rounded border border-border bg-accent/20 p-3.5">
+            <div className="text-[11px] font-semibold text-muted-foreground uppercase">
               1. Observed Facts
             </div>
-            <ul className="mt-2 space-y-1.5 text-[12px] text-foreground/90">
-              <li>• 14 outbound transfers across 3 distinct merchant rails.</li>
+            <ul className="mt-2 space-y-1.5 text-muted-foreground list-disc list-inside">
               <li>
-                • Shared Canvas Fingerprint: <Mono className="text-[11px]">9f8a...canvas</Mono>.
+                • Session from datacenter proxy <Mono className="text-[11px]">198.51.100.44</Mono>.
               </li>
               <li>
-                • Egress IP subnet: <Mono className="text-[11px]">198.51.100.0/24</Mono> (Datacenter
-                ASN).
+                • Headless Linux emulator canvas <Mono className="text-[11px]">9f8a84b12c</Mono>.
+              </li>
+              <li>
+                • Beneficiary node <Mono className="text-[11px]">PA-77120</Mono> added 9m before
+                transfer.
               </li>
             </ul>
           </div>
 
-          <div className="rounded border-l-2 border-warning bg-warning/5 p-3.5">
-            <div className="font-mono text-[11px] font-bold tracking-wider text-warning uppercase">
-              2. Inferred Patterns
+          <div className="rounded border border-border bg-accent/20 p-3.5">
+            <div className="text-[11px] font-semibold text-muted-foreground uppercase">
+              2. Inferred Graph Structure
             </div>
-            <ul className="mt-2 space-y-1.5 text-[12px] text-foreground/90">
-              <li>• Coordinated account takeover (ATO) ring operating out of Limassol.</li>
-              <li>• Entity graph degree centrality: 16 (high syndicate density).</li>
-              <li>• Payout IBAN funneling funds into single mule depot.</li>
+            <ul className="mt-2 space-y-1.5 text-muted-foreground list-disc list-inside">
+              <li>• 14 synthetic accounts share same hardware canvas hash.</li>
+              <li>• Degree centrality = 16 (high density syndicate ring).</li>
+              <li>• 3 linked accounts have confirmed prior chargebacks.</li>
             </ul>
           </div>
 
-          <div className="rounded border-l-2 border-block bg-block/5 p-3.5">
-            <div className="font-mono text-[11px] font-bold tracking-wider text-block uppercase">
-              3. Recommended Action
+          <div className="rounded border border-border bg-accent/20 p-3.5">
+            <div className="text-[11px] font-semibold text-muted-foreground uppercase">
+              3. Recommended Actions
             </div>
-            <ul className="mt-2 space-y-1.5 text-[12px] text-foreground/90">
-              <li>• Maintain immediate block on all 14 linked accounts.</li>
+            <ul className="mt-2 space-y-1.5 text-muted-foreground">
+              <li>• Execute immediate permanent block on payout request.</li>
+              <li>• Freeze 14 connected mule accounts in graph ring.</li>
               <li>
-                • Add IBAN <Mono className="text-[11px]">PA-77120</Mono> to global blacklist.
+                • Add Beneficiary <Mono className="text-[11px]">PA-77120</Mono> to global blacklist.
               </li>
-              <li>• File mandatory FinCEN SAR narrative batch.</li>
+              <li>• File mandatory FIU-IND STR/SAR narrative batch.</li>
             </ul>
           </div>
         </div>
@@ -156,7 +160,7 @@ function InvestigationsPage() {
               { key: "title", label: "Subject" },
               { key: "entities", label: "Entities", align: "right" },
               { key: "cases", label: "Linked cases" },
-              { key: "exposure", label: "Exposure USD", align: "right" },
+              { key: "exposure", label: "Exposure INR", align: "right" },
               { key: "owner", label: "Owner" },
               { key: "state", label: "State" },
               { key: "opened", label: "Opened" },

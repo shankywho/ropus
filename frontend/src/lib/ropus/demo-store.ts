@@ -18,7 +18,7 @@ export const demoStages: DemoStageInfo[] = [
     label: "Normal Customer Baseline",
     shortExplanation: "Customer cus_4471029 transacts normally within their historical baseline.",
     technicalDetails:
-      "Regular $50.00 grocery spend from Singapore (103.82°E, 1.35°N) on registered Safari iOS device (dev_safari_01). 0 disputes, normal velocity (1.2 tx/day).",
+      "Regular ₹480.00 quick commerce spend from Bengaluru, KA (12.97°N, 77.59°E) on registered Safari iOS device (dev_safari_ios_01). 0 disputes, normal velocity (1.2 tx/day).",
     activeSurface: "baseline",
     simulatedScore: 0.02,
     verdict: "APPROVE",
@@ -28,9 +28,9 @@ export const demoStages: DemoStageInfo[] = [
     stageNumber: 2,
     label: "Attack Transaction Ingress",
     shortExplanation:
-      "A high-value outbound wire request arrives from an unrecognised device and location.",
+      "A high-value outbound IMPS payout arrives from an unrecognised device and location.",
     technicalDetails:
-      "POST /v1/risk/evaluate receives $14,500.00 USD transfer from Limassol, Cyprus IP 198.51.100.44 (Datacenter ASN 13335) on a Linux emulator canvas fingerprint.",
+      "POST /v1/risk/evaluate receives ₹14,50,000.00 INR payout request from Limassol proxy IP 198.51.100.44 (Datacenter ASN 13335) on a Linux emulator canvas fingerprint.",
     activeSurface: "transaction",
     simulatedScore: 0.28,
     verdict: "REVIEW",
@@ -42,7 +42,7 @@ export const demoStages: DemoStageInfo[] = [
     shortExplanation:
       "Declarative AST rules detect velocity surges and impossible physical travel.",
     technicalDetails:
-      "AST evaluation in 0.4ms fires 3 deterministic rules: Velocity Surge (+412% in 1hr), Impossible Travel (51,350 km/h from Singapore 12m ago), and Datacenter Proxy CIDR.",
+      "AST evaluation in 0.4ms fires deterministic rules: Velocity Surge (+412% in 1hr), Impossible Travel (36,250 km/h from Bengaluru 12m ago), and Datacenter Proxy CIDR.",
     activeSurface: "rules",
     simulatedScore: 0.65,
     verdict: "CHALLENGE",
@@ -53,7 +53,7 @@ export const demoStages: DemoStageInfo[] = [
     label: "ML Inference & Calibrated Probability",
     shortExplanation: "25-feature ONNX XGBoost model evaluates non-linear attack interactions.",
     technicalDetails:
-      "Python sidecar executes ONNX tree traversal in 2.1ms. Raw probability = 0.8712; Beta Calibration yields posterior P(fraud|x) = 0.9418. Expected Loss = $13,656.10.",
+      "Python sidecar executes ONNX tree traversal in 2.1ms. Raw probability = 0.8712; Beta Calibration yields posterior P(fraud|x) = 0.9418. Expected Loss = ₹13,65,610.00.",
     activeSurface: "ml",
     simulatedScore: 0.88,
     verdict: "BLOCK",
@@ -88,7 +88,7 @@ export const demoStages: DemoStageInfo[] = [
     shortExplanation:
       "Fraud analyst verifies the evidentiary dossier and confirms the permanent freeze.",
     technicalDetails:
-      "Analyst reviews tripartite dossier in Control Plane and executes 'CONFIRM BLOCK & FREEZE'. Action commits to SHA-256 hash-chained audit ledger and routes ground-truth label to closed-loop ML retraining.",
+      "Analyst a.sharma reviews tripartite dossier in Control Plane and executes 'CONFIRM BLOCK & FREEZE'. Action commits to SHA-256 hash-chained audit ledger and routes ground-truth label to closed-loop ML retraining.",
     activeSurface: "case",
     simulatedScore: 0.96,
     verdict: "BLOCK",

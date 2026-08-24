@@ -696,12 +696,12 @@ export const evaluateSample = `curl -X POST https://api.ropus.io/v1/risk/evaluat
   -d '{
     "transaction_id": "txn_9f3c21ab7d",
     "customer_id": "cus_4471029",
-    "channel": "wire_outbound",
-    "amount": 14500.00,
-    "currency": "USD",
+    "channel": "imps_payout",
+    "amount": 1450000.00,
+    "currency": "INR",
     "beneficiary_account": "PA-77120",
-    "device_id": "dvc_5b91e0",
-    "ip": "185.220.101.44"
+    "device_id": "dev_emulator_linux_9f8a",
+    "ip": "198.51.100.44"
   }'`;
 
 export const evaluateResponse = `{
@@ -709,7 +709,7 @@ export const evaluateResponse = `{
   "verdict": "BLOCK",
   "risk_score": 0.96,
   "confidence": 0.93,
-  "policy": "pol_wire_outbound_v7",
+  "policy": "pol_imps_payout_v7",
   "latency_ms": 38.4,
   "case_id": "CASE-88419"
 }`;
