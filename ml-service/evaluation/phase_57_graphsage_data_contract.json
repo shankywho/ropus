@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "target_relationship": "Employee \u2194 Consumer Collusion & Synthetic Mule Networks",
+  "required_entity_types": [
+    "EMPLOYEE",
+    "CONSUMER",
+    "ACCOUNT",
+    "DEVICE",
+    "IP",
+    "PAYMENT_TOKEN",
+    "TRANSACTION",
+    "MERCHANT"
+  ],
+  "required_edge_types": [
+    "ACCESSES",
+    "MANAGES",
+    "PERFORMS",
+    "OWNS",
+    "USES_DEVICE",
+    "USES_IP",
+    "USES_PAYMENT_TOKEN",
+    "CREATES",
+    "TARGETS",
+    "INTERACTS_WITH_ACCOUNT",
+    "INTERACTS_WITH_CONSUMER"
+  ],
+  "temporal_guarantee": "Strict Point-in-Time (Edges where timestamp <= evaluation_time T)",
+  "privacy_contract": "Zero Raw PAN, CVV, Passwords or Direct Customer PII. Opaque Hashed Tokens Only.",
+  "lifecycle_status": "DATA_REQUIRED",
+  "minimum_genuine_internal_fraud_cases_for_promotion": 50
+}

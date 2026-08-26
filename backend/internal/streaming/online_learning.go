@@ -7,19 +7,19 @@ import (
 
 // ProposedWeightUpdate captures an online learning proposal waiting for governance approval.
 type ProposedWeightUpdate struct {
-	UpdateID          string             `json:"update_id"`
-	FeatureName       string             `json:"feature_name"`
-	CurrentWeight     float64            `json:"current_weight"`
-	ProposedWeight    float64            `json:"proposed_weight"`
-	EvidenceCount     int                `json:"evidence_count"`
-	ProposedAt        time.Time          `json:"proposed_at"`
-	IsApproved        bool               `json:"is_approved"`
+	UpdateID       string    `json:"update_id"`
+	FeatureName    string    `json:"feature_name"`
+	CurrentWeight  float64   `json:"current_weight"`
+	ProposedWeight float64   `json:"proposed_weight"`
+	EvidenceCount  int       `json:"evidence_count"`
+	ProposedAt     time.Time `json:"proposed_at"`
+	IsApproved     bool      `json:"is_approved"`
 }
 
 // OnlineLearningEngine collects real-time chargebacks and analyst verdicts to propose parameter calibrations.
 type OnlineLearningEngine struct {
-	mu            sync.RWMutex
-	proposals     map[string]*ProposedWeightUpdate
+	mu             sync.RWMutex
+	proposals      map[string]*ProposedWeightUpdate
 	featureWeights map[string]float64
 }
 

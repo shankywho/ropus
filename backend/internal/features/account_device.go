@@ -25,27 +25,27 @@ const (
 // AccountDeviceGraphFeatures holds real-time relationship graph signals computed by Redis.
 type AccountDeviceGraphFeatures struct {
 	// Device-centric features
-	DeviceUniqueAccounts1h         int64              `json:"device_unique_accounts_1h"`
-	DeviceUniqueAccounts24h        int64              `json:"device_unique_accounts_24h"`
-	DeviceAccountSwitches1h        int64              `json:"device_account_switches_1h"`
-	DeviceAccountSwitches24h       int64              `json:"device_account_switches_24h"`
-	DeviceNewAccountOnKnownDevice  int64              `json:"device_new_account_on_known_device"` // 1 if known device + brand new account
-	MultiAccountSignal             MultiAccountSignal `json:"multi_account_signal"`
+	DeviceUniqueAccounts1h        int64              `json:"device_unique_accounts_1h"`
+	DeviceUniqueAccounts24h       int64              `json:"device_unique_accounts_24h"`
+	DeviceAccountSwitches1h       int64              `json:"device_account_switches_1h"`
+	DeviceAccountSwitches24h      int64              `json:"device_account_switches_24h"`
+	DeviceNewAccountOnKnownDevice int64              `json:"device_new_account_on_known_device"` // 1 if known device + brand new account
+	MultiAccountSignal            MultiAccountSignal `json:"multi_account_signal"`
 
 	// Account-centric features
-	AccountUniqueDevices1h         int64              `json:"account_unique_devices_1h"`
-	AccountUniqueDevices24h        int64              `json:"account_unique_devices_24h"`
-	AccountNewDevice1h             int64              `json:"account_new_device_1h"`
-	AccountDeviceSwitches24h       int64              `json:"account_device_switches_24h"`
+	AccountUniqueDevices1h   int64 `json:"account_unique_devices_1h"`
+	AccountUniqueDevices24h  int64 `json:"account_unique_devices_24h"`
+	AccountNewDevice1h       int64 `json:"account_new_device_1h"`
+	AccountDeviceSwitches24h int64 `json:"account_device_switches_24h"`
 
 	// Specific relationship-centric features
-	DeviceAccountSeenBefore        int64              `json:"device_account_seen_before"` // 0 = New Link, 1 = Existing Link
-	DeviceAccountAgeDays           float64            `json:"device_account_age_days"`
-	DeviceAccountTxCount           int64              `json:"device_account_tx_count"`
+	DeviceAccountSeenBefore int64   `json:"device_account_seen_before"` // 0 = New Link, 1 = Existing Link
+	DeviceAccountAgeDays    float64 `json:"device_account_age_days"`
+	DeviceAccountTxCount    int64   `json:"device_account_tx_count"`
 
 	// Reliability / Degradation
-	IsDegraded                     bool               `json:"is_degraded"`
-	DegradeReason                  string             `json:"degrade_reason,omitempty"`
+	IsDegraded    bool   `json:"is_degraded"`
+	DegradeReason string `json:"degrade_reason,omitempty"`
 }
 
 // SanitizeAccountID validates and sanitizes client-provided account identifiers.

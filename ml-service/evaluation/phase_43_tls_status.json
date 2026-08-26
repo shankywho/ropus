@@ -1,0 +1,6 @@
+{
+  "issuer": "letsencrypt-prod",
+  "secret_name": "risk-backend-tls-secret",
+  "binding_status": "TLS_CONFIGURED_BUT_NOT_BOUND",
+  "external_https_reachable": false
+}

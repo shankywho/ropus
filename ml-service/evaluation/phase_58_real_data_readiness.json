@@ -1,0 +1,120 @@
+{
+  "audit_metadata": {
+    "phase": "PHASE_58_REAL_DATA_SHADOW_READINESS",
+    "audited_at": "2026-08-26T06:43:20.496752+00:00",
+    "target_model": "GraphSAGE 2-Layer Heterogeneous Neural Network",
+    "active_champion_model": "production_model_v8_bmr.joblib",
+    "active_champion_sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "operational_mode": "STRICTLY NON-ENFORCING SHADOW / OFFLINE RESEARCH ONLY",
+    "customer_decision_routing": "UNCHANGED (Baseline Dynamic BMR Authoritative)"
+  },
+  "readiness_scorecard": {
+    "dataset_type": "SYNTHETIC",
+    "is_ready_for_real_validation": false,
+    "governance_lifecycle_state": "REAL_DATA_REQUIRED",
+    "is_promotion_eligible": false,
+    "blocking_reasons": [
+      "SYNTHETIC BOUNDARY: The evaluated dataset is synthetic. Synthetic experiments establish algorithmic viability but CANNOT be cited as production validation.",
+      "INSUFFICIENT REAL FRAUD LABELS: Found 0 confirmed real fraud cases; minimum required for promotion review is 50.",
+      "INSUFFICIENT REAL COLLUSION LABELS: Found 0 confirmed internal collusion cases; minimum required for promotion review is 50."
+    ],
+    "enforcement_summary": "PROMOTION BLOCKED: GraphSAGE remains strictly NON-ENFORCING in SHADOW/RESEARCH mode. Real-world data ingestion and label maturation are required before any customer routing."
+  },
+  "audit_dimensions": {
+    "schema_completeness": {
+      "total_nodes": 89714,
+      "total_edges": 338260,
+      "total_transactions": 83389,
+      "missing_required_fields": 0,
+      "missing_timestamps": 0,
+      "invalid_edge_references": 2477,
+      "status": "FAILED"
+    },
+    "temporal_causality": {
+      "future_edges_detected": 0,
+      "premature_labels_detected": 0,
+      "temporal_causality_violations": 0,
+      "status": "PASSED"
+    },
+    "privacy_and_tokenization": {
+      "raw_pan_violations": 0,
+      "raw_cvv_violations": 0,
+      "pii_violations": 0,
+      "tokenization_compliance": "PASSED"
+    },
+    "graph_topology": {
+      "total_nodes": 89714,
+      "total_edges": 338260,
+      "isolated_nodes": 1183,
+      "excessive_degree_nodes_count": 0,
+      "max_degree_observed": 257,
+      "average_degree": 7.54
+    },
+    "entity_coverage": {
+      "EMPLOYEE_count": 600,
+      "CONSUMER_count": 18000,
+      "ACCOUNT_count": 22005,
+      "DEVICE_count": 11700,
+      "IP_count": 9900,
+      "PAYMENT_TOKEN_count": 24205,
+      "MERCHANT_count": 1200,
+      "CASE_count": 2104
+    },
+    "label_maturity_coverage": {
+      "UNLABELED": 85493,
+      "SUSPECTED": 0,
+      "UNDER_INVESTIGATION": 0,
+      "CONFIRMED_FRAUD": 0,
+      "CONFIRMED_LEGITIMATE": 0,
+      "CONFIRMED_INTERNAL_COLLUSION": 0,
+      "total_labels": 85493
+    },
+    "confirmed_fraud_labels_count": 0,
+    "confirmed_internal_collusion_labels_count": 0
+  },
+  "real_data_contract_specification": {
+    "version": "2.0.0",
+    "required_entities": [
+      "EMPLOYEE",
+      "CONSUMER",
+      "ACCOUNT",
+      "DEVICE",
+      "IP",
+      "PAYMENT_TOKEN",
+      "TRANSACTION",
+      "MERCHANT",
+      "CASE"
+    ],
+    "required_edge_types": [
+      "EMPLOYEE_ACCESSES_ACCOUNT",
+      "EMPLOYEE_REVIEWS_CASE",
+      "EMPLOYEE_MODIFIES_TRANSACTION",
+      "EMPLOYEE_APPROVES_TRANSACTION",
+      "EMPLOYEE_USES_DEVICE",
+      "EMPLOYEE_USES_IP",
+      "CONSUMER_OWNS_ACCOUNT",
+      "ACCOUNT_USES_DEVICE",
+      "ACCOUNT_USES_IP",
+      "ACCOUNT_USES_PAYMENT_TOKEN",
+      "ACCOUNT_TRANSACTS_WITH_MERCHANT"
+    ],
+    "prohibited_attributes": [
+      "raw_pan",
+      "cvv",
+      "pin",
+      "ssn",
+      "cleartext_password",
+      "scenario_type"
+    ],
+    "minimum_real_collusion_cases_for_promotion": 50,
+    "minimum_real_fraud_cases_for_promotion": 50
+  },
+  "required_next_steps_for_real_readiness": [
+    "1. Connect RealGraphDataSource adapter to passive Kafka audit event stream.",
+    "2. Ingest shadow graph topology without altering production risk scoring.",
+    "3. Accumulate >= 50 confirmed real internal collusion investigations.",
+    "4. Mature chargeback labels for >= 90 days before historical holdout evaluation.",
+    "5. Submit formal Model Risk Governance petition to Risk Council."
+  ],
+  "final_lifecycle_state": "SYNTHETICALLY_VALIDATED / REAL_DATA_REQUIRED / STRICTLY_NON_ENFORCING / PROMOTION_BLOCKED"
+}

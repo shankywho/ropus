@@ -10,7 +10,7 @@ import (
 // MemoryFact represents an individual granular fact or forensic proof item in agent memory.
 type MemoryFact struct {
 	FactID     string    `json:"fact_id"`
-	Subject    string    `json:"subject"` // Hashed entity ID
+	Subject    string    `json:"subject"`   // Hashed entity ID
 	Predicate  string    `json:"predicate"` // e.g. "CONNECTED_TO_FRAUD_RING", "UNRECOGNIZED_DEVICE"
 	Object     string    `json:"object"`
 	Confidence float64   `json:"confidence"`
@@ -19,9 +19,9 @@ type MemoryFact struct {
 
 // AgentMemory maintains short-term working context and long-term historical fraud patterns.
 type AgentMemory struct {
-	mu              sync.RWMutex
-	shortTermFacts  map[string][]MemoryFact // traceID -> facts
-	longTermPatterns map[string]float64     // hashedPattern -> confidence score
+	mu               sync.RWMutex
+	shortTermFacts   map[string][]MemoryFact // traceID -> facts
+	longTermPatterns map[string]float64      // hashedPattern -> confidence score
 }
 
 // NewAgentMemory initializes the dual-tiered agent memory system.

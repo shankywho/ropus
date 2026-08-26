@@ -38,18 +38,18 @@ type TrainingRequest struct {
 
 // TrainingJob encapsulates complete status and outputs produced by a training execution.
 type TrainingJob struct {
-	JobID              string                  `json:"job_id"`
-	State              TrainingJobState        `json:"state"`
-	StartedAt          time.Time               `json:"started_at"`
-	CompletedAt        time.Time               `json:"completed_at"`
-	DurationMs         float64                 `json:"duration_ms"`
-	ArtifactPath       string                  `json:"artifact_path"`
-	ArtifactChecksum   string                  `json:"artifact_checksum"`
-	Candidate          ModelCandidate          `json:"candidate"`
-	ValidationMetrics  ValidationMetrics       `json:"validation_metrics"`
-	DatasetMetadata    TrainingDatasetMetadata `json:"dataset_metadata"`
-	Logs               string                  `json:"logs,omitempty"`
-	Error              string                  `json:"error,omitempty"`
+	JobID             string                  `json:"job_id"`
+	State             TrainingJobState        `json:"state"`
+	StartedAt         time.Time               `json:"started_at"`
+	CompletedAt       time.Time               `json:"completed_at"`
+	DurationMs        float64                 `json:"duration_ms"`
+	ArtifactPath      string                  `json:"artifact_path"`
+	ArtifactChecksum  string                  `json:"artifact_checksum"`
+	Candidate         ModelCandidate          `json:"candidate"`
+	ValidationMetrics ValidationMetrics       `json:"validation_metrics"`
+	DatasetMetadata   TrainingDatasetMetadata `json:"dataset_metadata"`
+	Logs              string                  `json:"logs,omitempty"`
+	Error             string                  `json:"error,omitempty"`
 }
 
 // TrainingRunner defines the interface for executing and managing model training jobs.
@@ -66,12 +66,12 @@ type TrainingRunner interface {
 
 // LocalProcessConfig configures the local OS process training adapter.
 type LocalProcessConfig struct {
-	Command      string        `json:"command"`
-	Args         []string      `json:"args"`
-	DatasetPath  string        `json:"dataset_path"`
-	OutputDir    string        `json:"output_dir"`
-	Timeout      time.Duration `json:"timeout"`
-	MaxLogBytes  int           `json:"max_log_bytes"`
+	Command     string        `json:"command"`
+	Args        []string      `json:"args"`
+	DatasetPath string        `json:"dataset_path"`
+	OutputDir   string        `json:"output_dir"`
+	Timeout     time.Duration `json:"timeout"`
+	MaxLogBytes int           `json:"max_log_bytes"`
 }
 
 // DefaultLocalProcessConfig returns safe defaults for local ML training.
@@ -131,9 +131,9 @@ func (a *LocalProcessTrainingAdapter) StartTraining(ctx context.Context, req Tra
 	modelID := fmt.Sprintf("model_cand_%s", timestampSuffix)
 
 	job := &TrainingJob{
-		JobID:       req.JobID,
-		State:       TrainingJobRunning,
-		StartedAt:   startTime,
+		JobID:           req.JobID,
+		State:           TrainingJobRunning,
+		StartedAt:       startTime,
 		DatasetMetadata: req.DatasetMetadata,
 		Candidate: ModelCandidate{
 			ModelID:            modelID,

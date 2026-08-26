@@ -36,15 +36,15 @@ type DemoStepDetail struct {
 
 // DemoSession encapsulates an active interactive demonstration.
 type DemoSession struct {
-	SessionID      string                          `json:"session_id"`
-	TenantID       string                          `json:"tenant_id"`
-	State          DemoState                       `json:"state"`
-	CurrentStep    int                             `json:"current_step"`
-	TotalSteps     int                             `json:"total_steps"`
-	Steps          []DemoStepDetail                `json:"steps"`
+	SessionID      string                             `json:"session_id"`
+	TenantID       string                             `json:"tenant_id"`
+	State          DemoState                          `json:"state"`
+	CurrentStep    int                                `json:"current_step"`
+	TotalSteps     int                                `json:"total_steps"`
+	Steps          []DemoStepDetail                   `json:"steps"`
 	DecisionResult *product_api.CanonicalRiskResponse `json:"decision_result,omitempty"`
-	StartedAt      time.Time                       `json:"started_at"`
-	UpdatedAt      time.Time                       `json:"updated_at"`
+	StartedAt      time.Time                          `json:"started_at"`
+	UpdatedAt      time.Time                          `json:"updated_at"`
 }
 
 // DemoModeManager coordinates deterministic, repeatable investor/customer demonstrations.

@@ -1,0 +1,58 @@
+{
+  "runbook_version": "1.0.0",
+  "system_name": "ROPUS Real-Time ML Risk Scoring Engine",
+  "active_champion": "v8.0-bmr-36f",
+  "incidents": [
+    {
+      "id": "INC-01-LATENCY-SPIKE",
+      "condition": "p95 latency > 15.0ms for > 3 minutes",
+      "severity": "WARNING",
+      "evidence_to_collect": [
+        "CPU utilization",
+        "Worker thread saturation",
+        "ONNX runtime thread count"
+      ],
+      "immediate_mitigation": "Scale ML worker replicas or inspect GC pauses.",
+      "rollback_trigger": "If latency exceeds 50ms continuously for > 5m, hot-swap to fallback v7."
+    },
+    {
+      "id": "INC-02-SCORE-DRIFT",
+      "condition": "Calibrated score PSI > 0.25 vs baseline reference",
+      "severity": "CRITICAL",
+      "evidence_to_collect": [
+        "Feature PSI table",
+        "Recent top 100 transactions",
+        "Fraud tag lag"
+      ],
+      "immediate_mitigation": "Inspect incoming traffic origin for bot attacks or merchant onboarding anomalies.",
+      "rollback_trigger": "If false-positive insult rate spikes > 12%, execute rollback to v7."
+    },
+    {
+      "id": "INC-03-CHECKSUM-MISMATCH",
+      "condition": "Loaded artifact SHA-256 does not match expected d473d1ef0c50f232...",
+      "severity": "CRITICAL",
+      "evidence_to_collect": [
+        "File modification timestamps",
+        "Deployment pipeline audit trail"
+      ],
+      "immediate_mitigation": "Immediately halt traffic routing to compromised pod and reload certified bundle.",
+      "rollback_trigger": "Immediate hot-swap to verified backup bundle."
+    },
+    {
+      "id": "INC-04-HTTP-5XX-SURGE",
+      "condition": "HTTP 5xx rate > 0.5%",
+      "severity": "CRITICAL",
+      "evidence_to_collect": [
+        "Exception logs",
+        "Input schema payload samples"
+      ],
+      "immediate_mitigation": "Verify preprocessor categorical mapping resilience and memory limits.",
+      "rollback_trigger": "Auto-switch to static heuristic rule fallback."
+    }
+  ],
+  "rollback_procedure": {
+    "sequence": "v8 -> v7 -> v6 -> v8",
+    "command": "export PRODUCTION_MODEL_PATH='ml-service/model/candidates/production_model_v7_bmr.joblib'",
+    "verification": "curl -s http://localhost:8000/v1/health | jq .model_version"
+  }
+}

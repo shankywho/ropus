@@ -21,12 +21,12 @@ export function Panel({
   bodyClassName?: string;
 }) {
   return (
-    <section className={cn("border border-border bg-card", className)}>
+    <section className={cn("border border-border bg-card shadow-xs", className)}>
       {(title || actions) && (
-        <header className="flex items-start justify-between gap-4 border-b border-border px-4 py-2.5">
+        <header className="flex items-start justify-between gap-4 border-b border-border bg-card px-4 py-2.5">
           <div>
-            <h2 className="text-[13px] font-bold tracking-tight">{title}</h2>
-            {description && <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>}
+            <h2 className="font-sans text-[13px] font-bold tracking-tight text-foreground">{title}</h2>
+            {description && <p className="mt-0.5 font-sans text-[11.5px] text-muted-foreground">{description}</p>}
           </div>
           {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
         </header>
@@ -48,12 +48,12 @@ export function PageHeader({
   meta?: ReactNode;
 }) {
   return (
-    <header className="border-b border-border bg-surface px-6 py-7 lg:px-10">
+    <header className="border-b border-border bg-surface px-6 py-6 lg:px-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="max-w-2xl">
-          <h1 className="text-[22px] leading-tight font-bold tracking-tight">{title}</h1>
+        <div className="max-w-3xl">
+          <h1 className="font-sans text-[25px] font-extrabold leading-[1.15] tracking-[-0.045em] text-foreground">{title}</h1>
           {description && (
-            <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
+            <p className="mt-1.5 font-sans text-[12px] leading-relaxed text-muted-foreground">
               {description}
             </p>
           )}
@@ -66,7 +66,7 @@ export function PageHeader({
 }
 
 export function Mono({ children, className }: { children: ReactNode; className?: string }) {
-  return <span className={cn("font-mono text-[12.5px] tabular", className)}>{children}</span>;
+  return <span className={cn("font-mono text-[12px] tabular", className)}>{children}</span>;
 }
 
 export function DemoBadge({ className }: { className?: string }) {
@@ -74,22 +74,22 @@ export function DemoBadge({ className }: { className?: string }) {
     <span
       title="Connected to authoritative Go API at localhost:8080"
       className={cn(
-        "inline-flex items-center gap-1.5 border border-approve/40 bg-approve/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-approve uppercase",
+        "inline-flex items-center gap-1.5 border border-authoritative/35 bg-authoritative-surface px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] text-authoritative uppercase",
         className,
       )}
     >
-      <span aria-hidden className="size-1.5 rounded-full bg-approve" />
+      <span aria-hidden className="size-1 rounded-full bg-authoritative" />
       LIVE BACKEND
     </span>
   ) : (
     <span
       title="Offline fixtures rendered locally"
       className={cn(
-        "inline-flex items-center gap-1.5 border border-warning/40 bg-warning-surface px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-warning uppercase",
+        "inline-flex items-center gap-1.5 border border-amber-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] text-shadow-intel uppercase",
         className,
       )}
     >
-      <span aria-hidden className="size-1.5 rounded-full bg-warning" />
+      <span aria-hidden className="size-1 rounded-full bg-amber-intel" />
       DEMO DATA
     </span>
   );
@@ -98,21 +98,34 @@ export function DemoBadge({ className }: { className?: string }) {
 /* ------------------------------------------------------------------ status */
 
 const verdictStyles: Record<Verdict, string> = {
-  APPROVE: "border-approve/35 bg-approve-surface text-approve",
-  REVIEW: "border-review/35 bg-review-surface text-review",
-  CHALLENGE: "border-challenge/35 bg-challenge-surface text-challenge",
-  BLOCK: "border-block/35 bg-block-surface text-block",
+  APPROVE: "border-authoritative/35 bg-authoritative-surface text-authoritative",
+  REVIEW: "border-amber-intel/40 bg-shadow-intel-surface text-shadow-intel",
+  CHALLENGE: "border-local/35 bg-local-surface text-local",
+  BLOCK: "border-blocked/40 bg-blocked-surface text-blocked",
 };
 
 export function VerdictBadge({ verdict, size = "sm" }: { verdict: Verdict; size?: "sm" | "lg" }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center border font-semibold tracking-[0.06em] uppercase",
+        "inline-flex items-center gap-1 border font-mono font-medium tracking-[0.06em] uppercase",
         verdictStyles[verdict],
-        size === "sm" ? "px-1.5 py-0.5 text-[10.5px]" : "px-2.5 py-1 text-xs",
+        size === "sm" ? "px-1.5 py-0.5 text-[9.5px]" : "px-2.5 py-1 text-[11px]",
       )}
     >
+      <span
+        aria-hidden
+        className={cn(
+          "size-1 rounded-full",
+          verdict === "APPROVE"
+            ? "bg-authoritative"
+            : verdict === "REVIEW"
+              ? "bg-amber-intel"
+              : verdict === "CHALLENGE"
+                ? "bg-local"
+                : "bg-blocked",
+        )}
+      />
       {verdict}
     </span>
   );
@@ -122,23 +135,41 @@ export function StatusBadge({
   tone = "neutral",
   children,
 }: {
-  tone?: "neutral" | "positive" | "warning" | "danger" | "info";
+  tone?: "neutral" | "positive" | "warning" | "danger" | "info" | "synthetic";
   children: ReactNode;
 }) {
   const tones = {
-    neutral: "border-border-strong bg-neutral-surface text-muted-foreground",
-    positive: "border-approve/35 bg-approve-surface text-approve",
-    warning: "border-review/35 bg-review-surface text-review",
-    danger: "border-block/35 bg-block-surface text-block",
-    info: "border-challenge/35 bg-challenge-surface text-challenge",
+    neutral: "border-border-strong bg-muted/60 text-muted-foreground",
+    positive: "border-authoritative/35 bg-authoritative-surface text-authoritative",
+    warning: "border-amber-intel/40 bg-shadow-intel-surface text-shadow-intel",
+    danger: "border-blocked/40 bg-blocked-surface text-blocked",
+    info: "border-local/35 bg-local-surface text-local",
+    synthetic: "border-synthetic/35 bg-synthetic-surface text-synthetic",
   } as const;
   return (
     <span
       className={cn(
-        "inline-flex items-center border px-1.5 py-0.5 text-[10.5px] font-semibold tracking-[0.05em] uppercase",
+        "inline-flex items-center gap-1 border px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] uppercase",
         tones[tone],
       )}
     >
+      <span
+        aria-hidden
+        className={cn(
+          "size-1 rounded-full",
+          tone === "positive"
+            ? "bg-authoritative"
+            : tone === "warning"
+              ? "bg-amber-intel"
+              : tone === "danger"
+                ? "bg-blocked"
+                : tone === "info"
+                  ? "bg-local"
+                  : tone === "synthetic"
+                    ? "bg-synthetic"
+                    : "bg-muted-foreground",
+        )}
+      />
       {children}
     </span>
   );
@@ -146,19 +177,19 @@ export function StatusBadge({
 
 export function HealthIndicator({ state }: { state: Health }) {
   const map = {
-    HEALTHY: { tone: "bg-approve", text: "text-approve", glyph: "●" },
-    DEGRADED: { tone: "bg-review", text: "text-review", glyph: "◐" },
-    UNAVAILABLE: { tone: "bg-block", text: "text-block", glyph: "○" },
+    HEALTHY: { tone: "bg-authoritative", text: "text-authoritative", glyph: "●" },
+    DEGRADED: { tone: "bg-amber-intel", text: "text-shadow-intel", glyph: "◐" },
+    UNAVAILABLE: { tone: "bg-blocked", text: "text-blocked", glyph: "○" },
   } as const;
   const s = map[state];
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.05em]",
+        "inline-flex items-center gap-1.5 font-mono text-[10px] font-medium tracking-[0.06em]",
         s.text,
       )}
     >
-      <span aria-hidden className={cn("size-2", s.tone)} />
+      <span aria-hidden className={cn("size-1.5 rounded-full", s.tone)} />
       {state}
     </span>
   );
@@ -167,28 +198,28 @@ export function HealthIndicator({ state }: { state: Health }) {
 export function RiskScore({ value, size = "sm" }: { value: number; size?: "sm" | "xl" }) {
   const tone =
     value >= 0.8
-      ? "text-block"
+      ? "text-blocked"
       : value >= 0.55
-        ? "text-review"
+        ? "text-amber-intel"
         : value >= 0.35
-          ? "text-challenge"
-          : "text-approve";
+          ? "text-local"
+          : "text-authoritative";
   const band =
     value >= 0.8 ? "Critical" : value >= 0.55 ? "Elevated" : value >= 0.35 ? "Moderate" : "Low";
   if (size === "xl") {
     return (
       <div>
-        <div className={cn("font-mono text-4xl leading-none font-bold tabular", tone)}>
+        <div className={cn("font-mono text-[40px] leading-none font-medium tracking-[-0.06em] tabular", tone)}>
           {value.toFixed(2)}
         </div>
-        <div className="mt-1 text-[11px] font-semibold tracking-[0.06em] text-muted-foreground uppercase">
+        <div className="mt-1 font-mono text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
           {band} risk
         </div>
       </div>
     );
   }
   return (
-    <span className={cn("font-mono text-[12.5px] font-semibold tabular", tone)}>
+    <span className={cn("font-mono text-[12px] font-medium tabular", tone)}>
       {value.toFixed(2)}
     </span>
   );
@@ -210,12 +241,12 @@ export function MetricBlock({
   window?: string;
 }) {
   return (
-    <div className="border-r border-b border-border px-4 py-3 last:border-r-0">
-      <div className="label-xs">{label}</div>
-      <div className="mt-1.5 font-mono text-xl leading-none font-bold tabular">{value}</div>
-      <div className="mt-1.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+    <div className="border-r border-b border-border bg-card px-4 py-3.5 last:border-r-0">
+      <div className="font-mono text-[9.5px] font-medium tracking-[0.12em] text-muted-foreground uppercase">{label}</div>
+      <div className="mt-1.5 font-mono text-[28px] leading-none font-medium tracking-[-0.06em] tabular">{value}</div>
+      <div className="mt-1.5 flex items-center gap-1.5 font-mono text-[10.5px] text-muted-foreground">
         {delta && (
-          <span className="font-mono tabular">
+          <span className={cn("tabular", dir === "up" ? "text-blocked" : "text-authoritative")}>
             {dir === "up" ? "▲" : "▼"} {delta}
           </span>
         )}
@@ -238,16 +269,16 @@ export function DataTable({
 }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-[13px]">
+      <table className="w-full border-collapse font-sans text-[11.5px]">
         {caption && <caption className="sr-only">{caption}</caption>}
         <thead>
-          <tr className="border-b border-border">
+          <tr className="border-b border-border bg-muted/40">
             {columns.map((c) => (
               <th
                 key={c.key}
                 scope="col"
                 className={cn(
-                  "label-xs px-3 py-2 font-semibold whitespace-nowrap first:pl-0 last:pr-0",
+                  "px-3 py-2 font-mono text-[9px] font-medium tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase first:pl-3 last:pr-3",
                   c.align === "right" ? "text-right" : "text-left",
                 )}
               >
@@ -266,7 +297,7 @@ export function Row({ children, className }: { children: ReactNode; className?: 
   return (
     <tr
       className={cn(
-        "border-b border-border transition-colors last:border-b-0 hover:bg-accent",
+        "border-b border-border transition-colors last:border-b-0 hover:bg-secondary/60",
         className,
       )}
     >
@@ -287,7 +318,7 @@ export function Cell({
   return (
     <td
       className={cn(
-        "px-3 py-2 align-middle first:pl-0 last:pr-0",
+        "px-3 py-2 align-middle font-sans text-[11.5px] first:pl-3 last:pr-3",
         align === "right" && "text-right",
         className,
       )}
@@ -313,8 +344,8 @@ export function KeyValue({
           key={i}
           className="flex items-baseline justify-between gap-4 border-b border-border px-4 py-2 last:border-b-0"
         >
-          <dt className="text-[12px] text-muted-foreground">{k}</dt>
-          <dd className="text-right text-[13px] font-medium">{v}</dd>
+          <dt className="font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">{k}</dt>
+          <dd className="text-right font-sans text-[12px] font-medium text-foreground">{v}</dd>
         </div>
       ))}
     </dl>
@@ -332,38 +363,38 @@ export function EvidenceGroup({
 }) {
   const meta = {
     observed: {
-      title: "Observed facts",
-      note: "Recorded by the platform. Not interpreted.",
-      border: "border-l-approve",
+      title: "Observed Facts",
+      note: "Recorded deterministically by the platform. Not interpreted.",
+      border: "border-l-authoritative",
       badge: null as ReactNode,
     },
     inferred: {
-      title: "Inferred patterns",
-      note: "Model and heuristic interpretation of the observed facts.",
-      border: "border-l-challenge",
-      badge: <StatusBadge tone="info">AI generated</StatusBadge>,
+      title: "Inferred Patterns",
+      note: "Model, GraphSAGE shadow, and heuristic interpretation.",
+      border: "border-l-local",
+      badge: <StatusBadge tone="info">AI GENERATED</StatusBadge>,
     },
     recommended: {
-      title: "Recommended actions",
-      note: "Proposals requiring analyst authorization.",
-      border: "border-l-review",
-      badge: <StatusBadge tone="info">AI generated</StatusBadge>,
+      title: "Recommended Actions",
+      note: "Proposals requiring explicit analyst authorization.",
+      border: "border-l-warning",
+      badge: <StatusBadge tone="warning">PROPOSAL</StatusBadge>,
     },
   }[kind];
 
   return (
     <div className={cn("border border-border border-l-2 bg-card", meta.border)}>
-      <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-2">
+      <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5">
         <div>
-          <h3 className="text-[13px] font-bold">{meta.title}</h3>
-          <p className="text-[11px] text-muted-foreground">{meta.note}</p>
+          <h3 className="font-sans text-[12.5px] font-bold text-foreground">{meta.title}</h3>
+          <p className="font-sans text-[11px] text-muted-foreground">{meta.note}</p>
         </div>
         {meta.badge}
       </div>
       <ul className="divide-y divide-border">
         {items.map((it, i) => (
-          <li key={i} className="flex gap-3 px-4 py-2 text-[13px]">
-            <span className="font-mono text-[11px] text-muted-foreground tabular">
+          <li key={i} className="flex gap-3 px-4 py-2 font-sans text-[12px]">
+            <span className="font-mono text-[10.5px] text-muted-foreground tabular">
               {String(i + 1).padStart(2, "0")}
             </span>
             <span>{it}</span>
@@ -387,8 +418,8 @@ export function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-start gap-2 border border-dashed border-border-strong bg-card px-5 py-8">
-      <h3 className="text-[13px] font-bold">{title}</h3>
-      <p className="max-w-md text-[13px] text-muted-foreground">{description}</p>
+      <h3 className="font-sans text-[13px] font-bold text-foreground">{title}</h3>
+      <p className="max-w-md font-sans text-[12px] text-muted-foreground">{description}</p>
       {action}
     </div>
   );
@@ -406,14 +437,14 @@ export function ErrorState({
   return (
     <div
       role="alert"
-      className="border border-block/40 border-l-2 border-l-block bg-block-surface px-5 py-4"
+      className="border border-blocked/40 border-l-2 border-l-blocked bg-blocked-surface px-5 py-4"
     >
       <div className="flex items-center gap-2">
         <StatusBadge tone="danger">Error</StatusBadge>
-        {code && <Mono className="text-block">{code}</Mono>}
+        {code && <Mono className="text-blocked">{code}</Mono>}
       </div>
-      <h3 className="mt-2 text-[13px] font-bold">{title}</h3>
-      <p className="mt-0.5 text-[13px] text-muted-foreground">{detail}</p>
+      <h3 className="mt-2 font-sans text-[13px] font-bold text-foreground">{title}</h3>
+      <p className="mt-0.5 font-sans text-[12px] text-muted-foreground">{detail}</p>
     </div>
   );
 }
@@ -426,7 +457,7 @@ export function LoadingState({ rows = 4, label = "Loading" }: { rows?: number; l
         {Array.from({ length: rows }).map((_, i) => (
           <div
             key={i}
-            className="h-4 animate-pulse bg-neutral-surface"
+            className="h-4 animate-pulse bg-secondary"
             style={{ width: `${100 - i * 9}%` }}
           />
         ))}
@@ -440,17 +471,18 @@ export function NoticeBar({
   title,
   children,
 }: {
-  tone?: "info" | "warning" | "danger";
+  tone?: "info" | "warning" | "danger" | "positive";
   title: string;
   children?: ReactNode;
 }) {
   const tones = {
-    info: "border-l-challenge bg-challenge-surface/50",
-    warning: "border-l-review bg-review-surface/50",
-    danger: "border-l-block bg-block-surface/60",
+    info: "border-l-local bg-local-surface text-local",
+    warning: "border-l-amber-intel bg-shadow-intel-surface text-shadow-intel",
+    danger: "border-l-blocked bg-blocked-surface text-blocked",
+    positive: "border-l-authoritative bg-authoritative-surface text-authoritative",
   } as const;
   return (
-    <div className={cn("border border-border border-l-2 px-4 py-2.5 text-[13px]", tones[tone])}>
+    <div className={cn("border border-border border-l-2 px-4 py-2.5 font-sans text-[12px]", tones[tone])}>
       <span className="font-semibold">{title}</span>
       {children && <span className="text-muted-foreground"> — {children}</span>}
     </div>
@@ -461,14 +493,14 @@ export function NoticeBar({
 
 export function CodeBlock({ code, language }: { code: string; language?: string }) {
   return (
-    <div className="border border-border bg-navy">
-      <div className="flex items-center justify-between border-b border-white/10 px-3 py-1.5">
-        <span className="font-mono text-[11px] tracking-[0.06em] text-navy-foreground/60 uppercase">
+    <div className="border border-sidebar-border bg-sidebar text-sidebar-foreground">
+      <div className="flex items-center justify-between border-b border-sidebar-border px-3 py-1.5">
+        <span className="font-mono text-[10px] tracking-[0.08em] text-sidebar-muted uppercase">
           {language ?? "text"}
         </span>
         <CopyButton value={code} />
       </div>
-      <pre className="overflow-x-auto px-3 py-3 font-mono text-[12.5px] leading-[1.6] text-navy-foreground">
+      <pre className="overflow-x-auto px-3 py-3 font-mono text-[12px] leading-[1.6] text-sidebar-foreground">
         <code>{code}</code>
       </pre>
     </div>
@@ -480,7 +512,7 @@ export function CopyButton({ value, label = "Copy" }: { value: string; label?: s
     <button
       type="button"
       onClick={() => void navigator.clipboard?.writeText(value)}
-      className="rounded-[2px] border border-white/15 px-1.5 py-0.5 font-mono text-[11px] text-navy-foreground/80 transition-colors hover:bg-white/10"
+      className="border border-sidebar-border bg-sidebar-accent px-1.5 py-0.5 font-mono text-[10px] text-sidebar-muted transition-colors hover:text-white"
     >
       {label}
     </button>
@@ -506,9 +538,9 @@ export function Section({
     <section className={cn("min-w-0", className)}>
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-2">
         <div>
-          <h2 className="text-[13px] font-bold tracking-tight">{title}</h2>
+          <h2 className="font-sans text-[13px] font-bold tracking-tight text-foreground">{title}</h2>
           {description && (
-            <p className="mt-0.5 text-[12.5px] text-muted-foreground">{description}</p>
+            <p className="mt-0.5 font-sans text-[11.5px] text-muted-foreground">{description}</p>
           )}
         </div>
         {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
@@ -519,7 +551,7 @@ export function Section({
 }
 
 export function SectionLabel({ children }: { children: ReactNode }) {
-  return <div className="label-xs">{children}</div>;
+  return <div className="font-mono text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">{children}</div>;
 }
 
 /** Progressive disclosure: summary line first, forensic detail on demand. */
@@ -543,10 +575,10 @@ export function Disclosure({
     >
       <summary className="flex cursor-pointer list-none items-baseline justify-between gap-4">
         <span>
-          <span className="text-[13px] font-semibold">{summary}</span>
-          {detail && <span className="ml-2 text-[12.5px] text-muted-foreground">{detail}</span>}
+          <span className="font-sans text-[12.5px] font-semibold text-foreground">{summary}</span>
+          {detail && <span className="ml-2 font-sans text-[11.5px] text-muted-foreground">{detail}</span>}
         </span>
-        <span className="shrink-0 text-[12.5px] font-medium text-primary">
+        <span className="shrink-0 font-sans text-[11.5px] font-medium text-primary">
           {cta}{" "}
           <span aria-hidden className="inline-block transition-transform group-open:rotate-90">
             →
@@ -573,27 +605,27 @@ export function FactorRow({
   kind: "observed" | "inferred";
 }) {
   return (
-    <div className="border-t border-border py-3 first:border-t-0">
+    <div className="border-t border-border py-2.5 first:border-t-0">
       <div className="flex items-baseline justify-between gap-4">
-        <span className="text-[13px] font-semibold">{name}</span>
+        <span className="font-sans text-[12.5px] font-semibold text-foreground">{name}</span>
         <span
           className={cn(
-            "text-[10.5px] font-semibold tracking-[0.08em] uppercase",
-            kind === "observed" ? "text-approve" : "text-challenge",
+            "font-mono text-[9.5px] font-medium tracking-[0.08em] uppercase",
+            kind === "observed" ? "text-authoritative" : "text-local",
           )}
         >
           {kind}
         </span>
       </div>
-      <p className="mt-0.5 font-mono text-[11.5px] text-muted-foreground tabular">{detail}</p>
+      <p className="mt-0.5 font-mono text-[11px] text-muted-foreground tabular">{detail}</p>
       <div className="mt-2 flex items-center gap-3">
-        <div className="h-[3px] flex-1 bg-neutral-surface">
+        <div className="h-[2px] flex-1 bg-secondary">
           <div
-            className={cn("h-full", kind === "observed" ? "bg-approve/70" : "bg-challenge/70")}
+            className={cn("h-full", kind === "observed" ? "bg-authoritative" : "bg-local")}
             style={{ width: `${(weight / max) * 100}%` }}
           />
         </div>
-        <Mono className="w-12 shrink-0 text-right font-semibold">+{weight.toFixed(2)}</Mono>
+        <Mono className="w-12 shrink-0 text-right font-medium">+{weight.toFixed(2)}</Mono>
       </div>
     </div>
   );
@@ -614,24 +646,24 @@ export function ExplanationStage({
   footer?: ReactNode;
 }) {
   const accent = {
-    observed: "border-t-approve",
-    inferred: "border-t-challenge",
-    recommended: "border-t-review",
+    observed: "border-t-authoritative",
+    inferred: "border-t-local",
+    recommended: "border-t-amber-intel",
   }[kind];
   return (
-    <div className={cn("border-t-2 pt-4", accent)}>
+    <div className={cn("border-t-2 pt-3.5", accent)}>
       <div className="flex items-baseline gap-2">
-        <Mono className="text-[11px] text-muted-foreground">{step}</Mono>
-        <h3 className="label-xs !text-foreground">{title}</h3>
+        <Mono className="text-[10.5px] text-muted-foreground">{step}</Mono>
+        <h3 className="font-mono text-[10px] font-medium tracking-[0.12em] uppercase text-foreground">{title}</h3>
       </div>
-      <ul className="mt-3 space-y-2">
+      <ul className="mt-2.5 space-y-1.5">
         {items.map((i) => (
-          <li key={i} className="text-[13px] leading-relaxed">
+          <li key={i} className="font-sans text-[12px] leading-relaxed text-foreground/90">
             {i}
           </li>
         ))}
       </ul>
-      {footer && <div className="mt-3 text-[12.5px]">{footer}</div>}
+      {footer && <div className="mt-2.5 font-sans text-[11.5px]">{footer}</div>}
     </div>
   );
 }

@@ -1,0 +1,47 @@
+{
+  "verdict": "RELEASE APPROVED \u2014 v8.0-bmr-36f",
+  "certified_model": "v8.0-bmr-36f",
+  "sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+  "gate_results": [
+    {
+      "Artifact Integrity": "PASS",
+      "evidence": "SHA-256 d473d1ef0c50f232... verified"
+    },
+    {
+      "Schema Compatibility": "PASS",
+      "evidence": "P in [0, 1], valid decisions, clean missingness"
+    },
+    {
+      "Golden Predictions": "PASS",
+      "evidence": "Bit-for-bit identical outputs on reference set"
+    },
+    {
+      "Deterministic Inference": "PASS",
+      "evidence": "Repeat executions yield identical probabilities"
+    },
+    {
+      "API Contract": "PASS",
+      "evidence": "Micro-amounts, $25K whale, 50x velocity handled cleanly"
+    },
+    {
+      "Latency SLO": "PASS",
+      "evidence": "p95 = 1.93 ms (< 15.0 ms threshold)"
+    },
+    {
+      "Shadow Evaluation": "PASS",
+      "evidence": "Recall = 13.46%, FPR = 5.84%"
+    },
+    {
+      "Monitoring Readiness": "PASS",
+      "evidence": "Complete Quality, Operational, and Drift alerts codified"
+    },
+    {
+      "Rollback Readiness": "PASS",
+      "evidence": "v8 -> v7 -> v6 -> v8 hot-swaps cleanly without error"
+    },
+    {
+      "Reliability & Security": "PASS",
+      "evidence": "Zero NaN/Inf leaks, unhandled exceptions protected"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "anti_spoofing_guard": "HMAC-SHA256 Gateway Provenance Signature",
+  "unauthenticated_claim_protection": "QUARANTINED_AS_UNTRUSTED",
+  "test_results": {
+    "unsigned_spoof_quarantined": true,
+    "forged_signature_quarantined": true,
+    "authenticated_gateway_accepted": true
+  }
+}

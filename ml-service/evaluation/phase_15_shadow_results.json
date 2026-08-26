@@ -1,0 +1,19 @@
+{
+  "total_volume": 1200,
+  "decline_rate": 0.0617,
+  "fraud_recall": 0.1346,
+  "precision": 0.0946,
+  "f1_score": 0.1111,
+  "fpr": 0.0584,
+  "true_positives": 7,
+  "false_positives": 67,
+  "true_negatives": 1081,
+  "false_negatives": 45,
+  "expected_loss": 7364.38,
+  "score_distribution_buckets": {
+    "0.00 - 0.02 (Low Risk)": 246,
+    "0.02 - 0.05 (Elevated)": 643,
+    "0.05 - 0.15 (High Risk)": 242,
+    "0.15 - 1.00 (Critical)": 69
+  }
+}

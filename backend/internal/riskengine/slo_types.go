@@ -14,15 +14,15 @@ const (
 
 // SLODefinition defines the target threshold and parameters for an SLO.
 type SLODefinition struct {
-	ID                string        `json:"id"`
-	Name              string        `json:"name"`
-	Description       string        `json:"description"`
-	Target            float64       `json:"target"`
-	WarningThreshold  float64       `json:"warning_threshold"`
-	BreachThreshold   float64       `json:"breach_threshold"`
-	WindowDuration    time.Duration `json:"window_duration"`
-	IsUpperBound      bool          `json:"is_upper_bound"` // true for latency/error rate (lower is better), false for availability (higher is better)
-	Unit              string        `json:"unit"`
+	ID               string        `json:"id"`
+	Name             string        `json:"name"`
+	Description      string        `json:"description"`
+	Target           float64       `json:"target"`
+	WarningThreshold float64       `json:"warning_threshold"`
+	BreachThreshold  float64       `json:"breach_threshold"`
+	WindowDuration   time.Duration `json:"window_duration"`
+	IsUpperBound     bool          `json:"is_upper_bound"` // true for latency/error rate (lower is better), false for availability (higher is better)
+	Unit             string        `json:"unit"`
 }
 
 // SLOMetricRecord represents the real-time computed health, error budget, and burn rate for an SLO.
@@ -44,11 +44,11 @@ type SLOMetricRecord struct {
 
 // SLOSummary provides an aggregate snapshot of all SLO evaluations across the system.
 type SLOSummary struct {
-	OverallStatus        SLOStatus                  `json:"overall_status"`
-	TotalSLOs            int                        `json:"total_slos"`
-	HealthyCount         int                        `json:"healthy_count"`
-	WarningCount         int                        `json:"warning_count"`
-	BreachedCount        int                        `json:"breached_count"`
-	CalculatedAt         time.Time                  `json:"calculated_at"`
-	Measurements         map[string]SLOMetricRecord `json:"measurements"`
+	OverallStatus SLOStatus                  `json:"overall_status"`
+	TotalSLOs     int                        `json:"total_slos"`
+	HealthyCount  int                        `json:"healthy_count"`
+	WarningCount  int                        `json:"warning_count"`
+	BreachedCount int                        `json:"breached_count"`
+	CalculatedAt  time.Time                  `json:"calculated_at"`
+	Measurements  map[string]SLOMetricRecord `json:"measurements"`
 }

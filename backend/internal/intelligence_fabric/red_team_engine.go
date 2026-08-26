@@ -10,7 +10,7 @@ type RedTeamAttackResult struct {
 	AttackID             string    `json:"attack_id"`
 	AttackMethod         string    `json:"attack_method"` // "ADVERSARIAL_ML_EVASION", "GRAPH_POISONING_PROBE", "ROTATING_MULE_STORM"
 	SimulatedVolume      int       `json:"simulated_volume"`
-	BypassRate           float64   `json:"bypass_rate"`           // 0.0 to 1.0 (Higher = defense flaw found)
+	BypassRate           float64   `json:"bypass_rate"` // 0.0 to 1.0 (Higher = defense flaw found)
 	VulnerabilitiesFound []string  `json:"vulnerabilities_found"`
 	RecommendedPatchDSL  string    `json:"recommended_patch_dsl"`
 	ExecutedAt           time.Time `json:"executed_at"`

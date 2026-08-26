@@ -19,12 +19,12 @@ const (
 
 // EvolvingPolicyCandidate represents a candidate rule or threshold undergoing promotion.
 type EvolvingPolicyCandidate struct {
-	PolicyID        string      `json:"policy_id"`
-	PolicyName      string      `json:"policy_name"`
-	RuleDSL         string      `json:"rule_dsl"`
-	Stage           PolicyStage `json:"stage"`
-	ExpectedFPReduction float64 `json:"expected_fp_reduction"`
-	DiscoveredAt    time.Time   `json:"discovered_at"`
+	PolicyID            string      `json:"policy_id"`
+	PolicyName          string      `json:"policy_name"`
+	RuleDSL             string      `json:"rule_dsl"`
+	Stage               PolicyStage `json:"stage"`
+	ExpectedFPReduction float64     `json:"expected_fp_reduction"`
+	DiscoveredAt        time.Time   `json:"discovered_at"`
 }
 
 // AutonomousPolicyEvolutionEngine manages automated policy evolution through strict governance gates.

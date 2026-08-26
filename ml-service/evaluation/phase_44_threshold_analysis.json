@@ -1,0 +1,44 @@
+{
+  "threshold_analysis": [
+    {
+      "strategy": "Standard Reference (tau = 0.50)",
+      "val_locked_threshold": 0.5,
+      "test_f1": 0.0,
+      "test_fpr": 0.0,
+      "test_recall": 0.0,
+      "test_precision": 0.0
+    },
+    {
+      "strategy": "Validation-Tuned Max F1",
+      "val_locked_threshold": 0.059494949494949496,
+      "test_f1": 0.11875,
+      "test_fpr": 0.21689895470383275,
+      "test_recall": 0.36538461538461536,
+      "test_precision": 0.0708955223880597
+    },
+    {
+      "strategy": "Validation-Tuned Max Recall @ FPR <= 2%",
+      "val_locked_threshold": 0.13373737373737374,
+      "test_f1": 0.15151515151515152,
+      "test_fpr": 0.0078397212543554,
+      "test_recall": 0.09615384615384616,
+      "test_precision": 0.35714285714285715
+    },
+    {
+      "strategy": "Validation-Tuned Max Recall @ FPR <= 3%",
+      "val_locked_threshold": 0.12383838383838383,
+      "test_f1": 0.13333333333333333,
+      "test_fpr": 0.0156794425087108,
+      "test_recall": 0.09615384615384616,
+      "test_precision": 0.21739130434782608
+    },
+    {
+      "strategy": "Validation-Tuned Max Recall @ FPR <= 5%",
+      "val_locked_threshold": 0.10898989898989898,
+      "test_f1": 0.13725490196078433,
+      "test_fpr": 0.037456445993031356,
+      "test_recall": 0.1346153846153846,
+      "test_precision": 0.14
+    }
+  ]
+}

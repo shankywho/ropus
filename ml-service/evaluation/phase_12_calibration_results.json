@@ -1,0 +1,20 @@
+{
+  "calibration_comparison": {
+    "Uncalibrated": {
+      "ece": 0.3214410708306633,
+      "brier": 0.1543199762731849
+    },
+    "BetaCalibrator": {
+      "ece": 0.005135045957320695,
+      "brier": 0.041621437613122675
+    },
+    "PlattSigmoid": {
+      "ece": 0.004834153704523482,
+      "brier": 0.041633358236488914
+    },
+    "IsotonicRegression": {
+      "ece": 0.0,
+      "brier": 0.040657170797177594
+    }
+  }
+}

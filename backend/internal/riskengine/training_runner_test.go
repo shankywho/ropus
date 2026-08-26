@@ -59,11 +59,11 @@ func TestLocalProcessTrainingAdapter_DatasetValidationFailure(t *testing.T) {
 
 	// Insufficient samples -> should fail immediately without spawning process
 	badMeta := TrainingDatasetMetadata{
-		DatasetID:          "dataset_too_small",
-		SampleCount:        10, // < 50
-		FeatureContract:    "fraud-risk-25f-v2.5",
-		DataQualityScore:   0.90,
-		MissingValueRate:   0.01,
+		DatasetID:        "dataset_too_small",
+		SampleCount:      10, // < 50
+		FeatureContract:  "fraud-risk-25f-v2.5",
+		DataQualityScore: 0.90,
+		MissingValueRate: 0.01,
 	}
 
 	req := TrainingRequest{

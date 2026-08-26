@@ -134,6 +134,7 @@ export type ModelRecord = {
   version: string;
   stage: "PRODUCTION" | "SHADOW" | "RETIRED";
   auc: number;
+  prAuc?: number;
   driftPsi: number;
   p99Ms: number;
   trainedOn: string;
@@ -148,6 +149,7 @@ export const models: ModelRecord[] = [
     version: "v4.2.1",
     stage: "PRODUCTION",
     auc: 0.972,
+    prAuc: 0.0688,
     driftPsi: 0.04,
     p99Ms: 19.6,
     trainedOn: "2026-06-30",
@@ -160,6 +162,7 @@ export const models: ModelRecord[] = [
     version: "v4.3.0-rc2",
     stage: "SHADOW",
     auc: 0.979,
+    prAuc: 0.0758,
     driftPsi: 0.02,
     p99Ms: 22.4,
     trainedOn: "2026-08-12",
@@ -172,6 +175,7 @@ export const models: ModelRecord[] = [
     version: "v7.1.4",
     stage: "PRODUCTION",
     auc: 0.943,
+    prAuc: 0.0512,
     driftPsi: 0.11,
     p99Ms: 14.2,
     trainedOn: "2026-05-18",
@@ -184,6 +188,7 @@ export const models: ModelRecord[] = [
     version: "v2.0.3",
     stage: "PRODUCTION",
     auc: 0.918,
+    prAuc: 0.0894,
     driftPsi: 0.07,
     p99Ms: 41.1,
     trainedOn: "2026-07-05",

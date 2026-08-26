@@ -16,11 +16,11 @@ type ResponseOption struct {
 
 // ResponsePlanDetails details the multi-option tradeoff simulation.
 type ResponsePlanDetails struct {
-	PlanID          string           `json:"plan_id"`
-	SelectedAction  string           `json:"selected_action"`
+	PlanID           string           `json:"plan_id"`
+	SelectedAction   string           `json:"selected_action"`
 	OptionsEvaluated []ResponseOption `json:"options_evaluated"`
-	Rationale       string           `json:"rationale"`
-	PlannedAt       time.Time        `json:"planned_at"`
+	Rationale        string           `json:"rationale"`
+	PlannedAt        time.Time        `json:"planned_at"`
 }
 
 // AutonomousResponsePlanner simulates multiple containment avenues to select the option with optimal net utility.

@@ -8,8 +8,8 @@ import (
 type ConsensusType string
 
 const (
-	ConsensusUnanimous                 ConsensusType = "UNANIMOUS"
-	ConsensusMajority                  ConsensusType = "MAJORITY"
+	ConsensusUnanimous                  ConsensusType = "UNANIMOUS"
+	ConsensusMajority                   ConsensusType = "MAJORITY"
 	ConsensusDissentRequiresHumanReview ConsensusType = "HUMAN_REVIEW_REQUIRED"
 )
 
@@ -25,12 +25,12 @@ type AgentOpinion struct {
 
 // CouncilDecision represents the synthesized multi-agent consensus verdict.
 type CouncilDecision struct {
-	IncidentID       string         `json:"incident_id"`
-	ConsensusAction  string         `json:"consensus_action"`
-	Confidence       float64        `json:"confidence"`
-	ConsensusType    ConsensusType  `json:"consensus_type"`
-	SupportingAgents []string       `json:"supporting_agents"`
-	DissentingAgents []string       `json:"dissenting_agents"`
-	Rationale        string         `json:"rationale"`
-	DeliberatedAt    time.Time      `json:"deliberated_at"`
+	IncidentID       string        `json:"incident_id"`
+	ConsensusAction  string        `json:"consensus_action"`
+	Confidence       float64       `json:"confidence"`
+	ConsensusType    ConsensusType `json:"consensus_type"`
+	SupportingAgents []string      `json:"supporting_agents"`
+	DissentingAgents []string      `json:"dissenting_agents"`
+	Rationale        string        `json:"rationale"`
+	DeliberatedAt    time.Time     `json:"deliberated_at"`
 }

@@ -7,12 +7,12 @@ import (
 
 // SimulatedAttackVector represents an adversarial scenario generated to pressure test defense readiness.
 type SimulatedAttackVector struct {
-	SimulationID   string                 `json:"simulation_id"`
-	VectorType     string                 `json:"vector_type"` // "CARDING_BURST", "DISTRIBUTED_ATO_STORM", "MULE_CHAIN_ROTATION"
-	TargetNodeCount int                   `json:"target_node_count"`
-	EstimatedAmount float64               `json:"estimated_amount"`
-	Payload        map[string]interface{} `json:"payload"`
-	GeneratedAt    time.Time              `json:"generated_at"`
+	SimulationID    string                 `json:"simulation_id"`
+	VectorType      string                 `json:"vector_type"` // "CARDING_BURST", "DISTRIBUTED_ATO_STORM", "MULE_CHAIN_ROTATION"
+	TargetNodeCount int                    `json:"target_node_count"`
+	EstimatedAmount float64                `json:"estimated_amount"`
+	Payload         map[string]interface{} `json:"payload"`
+	GeneratedAt     time.Time              `json:"generated_at"`
 }
 
 // AttackSimulationAgent generates synthetic adversary campaigns to train and evaluate defenses ahead of real attacks.

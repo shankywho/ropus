@@ -1,0 +1,5 @@
+{
+  "replay_records_tested": 50,
+  "determinism_check": "100% BIT-FOR-BIT MATCH",
+  "fail_open_check": "PASS"
+}

@@ -1,0 +1,24 @@
+{
+  "live_evidence_ledger": {
+    "total_live_transactions": 0,
+    "target_live_transactions": 5000,
+    "live_shadow_flips": 0,
+    "target_shadow_flips": 50,
+    "unlabeled_flips_count": 0,
+    "pending_maturation_count": 0,
+    "mature_labeled_flips_count": 0,
+    "target_mature_flips": 50,
+    "mature_frauds_observed": 0,
+    "mature_fraud_dollars": 0,
+    "recovered_legitimate_gmv": 0,
+    "observed_fraud_rate": "UNDEFINED (0 mature labels)",
+    "exact_95_ci_upper": "UNDEFINED"
+  },
+  "historical_holdout_benchmark": {
+    "holdout_samples": 1200,
+    "holdout_flips": 8,
+    "holdout_frauds": 0,
+    "holdout_recovered_gmv": 13003.58,
+    "holdout_95_upper_ci": 0.3123
+  }
+}

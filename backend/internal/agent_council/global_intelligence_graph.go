@@ -18,12 +18,12 @@ type AttackTechnique struct {
 
 // FraudGroup represents an organized adversary syndicate profile.
 type FraudGroup struct {
-	GroupID            string    `json:"group_id"`
-	HashedName         string    `json:"hashed_name"`
+	GroupID             string    `json:"group_id"`
+	HashedName          string    `json:"hashed_name"`
 	AssociatedCampaigns []string  `json:"associated_campaigns"`
-	TechniquesUsed     []string  `json:"techniques_used"`
-	FirstObserved      time.Time `json:"first_observed"`
-	LastActive         time.Time `json:"last_active"`
+	TechniquesUsed      []string  `json:"techniques_used"`
+	FirstObserved       time.Time `json:"first_observed"`
+	LastActive          time.Time `json:"last_active"`
 }
 
 // GlobalIntelligenceGraph2 maintains threat groups, technique matrices, and campaign genealogies.

@@ -1,0 +1,37 @@
+{
+  "ROPUS_GATEWAY_URL": {
+    "target_role": "Upstream Payment Gateway API / Ingress Endpoint",
+    "repository_state": "EXTERNAL_INFRASTRUCTURE_REQUIREMENT",
+    "existing_reference": "deploy/kubernetes/ingress.yaml (Defines internal ingress route /api/v1/risk/evaluate)",
+    "injection_mechanism": "Kubernetes Ingress / Cloud Load Balancer DNS",
+    "resolution_status": "AWAITING_EXTERNAL_GATEWAY_PROVISIONING"
+  },
+  "ROPUS_LIVE_INGRESS_KEY": {
+    "target_role": "Authenticated Gateway Client Ingress Credential",
+    "repository_state": "SECRET_MANAGER_REFERENCE",
+    "existing_reference": "deploy/kubernetes/secret-template.yaml (ADMIN_API_KEY) / infra/terraform/aws/secrets.tf (ropus_app_secrets)",
+    "injection_mechanism": "Kubernetes Secret (risk-backend-secrets) / AWS Secrets Manager",
+    "resolution_status": "AWAITING_SECRET_INJECTION_IN_ENVIRONMENT"
+  },
+  "ROPUS_KAFKA_BOOTSTRAP_SERVERS": {
+    "target_role": "Real-time Production Transaction Event Stream",
+    "repository_state": "EXISTING_IAC_AND_CONFIGMAP",
+    "existing_reference": "deploy/kubernetes/configmap.yaml (KAFKA_BROKER: risk-redpanda.risk-engine.svc.cluster.local:29092, KAFKA_TOPIC: risk.events) / infra/terraform/aws/msk_kafka.tf",
+    "injection_mechanism": "ConfigMap (risk-backend-config) / AWS MSK Cluster",
+    "resolution_status": "DEFINED_IN_IAC_AWAITING_CLUSTER_ATTACHMENT"
+  },
+  "ROPUS_PAYMENT_GATEWAY_WEBHOOK": {
+    "target_role": "Chargeback / Dispute Webhook Receiver Path",
+    "repository_state": "CONTRACT_SPECIFIED",
+    "existing_reference": "backend/src/api/routes (Dispute & chargeback webhook endpoint /api/v1/disputes/webhook)",
+    "injection_mechanism": "Payment Gateway Webhook Registration",
+    "resolution_status": "ENDPOINT_READY_AWAITING_GATEWAY_WEBHOOK_URL"
+  },
+  "ROPUS_GATEWAY_HMAC_SECRET": {
+    "target_role": "Cryptographic HMAC-SHA256 Payload Signature Verification Secret",
+    "repository_state": "SECRET_MANAGER_REFERENCE",
+    "existing_reference": "infra/terraform/aws/secrets.tf (ropus/production/credentials) / deploy/kubernetes/secret-template.yaml",
+    "injection_mechanism": "AWS Secrets Manager / Vault / Kubernetes Secret",
+    "resolution_status": "AWAITING_SECRET_PROVISIONING_IN_TARGET_CLUSTER"
+  }
+}

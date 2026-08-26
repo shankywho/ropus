@@ -28,16 +28,19 @@ type RiskEvaluationRequest struct {
 
 // RiskEvaluationResponse represents the standardized risk evaluation outcome.
 type RiskEvaluationResponse struct {
-	DecisionID         string                 `json:"decision_id"`
-	TransactionID      string                 `json:"transaction_id"`
-	RecommendedAction  string                 `json:"recommended_action"`
-	RiskScore          int                    `json:"risk_score"`
-	ReasonCodes        []string               `json:"reason_codes"`
-	FeatureSnapshotRef string                 `json:"feature_snapshot_ref"`
-	Features           map[string]interface{} `json:"features,omitempty"`
-	EvaluatedAt        string                 `json:"evaluated_at"`
-	IsDegraded         bool                   `json:"is_degraded,omitempty"`
-	LatencyMs          int                    `json:"latency_ms"`
+	DecisionID             string                 `json:"decision_id"`
+	TransactionID          string                 `json:"transaction_id"`
+	RecommendedAction      string                 `json:"recommended_action"`
+	RiskScore              int                    `json:"risk_score"`
+	ReasonCodes            []string               `json:"reason_codes"`
+	FeatureSnapshotRef     string                 `json:"feature_snapshot_ref"`
+	Features               map[string]interface{} `json:"features,omitempty"`
+	EvaluatedAt            string                 `json:"evaluated_at"`
+	IsDegraded             bool                   `json:"is_degraded,omitempty"`
+	LatencyMs              int                    `json:"latency_ms"`
+	ExpectedFraudExposure  float64                `json:"expected_fraud_exposure,omitempty"`
+	ExpectedActionCosts    map[string]float64     `json:"expected_action_costs,omitempty"`
+	EconomicDecisionReason string                 `json:"economic_decision_reason,omitempty"`
 }
 
 // Handler handles risk evaluation HTTP requests.

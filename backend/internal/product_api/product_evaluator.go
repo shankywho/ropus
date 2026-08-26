@@ -5,6 +5,8 @@ import (
 	"math"
 	"sync"
 	"time"
+
+	"github.com/shankywho/ropus/backend/internal/riskengine"
 )
 
 // ProductRiskEvaluator coordinates the unified product risk decision pipeline.
@@ -24,10 +26,10 @@ func (e *ProductRiskEvaluator) EvaluateTransaction(req *EvaluateRiskRequest) *Ev
 	var reasons []string
 	var graphSignals []string
 
-	threatIntelWeight := 0.15
-	behaviorWeight := 0.20
-	graphWeight := 0.10
-	mlWeight := 0.25
+	threatIntelWeight := 0.0
+	behaviorWeight := 0.0
+	graphWeight := 0.0
+	mlWeight := 0.05
 
 	// 1. Threat Intel Check
 	if req.Device.IsVPN || req.Device.IsEmulator {
@@ -54,6 +56,9 @@ func (e *ProductRiskEvaluator) EvaluateTransaction(req *EvaluateRiskRequest) *Ev
 		graphSignals = append(graphSignals, "Entity linked to known transnational carding cluster (degree: 14)")
 		reasons = append(reasons, "Fraud knowledge graph detected connection to active syndicate ring")
 	}
+	if req.Device.IsEmulator {
+		mlWeight = 0.90
+	}
 
 	// 4. Composite Scoring
 	compositeRisk := (threatIntelWeight * 0.30) + (behaviorWeight * 0.25) + (graphWeight * 0.30) + (mlWeight * 0.15)
@@ -61,34 +66,43 @@ func (e *ProductRiskEvaluator) EvaluateTransaction(req *EvaluateRiskRequest) *Ev
 		compositeRisk = 0.99
 	}
 
-	decision := DecisionApprove
-	confidence := 0.98
-	recAction := "Allow transaction to settle"
-	humanExplanation := fmt.Sprintf("Transaction %s is approved with low risk score (%.1f%%). No anomalous behavior detected.", req.TransactionID, compositeRisk*100)
+	// Cost-sensitive Bayes Minimum Risk calculation
+	econResult := riskengine.EvaluateCostSensitiveDecision(compositeRisk, req.Amount, riskengine.DefaultEconomicPolicyConfig())
 
-	if compositeRisk >= 0.80 {
+	var decision RiskDecision
+	var confidence float64
+	var recAction string
+	var humanExplanation string
+
+	switch econResult.OptimalAction {
+	case "DECLINE_RECOMMENDATION":
 		decision = DecisionBlock
 		confidence = 0.96
 		recAction = "Block transaction immediately and trigger account freeze review"
-		humanExplanation = fmt.Sprintf("Transaction %s blocked due to critical risk score (%.1f%%). High correlation with malicious fraud cluster and emulator spoofing.", req.TransactionID, compositeRisk*100)
-	} else if compositeRisk >= 0.50 {
+		humanExplanation = fmt.Sprintf("Transaction %s blocked. %s", req.TransactionID, econResult.DecisionReason)
+	case "STEP_UP_RECOMMENDATION":
 		decision = DecisionChallenge
 		confidence = 0.92
 		recAction = "Prompt user with Step-Up Biometric / WebAuthn MFA challenge"
-		humanExplanation = fmt.Sprintf("Transaction %s challenged with risk score (%.1f%%) due to elevated amount ($%.2f) and geographic anomaly.", req.TransactionID, compositeRisk*100, req.Amount)
-	} else if compositeRisk >= 0.30 {
+		humanExplanation = fmt.Sprintf("Transaction %s challenged. %s", req.TransactionID, econResult.DecisionReason)
+	case "MANUAL_REVIEW":
 		decision = DecisionReview
 		confidence = 0.90
 		recAction = "Route to manual analyst queue for asynchronous inspection"
-		humanExplanation = fmt.Sprintf("Transaction %s marked for review (risk: %.1f%%) due to moderate velocity deviations.", req.TransactionID, compositeRisk*100)
+		humanExplanation = fmt.Sprintf("Transaction %s routed to review. %s", req.TransactionID, econResult.DecisionReason)
+	default: // "ALLOW_RECOMMENDATION"
+		decision = DecisionApprove
+		confidence = 0.98
+		recAction = "Allow transaction to settle"
+		humanExplanation = fmt.Sprintf("Transaction %s approved with low risk score (%.1f%%). %s", req.TransactionID, compositeRisk*100, econResult.DecisionReason)
 	}
 
 	return &EvaluateRiskResponse{
-		TransactionID: req.TransactionID,
-		RiskScore:     math.Round(compositeRisk*1000) / 10.0, // 0.0 to 100.0
-		Decision:      decision,
-		Confidence:    confidence,
-		Reasons:       reasons,
+		TransactionID:    req.TransactionID,
+		RiskScore:        math.Round(compositeRisk*1000) / 10.0, // 0.0 to 100.0
+		Decision:         decision,
+		Confidence:       confidence,
+		Reasons:          reasons,
 		HumanExplanation: humanExplanation,
 		Breakdown: ExplanationBreakdown{
 			GraphIntelligenceWeight:  math.Round(graphWeight*100) / 100.0,
@@ -96,9 +110,12 @@ func (e *ProductRiskEvaluator) EvaluateTransaction(req *EvaluateRiskRequest) *Ev
 			ThreatIntelligenceWeight: math.Round(threatIntelWeight*100) / 100.0,
 			MachineLearningWeight:    math.Round(mlWeight*100) / 100.0,
 		},
-		ModelVersion:      "v3.34-ensemble-prod",
-		GraphSignals:      graphSignals,
-		RecommendedAction: recAction,
-		EvaluatedAt:       now,
+		ModelVersion:           "v3.34-ensemble-prod",
+		GraphSignals:           graphSignals,
+		RecommendedAction:      recAction,
+		EvaluatedAt:            now,
+		ExpectedFraudExposure:  econResult.ExpectedFraudExposure,
+		ExpectedActionCosts:    econResult.ActionCosts,
+		EconomicDecisionReason: econResult.DecisionReason,
 	}
 }

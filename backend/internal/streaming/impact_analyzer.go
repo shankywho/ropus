@@ -6,21 +6,21 @@ import (
 
 // ImpactReport assesses the blast radius and potential business disruption of an autonomous defense action.
 type ImpactReport struct {
-	TargetEntityID          string  `json:"target_entity_id"`
-	ActionType              string  `json:"action_type"`
-	AffectedUsersCount      int     `json:"affected_users_count"`
-	AffectedMerchantsCount  int     `json:"affected_merchants_count"`
-	FinancialExposure       float64 `json:"financial_exposure"`
-	ExpectedRiskReduction   float64 `json:"expected_risk_reduction"` // 0.0 to 1.0 (Higher is better)
-	FalsePositiveRisk       float64 `json:"false_positive_risk"`     // 0.0 to 1.0 (Lower is better)
-	IsSafeToDeploy          bool    `json:"is_safe_to_deploy"`
-	RejectionReason         string  `json:"rejection_reason,omitempty"`
+	TargetEntityID         string  `json:"target_entity_id"`
+	ActionType             string  `json:"action_type"`
+	AffectedUsersCount     int     `json:"affected_users_count"`
+	AffectedMerchantsCount int     `json:"affected_merchants_count"`
+	FinancialExposure      float64 `json:"financial_exposure"`
+	ExpectedRiskReduction  float64 `json:"expected_risk_reduction"` // 0.0 to 1.0 (Higher is better)
+	FalsePositiveRisk      float64 `json:"false_positive_risk"`     // 0.0 to 1.0 (Lower is better)
+	IsSafeToDeploy         bool    `json:"is_safe_to_deploy"`
+	RejectionReason        string  `json:"rejection_reason,omitempty"`
 }
 
 // ImpactAnalyzer calculates collateral impact and safety limits before mass containment deployment.
 type ImpactAnalyzer struct {
-	MaxAllowedFPRisk      float64
-	MaxAllowedUserImpact  int
+	MaxAllowedFPRisk     float64
+	MaxAllowedUserImpact int
 }
 
 // NewImpactAnalyzer initializes the blast radius impact analyzer.

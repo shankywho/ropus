@@ -7,13 +7,13 @@ import (
 
 // AttackEvolutionMutation predicts the next adaptation of a mutating attack technique.
 type AttackEvolutionMutation struct {
-	BaseTechnique       string    `json:"base_technique"`
-	MutatedTechnique    string    `json:"mutated_technique"`
-	MutationVector      string    `json:"mutation_vector"`
-	EvasionProbability  float64   `json:"evasion_probability"`
-	CountermeasureDSL   string    `json:"countermeasure_dsl"`
-	PredictedTimelineDays int     `json:"predicted_timeline_days"`
-	PredictedAt         time.Time `json:"predicted_at"`
+	BaseTechnique         string    `json:"base_technique"`
+	MutatedTechnique      string    `json:"mutated_technique"`
+	MutationVector        string    `json:"mutation_vector"`
+	EvasionProbability    float64   `json:"evasion_probability"`
+	CountermeasureDSL     string    `json:"countermeasure_dsl"`
+	PredictedTimelineDays int       `json:"predicted_timeline_days"`
+	PredictedAt           time.Time `json:"predicted_at"`
 }
 
 // AttackEvolutionEngine models adversary counter-adaptation against active defense systems.

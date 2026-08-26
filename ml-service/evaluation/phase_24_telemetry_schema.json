@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ROPUSGatewayTelemetryRecord",
+  "version": "1.0.0",
+  "type": "object",
+  "required": [
+    "timestamp",
+    "risk_tier",
+    "http_status",
+    "model_version",
+    "evidence_tier",
+    "model_sha256",
+    "calibrated_probability",
+    "telemetry_schema_version",
+    "latency_ms",
+    "correlation_id",
+    "decision"
+  ],
+  "properties": {
+    "telemetry_schema_version": {
+      "type": "string",
+      "enum": [
+        "1.0.0"
+      ]
+    },
+    "timestamp": {
+      "type": "number",
+      "description": "Unix epoch timestamp in seconds"
+    },
+    "correlation_id": {
+      "type": "string",
+      "pattern": "^ANON_TX_[a-f0-9]{16}$"
+    },
+    "evidence_tier": {
+      "type": "string",
+      "enum": [
+        "LIVE_PRODUCTION_EVIDENCE",
+        "LOCAL_OPERATIONAL_TEST",
+        "SYNTHETIC_TEST",
+        "HISTORICAL_REFERENCE"
+      ]
+    },
+    "model_version": {
+      "type": "string",
+      "enum": [
+        "v8.0-bmr-36f"
+      ]
+    },
+    "model_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "http_status": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 599
+    },
+    "latency_ms": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 60000.0
+    },
+    "amount": {
+      "type": "number",
+      "minimum": 0.0
+    },
+    "calibrated_probability": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "ALLOW",
+        "DECLINE",
+        "MANUAL_REVIEW"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "LOW_RISK",
+        "MODERATE_RISK",
+        "ELEVATED_RISK",
+        "CRITICAL_FRAUD"
+      ]
+    },
+    "drift_features": {
+      "type": "object",
+      "properties": {
+        "ip_velocity_1h": {
+          "type": "number"
+        },
+        "token_velocity_24h": {
+          "type": "number"
+        },
+        "card_tx_count_5m": {
+          "type": "number"
+        },
+        "dev_burst_5m_1h": {
+          "type": "number"
+        },
+        "amount_to_mean_ratio": {
+          "type": "number"
+        }
+      }
+    },
+    "dispute_id": {
+      "type": "string"
+    }
+  }
+}

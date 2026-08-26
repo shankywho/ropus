@@ -2,11 +2,11 @@ package intelligence_fabric
 
 // SystemResourceAllocation details dynamic compute allocations across intelligence subsystems.
 type SystemResourceAllocation struct {
-	SubsystemName      string  `json:"subsystem_name"`
-	ComputeWeight      int     `json:"compute_weight"` // 1 to 10
-	BatchWindowMs      int     `json:"batch_window_ms"`
-	MaxConcurrency     int     `json:"max_concurrency"`
-	AllocatedMemoryMB  int     `json:"allocated_memory_mb"`
+	SubsystemName     string `json:"subsystem_name"`
+	ComputeWeight     int    `json:"compute_weight"` // 1 to 10
+	BatchWindowMs     int    `json:"batch_window_ms"`
+	MaxConcurrency    int    `json:"max_concurrency"`
+	AllocatedMemoryMB int    `json:"allocated_memory_mb"`
 }
 
 // AutonomousResourceOptimizer dynamically allocates hardware and worker pools across AFC-IOS pipelines.

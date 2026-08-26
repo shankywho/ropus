@@ -120,3 +120,32 @@ func TestProduct_WebhookPlatform(t *testing.T) {
 	assert.True(t, logs[0].Delivered)
 	assert.Contains(t, logs[0].Signature, "sha256=")
 }
+
+func TestProduct_CostSensitiveDecisionConsistency(t *testing.T) {
+	evaluator := NewProductRiskEvaluator()
+
+	// High-Value Transaction with Moderate Risk -> Bayes Minimum Risk elevates to Challenge/Review
+	req := &EvaluateRiskRequest{
+		TransactionID: "tx_high_val_5001",
+		UserID:        "usr_vip_merchant",
+		Amount:        1450000.0, // ₹14.5 Lakhs
+		Currency:      "INR",
+		Merchant:      "RazorpayEnterprise",
+		Device: DeviceDetails{
+			DeviceFingerprint: "fp_office_laptop",
+			IPAddress:         "198.51.100.44",
+		},
+		Location: LocationDetails{
+			Country: "IN",
+			City:    "Bangalore",
+		},
+	}
+
+	resp := evaluator.EvaluateTransaction(req)
+	require.NotNil(t, resp)
+	assert.NotEmpty(t, resp.EconomicDecisionReason)
+	assert.Greater(t, resp.ExpectedFraudExposure, 0.0)
+	assert.NotEmpty(t, resp.ExpectedActionCosts)
+	// Must not silently allow ₹14.5L with elevated exposure
+	assert.Contains(t, []RiskDecision{DecisionChallenge, DecisionReview, DecisionBlock}, resp.Decision)
+}

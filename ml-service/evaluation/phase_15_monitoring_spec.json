@@ -1,0 +1,50 @@
+{
+  "model_quality_slos": {
+    "fraud_recall_min": {
+      "threshold": 0.1,
+      "alert_level": "WARNING",
+      "action": "Trigger review & check recent fraud patterns"
+    },
+    "precision_min": {
+      "threshold": 0.06,
+      "alert_level": "WARNING",
+      "action": "Review top false-positive entities"
+    },
+    "ece_max": {
+      "threshold": 0.015,
+      "alert_level": "CRITICAL",
+      "action": "Trigger automated recalibration run"
+    }
+  },
+  "operational_slos": {
+    "latency_p95_ms": {
+      "threshold": 15.0,
+      "alert_level": "WARNING",
+      "action": "Check CPU contention or thread pool saturation"
+    },
+    "decline_rate_max": {
+      "threshold": 0.1,
+      "alert_level": "CRITICAL",
+      "action": "Investigate false-positive spike or fraud attack"
+    },
+    "error_rate_max": {
+      "threshold": 0.001,
+      "alert_level": "CRITICAL",
+      "action": "Auto-switch to backup heuristics"
+    }
+  },
+  "drift_monitoring": {
+    "feature_psi_warning": {
+      "threshold": 0.1,
+      "metric": "Population Stability Index (PSI)"
+    },
+    "feature_psi_critical": {
+      "threshold": 0.25,
+      "metric": "Population Stability Index (PSI)"
+    },
+    "score_drift_ks_pvalue": {
+      "threshold": 0.01,
+      "metric": "Kolmogorov-Smirnov Test"
+    }
+  }
+}

@@ -153,11 +153,11 @@ func (s *FileStateStore) StateExists(ctx context.Context) bool {
 type ReconciliationAction string
 
 const (
-	ActionNone                 ReconciliationAction = "NONE"
-	ActionRestoredClean        ReconciliationAction = "RESTORED_CLEAN"
-	ActionInFlightJobFailed    ReconciliationAction = "IN_FLIGHT_JOB_FAILED"
-	ActionCanaryResetToIdle    ReconciliationAction = "CANARY_RESET_TO_IDLE"
-	ActionCandidatePreserved   ReconciliationAction = "CANDIDATE_PRESERVED"
+	ActionNone                  ReconciliationAction = "NONE"
+	ActionRestoredClean         ReconciliationAction = "RESTORED_CLEAN"
+	ActionInFlightJobFailed     ReconciliationAction = "IN_FLIGHT_JOB_FAILED"
+	ActionCanaryResetToIdle     ReconciliationAction = "CANARY_RESET_TO_IDLE"
+	ActionCandidatePreserved    ReconciliationAction = "CANDIDATE_PRESERVED"
 	ActionFallbackModelRestored ReconciliationAction = "FALLBACK_MODEL_RESTORED"
 )
 

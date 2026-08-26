@@ -1,0 +1,28 @@
+{
+  "blockers": [
+    {
+      "blocker_id": "BLK-01",
+      "component": "Kubernetes Cluster Access",
+      "description": "Local kubectl client cannot establish network connection to the target EKS/production cluster.",
+      "remediation": "Provide KUBECONFIG with active EKS cluster context (e.g., aws eks update-kubeconfig --name ropus-cluster)."
+    },
+    {
+      "blocker_id": "BLK-02",
+      "component": "AWS IAM Cloud Authentication",
+      "description": "AWS credentials (AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / IAM Role) are invalid or not configured in this environment.",
+      "remediation": "Inject valid AWS credentials or execute under IAM instance profile with SecretsManager/EKS permissions."
+    },
+    {
+      "blocker_id": "BLK-03",
+      "component": "Live Payment Gateway Traffic Egress/Ingress",
+      "description": "External payment gateway (Stripe/Adyen/Checkout) webhook has not been pointed to the production Ingress endpoint.",
+      "remediation": "Configure upstream payment gateway webhook URL to point to https://<ingress-host>/api/v1/risk/evaluate and register dispute webhook."
+    },
+    {
+      "blocker_id": "BLK-04",
+      "component": "HMAC Shared Secret Injection",
+      "description": "ROPUS_GATEWAY_HMAC_SECRET has not been injected into Kubernetes Secret 'risk-backend-secrets' from AWS Secrets Manager.",
+      "remediation": "Deploy secret-template.yaml populated with the live gateway HMAC secret."
+    }
+  ]
+}

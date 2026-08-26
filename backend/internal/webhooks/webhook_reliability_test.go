@@ -26,9 +26,9 @@ func TestWebhook_ReliabilityAndSigning(t *testing.T) {
 
 	// 1. Dispatch Event
 	payload := map[string]interface{}{
-		"decision_id":   "dec_99182",
-		"decision":      "BLOCK",
-		"risk_score":    0.96,
+		"decision_id":    "dec_99182",
+		"decision":       "BLOCK",
+		"risk_score":     0.96,
 		"transaction_id": "tx_order_1001",
 	}
 

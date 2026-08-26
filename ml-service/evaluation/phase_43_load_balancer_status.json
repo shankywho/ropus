@@ -1,0 +1,6 @@
+{
+  "load_balancer_type": "AWS Network Load Balancer (NLB) / GCP External HTTPS Load Balancer",
+  "provisioning_state": "EXTERNAL_CLOUD_ACCESS_UNAVAILABLE",
+  "external_ip_or_cname": "UNPROVISIONED (Local Sandbox Environment)",
+  "inbound_firewall_rule": "Allow TCP 443 / 80 from 0.0.0.0/0 (Required in Cloud Security Group)"
+}

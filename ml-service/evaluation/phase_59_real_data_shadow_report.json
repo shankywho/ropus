@@ -1,0 +1,499 @@
+{
+  "metadata": {
+    "phase": "PHASE_59_REAL_DATA_SHADOW_REPLAY",
+    "executed_at": "2026-08-26T06:53:59.344259+00:00",
+    "target_system": "GraphSAGE Real-Data Shadow Replay & Relationship Intelligence",
+    "active_production_champion": "production_model_v8_bmr.joblib",
+    "champion_sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "production_routing": "UNCHANGED (Baseline Dynamic BMR Authoritative)",
+    "operational_mode": "STRICTLY NON-ENFORCING SHADOW / INVESTIGATION ONLY",
+    "lifecycle_state": "SYNTHETICALLY_VALIDATED / REAL_DATA_SHADOW_READY / REAL_DATA_REQUIRED / PROMOTION_BLOCKED"
+  },
+  "shadow_replay_fixture_summary": {
+    "total_nodes": 183,
+    "total_edges": 187,
+    "total_transactions": 34,
+    "scenarios_evaluated": [
+      "1. Legitimate Customer Support (Alice: 20 accounts, normal hours, low concentration)",
+      "2. Legitimate Fraud Analyst (Bob: case reviews, benign outcomes)",
+      "3. Rogue Support Employee (Charlie: 3-account concentration, rapid pre-tx access, self-approval)",
+      "4. Off-Hours Collusion (David: 02:30 AM access, shared mobile hardware colocation)",
+      "5. Low-and-Slow Collusion (Eve: multi-week spaced access)"
+    ]
+  },
+  "performance_latency_benchmarks": {
+    "percentiles": {
+      "graph_construction_ms": {
+        "p50_ms": 1.295,
+        "p95_ms": 1.295,
+        "p99_ms": 1.295,
+        "mean_ms": 1.295
+      },
+      "sampling_ms": {
+        "p50_ms": 0.03,
+        "p95_ms": 0.032,
+        "p99_ms": 0.034,
+        "mean_ms": 0.03
+      },
+      "gnn_forward_ms": {
+        "p50_ms": 0.086,
+        "p95_ms": 0.106,
+        "p99_ms": 0.132,
+        "mean_ms": 0.091
+      },
+      "path_extraction_ms": {
+        "p50_ms": 0.024,
+        "p95_ms": 0.149,
+        "p99_ms": 0.401,
+        "mean_ms": 0.064
+      },
+      "dossier_generation_ms": {
+        "p50_ms": 0.09,
+        "p95_ms": 0.413,
+        "p99_ms": 0.444,
+        "mean_ms": 0.19
+      }
+    },
+    "total_shadow_inference_p95_ms": 0.7,
+    "is_within_shadow_budget": true
+  },
+  "shadow_calibration_status": {
+    "raw_graphsage_score": 0.85,
+    "relationship_score": 0.8,
+    "calibrated_score": null,
+    "calibration_status": "DATA_REQUIRED",
+    "governance_notice": "CALIBRATION INACTIVE: Insufficient real confirmed labels for empirical calibration. Raw and structural relationship scores provided for shadow investigation only.",
+    "minimum_labels_for_calibration": 50,
+    "current_labeled_cases": 0
+  },
+  "shadow_graph_drift_report": {
+    "monitored_at": "2026-08-26T06:53:59.341834+00:00",
+    "window_sample_size": {
+      "nodes_count": 183,
+      "edges_count": 187,
+      "scores_count": 100,
+      "labels_count": 15
+    },
+    "data_drift": {
+      "entity_type_counts": {
+        "EMPLOYEE": 5,
+        "IP": 31,
+        "DEVICE": 32,
+        "CONSUMER": 40,
+        "ACCOUNT": 40,
+        "PAYMENT_TOKEN": 30,
+        "CASE": 5
+      },
+      "isolated_nodes_count": 2,
+      "data_drift_status": "STABLE"
+    },
+    "topology_drift": {
+      "average_degree": 1.97,
+      "p95_degree": 5.0,
+      "p99_degree": 6.43,
+      "max_degree": 20,
+      "degree_shift_pct_from_baseline": -48.2,
+      "topology_drift_status": "TOPOLOGY_SHIFT"
+    },
+    "score_drift": {
+      "mean_score": 0.5915,
+      "p95_score": 0.8,
+      "high_risk_entity_ratio_pct": 60.0,
+      "score_shift_pct_from_baseline": 195.77,
+      "score_drift_status": "SCORE_SHIFT"
+    },
+    "label_drift": {
+      "maturity_counts": {
+        "CONFIRMED_LEGITIMATE": 14,
+        "CONFIRMED_FRAUD": 1
+      },
+      "label_drift_status": "MONITORED"
+    },
+    "governance_action": "NO_RETRAINING_TRIGGERED (Shadow Monitoring Only)"
+  },
+  "sample_investigation_dossiers": [
+    {
+      "dossier_id": "dos_collusion_67a5d7afd6ad",
+      "generated_at": "2026-08-26T06:53:59.292402Z",
+      "overall_risk_score": 0.42,
+      "risk_level": "MEDIUM",
+      "employee_id": "emp_support_alice",
+      "employee_role": "customer_support",
+      "affected_accounts": [
+        "acct_legit_001",
+        "acct_legit_002",
+        "acct_legit_003",
+        "acct_legit_004",
+        "acct_legit_005",
+        "acct_legit_006",
+        "acct_legit_007",
+        "acct_legit_008",
+        "acct_legit_009",
+        "acct_legit_010",
+        "acct_legit_011",
+        "acct_legit_012",
+        "acct_legit_013",
+        "acct_legit_014",
+        "acct_legit_015",
+        "acct_legit_016",
+        "acct_legit_017",
+        "acct_legit_018",
+        "acct_legit_019",
+        "acct_legit_020"
+      ],
+      "affected_consumers": [],
+      "relationship_paths": [
+        "EMPLOYEE:emp_support_alice --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_legit_001",
+        "EMPLOYEE:emp_support_alice --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_legit_002",
+        "EMPLOYEE:emp_support_alice --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_legit_003",
+        "EMPLOYEE:emp_support_alice --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_legit_004",
+        "EMPLOYEE:emp_support_alice --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_legit_005",
+        "EMPLOYEE:emp_support_alice --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_legit_006",
+        "EMPLOYEE:emp_support_alice --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_legit_007",
+        "EMPLOYEE:emp_support_alice --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_legit_008",
+        "EMPLOYEE:emp_support_alice --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_legit_009",
+        "EMPLOYEE:emp_support_alice --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_legit_010"
+      ],
+      "temporal_evidence": {
+        "total_interaction_events": 20,
+        "relationship_features": {
+          "employee_account_access_count": 20.0,
+          "employee_consumer_unique_count": 20.0,
+          "employee_account_concentration": 0.05,
+          "employee_transaction_proximity_sec": 300.0,
+          "employee_approval_after_access_count": 0.0,
+          "off_hours_ratio": 1.0,
+          "shared_device_overlap_count": 0.0,
+          "shared_ip_overlap_count": 0.0,
+          "employee_to_consumer_path_count": 20.0,
+          "employee_to_account_path_count": 20.0,
+          "repeated_access_burst_score": 0.0,
+          "low_and_slow_relationship_score": 0.0,
+          "neighborhood_anomaly_score": 0.42
+        },
+        "behavioral_baseline": {
+          "has_historical_baseline": false,
+          "prior_interaction_count": 0,
+          "mean_daily_volume": 0.0,
+          "normal_active_hours": [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17
+          ],
+          "trusted_devices": [],
+          "trusted_ips": [],
+          "volume_z_score": 0.0,
+          "is_unusual_hour_for_employee": false,
+          "is_new_device_for_employee": true,
+          "personal_anomaly_delta": 0.15,
+          "baseline_notes": "Zero historical telemetry for this employee; default role baseline applied."
+        },
+        "supporting_evidence": [
+          "Unusual temporal access: 100.0% of interactions occurred outside normal business hours."
+        ],
+        "counter_evidence": [
+          "Employee role (customer_support) routinely accesses customer accounts as part of standard support and case review workflows.",
+          "High account dispersion (20 accounts touched): behavior is consistent with standard high-volume customer service queue handling.",
+          "Zero hardware or IP colocation detected between employee and consumer entities."
+        ]
+      },
+      "transaction_summary": {
+        "total_transactions_count": 34,
+        "total_amount_usd": 66685.0,
+        "currencies": [
+          "USD"
+        ],
+        "account_ids": [
+          "acct_legit_017",
+          "acct_legit_012",
+          "acct_legit_020",
+          "acct_legit_005",
+          "acct_legit_011",
+          "acct_mule_05",
+          "acct_legit_003",
+          "acct_legit_006",
+          "acct_legit_018",
+          "acct_legit_004",
+          "acct_mule_03",
+          "acct_legit_016",
+          "acct_legit_015",
+          "acct_legit_009",
+          "acct_mule_04",
+          "acct_legit_014",
+          "acct_legit_010",
+          "acct_legit_008",
+          "acct_mule_01",
+          "acct_mule_02",
+          "acct_legit_002",
+          "acct_legit_001",
+          "acct_legit_007",
+          "acct_legit_019",
+          "acct_mule_06",
+          "acct_legit_013"
+        ]
+      },
+      "shared_infrastructure": {
+        "device_nodes": [],
+        "ip_nodes": [],
+        "device_overlap_count": 0,
+        "ip_overlap_count": 0
+      },
+      "confidence_score": 1.0,
+      "human_explanation": "Investigation Dossier for Employee emp_support_alice (customer_support). Overall Relationship Risk Score: 0.42 (Tier: MEDIUM). Identified 1 risk indicator(s) and 3 mitigating counter-evidence factor(s). Evaluated point-in-time for shadow review only.",
+      "data_provenance": "shadow_graph_stream",
+      "model_version": "graphsage-hetero-v1.0-shadow",
+      "governance_notice": "INVESTIGATION INTELLIGENCE ONLY - STRICTLY NON-ENFORCING"
+    },
+    {
+      "dossier_id": "dos_collusion_23226bc4b18e",
+      "generated_at": "2026-08-26T06:53:59.293810Z",
+      "overall_risk_score": 0.3002,
+      "risk_level": "MEDIUM",
+      "employee_id": "emp_analyst_bob",
+      "employee_role": "fraud_analyst",
+      "affected_accounts": [],
+      "affected_consumers": [],
+      "relationship_paths": [
+        "(emp_analyst_bob) -[INTERACTS]-> (case_rev_021)",
+        "(emp_analyst_bob) -[INTERACTS]-> (case_rev_022)",
+        "(emp_analyst_bob) -[INTERACTS]-> (case_rev_023)",
+        "(emp_analyst_bob) -[INTERACTS]-> (case_rev_024)",
+        "(emp_analyst_bob) -[INTERACTS]-> (case_rev_025)"
+      ],
+      "temporal_evidence": {
+        "total_interaction_events": 5,
+        "relationship_features": {
+          "employee_account_access_count": 0.0,
+          "employee_consumer_unique_count": 0.0,
+          "employee_account_concentration": 0.0,
+          "employee_transaction_proximity_sec": 172950.0,
+          "employee_approval_after_access_count": 0.0,
+          "off_hours_ratio": 1.0,
+          "shared_device_overlap_count": 0.0,
+          "shared_ip_overlap_count": 0.0,
+          "employee_to_consumer_path_count": 0.0,
+          "employee_to_account_path_count": 0.0,
+          "repeated_access_burst_score": 0.0,
+          "low_and_slow_relationship_score": 0.0,
+          "neighborhood_anomaly_score": 0.3002
+        },
+        "behavioral_baseline": {
+          "has_historical_baseline": false,
+          "prior_interaction_count": 0,
+          "mean_daily_volume": 0.0,
+          "normal_active_hours": [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17
+          ],
+          "trusted_devices": [],
+          "trusted_ips": [],
+          "volume_z_score": 0.0,
+          "is_unusual_hour_for_employee": false,
+          "is_new_device_for_employee": true,
+          "personal_anomaly_delta": 0.15,
+          "baseline_notes": "Zero historical telemetry for this employee; default role baseline applied."
+        },
+        "supporting_evidence": [
+          "Unusual temporal access: 100.0% of interactions occurred outside normal business hours."
+        ],
+        "counter_evidence": [
+          "Employee role (fraud_analyst) routinely accesses customer accounts as part of standard support and case review workflows.",
+          "Zero hardware or IP colocation detected between employee and consumer entities."
+        ]
+      },
+      "transaction_summary": {
+        "total_transactions_count": 34,
+        "total_amount_usd": 66685.0,
+        "currencies": [
+          "USD"
+        ],
+        "account_ids": [
+          "acct_legit_017",
+          "acct_legit_012",
+          "acct_legit_020",
+          "acct_legit_005",
+          "acct_legit_011",
+          "acct_mule_05",
+          "acct_legit_003",
+          "acct_legit_006",
+          "acct_legit_018",
+          "acct_legit_004",
+          "acct_mule_03",
+          "acct_legit_016",
+          "acct_legit_015",
+          "acct_legit_009",
+          "acct_mule_04",
+          "acct_legit_014",
+          "acct_legit_010",
+          "acct_legit_008",
+          "acct_mule_01",
+          "acct_mule_02",
+          "acct_legit_002",
+          "acct_legit_001",
+          "acct_legit_007",
+          "acct_legit_019",
+          "acct_mule_06",
+          "acct_legit_013"
+        ]
+      },
+      "shared_infrastructure": {
+        "device_nodes": [],
+        "ip_nodes": [],
+        "device_overlap_count": 0,
+        "ip_overlap_count": 0
+      },
+      "confidence_score": 0.75,
+      "human_explanation": "Investigation Dossier for Employee emp_analyst_bob (fraud_analyst). Overall Relationship Risk Score: 0.30 (Tier: MEDIUM). Identified 1 risk indicator(s) and 2 mitigating counter-evidence factor(s). Evaluated point-in-time for shadow review only.",
+      "data_provenance": "shadow_graph_stream",
+      "model_version": "graphsage-hetero-v1.0-shadow",
+      "governance_notice": "INVESTIGATION INTELLIGENCE ONLY - STRICTLY NON-ENFORCING"
+    },
+    {
+      "dossier_id": "dos_collusion_9e1003b270a1",
+      "generated_at": "2026-08-26T06:53:59.294364Z",
+      "overall_risk_score": 0.7333,
+      "risk_level": "HIGH",
+      "employee_id": "emp_rogue_charlie",
+      "employee_role": "customer_support",
+      "affected_accounts": [
+        "acct_mule_01",
+        "acct_mule_02",
+        "acct_mule_03",
+        "acct_mule_01",
+        "acct_mule_02",
+        "acct_mule_03",
+        "acct_mule_01",
+        "acct_mule_02",
+        "acct_mule_03"
+      ],
+      "affected_consumers": [],
+      "relationship_paths": [
+        "EMPLOYEE:emp_rogue_charlie --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_mule_01",
+        "EMPLOYEE:emp_rogue_charlie --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_mule_02",
+        "EMPLOYEE:emp_rogue_charlie --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_mule_03",
+        "EMPLOYEE:emp_rogue_charlie --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_mule_01",
+        "EMPLOYEE:emp_rogue_charlie --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_mule_02",
+        "EMPLOYEE:emp_rogue_charlie --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_mule_03",
+        "EMPLOYEE:emp_rogue_charlie --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_mule_01",
+        "EMPLOYEE:emp_rogue_charlie --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_mule_02",
+        "EMPLOYEE:emp_rogue_charlie --[EMPLOYEE_ACCESSES_ACCOUNT]--> ACCOUNT:acct_mule_03"
+      ],
+      "temporal_evidence": {
+        "total_interaction_events": 18,
+        "relationship_features": {
+          "employee_account_access_count": 9.0,
+          "employee_consumer_unique_count": 3.0,
+          "employee_account_concentration": 0.3333,
+          "employee_transaction_proximity_sec": 30.0,
+          "employee_approval_after_access_count": 9.0,
+          "off_hours_ratio": 1.0,
+          "shared_device_overlap_count": 0.0,
+          "shared_ip_overlap_count": 0.0,
+          "employee_to_consumer_path_count": 3.0,
+          "employee_to_account_path_count": 9.0,
+          "repeated_access_burst_score": 0.85,
+          "low_and_slow_relationship_score": 0.0,
+          "neighborhood_anomaly_score": 0.7333
+        },
+        "behavioral_baseline": {
+          "has_historical_baseline": false,
+          "prior_interaction_count": 0,
+          "mean_daily_volume": 0.0,
+          "normal_active_hours": [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17
+          ],
+          "trusted_devices": [],
+          "trusted_ips": [],
+          "volume_z_score": 0.0,
+          "is_unusual_hour_for_employee": false,
+          "is_new_device_for_employee": true,
+          "personal_anomaly_delta": 0.15,
+          "baseline_notes": "Zero historical telemetry for this employee; default role baseline applied."
+        },
+        "supporting_evidence": [
+          "Elevated account concentration (HHI: 0.33): access is tightly clustered around 9 specific account(s).",
+          "Unusual temporal access: 100.0% of interactions occurred outside normal business hours.",
+          "Immediate pre-transaction proximity: account access occurred 30s before transaction creation.",
+          "Self-approval / Segregation-of-Duties anomaly: employee approved 9 transaction(s) on previously accessed accounts."
+        ],
+        "counter_evidence": [
+          "Employee role (customer_support) routinely accesses customer accounts as part of standard support and case review workflows.",
+          "Zero hardware or IP colocation detected between employee and consumer entities."
+        ]
+      },
+      "transaction_summary": {
+        "total_transactions_count": 34,
+        "total_amount_usd": 66685.0,
+        "currencies": [
+          "USD"
+        ],
+        "account_ids": [
+          "acct_legit_017",
+          "acct_legit_012",
+          "acct_legit_020",
+          "acct_legit_005",
+          "acct_legit_011",
+          "acct_mule_05",
+          "acct_legit_003",
+          "acct_legit_006",
+          "acct_legit_018",
+          "acct_legit_004",
+          "acct_mule_03",
+          "acct_legit_016",
+          "acct_legit_015",
+          "acct_legit_009",
+          "acct_mule_04",
+          "acct_legit_014",
+          "acct_legit_010",
+          "acct_legit_008",
+          "acct_mule_01",
+          "acct_mule_02",
+          "acct_legit_002",
+          "acct_legit_001",
+          "acct_legit_007",
+          "acct_legit_019",
+          "acct_mule_06",
+          "acct_legit_013"
+        ]
+      },
+      "shared_infrastructure": {
+        "device_nodes": [],
+        "ip_nodes": [],
+        "device_overlap_count": 0,
+        "ip_overlap_count": 0
+      },
+      "confidence_score": 1.0,
+      "human_explanation": "Investigation Dossier for Employee emp_rogue_charlie (customer_support). Overall Relationship Risk Score: 0.73 (Tier: HIGH). Identified 4 risk indicator(s) and 2 mitigating counter-evidence factor(s). Evaluated point-in-time for shadow review only.",
+      "data_provenance": "shadow_graph_stream",
+      "model_version": "graphsage-hetero-v1.0-shadow",
+      "governance_notice": "INVESTIGATION INTELLIGENCE ONLY - STRICTLY NON-ENFORCING"
+    }
+  ],
+  "governance_decision": {
+    "is_promotion_eligible": false,
+    "promotion_status": "PROMOTION_BLOCKED",
+    "reason": "GraphSAGE is shadow-ready but lacks >= 50 confirmed real internal collusion labels.",
+    "next_required_step": "Deploy passive Kafka consumer to ingest shadow audit telemetry."
+  }
+}

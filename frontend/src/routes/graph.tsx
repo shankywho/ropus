@@ -85,22 +85,24 @@ function FraudGraphPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1560px] px-5 py-5 lg:px-7">
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
+    <div className="mx-auto w-full max-w-[1560px] px-5 py-5 lg:px-8">
+      <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="label-xs">Fraud graph</span>
+            <span className="font-mono text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+              GRAPH TOPOLOGY
+            </span>
             <DemoTag />
           </div>
-          <h1 className="mt-1 text-[19px] font-bold tracking-tight">
-            Neighbourhood of <Mono className="text-[17px] font-bold">{fraudGraph.rootId}</Mono>
+          <h1 className="mt-1 font-sans text-[25px] font-extrabold leading-[1.15] tracking-[-0.045em] text-foreground">
+            Neighbourhood of <Mono className="text-[20px] font-bold text-foreground">{fraudGraph.rootId}</Mono>
           </h1>
-          <p className="mt-1 text-[13px] text-muted-foreground">
+          <p className="mt-1 font-sans text-[12px] text-muted-foreground">
             Entities connected to decision{" "}
             <Link
               to="/decisions/$decisionId"
               params={{ decisionId: fraudGraph.decisionId }}
-              className="font-mono text-[12.5px] text-primary hover:underline"
+              className="font-mono text-[11.5px] text-navy font-medium hover:underline"
             >
               {fraudGraph.decisionId}
             </Link>
@@ -116,43 +118,43 @@ function FraudGraphPage() {
                 onClick={() => setHops(h)}
                 aria-pressed={hops === h}
                 className={cn(
-                  "-ml-px border border-border px-2.5 py-1 font-mono text-[11.5px] first:ml-0",
+                  "-ml-px border border-border px-2.5 py-1 font-mono text-[11px] first:ml-0 transition-colors",
                   hops === h
-                    ? "border-foreground bg-foreground text-background"
-                    : "hover:bg-accent",
+                    ? "border-navy bg-navy text-white font-medium"
+                    : "bg-surface text-muted-foreground hover:bg-secondary hover:text-foreground",
                 )}
               >
                 {h}-hop
               </button>
             ))}
           </div>
-          <label className="flex items-center gap-2 text-[12.5px] text-muted-foreground">
+          <label className="flex items-center gap-2 font-sans text-[12px] text-muted-foreground cursor-pointer">
             <input
               type="checkbox"
               checked={pathOnly}
               onChange={(e) => setPathOnly(e.target.checked)}
-              className="size-3.5 accent-[var(--primary)]"
+              className="size-3.5 accent-navy"
             />
             Decision path only
           </label>
         </div>
       </div>
 
-      <div className="mt-6 grid gap-8 xl:grid-cols-[1fr_300px] xl:gap-10">
+      <div className="mt-6 grid gap-8 xl:grid-cols-[1fr_320px] xl:gap-8">
         <section className="min-w-0">
           <svg
             viewBox="0 0 1000 560"
             preserveAspectRatio="xMidYMid meet"
-            className="h-[calc(100vh-235px)] max-h-[900px] min-h-[520px] w-full border border-border bg-surface"
+            className="h-[calc(100vh-240px)] max-h-[850px] min-h-[500px] w-full border border-border bg-surface shadow-2xs"
             role="img"
             aria-label="Fraud entity graph"
           >
             <defs>
-              <pattern id="ropus-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M40 0H0V40" fill="none" stroke="var(--border)" strokeWidth="1" />
+              <pattern id="ropus-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+                <path d="M28 0H0V28" fill="none" stroke="rgba(28, 43, 69, 0.05)" strokeWidth="1" />
               </pattern>
             </defs>
-            <rect width="1000" height="560" fill="url(#ropus-grid)" opacity="0.55" />
+            <rect width="1000" height="560" fill="url(#ropus-grid)" />
             {visible.relationships.map((r) => {
               const key = `${r.source}-${r.target}`;
               const a = pos(r.source);
@@ -184,12 +186,12 @@ function FraudGraphPage() {
                     y2={b.y}
                     stroke={
                       key === edgeKey
-                        ? "var(--primary)"
+                        ? "#F5A524"
                         : active
-                          ? "var(--foreground)"
-                          : "var(--border-strong)"
+                          ? "#1D2839"
+                          : "#DCD5CB"
                     }
-                    strokeWidth={active ? 1.5 : 0.75}
+                    strokeWidth={active ? 1.5 : 0.8}
                     opacity={r.onDecisionPath ? (active ? 1 : 0.8) : active ? 0.85 : 0.4}
                     strokeDasharray={r.onDecisionPath ? undefined : "4 4"}
                     className="transition-opacity duration-150"
@@ -199,10 +201,10 @@ function FraudGraphPage() {
                       x={vertical ? mx + 8 : mx}
                       y={vertical ? my + 60 : my - 7}
                       textAnchor={vertical ? "start" : "middle"}
-                      fontSize="12"
+                      fontSize="11"
                       letterSpacing="0.06em"
                       fontFamily="var(--font-mono)"
-                      fill="var(--muted-foreground)"
+                      fill="#647182"
                     >
                       {r.label}
                     </text>
@@ -226,23 +228,23 @@ function FraudGraphPage() {
             ))}
           </svg>
 
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-3">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-3 border-t border-border mt-3">
             {risks.map((r) => {
               const meta = entityRiskMeta(r);
               return (
                 <span
                   key={r}
-                  className="flex items-center gap-1.5 text-[11px] tracking-[0.06em] text-muted-foreground uppercase"
+                  className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.06em] text-muted-foreground uppercase"
                 >
                   <span aria-hidden className="h-3 w-1" style={{ background: meta.fill }} />
                   {meta.label}
                 </span>
               );
             })}
-            <span className="flex items-center gap-1.5 text-[11px] tracking-[0.06em] text-muted-foreground uppercase">
-              <span aria-hidden className="h-px w-5 bg-border-strong" /> decision path
+            <span className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.06em] text-muted-foreground uppercase">
+              <span aria-hidden className="h-px w-5 bg-border-strong" /> Decision Path
             </span>
-            <span className="flex items-center gap-1.5 text-[11px] tracking-[0.06em] text-muted-foreground uppercase">
+            <span className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.06em] text-muted-foreground uppercase">
               <span
                 aria-hidden
                 className="h-px w-5"
@@ -251,12 +253,12 @@ function FraudGraphPage() {
                     "repeating-linear-gradient(90deg,var(--border-strong) 0 4px,transparent 4px 8px)",
                 }}
               />
-              contextual
+              Contextual
             </span>
           </div>
         </section>
 
-        <aside aria-label="Entity inspector" className="min-w-0">
+        <aside aria-label="Entity inspector" className="min-w-0 border border-border bg-card p-4 shadow-2xs">
           {selectedEdge ? (
             <RelationshipInspector
               relationship={selectedEdge}

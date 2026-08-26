@@ -73,18 +73,18 @@ type DeviceEventRecord struct {
 
 // DeviceReputationRecord models the persistent device reputation and dispute history.
 type DeviceReputationRecord struct {
-	ID                         string     `json:"id"`
-	TenantID                   string     `json:"tenant_id"`
-	DeviceID                   string     `json:"device_id"`
-	FraudCount                 int        `json:"fraud_count"`
-	ChargebackCount            int        `json:"chargeback_count"`
-	ConfirmedLegitimateCount   int        `json:"confirmed_legitimate_count"`
-	ReputationScore            int        `json:"reputation_score"`
-	RiskBand                   string     `json:"risk_band"` // TRUSTED, NEUTRAL, SUSPICIOUS, BLACKLISTED
-	LastFraudAt                *time.Time `json:"last_fraud_at,omitempty"`
-	LastChargebackAt           *time.Time `json:"last_chargeback_at,omitempty"`
-	CreatedAt                  time.Time  `json:"created_at"`
-	UpdatedAt                  time.Time  `json:"updated_at"`
+	ID                       string     `json:"id"`
+	TenantID                 string     `json:"tenant_id"`
+	DeviceID                 string     `json:"device_id"`
+	FraudCount               int        `json:"fraud_count"`
+	ChargebackCount          int        `json:"chargeback_count"`
+	ConfirmedLegitimateCount int        `json:"confirmed_legitimate_count"`
+	ReputationScore          int        `json:"reputation_score"`
+	RiskBand                 string     `json:"risk_band"` // TRUSTED, NEUTRAL, SUSPICIOUS, BLACKLISTED
+	LastFraudAt              *time.Time `json:"last_fraud_at,omitempty"`
+	LastChargebackAt         *time.Time `json:"last_chargeback_at,omitempty"`
+	CreatedAt                time.Time  `json:"created_at"`
+	UpdatedAt                time.Time  `json:"updated_at"`
 }
 
 // DeviceStore provides PostgreSQL relational operations for durable device intelligence.
@@ -476,5 +476,3 @@ func (s *DeviceStore) GetDevicePaymentInstrumentRelationship(ctx context.Context
 	}
 	return &r, nil
 }
-
-

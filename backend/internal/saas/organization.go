@@ -30,11 +30,11 @@ const (
 
 // Member represents a user within a multi-tenant organization.
 type Member struct {
-	UserID    string    `json:"user_id"`
-	Email     string    `json:"email"`
-	Name      string    `json:"name"`
-	Role      UserRole  `json:"role"`
-	JoinedAt  time.Time `json:"joined_at"`
+	UserID   string    `json:"user_id"`
+	Email    string    `json:"email"`
+	Name     string    `json:"name"`
+	Role     UserRole  `json:"role"`
+	JoinedAt time.Time `json:"joined_at"`
 }
 
 // Organization represents a customer tenant organization.
@@ -50,11 +50,11 @@ type Organization struct {
 
 // TenantConfiguration holds per-tenant customizable risk and model settings.
 type TenantConfiguration struct {
-	ActiveModelVersion   string  `json:"active_model_version"` // e.g. "fraud-xgb-v5"
-	BlockRiskThreshold   float64 `json:"block_risk_threshold"` // e.g. 80.0
-	ReviewRiskThreshold  float64 `json:"review_risk_threshold"`// e.g. 30.0
-	EnableAutonomousAI   bool    `json:"enable_autonomous_ai"`
-	WebhookURL           string  `json:"webhook_url,omitempty"`
+	ActiveModelVersion  string  `json:"active_model_version"`  // e.g. "fraud-xgb-v5"
+	BlockRiskThreshold  float64 `json:"block_risk_threshold"`  // e.g. 80.0
+	ReviewRiskThreshold float64 `json:"review_risk_threshold"` // e.g. 30.0
+	EnableAutonomousAI  bool    `json:"enable_autonomous_ai"`
+	WebhookURL          string  `json:"webhook_url,omitempty"`
 }
 
 // SaaSManager manages multi-tenant organizations, memberships, and tenant configurations.

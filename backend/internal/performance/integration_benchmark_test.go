@@ -2,6 +2,7 @@ package performance
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -38,12 +39,19 @@ func TestIntegrationBenchmark_EndToEndLatency(t *testing.T) {
 	var totalDuration time.Duration
 
 	for i := 0; i < iterations; i++ {
+		req.TransactionID = fmt.Sprintf("tx_bench_%03d", i)
+		req.CustomerID = fmt.Sprintf("usr_bench_%03d", i)
+		req.DeviceID = fmt.Sprintf("dev_bench_%03d", i)
+		req.IPAddress = fmt.Sprintf("192.0.2.%d", (i%200)+1)
 		start := time.Now()
 		res, err := pipeline.EvaluateRisk(ctx, keyResp.PlaintextKey, req)
 		dur := time.Since(start)
 		totalDuration += dur
 
 		require.NoError(t, err)
+		if res.Decision != "APPROVE" {
+			t.Fatalf("Decision was %s (score: %.4f, reasons: %v, factors: %+v)", res.Decision, res.RiskScore, res.Reasons, res.RiskFactors)
+		}
 		assert.Equal(t, "APPROVE", res.Decision)
 	}
 

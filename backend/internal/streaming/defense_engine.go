@@ -10,23 +10,23 @@ import (
 type DefenseActionType string
 
 const (
-	DefenseDeviceBlock          DefenseActionType = "DEVICE_BLOCK"
-	DefenseAccountLock          DefenseActionType = "ACCOUNT_LOCK"
-	DefenseMerchantRestriction  DefenseActionType = "MERCHANT_RESTRICTION"
-	DefenseNetworkBlock         DefenseActionType = "NETWORK_BLOCK"
-	DefenseStepUpAuth           DefenseActionType = "STEP_UP_AUTH"
+	DefenseDeviceBlock         DefenseActionType = "DEVICE_BLOCK"
+	DefenseAccountLock         DefenseActionType = "ACCOUNT_LOCK"
+	DefenseMerchantRestriction DefenseActionType = "MERCHANT_RESTRICTION"
+	DefenseNetworkBlock        DefenseActionType = "NETWORK_BLOCK"
+	DefenseStepUpAuth          DefenseActionType = "STEP_UP_AUTH"
 )
 
 // AutonomousDefenseRecord captures the audit trail and state of executed defense controls.
 type AutonomousDefenseRecord struct {
-	DefenseID       string            `json:"defense_id"`
-	ActionType      DefenseActionType `json:"action_type"`
-	TargetEntityID  string            `json:"target_entity_id"`
-	Reason          string            `json:"reason"`
-	Confidence      float64           `json:"confidence"`
-	ExecutedAt      time.Time         `json:"executed_at"`
-	IsRolledBack    bool              `json:"is_rolled_back"`
-	RolledBackAt    *time.Time        `json:"rolled_back_at,omitempty"`
+	DefenseID      string            `json:"defense_id"`
+	ActionType     DefenseActionType `json:"action_type"`
+	TargetEntityID string            `json:"target_entity_id"`
+	Reason         string            `json:"reason"`
+	Confidence     float64           `json:"confidence"`
+	ExecutedAt     time.Time         `json:"executed_at"`
+	IsRolledBack   bool              `json:"is_rolled_back"`
+	RolledBackAt   *time.Time        `json:"rolled_back_at,omitempty"`
 }
 
 // AutonomousDefenseEngine orchestrates real-time containment with impact validation.

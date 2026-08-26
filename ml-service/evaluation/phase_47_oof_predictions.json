@@ -1,0 +1,7 @@
+{
+  "total_oof_samples": 4080,
+  "fraud_count": 193,
+  "catboost_oof_pr_auc": 0.11483154213178529,
+  "lightgbm_oof_pr_auc": 0.0845479451289429,
+  "xgboost_oof_pr_auc": 0.11551867237871871
+}

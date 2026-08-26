@@ -28,36 +28,36 @@ import (
 )
 
 type Config struct {
-	Port               string
-	DatabaseURL        string
-	RedisURL           string
-	MLServiceURL       string
-	WebhookSecret      string
-	KafkaBrokers       []string
-	KafkaTopic         string
-	ClickHouseAddr     string
-	ClickHouseDB       string
-	ClickHouseUser     string
-	ClickHousePassword string
-	ShadowEnabled      bool
-	ShadowWorkerCount  int
-	ShadowQueueCapacity int
-	ShadowSampleRate   float64
-	CanaryEnabled      bool
-	CanaryPercentage   int
-	CanaryModelVersion string
-	CanaryMaxErrorRate float64
-	CanaryMaxFallbackRate float64
-	CanaryMaxP95LatencyMs float64
-	CanaryMaxP99LatencyMs float64
-	CanaryMaxDecisionChangeRate float64
-	AdminAPIKey                 string
-	DriftMonitorInterval        time.Duration
-	DriftMaxWindowSize          int
-	DriftMinSamples             int
-	DriftPSIWarnThreshold       float64
-	DriftPSIHighThreshold       float64
-	DriftPSICritThreshold       float64
+	Port                                 string
+	DatabaseURL                          string
+	RedisURL                             string
+	MLServiceURL                         string
+	WebhookSecret                        string
+	KafkaBrokers                         []string
+	KafkaTopic                           string
+	ClickHouseAddr                       string
+	ClickHouseDB                         string
+	ClickHouseUser                       string
+	ClickHousePassword                   string
+	ShadowEnabled                        bool
+	ShadowWorkerCount                    int
+	ShadowQueueCapacity                  int
+	ShadowSampleRate                     float64
+	CanaryEnabled                        bool
+	CanaryPercentage                     int
+	CanaryModelVersion                   string
+	CanaryMaxErrorRate                   float64
+	CanaryMaxFallbackRate                float64
+	CanaryMaxP95LatencyMs                float64
+	CanaryMaxP99LatencyMs                float64
+	CanaryMaxDecisionChangeRate          float64
+	AdminAPIKey                          string
+	DriftMonitorInterval                 time.Duration
+	DriftMaxWindowSize                   int
+	DriftMinSamples                      int
+	DriftPSIWarnThreshold                float64
+	DriftPSIHighThreshold                float64
+	DriftPSICritThreshold                float64
 	RetrainingEnabled                    bool
 	RetrainingMinSamples                 int
 	RetrainingDriftThreshold             float64
@@ -361,7 +361,6 @@ func RequireAdminAuth(adminKey string, next http.HandlerFunc) http.HandlerFunc {
 		next(w, r)
 	}
 }
-
 
 func main() {
 	cfg := loadConfig()
@@ -701,10 +700,10 @@ func main() {
 		uptimeSec := int(time.Since(startTime).Seconds())
 
 		response := map[string]interface{}{
-			"status":      "ok",
-			"service":     "AI Risk Manager API",
-			"version":     "v1.0-prod",
-			"uptime_sec":  uptimeSec,
+			"status":     "ok",
+			"service":    "AI Risk Manager API",
+			"version":    "v1.0-prod",
+			"uptime_sec": uptimeSec,
 			"model": map[string]interface{}{
 				"version":             "fraud-xgb-25f-v3.0",
 				"fallback_version":    "fraud-xgb-15f-v1.5",
@@ -772,12 +771,12 @@ func main() {
 
 		w.WriteHeader(statusCode)
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{
-			"status":                 statusStr,
-			"dependencies":           dependencies,
-			"production_model":       "fraud-xgb-25f-v3.0",
-			"fallback_model":         "fraud-xgb-15f-v1.5",
-			"circuit_breaker_state":  canaryRouter.GetStatus()["circuit_breaker"].(map[string]interface{})["state"],
-			"evaluated_at":           time.Now().UTC().Format(time.RFC3339),
+			"status":                statusStr,
+			"dependencies":          dependencies,
+			"production_model":      "fraud-xgb-25f-v3.0",
+			"fallback_model":        "fraud-xgb-15f-v1.5",
+			"circuit_breaker_state": canaryRouter.GetStatus()["circuit_breaker"].(map[string]interface{})["state"],
+			"evaluated_at":          time.Now().UTC().Format(time.RFC3339),
 		})
 	}
 	r.Get("/readiness", readinessHandler)
@@ -918,7 +917,7 @@ func main() {
 					"manual_review": "0.05 - 0.35",
 					"decline":       ">= 0.35",
 				},
-				"sidecar_url": cfg.MLServiceURL,
+				"sidecar_url":  cfg.MLServiceURL,
 				"evaluated_at": time.Now().UTC().Format(time.RFC3339),
 			})
 		})

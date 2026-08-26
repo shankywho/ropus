@@ -1,0 +1,6 @@
+{
+  "ledger_status": "ACTIVE_DURABLE_STORE",
+  "store_path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/monitoring/telemetry_store/shadow_flips.jsonl",
+  "total_live_flips_persisted": 0,
+  "live_flips": []
+}

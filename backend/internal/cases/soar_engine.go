@@ -7,23 +7,23 @@ import (
 
 // IncidentContext encapsulates parameters passed to a SOAR playbook.
 type IncidentContext struct {
-	IncidentID        string   `json:"incident_id"`
-	PrimaryEntityID   string   `json:"primary_entity_id"`
+	IncidentID         string   `json:"incident_id"`
+	PrimaryEntityID    string   `json:"primary_entity_id"`
 	AssociatedEntities []string `json:"associated_entities"`
-	RiskScore         float64  `json:"risk_score"`
-	ThreatType        string   `json:"threat_type"` // "CREDENTIAL_THEFT", "CARD_TESTING", "FRAUD_RING"
-	TransactionIDs    []string `json:"transaction_ids"`
-	TotalExposure     float64  `json:"total_exposure"`
+	RiskScore          float64  `json:"risk_score"`
+	ThreatType         string   `json:"threat_type"` // "CREDENTIAL_THEFT", "CARD_TESTING", "FRAUD_RING"
+	TransactionIDs     []string `json:"transaction_ids"`
+	TotalExposure      float64  `json:"total_exposure"`
 }
 
 // PlaybookResult details the containment actions executed by SOAR.
 type PlaybookResult struct {
-	PlaybookName     string                     `json:"playbook_name"`
-	IncidentID       string                     `json:"incident_id"`
-	ExecutedActions  []*ResponseExecutionRecord `json:"executed_actions"`
-	CaseGeneratedID  string                     `json:"case_generated_id,omitempty"`
-	Status           string                     `json:"status"` // "COMPLETED", "FAILED"
-	CompletedAt      time.Time                  `json:"completed_at"`
+	PlaybookName    string                     `json:"playbook_name"`
+	IncidentID      string                     `json:"incident_id"`
+	ExecutedActions []*ResponseExecutionRecord `json:"executed_actions"`
+	CaseGeneratedID string                     `json:"case_generated_id,omitempty"`
+	Status          string                     `json:"status"` // "COMPLETED", "FAILED"
+	CompletedAt     time.Time                  `json:"completed_at"`
 }
 
 // SOAREngine coordinates automated incident response playbooks.

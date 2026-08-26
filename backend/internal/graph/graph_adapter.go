@@ -14,11 +14,23 @@ type GraphStore interface {
 	GetNode(id string) (*Node, error)
 	GetEdge(id string) (*Edge, error)
 	QueryNeighbors(nodeID string, edgeType EdgeType) ([]*Node, error)
+	QueryNeighborsTemporal(nodeID string, edgeType EdgeType, asOf time.Time, window time.Duration) ([]*Node, error)
+	Traverse3HopTemporal(startNodeID string, asOf time.Time, window time.Duration, maxNeighborsPerHop int) (*TemporalGraphEvidence, error)
+	Traverse3Hop(startNodeID string) (*TemporalGraphEvidence, error)
 	FindPaths(sourceID, targetID string, maxDepth int) ([]*Path, error)
 	GetOutgoingEdges(nodeID string) ([]*Edge, error)
 	CountNodes() int
 	CountEdges() int
 }
+
+const (
+	// DefaultTemporalWindow defines the sliding time window (72 hours) for active graph evidence.
+	DefaultTemporalWindow = 72 * time.Hour
+	// DefaultMaxNeighborsPerHop bounds breadth-first fan-out per node to prevent hub explosion.
+	DefaultMaxNeighborsPerHop = 50
+	// MaxTotalNodesExpansion bounds total nodes visited across 3-hop traversal.
+	MaxTotalNodesExpansion = 500
+)
 
 // ---------------------------------------------------------------------------
 // 1. Local In-Memory Graph Store (High Performance Concurrent Engine)
@@ -154,6 +166,200 @@ func (s *LocalGraphStore) QueryNeighbors(nodeID string, edgeType EdgeType) ([]*N
 	}
 
 	return neighbors, nil
+}
+
+// QueryNeighborsTemporal returns immediate 1-hop neighbors linked by edges created within [asOf - window, asOf].
+func (s *LocalGraphStore) QueryNeighborsTemporal(nodeID string, edgeType EdgeType, asOf time.Time, window time.Duration) ([]*Node, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	if asOf.IsZero() {
+		asOf = time.Now().UTC()
+	}
+	if window <= 0 {
+		window = DefaultTemporalWindow
+	}
+	cutoff := asOf.Add(-window)
+
+	seen := make(map[string]bool)
+	var neighbors []*Node
+
+	// Helper to validate temporal edge validity: cutoff <= edge.CreatedAt <= asOf
+	isEdgeValid := func(e *Edge) bool {
+		if e == nil {
+			return false
+		}
+		if edgeType != "" && e.Type != edgeType {
+			return false
+		}
+		if e.CreatedAt.IsZero() {
+			return false
+		}
+		return !e.CreatedAt.Before(cutoff) && !e.CreatedAt.After(asOf)
+	}
+
+	// Check outgoing edges
+	for _, eid := range s.outEdges[nodeID] {
+		edge, exists := s.edges[eid]
+		if !exists || !isEdgeValid(edge) {
+			continue
+		}
+		if !seen[edge.TargetID] {
+			seen[edge.TargetID] = true
+			if targetNode, found := s.nodes[edge.TargetID]; found {
+				neighbors = append(neighbors, targetNode)
+			}
+		}
+	}
+
+	// Check incoming edges
+	for _, eid := range s.inEdges[nodeID] {
+		edge, exists := s.edges[eid]
+		if !exists || !isEdgeValid(edge) {
+			continue
+		}
+		if !seen[edge.SourceID] {
+			seen[edge.SourceID] = true
+			if srcNode, found := s.nodes[edge.SourceID]; found {
+				neighbors = append(neighbors, srcNode)
+			}
+		}
+	}
+
+	return neighbors, nil
+}
+
+// Traverse3HopTemporal performs a bounded 3-hop BFS gathering temporal fraud evidence.
+func (s *LocalGraphStore) Traverse3HopTemporal(startNodeID string, asOf time.Time, window time.Duration, maxNeighborsPerHop int) (*TemporalGraphEvidence, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	if asOf.IsZero() {
+		asOf = time.Now().UTC()
+	}
+	if window <= 0 {
+		window = DefaultTemporalWindow
+	}
+	if maxNeighborsPerHop <= 0 {
+		maxNeighborsPerHop = DefaultMaxNeighborsPerHop
+	}
+	cutoff := asOf.Add(-window)
+
+	startNode, exists := s.nodes[startNodeID]
+	if !exists {
+		return &TemporalGraphEvidence{
+			StartNodeID: startNodeID,
+			AsOf:        asOf,
+			Window:      window,
+		}, nil
+	}
+
+	visited := make(map[string]bool)
+	visited[startNodeID] = true
+	visitedEdges := make(map[string]bool)
+
+	queue := []string{startNodeID}
+	depthMap := map[string]int{startNodeID: 0}
+
+	fraudNodesCount := 0
+	if startNode.IsKnownBad || startNode.RiskScore >= 0.80 {
+		fraudNodesCount++
+	}
+
+	maxDepth := 0
+	reachableIDs := []string{startNodeID}
+
+	isEdgeValid := func(e *Edge) bool {
+		if e == nil || e.CreatedAt.IsZero() {
+			return false
+		}
+		return !e.CreatedAt.Before(cutoff) && !e.CreatedAt.After(asOf)
+	}
+
+	for len(queue) > 0 {
+		currID := queue[0]
+		queue = queue[1:]
+		currDepth := depthMap[currID]
+
+		if currDepth >= 3 {
+			continue
+		}
+
+		neighborCountForNode := 0
+
+		// Expand outgoing
+		for _, eid := range s.outEdges[currID] {
+			if neighborCountForNode >= maxNeighborsPerHop || len(visited) >= MaxTotalNodesExpansion {
+				break
+			}
+			edge, edgeExists := s.edges[eid]
+			if !edgeExists || !isEdgeValid(edge) {
+				continue
+			}
+			visitedEdges[eid] = true
+			neighborID := edge.TargetID
+			if !visited[neighborID] {
+				visited[neighborID] = true
+				reachableIDs = append(reachableIDs, neighborID)
+				depthMap[neighborID] = currDepth + 1
+				if currDepth+1 > maxDepth {
+					maxDepth = currDepth + 1
+				}
+				if n, found := s.nodes[neighborID]; found {
+					if n.IsKnownBad || n.RiskScore >= 0.80 {
+						fraudNodesCount++
+					}
+				}
+				queue = append(queue, neighborID)
+				neighborCountForNode++
+			}
+		}
+
+		// Expand incoming
+		for _, eid := range s.inEdges[currID] {
+			if neighborCountForNode >= maxNeighborsPerHop || len(visited) >= MaxTotalNodesExpansion {
+				break
+			}
+			edge, edgeExists := s.edges[eid]
+			if !edgeExists || !isEdgeValid(edge) {
+				continue
+			}
+			visitedEdges[eid] = true
+			neighborID := edge.SourceID
+			if !visited[neighborID] {
+				visited[neighborID] = true
+				reachableIDs = append(reachableIDs, neighborID)
+				depthMap[neighborID] = currDepth + 1
+				if currDepth+1 > maxDepth {
+					maxDepth = currDepth + 1
+				}
+				if n, found := s.nodes[neighborID]; found {
+					if n.IsKnownBad || n.RiskScore >= 0.80 {
+						fraudNodesCount++
+					}
+				}
+				queue = append(queue, neighborID)
+				neighborCountForNode++
+			}
+		}
+	}
+
+	return &TemporalGraphEvidence{
+		StartNodeID:         startNodeID,
+		AsOf:                asOf,
+		Window:              window,
+		VisitedNodesCount:   len(visited),
+		FraudNodesCount:     fraudNodesCount,
+		MaxClusterDepth:     maxDepth,
+		FraudRingDetected:   fraudNodesCount >= 3,
+		TraversedEdgesCount: len(visitedEdges),
+		ReachableNodeIDs:    reachableIDs,
+	}, nil
+}
+
+// Traverse3Hop executes 3-hop traversal with the default 72h temporal window.
+func (s *LocalGraphStore) Traverse3Hop(startNodeID string) (*TemporalGraphEvidence, error) {
+	return s.Traverse3HopTemporal(startNodeID, time.Now().UTC(), DefaultTemporalWindow, DefaultMaxNeighborsPerHop)
 }
 
 func (s *LocalGraphStore) FindPaths(sourceID, targetID string, maxDepth int) ([]*Path, error) {

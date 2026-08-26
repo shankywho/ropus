@@ -7,13 +7,13 @@ import (
 
 // ReasoningHypothesis represents the synthesized forensic deduction made by the AI reasoning engine.
 type ReasoningHypothesis struct {
-	Hypothesis            string                 `json:"hypothesis"`
-	SupportingEvidence    []string               `json:"supporting_evidence"`
-	Confidence            float64                `json:"confidence"`
-	RecommendedAction     string                 `json:"recommended_action"`
-	AlternativeActions    []string               `json:"alternative_actions"`
-	ReasonCodes           []string               `json:"reason_codes"`
-	FeatureAttributions   map[string]float64     `json:"feature_attributions"`
+	Hypothesis          string             `json:"hypothesis"`
+	SupportingEvidence  []string           `json:"supporting_evidence"`
+	Confidence          float64            `json:"confidence"`
+	RecommendedAction   string             `json:"recommended_action"`
+	AlternativeActions  []string           `json:"alternative_actions"`
+	ReasonCodes         []string           `json:"reason_codes"`
+	FeatureAttributions map[string]float64 `json:"feature_attributions"`
 }
 
 // FraudReasoningEngine evaluates multi-vector evidence to construct deterministic, explainable conclusions.

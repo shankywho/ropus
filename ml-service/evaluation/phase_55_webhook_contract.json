@@ -1,0 +1,14 @@
+{
+  "protocol": "HTTPS POST",
+  "endpoint": "/api/v1/disputes/webhook",
+  "authentication": "Webhook Secret HMAC Signature",
+  "payload_fields": [
+    "transaction_id",
+    "dispute_id",
+    "amount",
+    "reason_code",
+    "label",
+    "timestamp_utc"
+  ],
+  "maturity_lifecycle": "T+60 Maturation Window with Dispute Reversals Supported"
+}

@@ -1,0 +1,7 @@
+{
+  "kubernetes_manifests_valid": true,
+  "terraform_iac_valid": true,
+  "k8s_cluster_reachable": false,
+  "aws_auth_valid": false,
+  "operational_status": "PRODUCTION_INFRASTRUCTURE_ACCESS_REQUIRED"
+}

@@ -23,11 +23,11 @@ func NewCanonicalScenarioRunner(pipeline *product_api.UnifiedRiskPipeline) *Cano
 
 // CanonicalScenarioResult holds the 17-stage demo verification output.
 type CanonicalScenarioResult struct {
-	ScenarioName   string                          `json:"scenario_name"`
-	TotalStages    int                             `json:"total_stages"`
-	Stages         []ScenarioExecutionStep         `json:"stages"`
+	ScenarioName   string                             `json:"scenario_name"`
+	TotalStages    int                                `json:"total_stages"`
+	Stages         []ScenarioExecutionStep            `json:"stages"`
 	DecisionResult *product_api.CanonicalRiskResponse `json:"decision_result"`
-	ExecutedAt     time.Time                       `json:"executed_at"`
+	ExecutedAt     time.Time                          `json:"executed_at"`
 }
 
 // ExecuteCanonicalAttack executes the 17-stage sequence deterministically.

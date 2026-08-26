@@ -1,0 +1,12 @@
+{
+  "soak_workload": {
+    "requests": 2000,
+    "duration_seconds": 11.17141970898956,
+    "throughput_rps": 179.02827501777725,
+    "errors": 0,
+    "latency_p50_ms": 5.408270502812229,
+    "latency_p95_ms": 6.440358643885702,
+    "latency_p99_ms": 8.06085200907546,
+    "memory_delta_mb": 0.0
+  }
+}

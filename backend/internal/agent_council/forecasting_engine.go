@@ -7,14 +7,14 @@ import (
 
 // FraudForecast encapsulates predictive crime intelligence over future time horizons.
 type FraudForecast struct {
-	ForecastID               string    `json:"forecast_id"`
-	AttackType               string    `json:"attack_type"` // "EMULATOR_FARM_SPIKE", "DISTRIBUTED_CREDENTIAL_STUFFING", "SYNTHETIC_IDENTITY_WAVE"
-	Probability              float64   `json:"probability"`
-	TimeWindowHours          int       `json:"time_window_hours"`
-	PredictedExposure        float64   `json:"predicted_exposure"`
-	ConfidenceInterval       []float64 `json:"confidence_interval"` // [min, max]
+	ForecastID                string    `json:"forecast_id"`
+	AttackType                string    `json:"attack_type"` // "EMULATOR_FARM_SPIKE", "DISTRIBUTED_CREDENTIAL_STUFFING", "SYNTHETIC_IDENTITY_WAVE"
+	Probability               float64   `json:"probability"`
+	TimeWindowHours           int       `json:"time_window_hours"`
+	PredictedExposure         float64   `json:"predicted_exposure"`
+	ConfidenceInterval        []float64 `json:"confidence_interval"` // [min, max]
 	RecommendedPreemptiveRule string    `json:"recommended_preemptive_rule"`
-	ForecastGeneratedAt      time.Time `json:"forecast_generated_at"`
+	ForecastGeneratedAt       time.Time `json:"forecast_generated_at"`
 }
 
 // FraudForecastingEngine projects emerging crime trends and synthetic attack waves before impact.

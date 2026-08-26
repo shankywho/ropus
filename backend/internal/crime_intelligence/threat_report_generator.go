@@ -18,13 +18,13 @@ type ExecutiveThreatReport struct {
 
 // ForensicAnalystReport provides granular investigative intelligence for fraud operations teams.
 type ForensicAnalystReport struct {
-	ReportID           string                 `json:"report_id"`
-	AdversaryGroup     string                 `json:"adversary_group"`
-	ObservedTimeline   []string               `json:"observed_timeline"`
-	HashedEntities     []string               `json:"hashed_entities"`
-	ConfidenceScore    float64                `json:"confidence_score"`
-	TechnicalDetails   map[string]interface{} `json:"technical_details"`
-	GeneratedAt        time.Time              `json:"generated_at"`
+	ReportID         string                 `json:"report_id"`
+	AdversaryGroup   string                 `json:"adversary_group"`
+	ObservedTimeline []string               `json:"observed_timeline"`
+	HashedEntities   []string               `json:"hashed_entities"`
+	ConfidenceScore  float64                `json:"confidence_score"`
+	TechnicalDetails map[string]interface{} `json:"technical_details"`
+	GeneratedAt      time.Time              `json:"generated_at"`
 }
 
 // ThreatReportGenerator formats executive and technical forensic reports.

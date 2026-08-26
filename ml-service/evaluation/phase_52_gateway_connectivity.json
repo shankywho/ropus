@@ -1,0 +1,10 @@
+{
+  "gateway_status": "EXTERNAL_INFRASTRUCTURE_REQUIRED",
+  "environment_diagnostics": {
+    "ROPUS_GATEWAY_URL": "NOT_CONFIGURED",
+    "ROPUS_LIVE_INGRESS_KEY": "NOT_CONFIGURED",
+    "ROPUS_KAFKA_BOOTSTRAP_SERVERS": "NOT_CONFIGURED",
+    "ROPUS_PAYMENT_GATEWAY_WEBHOOK": "NOT_CONFIGURED"
+  },
+  "live_gateway_active": false
+}

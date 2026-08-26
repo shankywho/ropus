@@ -10,11 +10,11 @@ import (
 type ChaosScenario string
 
 const (
-	ChaosKafkaOutage     ChaosScenario = "KAFKA_OUTAGE"
-	ChaosDBUnavailable   ChaosScenario = "POSTGRES_UNAVAILABLE"
-	ChaosModelTimeout    ChaosScenario = "ML_MODEL_TIMEOUT"
-	ChaosNetworkLatency  ChaosScenario = "NETWORK_LATENCY_SPIKE"
-	ChaosRedisFailure    ChaosScenario = "REDIS_CACHE_FAILURE"
+	ChaosKafkaOutage    ChaosScenario = "KAFKA_OUTAGE"
+	ChaosDBUnavailable  ChaosScenario = "POSTGRES_UNAVAILABLE"
+	ChaosModelTimeout   ChaosScenario = "ML_MODEL_TIMEOUT"
+	ChaosNetworkLatency ChaosScenario = "NETWORK_LATENCY_SPIKE"
+	ChaosRedisFailure   ChaosScenario = "REDIS_CACHE_FAILURE"
 )
 
 // ChaosExecutionResult details the outcome of an injected failure drill.

@@ -1,0 +1,13 @@
+{
+  "evidence_type": "LOCAL_RELIABILITY_TEST",
+  "total_requests": 2000,
+  "success_rate": 1.0,
+  "http_error_count": 0,
+  "nan_inf_count": 0,
+  "latency_p50_ms": 1.202,
+  "latency_p95_ms": 1.486,
+  "latency_p99_ms": 1.96,
+  "throughput_req_sec": 791.6,
+  "elapsed_seconds": 2.53,
+  "status": "PASS (Zero errors, p95 < 15.0ms)"
+}

@@ -422,21 +422,21 @@ func BuildCanonical25FeatureVector(
 	// Raw 25 feature values
 	rawValues := map[string]float64{
 		// Legacy 15 features
-		"amount":                            amt,
-		"ip_velocity_1h":                    float64(velocityMetrics.TxnCountIP1h),
-		"ip_velocity_24h":                   float64(velocityMetrics.TxnCountToken24h), // proxy for 24h window
-		"token_velocity_24h":                float64(velocityMetrics.TxnCountToken24h),
-		"device_seen_before":                devSeenBefore,
-		"transaction_hour":                  hourOfDay,
-		"transaction_day":                   dayOfWeek,
-		"product_cd_encoded":                0.0,
-		"card_type_encoded":                 0.0,
-		"card_category_encoded":             0.0,
-		"email_domain_risk":                 0.035,
-		"dist1_missing":                     1.0,
-		"device_type_mobile":                0.0,
-		"device_info_missing":               devInfoMissing,
-		"amount_to_mean_ratio":              amtRatio,
+		"amount":                amt,
+		"ip_velocity_1h":        float64(velocityMetrics.TxnCountIP1h),
+		"ip_velocity_24h":       float64(velocityMetrics.TxnCountToken24h), // proxy for 24h window
+		"token_velocity_24h":    float64(velocityMetrics.TxnCountToken24h),
+		"device_seen_before":    devSeenBefore,
+		"transaction_hour":      hourOfDay,
+		"transaction_day":       dayOfWeek,
+		"product_cd_encoded":    0.0,
+		"card_type_encoded":     0.0,
+		"card_category_encoded": 0.0,
+		"email_domain_risk":     0.035,
+		"dist1_missing":         1.0,
+		"device_type_mobile":    0.0,
+		"device_info_missing":   devInfoMissing,
+		"amount_to_mean_ratio":  amtRatio,
 
 		// 10 New features
 		"device_tx_count_5m":                float64(velFeatures.DeviceTxCount5m),

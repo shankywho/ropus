@@ -9,10 +9,10 @@ import (
 type AttackScenario string
 
 const (
-	ScenarioAccountTakeover      AttackScenario = "ACCOUNT_TAKEOVER"
-	ScenarioCardTestingBurst     AttackScenario = "CARD_TESTING_BURST"
+	ScenarioAccountTakeover       AttackScenario = "ACCOUNT_TAKEOVER"
+	ScenarioCardTestingBurst      AttackScenario = "CARD_TESTING_BURST"
 	ScenarioSyntheticIdentityFarm AttackScenario = "SYNTHETIC_IDENTITY_FARM"
-	ScenarioMuleLaunderingChain  AttackScenario = "MULE_LAUNDERING_CHAIN"
+	ScenarioMuleLaunderingChain   AttackScenario = "MULE_LAUNDERING_CHAIN"
 )
 
 // SimulatedAttackResult describes the generated attack topology and transactions.

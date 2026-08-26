@@ -1,0 +1,28 @@
+{
+  "feature_ablation": [
+    {
+      "feature_set": "Baseline 28F",
+      "roc_auc": 0.633,
+      "pr_auc": 0.0874,
+      "fpr": 0.0627,
+      "recall": 0.0962,
+      "f1": 0.0775
+    },
+    {
+      "feature_set": "Canonical 36F (v8 Active)",
+      "roc_auc": 0.6216,
+      "pr_auc": 0.0886,
+      "fpr": 0.0582,
+      "recall": 0.1346,
+      "f1": 0.1111
+    },
+    {
+      "feature_set": "Advanced 42F (Multi-Entity)",
+      "roc_auc": 0.6285,
+      "pr_auc": 0.0924,
+      "fpr": 0.056,
+      "recall": 0.1346,
+      "f1": 0.1148
+    }
+  ]
+}

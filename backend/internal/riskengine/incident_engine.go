@@ -32,14 +32,14 @@ const (
 type IncidentCategory string
 
 const (
-	IncidentCategorySLOBreach         IncidentCategory = "SLO_BREACH"
+	IncidentCategorySLOBreach          IncidentCategory = "SLO_BREACH"
 	IncidentCategoryCircuitBreakerTrip IncidentCategory = "CIRCUIT_BREAKER_TRIP"
-	IncidentCategoryCriticalDrift     IncidentCategory = "CRITICAL_DRIFT"
-	IncidentCategoryRetrainingFailure IncidentCategory = "RETRAINING_FAILURE"
-	IncidentCategoryDependencyOutage  IncidentCategory = "DEPENDENCY_OUTAGE"
-	IncidentCategoryCanaryRollback    IncidentCategory = "CANARY_ROLLBACK"
-	IncidentCategoryModelFailure      IncidentCategory = "MODEL_FAILURE"
-	IncidentCategorySecurityViolation IncidentCategory = "SECURITY_VIOLATION"
+	IncidentCategoryCriticalDrift      IncidentCategory = "CRITICAL_DRIFT"
+	IncidentCategoryRetrainingFailure  IncidentCategory = "RETRAINING_FAILURE"
+	IncidentCategoryDependencyOutage   IncidentCategory = "DEPENDENCY_OUTAGE"
+	IncidentCategoryCanaryRollback     IncidentCategory = "CANARY_ROLLBACK"
+	IncidentCategoryModelFailure       IncidentCategory = "MODEL_FAILURE"
+	IncidentCategorySecurityViolation  IncidentCategory = "SECURITY_VIOLATION"
 )
 
 // Incident represents a trackable operational incident event with deduplication counters.
@@ -64,12 +64,12 @@ type Incident struct {
 type IncidentEngine struct {
 	mu sync.RWMutex
 
-	incidents      map[string]*Incident // Key: category:subsystem
-	incidentList   []*Incident
-	maxHistory     int
-	alertManager   *AlertManager
-	chClient       *audit.ClickHouseClient
-	autoRemediate  AutoRemediationHandler
+	incidents     map[string]*Incident // Key: category:subsystem
+	incidentList  []*Incident
+	maxHistory    int
+	alertManager  *AlertManager
+	chClient      *audit.ClickHouseClient
+	autoRemediate AutoRemediationHandler
 }
 
 // NewIncidentEngine initializes the automated incident management subsystem.

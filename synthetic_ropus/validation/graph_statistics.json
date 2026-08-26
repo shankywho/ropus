@@ -1,0 +1,150 @@
+{
+  "summary": {
+    "total_nodes": 93575,
+    "total_edges": 336761,
+    "connected_components_count": 2977,
+    "largest_component_size": 89937,
+    "largest_component_percentage": 96.11
+  },
+  "nodes_by_type": {
+    "account": 22005,
+    "case": 2104,
+    "consumer": 18000,
+    "device": 11700,
+    "employee": 600,
+    "ip": 9900,
+    "merchant": 1200,
+    "payment_token": 24205,
+    "session": 1409
+  },
+  "edges_by_type": {
+    "account_transacts_with_merchant": 73320,
+    "account_uses_device": 76417,
+    "account_uses_ip": 76217,
+    "account_uses_payment_token": 73320,
+    "case_references_account": 3283,
+    "case_references_consumer": 110,
+    "case_references_employee": 94,
+    "consumer_owns_account": 22005,
+    "employee_accesses_account": 7257,
+    "employee_approves_transaction": 1537,
+    "employee_modifies_transaction": 940,
+    "employee_reviews_case": 1880,
+    "employee_uses_device": 940,
+    "employee_uses_ip": 940
+  },
+  "degree_distributions": {
+    "overall": {
+      "count": 93575,
+      "mean": 7.198,
+      "median": 4.0,
+      "p95": 22.0,
+      "p99": 55.0,
+      "max": 204,
+      "min": 0
+    },
+    "account": {
+      "count": 22005,
+      "mean": 15.011,
+      "median": 14.0,
+      "p95": 29.0,
+      "p99": 36.0,
+      "max": 70,
+      "min": 1
+    },
+    "case": {
+      "count": 2104,
+      "mean": 2.551,
+      "median": 2.0,
+      "p95": 7.0,
+      "p99": 11.0,
+      "max": 12,
+      "min": 2
+    },
+    "consumer": {
+      "count": 18000,
+      "mean": 1.229,
+      "median": 1.0,
+      "p95": 3.0,
+      "p99": 3.0,
+      "max": 5,
+      "min": 1
+    },
+    "device": {
+      "count": 11700,
+      "mean": 6.611,
+      "median": 6.0,
+      "p95": 11.0,
+      "p99": 14.0,
+      "max": 204,
+      "min": 0
+    },
+    "employee": {
+      "count": 600,
+      "mean": 20.372,
+      "median": 20.0,
+      "p95": 37.0,
+      "p99": 80.02,
+      "max": 138,
+      "min": 0
+    },
+    "ip": {
+      "count": 9900,
+      "mean": 7.792,
+      "median": 8.0,
+      "p95": 13.0,
+      "p99": 16.0,
+      "max": 31,
+      "min": 0
+    },
+    "merchant": {
+      "count": 1200,
+      "mean": 61.015,
+      "median": 61.0,
+      "p95": 74.0,
+      "p99": 79.0,
+      "max": 87,
+      "min": 41
+    },
+    "payment_token": {
+      "count": 24205,
+      "mean": 3.029,
+      "median": 3.0,
+      "p95": 6.0,
+      "p99": 8.0,
+      "max": 11,
+      "min": 0
+    },
+    "session": {
+      "count": 1409,
+      "mean": 0.0,
+      "median": 0.0,
+      "p95": 0.0,
+      "p99": 0.0,
+      "max": 0,
+      "min": 0
+    },
+    "unknown": {
+      "count": 2452,
+      "mean": 1.01,
+      "median": 1.0,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 3,
+      "min": 1
+    }
+  },
+  "clustering_and_fanout": {
+    "shared_device_clusters_count": 11567,
+    "max_device_fanout": 204,
+    "shared_ip_clusters_count": 9840,
+    "max_ip_fanout": 31,
+    "shared_payment_token_clusters_count": 19602,
+    "max_token_fanout": 11
+  },
+  "path_connectivity": {
+    "employees_with_account_paths": 302,
+    "employees_with_consumer_paths": 302,
+    "employees_with_device_paths": 302
+  }
+}

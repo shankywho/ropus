@@ -1,0 +1,472 @@
+{
+  "audit_phase": "Phase 1: Baseline Reproduction & Data Integrity Audit",
+  "timestamp": "2026-08-25T13:05:08Z",
+  "model_identifier": "fraud-xgb-25f-candidate-v1",
+  "dataset": {
+    "source": "sample_ieee_fixture",
+    "total_rows": 8000,
+    "train_rows": 5600,
+    "val_rows": 1200,
+    "test_rows": 1200,
+    "train_fraud_rate": 0.04535714285714286,
+    "val_fraud_rate": 0.04666666666666667,
+    "test_fraud_rate": 0.043333333333333335,
+    "train_time_range": [
+      912,
+      10779124
+    ],
+    "val_time_range": [
+      10779730,
+      13104487
+    ],
+    "test_time_range": [
+      13104601,
+      15290421
+    ]
+  },
+  "temporal_integrity": {
+    "train_val_gap_seconds": 606,
+    "val_test_gap_seconds": 114,
+    "strict_chronological": true,
+    "future_information_leakage": false
+  },
+  "model_hyperparameters": {
+    "n_estimators": 100,
+    "max_depth": 5,
+    "learning_rate": 0.08,
+    "subsample": 0.85,
+    "colsample_bytree": 0.85,
+    "scale_pos_weight": 21.04724409448819,
+    "random_state": 42,
+    "eval_metric": "logloss",
+    "tree_method": "hist"
+  },
+  "reproduced_metrics": {
+    "accuracy": 0.8708333333333333,
+    "precision": 0.10077519379844961,
+    "recall": 0.25,
+    "f1": 0.143646408839779,
+    "fpr": 0.10104529616724739,
+    "fnr": 0.75,
+    "roc_auc": 0.5793855534709194,
+    "pr_auc": 0.06882861333677806,
+    "tp": 13,
+    "fp": 116,
+    "tn": 1032,
+    "fn": 39,
+    "total_test": 1200,
+    "test_fraud_count": 52,
+    "test_non_fraud_count": 1148,
+    "scale_pos_weight": 21.04724409448819
+  },
+  "reproduction_comparison": {
+    "accuracy": {
+      "existing": 0.8708333333333333,
+      "reproduced": 0.8708333333333333,
+      "match": true
+    },
+    "precision": {
+      "existing": 0.10077519379844961,
+      "reproduced": 0.10077519379844961,
+      "match": true
+    },
+    "recall": {
+      "existing": 0.25,
+      "reproduced": 0.25,
+      "match": true
+    },
+    "f1": {
+      "existing": 0.143646408839779,
+      "reproduced": 0.143646408839779,
+      "match": true
+    },
+    "fpr": {
+      "existing": 0.10104529616724739,
+      "reproduced": 0.10104529616724739,
+      "match": true
+    },
+    "roc_auc": {
+      "existing": 0.5793855534709194,
+      "reproduced": 0.5793855534709194,
+      "match": true
+    },
+    "pr_auc": {
+      "existing": 0.06882861333677806,
+      "reproduced": 0.06882861333677806,
+      "match": true
+    },
+    "tp": {
+      "existing": 13,
+      "reproduced": 13,
+      "match": true
+    },
+    "fp": {
+      "existing": 116,
+      "reproduced": 116,
+      "match": true
+    },
+    "tn": {
+      "existing": 1032,
+      "reproduced": 1032,
+      "match": true
+    },
+    "fn": {
+      "existing": 39,
+      "reproduced": 39,
+      "match": true
+    }
+  },
+  "feature_audit": [
+    {
+      "feature": "amount",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 1.0,
+      "max": 3235.570068359375,
+      "train_mean": 120.91573333740234,
+      "train_std": 178.76422119140625,
+      "test_mean": 134.03419494628906,
+      "test_std": 216.82652282714844,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "ip_velocity_1h",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 1.0,
+      "max": 5.0,
+      "train_mean": 1.2869642972946167,
+      "train_std": 0.5341629385948181,
+      "test_mean": 1.2891666889190674,
+      "test_std": 0.5374780297279358,
+      "drift_level": "LOW",
+      "risk": "SAFE (Sliding Window Past Only)"
+    },
+    {
+      "feature": "ip_velocity_24h",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 1.0,
+      "max": 19.0,
+      "train_mean": 7.9103569984436035,
+      "train_std": 3.3165440559387207,
+      "test_mean": 7.9091668128967285,
+      "test_std": 3.187880754470825,
+      "drift_level": "LOW",
+      "risk": "SAFE (Sliding Window Past Only)"
+    },
+    {
+      "feature": "token_velocity_24h",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 1.0,
+      "max": 3.0,
+      "train_mean": 1.0907143354415894,
+      "train_std": 0.2987824082374573,
+      "test_mean": 1.090000033378601,
+      "test_std": 0.30315014719963074,
+      "drift_level": "LOW",
+      "risk": "SAFE (Sliding Window Past Only)"
+    },
+    {
+      "feature": "device_seen_before",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 1.0,
+      "train_mean": 0.30910714285714286,
+      "train_std": 0.46212543437019005,
+      "test_mean": 0.10333333333333333,
+      "test_std": 0.3043937508483963,
+      "drift_level": "MEDIUM",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "transaction_hour",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 23.0,
+      "train_mean": 11.586071428571428,
+      "train_std": 6.836176270028294,
+      "test_mean": 11.433333333333334,
+      "test_std": 7.043239469322495,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "transaction_day",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 6.0,
+      "train_mean": 2.9348214285714285,
+      "train_std": 1.9874251927264266,
+      "test_mean": 3.0183333333333335,
+      "test_std": 2.084785493895129,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "product_cd_encoded",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 4.0,
+      "train_mean": 3.079107142857143,
+      "train_std": 1.4838388639723297,
+      "test_mean": 3.1658333333333335,
+      "test_std": 1.4329454417000285,
+      "drift_level": "LOW",
+      "risk": "SAFE (Train-Fitted Mappings)"
+    },
+    {
+      "feature": "card_type_encoded",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 3.0,
+      "train_mean": 2.5794642857142858,
+      "train_std": 0.6536488781198563,
+      "test_mean": 2.5683333333333334,
+      "test_std": 0.6918553959382617,
+      "drift_level": "LOW",
+      "risk": "SAFE (Train-Fitted Mappings)"
+    },
+    {
+      "feature": "card_category_encoded",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 1.0,
+      "train_mean": 0.7582142857142857,
+      "train_std": 0.4281651347938798,
+      "test_mean": 0.7625,
+      "test_std": 0.42555111326373,
+      "drift_level": "LOW",
+      "risk": "SAFE (Train-Fitted Mappings)"
+    },
+    {
+      "feature": "email_domain_risk",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.02979999966919422,
+      "max": 0.16339999437332153,
+      "train_mean": 0.045114822685718536,
+      "train_std": 0.03420895338058472,
+      "test_mean": 0.04488325119018555,
+      "test_std": 0.033914268016815186,
+      "drift_level": "LOW",
+      "risk": "SAFE (Train-Fitted Mappings)"
+    },
+    {
+      "feature": "dist1_missing",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 1.0,
+      "train_mean": 0.39321428571428574,
+      "train_std": 0.48846372559739765,
+      "test_mean": 0.39166666666666666,
+      "test_std": 0.4881228215202491,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "device_type_mobile",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 1.0,
+      "train_mean": 0.24982142857142858,
+      "train_std": 0.4329095545237586,
+      "test_mean": 0.24583333333333332,
+      "test_std": 0.43058019642751283,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "device_info_missing",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 1.0,
+      "train_mean": 0.40285714285714286,
+      "train_std": 0.49047249189544,
+      "test_mean": 0.4058333333333333,
+      "test_std": 0.4910525826109551,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "amount_to_mean_ratio",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.05000000074505806,
+      "max": 20.0,
+      "train_mean": 1.4649021625518799,
+      "train_std": 2.4562525749206543,
+      "test_mean": 1.754644513130188,
+      "test_std": 2.9090657234191895,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "device_tx_count_5m",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 1.0,
+      "train_mean": 0.014107142575085163,
+      "train_std": 0.11793273687362671,
+      "test_mean": 0.013333333656191826,
+      "test_std": 0.11469767987728119,
+      "drift_level": "LOW",
+      "risk": "SAFE (Sliding Window Past Only)"
+    },
+    {
+      "feature": "device_tx_count_1h",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 4.0,
+      "train_mean": 0.1830357164144516,
+      "train_std": 0.4685441851615906,
+      "test_mean": 0.20416666567325592,
+      "test_std": 0.49073004722595215,
+      "drift_level": "LOW",
+      "risk": "SAFE (Sliding Window Past Only)"
+    },
+    {
+      "feature": "device_amount_sum_24h",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 4670.52001953125,
+      "train_mean": 536.4459838867188,
+      "train_std": 716.687255859375,
+      "test_mean": 678.0853271484375,
+      "test_std": 986.342041015625,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "tx_acceleration_5m_1h",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 2.6086957454681396,
+      "train_mean": 0.03434097021818161,
+      "train_std": 0.28896450996398926,
+      "test_mean": 0.032065216451883316,
+      "test_std": 0.2771231234073639,
+      "drift_level": "LOW",
+      "risk": "SAFE (Sliding Window Past Only)"
+    },
+    {
+      "feature": "device_amount_concentration_5m_1h",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 0.999998152256012,
+      "train_mean": 0.01144141610711813,
+      "train_std": 0.10305120050907135,
+      "test_mean": 0.010575168766081333,
+      "test_std": 0.09670822322368622,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "device_unique_tokens_1h",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 4.0,
+      "train_mean": 0.1830357164144516,
+      "train_std": 0.4685441851615906,
+      "test_mean": 0.20416666567325592,
+      "test_std": 0.49073004722595215,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "token_unique_devices_1h",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 1.0,
+      "train_mean": 0.004464285913854837,
+      "train_std": 0.06666599959135056,
+      "test_mean": 0.0024999999441206455,
+      "test_std": 0.04993746429681778,
+      "drift_level": "LOW",
+      "risk": "CLEAN"
+    },
+    {
+      "feature": "device_reputation_score",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.10655474662780762,
+      "max": 1.0,
+      "train_mean": 0.770881175994873,
+      "train_std": 0.2610251307487488,
+      "test_mean": 0.7345727682113647,
+      "test_std": 0.2740165591239929,
+      "drift_level": "LOW",
+      "risk": "SAFE (Point-in-Time Historical)"
+    },
+    {
+      "feature": "device_fraud_rate",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 0.1428571492433548,
+      "train_mean": 0.023728536441922188,
+      "train_std": 0.023826634511351585,
+      "test_mean": 0.028320496901869774,
+      "test_std": 0.049889013171195984,
+      "drift_level": "LOW",
+      "risk": "SAFE (Point-in-Time Historical)"
+    },
+    {
+      "feature": "device_dispute_rate",
+      "source": "IEEE-CIS Transaction / Device",
+      "causal": true,
+      "missing_pct": 0.0,
+      "min": 0.0,
+      "max": 0.1428571492433548,
+      "train_mean": 0.023728536441922188,
+      "train_std": 0.023826634511351585,
+      "test_mean": 0.028320496901869774,
+      "test_std": 0.049889013171195984,
+      "drift_level": "LOW",
+      "risk": "SAFE (Point-in-Time Historical)"
+    }
+  ],
+  "reproduction_status": "EXACT_MATCH"
+}

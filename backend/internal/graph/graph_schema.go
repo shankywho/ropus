@@ -38,7 +38,7 @@ const (
 type Node struct {
 	ID         string                 `json:"id"`
 	Type       NodeType               `json:"type"`
-	RiskScore  float64                `json:"risk_score"`  // 0.0 to 1.0 known risk
+	RiskScore  float64                `json:"risk_score"`   // 0.0 to 1.0 known risk
 	IsKnownBad bool                   `json:"is_known_bad"` // Confirmed fraudster/compromised entity
 	CreatedAt  time.Time              `json:"created_at"`
 	UpdatedAt  time.Time              `json:"updated_at"`
@@ -60,8 +60,21 @@ type Edge struct {
 
 // Path represents a sequential traversal path between entities.
 type Path struct {
-	Nodes  []*Node  `json:"nodes"`
-	Edges  []*Edge  `json:"edges"`
-	Length int      `json:"length"`
-	Weight float64  `json:"weight"`
+	Nodes  []*Node `json:"nodes"`
+	Edges  []*Edge `json:"edges"`
+	Length int     `json:"length"`
+	Weight float64 `json:"weight"`
+}
+
+// TemporalGraphEvidence represents the bounded 3-hop temporal neighborhood topology evidence.
+type TemporalGraphEvidence struct {
+	StartNodeID         string        `json:"start_node_id"`
+	AsOf                time.Time     `json:"as_of"`
+	Window              time.Duration `json:"window"`
+	VisitedNodesCount   int           `json:"visited_nodes_count"`
+	FraudNodesCount     int           `json:"fraud_nodes_count"`
+	MaxClusterDepth     int           `json:"max_cluster_depth"`
+	FraudRingDetected   bool          `json:"fraud_ring_detected"`
+	TraversedEdgesCount int           `json:"traversed_edges_count"`
+	ReachableNodeIDs    []string      `json:"reachable_node_ids"`
 }

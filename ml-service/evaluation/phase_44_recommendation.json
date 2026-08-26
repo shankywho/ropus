@@ -1,0 +1,9 @@
+{
+  "verdict": "NO PRODUCTION MODEL CHANGE RECOMMENDED (CONTINUE v8.0-bmr-36f)",
+  "rationale": [
+    "v8.0-bmr-36f maintains superior probability calibration (ECE = 0.8369% < 1.000%) with robust economic net loss reduction ($3,413.76).",
+    "While CatBoost D4 Iter180 and 42F candidates achieve higher point PR-AUC (0.0924 vs 0.0886), 1,000 bootstrap resamples show the difference spans zero (p = 0.3840), indicating offline noise on N_fraud=52.",
+    "Production governance rules prohibit model deployment without >= 5,000 genuine live gateway transactions and >= 50 mature labeled shadow flips."
+  ],
+  "recommended_next_experiment": "Continue non-enforcing shadow telemetry tracking and collect genuine production labels when live traffic is routed."
+}

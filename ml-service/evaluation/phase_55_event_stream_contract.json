@@ -1,0 +1,6 @@
+{
+  "broker": "risk-redpanda.risk-engine.svc.cluster.local:29092",
+  "topic": "risk.events",
+  "partition_key": "transaction_id",
+  "serialization": "JSON"
+}

@@ -1,0 +1,7 @@
+{
+  "shadow_pipeline_active": true,
+  "champion_model": "v8.0-bmr-36f",
+  "challenger_model": "LightGBM_L20_D4",
+  "fail_open_verified": true,
+  "live_gateway_connection": "EXTERNAL_INFRASTRUCTURE_REQUIRED"
+}

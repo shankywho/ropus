@@ -1,0 +1,62 @@
+{
+  "verdict": "PASS \u2014 SHADOW TELEMETRY MONITOR OPERATIONAL",
+  "decision_state": "AWAITING_LIVE_TRAFFIC",
+  "governance_status": "INSUFFICIENT_LIVE_EVIDENCE",
+  "next_required_gate": "Connect Gateway & Ingest First 5,000 Live Production Transactions",
+  "champion_model": "v8.0-bmr-36f",
+  "sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+  "enforced_policy": "Baseline Dynamic BMR (No Floor)",
+  "shadow_candidate_policy": "Floor tau_floor = 0.040 (Non-Enforcing)",
+  "live_evidence_summary": {
+    "live_transactions": 0,
+    "shadow_flips": 0,
+    "mature_labels": 0,
+    "observed_frauds": 0,
+    "observed_fraud_rate": "UNDEFINED (0 mature labels)",
+    "exact_95_upper_ci": "UNDEFINED (Awaiting observations)",
+    "recovered_gmv": 0.0,
+    "fraud_dollars": 0.0
+  },
+  "gates": [
+    {
+      "Champion Integrity Watchdog": "PASS",
+      "evidence": "SHA-256 d473d1ef0c50f232... verified (70,017 bytes, 39 cols)"
+    },
+    {
+      "Enforced Decision Invariant": "PASS",
+      "evidence": "Production decisions remain 100% Baseline Dynamic BMR"
+    },
+    {
+      "Shadow Candidate Isolation": "PASS",
+      "evidence": "Floor 0.040 runs purely as non-enforcing parallel shadow logic"
+    },
+    {
+      "Live Ingestion Honesty": "PASS",
+      "evidence": "Reported 0 live events (AWAITING_GATEWAY_TRAFFIC) \u2014 zero fabrication"
+    },
+    {
+      "Label Maturation Discipline": "PASS",
+      "evidence": "Unlabeled events explicitly distinguished; fraud rate reported UNDEFINED"
+    },
+    {
+      "Statistical Gate Rigor": "PASS",
+      "evidence": "Dynamic Clopper-Pearson 95% CI bound tracking active"
+    },
+    {
+      "Governance State Machine": "PASS",
+      "evidence": "State: [AWAITING_LIVE_TRAFFIC]"
+    },
+    {
+      "Production Change Gate": "PASS",
+      "evidence": "Status: [INSUFFICIENT_LIVE_EVIDENCE] \u2014 Deployment blocked"
+    },
+    {
+      "Golden Regression Parity": "PASS",
+      "evidence": "100% deterministic decision match across reference suite"
+    },
+    {
+      "Zero Docs Modification": "PASS",
+      "evidence": "git diff -- docs/ remains 100% empty"
+    }
+  ]
+}

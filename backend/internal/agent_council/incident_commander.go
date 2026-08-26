@@ -20,14 +20,14 @@ const (
 
 // MajorFraudIncident tracks the command timeline of an enterprise-level threat event.
 type MajorFraudIncident struct {
-	IncidentID       string                 `json:"incident_id"`
-	Title            string                 `json:"title"`
-	Stage            IncidentLifecycleStage `json:"stage"`
-	Severity         string                 `json:"severity"` // "SEV1", "SEV2", "SEV3"
-	AssignedAgents   []string               `json:"assigned_agents"`
-	ContainmentPlan  string                 `json:"containment_plan"`
-	StartedAt        time.Time              `json:"started_at"`
-	UpdatedAt        time.Time              `json:"updated_at"`
+	IncidentID      string                 `json:"incident_id"`
+	Title           string                 `json:"title"`
+	Stage           IncidentLifecycleStage `json:"stage"`
+	Severity        string                 `json:"severity"` // "SEV1", "SEV2", "SEV3"
+	AssignedAgents  []string               `json:"assigned_agents"`
+	ContainmentPlan string                 `json:"containment_plan"`
+	StartedAt       time.Time              `json:"started_at"`
+	UpdatedAt       time.Time              `json:"updated_at"`
 }
 
 // AIIncidentCommander orchestrates end-to-end incident coordination during severe attacks.

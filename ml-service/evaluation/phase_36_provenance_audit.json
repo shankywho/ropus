@@ -1,0 +1,26 @@
+{
+  "provenance_tiers_audit": {
+    "PRODUCTION_LIVE": {
+      "count": 0,
+      "qualifies_as_evidence": true,
+      "description": "Genuine live merchant gateway transactions"
+    },
+    "STAGING_TEST": {
+      "count": 0,
+      "qualifies_as_evidence": false,
+      "description": "Staging environment integration tests"
+    },
+    "SYNTHETIC_TEST": {
+      "count": 0,
+      "qualifies_as_evidence": false,
+      "description": "Local test vectors and fault-injection probes"
+    },
+    "HISTORICAL_REPLAY": {
+      "count": 1200,
+      "qualifies_as_evidence": false,
+      "description": "Historical IEEE-CIS holdout benchmark (N=1,200)"
+    }
+  },
+  "provenance_enforcement_rule": "ONLY_PRODUCTION_LIVE_INCREMENTS_GOVERNANCE_COUNTERS",
+  "zero_fabrication_rule_verified": true
+}

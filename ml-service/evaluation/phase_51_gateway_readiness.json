@@ -1,0 +1,8 @@
+{
+  "gateway_adapter_active": true,
+  "champion_model": "v8.0-bmr-36f",
+  "challenger_model": "LightGBM_L20_D4",
+  "fail_open_verified": true,
+  "hmac_authentication_active": true,
+  "live_gateway_connectivity": "EXTERNAL_INFRASTRUCTURE_REQUIRED"
+}

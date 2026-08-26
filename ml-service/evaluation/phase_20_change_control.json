@@ -1,0 +1,7 @@
+{
+  "evidence_type": "HISTORICAL_REFERENCE",
+  "lock_enforced": true,
+  "unauthorized_mutations_blocked": true,
+  "mandatory_promotion_rules": 10,
+  "status": "PASS"
+}

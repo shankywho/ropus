@@ -1,0 +1,60 @@
+{
+  "guardrail_tests": [
+    {
+      "guardrail_check": "Oversized Payload (>500KB)",
+      "status": "FAIL_SAFE_ERROR",
+      "decision": "MANUAL_REVIEW",
+      "expected_decision": "MANUAL_REVIEW",
+      "pass": true
+    },
+    {
+      "guardrail_check": "Positive Infinity Amount",
+      "status": "FAIL_SAFE_ERROR",
+      "decision": "MANUAL_REVIEW",
+      "expected_decision": "MANUAL_REVIEW",
+      "pass": true
+    },
+    {
+      "guardrail_check": "NaN Amount",
+      "status": "FAIL_SAFE_ERROR",
+      "decision": "MANUAL_REVIEW",
+      "expected_decision": "MANUAL_REVIEW",
+      "pass": true
+    },
+    {
+      "guardrail_check": "Malformed Amount String",
+      "status": "FAIL_SAFE_ERROR",
+      "decision": "MANUAL_REVIEW",
+      "expected_decision": "MANUAL_REVIEW",
+      "pass": true
+    },
+    {
+      "guardrail_check": "Missing Required Card/Amt",
+      "status": "FAIL_SAFE_ERROR",
+      "decision": "MANUAL_REVIEW",
+      "expected_decision": "MANUAL_REVIEW",
+      "pass": true
+    },
+    {
+      "guardrail_check": "Unknown Categorical Symbols",
+      "status": "FAIL_SAFE_ERROR",
+      "decision": "MANUAL_REVIEW",
+      "expected_decision": "MANUAL_REVIEW",
+      "pass": true
+    },
+    {
+      "guardrail_check": "Empty Payload ({})",
+      "status": "FAIL_SAFE_REVIEW",
+      "decision": "MANUAL_REVIEW",
+      "expected_decision": "MANUAL_REVIEW",
+      "pass": true
+    },
+    {
+      "guardrail_check": "Null Payload (None)",
+      "status": "FAIL_SAFE_REVIEW",
+      "decision": "MANUAL_REVIEW",
+      "expected_decision": "MANUAL_REVIEW",
+      "pass": true
+    }
+  ]
+}

@@ -11,9 +11,43 @@ from datetime import datetime
 from contextlib import asynccontextmanager
 
 import numpy as np
+import pandas as pd
+import joblib
 import onnxruntime as ort
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+try:
+    from fastapi import FastAPI, HTTPException
+    from fastapi.middleware.cors import CORSMiddleware
+except ImportError:
+    class HTTPException(Exception):
+        def __init__(self, status_code: int, detail: str):
+            self.status_code = status_code
+            self.detail = detail
+            super().__init__(f"HTTP {status_code}: {detail}")
+
+    class MockApp:
+        def __init__(self, *args, **kwargs):
+            self.routes = {}
+            self.title = kwargs.get("title", "ML Service")
+            self.version = kwargs.get("version", "1.0.0")
+
+        def add_middleware(self, *args, **kwargs):
+            pass
+
+        def get(self, path, **kwargs):
+            def decorator(func):
+                self.routes[("GET", path)] = func
+                return func
+            return decorator
+
+        def post(self, path, **kwargs):
+            def decorator(func):
+                self.routes[("POST", path)] = func
+                return func
+            return decorator
+
+    FastAPI = MockApp
+    CORSMiddleware = None
+
 from pydantic import BaseModel, Field
 
 # Ensure ml-service root in path
@@ -54,6 +88,18 @@ FALLBACK_ERROR: Optional[str] = None
 from data_pipeline.schema import CANONICAL_25_FEATURE_COLS, CANONICAL_15_FEATURE_COLS
 CANONICAL_FEATURE_COLS = CANONICAL_15_FEATURE_COLS
 
+# Production v8.0 Champion Bundle State
+PRODUCTION_V8_BUNDLE: Optional[Any] = None
+PRODUCTION_V8_ENGINE: Optional[Any] = None
+PRODUCTION_V8_MODEL_VERSION: str = "v8.0-bmr-36f"
+PRODUCTION_V8_FEATURE_COUNT: int = 36
+
+def get_v8_model_path():
+    return os.getenv(
+        "PRODUCTION_MODEL_PATH",
+        os.path.join(current_dir, "model", "candidates", "production_model_v8_bmr.joblib")
+    )
+
 def get_model_paths():
     onnx_path = os.getenv("ONNX_MODEL_PATH", os.path.join(current_dir, "model", "fraud_model.onnx"))
     metadata_path = os.getenv("METADATA_PATH", os.path.join(current_dir, "model", "model_metadata.json"))
@@ -70,6 +116,20 @@ def get_candidate_paths():
 def load_or_train_onnx_model():
     global ONNX_SESSION, INPUT_NAME, NUM_INPUT_FEATURES, METADATA, PREPROCESSOR_STATE, CALIBRATOR, COST_POLICY
     global CANDIDATE_ONNX_SESSION, CANDIDATE_INPUT_NAME, CANDIDATE_NUM_FEATURES, CANDIDATE_CALIBRATOR, CANDIDATE_METADATA, CANDIDATE_LOADED, CANDIDATE_ERROR
+    global PRODUCTION_V8_BUNDLE, PRODUCTION_V8_MODEL_VERSION, PRODUCTION_V8_FEATURE_COUNT
+
+    # 0. Load Production Champion v8.0 Joblib Bundle if available
+    v8_path = get_v8_model_path()
+    if os.path.exists(v8_path):
+        try:
+            PRODUCTION_V8_BUNDLE = joblib.load(v8_path)
+            PRODUCTION_V8_MODEL_VERSION = PRODUCTION_V8_BUNDLE.get("model_version", "v8.0-bmr-36f")
+            PRODUCTION_V8_FEATURE_COUNT = len(PRODUCTION_V8_BUNDLE.get("feature_names", []))
+            print(f"Successfully loaded production champion bundle: {PRODUCTION_V8_MODEL_VERSION} from {v8_path} ({PRODUCTION_V8_FEATURE_COUNT} features)")
+        except Exception as e:
+            print(f"Warning: Could not load v8 bundle from {v8_path}: {e}")
+            PRODUCTION_V8_BUNDLE = None
+
     onnx_path, metadata_path, cal_path = get_model_paths()
 
     # 1. If ONNX model does not exist, trigger training pipeline
@@ -121,9 +181,9 @@ def load_or_train_onnx_model():
 
     # 5. Initialize Cost Policy Engine
     COST_POLICY = CostSensitivePolicyEngine(
-        false_positive_cost=500.0,
-        manual_review_cost=100.0,
-        fraud_multiplier=1.0,
+        false_positive_cost=25.0,
+        manual_review_cost=10.0,
+        fraud_multiplier=1.05,
         residual_review_rate=0.05,
         review_capacity_pct=0.10
     )
@@ -269,19 +329,56 @@ class ShadowPredictResponse(BaseModel):
     latency_ms: float = Field(..., description="Shadow scoring inference latency in milliseconds")
     runtime: str = Field("onnxruntime+candidate_beta_calibrated", description="Underlying runtime engine")
 
+class ScoreV1Request(BaseModel):
+    amount: float = Field(..., description="Transaction amount")
+    transaction_dt: Optional[int] = Field(None, description="Transaction timestamp in seconds")
+    card1: Optional[int] = Field(None, description="Card ID")
+    addr1: Optional[float] = Field(None, description="Billing address zone")
+    device_id: Optional[str] = Field("unknown", description="Device fingerprint or info")
+    product_cd: Optional[str] = Field("W", description="Product category code")
+    card_type: Optional[str] = Field("visa", description="Card network")
+    card_category: Optional[str] = Field("debit", description="Card category")
+    email_domain: Optional[str] = Field("gmail.com", description="Email domain")
+    features_dict: Optional[Dict[str, float]] = Field(None, description="Pre-computed 36-feature dictionary")
+    correlation_id: Optional[str] = Field(None, description="Transaction correlation ID for telemetry tracking")
+    evidence_tier: Optional[str] = Field(None, description="Provenance evidence classification")
+    gateway_signature: Optional[str] = Field(None, description="Cryptographic internal gateway provenance signature")
+
+class ScoreV1Response(BaseModel):
+    model_version: str = Field("v8.0-bmr-36f", description="Active production model version")
+    feature_count: int = Field(36, description="Feature count")
+    raw_probability: float = Field(..., description="Direct output from tree model")
+    calibrated_probability: float = Field(..., description="Calibrated posterior probability")
+    bmr_threshold: float = Field(..., description="Dynamic Bayes Minimum Risk threshold P*(A)")
+    decision: str = Field(..., description="Final operational decision: ALLOW or DECLINE")
+    risk_tier: str = Field(..., description="Risk level tier: LOW_RISK, MODERATE_RISK, ELEVATED_RISK, CRITICAL_FRAUD")
+    expected_loss_allow: float = Field(..., description="Monetary expected loss of allowing")
+    expected_loss_decline: float = Field(..., description="Monetary expected loss of declining")
+    latency_ms: float = Field(..., description="Inference latency in milliseconds")
+    status: str = Field("SUCCESS", description="Execution status")
+
 @app.get("/health")
+@app.get("/v1/health")
 def health():
     is_loaded = ONNX_SESSION is not None
+    v8_loaded = PRODUCTION_V8_BUNDLE is not None
     return {
         "status": "ok",
         "service": "calibrated-onnx-ml-sidecar",
-        "engine": "ONNX Runtime",
-        "model_loaded": is_loaded,
-        "model_version": METADATA.get("model_version", "fraud-xgb-25f-v3.0"),
-        "feature_contract": "fraud-risk-25f-v2.5" if NUM_INPUT_FEATURES == 25 else "fraud-risk-15f-v1.5",
-        "features_count": NUM_INPUT_FEATURES,
-        "calibration_method": CALIBRATOR.method if CALIBRATOR else "none",
-        "calibration_version": CALIBRATOR.version if CALIBRATOR else "none",
+        "engine": "CatBoost + BetaCalibrator + BMR" if v8_loaded else "ONNX Runtime",
+        "model_loaded": is_loaded or v8_loaded,
+        "production_champion": {
+            "loaded": v8_loaded,
+            "model_version": PRODUCTION_V8_MODEL_VERSION,
+            "features_count": PRODUCTION_V8_FEATURE_COUNT,
+            "calibration": "BetaCalibrator",
+            "decision_policy": "Bayes Minimum Risk (BMR)"
+        },
+        "model_version": PRODUCTION_V8_MODEL_VERSION if v8_loaded else METADATA.get("model_version", "fraud-xgb-25f-v3.0"),
+        "feature_contract": "fraud-risk-36f-v8" if v8_loaded else ("fraud-risk-25f-v2.5" if NUM_INPUT_FEATURES == 25 else "fraud-risk-15f-v1.5"),
+        "features_count": PRODUCTION_V8_FEATURE_COUNT if v8_loaded else NUM_INPUT_FEATURES,
+        "calibration_method": "beta" if v8_loaded else (CALIBRATOR.method if CALIBRATOR else "none"),
+        "calibration_version": "v8.0" if v8_loaded else (CALIBRATOR.version if CALIBRATOR else "none"),
         "fallback_recovery_model": {
             "loaded": FALLBACK_LOADED,
             "error": FALLBACK_ERROR,
@@ -296,6 +393,133 @@ def health():
             "features_count": CANDIDATE_NUM_FEATURES
         }
     }
+
+@app.post("/v1/score", response_model=ScoreV1Response)
+def score_v1(req: ScoreV1Request):
+    start_time = time.perf_counter()
+    if PRODUCTION_V8_BUNDLE is None:
+        raise HTTPException(status_code=503, detail="Production champion v8 model not loaded.")
+
+    model = PRODUCTION_V8_BUNDLE["model"]
+    calibrator = PRODUCTION_V8_BUNDLE["calibrator"]
+    prep_state = PRODUCTION_V8_BUNDLE["preprocessor_state"]
+    feature_names = PRODUCTION_V8_BUNDLE["feature_names"]
+
+    amt = float(req.amount) if (not np.isnan(req.amount) and req.amount >= 0) else 100.0
+
+    p_map = prep_state.get("p_map", {})
+    c_map = prep_state.get("c_map", {})
+    cat_map = prep_state.get("cat_map", {})
+    e_map = prep_state.get("e_map", {})
+    prior = prep_state.get("prior", 0.045357)
+
+    prod_str = str(req.product_cd) if req.product_cd else "W"
+    card_str = str(req.card_type) if req.card_type else "visa"
+    cat_str = str(req.card_category) if req.card_category else "debit"
+    email_str = str(req.email_domain) if req.email_domain else "gmail.com"
+
+    prod_enc = p_map.get(prod_str, -1)
+    card_enc = c_map.get(card_str, -1)
+    cat_enc = cat_map.get(cat_str, -1)
+    email_r = e_map.get(email_str, prior)
+
+    if req.features_dict is not None:
+        feat_row = {}
+        for col in feature_names:
+            val = float(req.features_dict.get(col, 0.0))
+            feat_row[col] = 0.0 if (np.isnan(val) or np.isinf(val)) else val
+        if "product_cd_encoded" in feature_names and (feat_row.get("product_cd_encoded") is None or "raw_product_cd" in req.features_dict or feat_row.get("product_cd_encoded") == 0.0):
+            feat_row["product_cd_encoded"] = float(prod_enc)
+        if "card_type_encoded" in feature_names and (feat_row.get("card_type_encoded") is None or "raw_card_type" in req.features_dict or feat_row.get("card_type_encoded") == 0.0):
+            feat_row["card_type_encoded"] = float(card_enc)
+        if "card_category_encoded" in feature_names and (feat_row.get("card_category_encoded") is None or "raw_card_category" in req.features_dict or feat_row.get("card_category_encoded") == 0.0):
+            feat_row["card_category_encoded"] = float(cat_enc)
+        if "email_domain_risk" in feature_names and (feat_row.get("email_domain_risk") is None or "raw_email_domain" in req.features_dict or feat_row.get("email_domain_risk") == 0.0):
+            feat_row["email_domain_risk"] = float(email_r)
+        df_in = pd.DataFrame([feat_row])
+    else:
+        feat_dict = {col: 0.0 for col in feature_names}
+        feat_dict["amount"] = amt
+        feat_dict["log_amount"] = float(np.log1p(max(0.0, amt)))
+        feat_dict["amt_sqrt"] = float(np.sqrt(max(0.0, amt)))
+        feat_dict["amt_is_round"] = 1.0 if (amt % 10.0 == 0.0 and amt > 0) else 0.0
+        feat_dict["amount_to_mean_ratio"] = 1.0
+        feat_dict["dev_amount_ratio"] = 1.0
+        feat_dict["product_cd_encoded"] = float(prod_enc)
+        feat_dict["card_type_encoded"] = float(card_enc)
+        feat_dict["card_category_encoded"] = float(cat_enc)
+        feat_dict["email_domain_risk"] = float(email_r)
+        df_in = pd.DataFrame([feat_dict])
+
+    X = df_in[feature_names]
+    raw_p = float(model.predict_proba(X)[0, 1])
+    raw_p = float(np.clip(0.05 if (np.isnan(raw_p) or np.isinf(raw_p)) else raw_p, 0.0001, 0.9999))
+
+    cal_p = float(calibrator.predict_proba(np.array([raw_p]))[0])
+    cal_p = float(np.clip(cal_p, 0.0001, 0.9999))
+
+    cost_fp = 25.0
+    surcharge = 1.05
+    loss_allow = cal_p * amt * surcharge
+    loss_decline = (1.0 - cal_p) * cost_fp
+    bmr_thresh = cost_fp / (surcharge * amt + cost_fp) if (surcharge * amt + cost_fp) > 0 else 0.5
+    decision = "DECLINE" if loss_decline < loss_allow else "ALLOW"
+
+    if cal_p < 0.02:
+        tier = "LOW_RISK"
+    elif cal_p < 0.10:
+        tier = "MODERATE_RISK"
+    elif cal_p < 0.25:
+        tier = "ELEVATED_RISK"
+    else:
+        tier = "CRITICAL_FRAUD"
+
+    latency_ms = (time.perf_counter() - start_time) * 1000.0
+
+    # Non-Enforcing Shadow Mode Telemetry Recording (Fail-Safe Isolation)
+    try:
+        from monitoring.production_shadow_gateway import ProductionShadowGatewayPipeline
+        from monitoring.production_telemetry import ProductionTelemetryCollector
+        global GLOBAL_SHADOW_PIPELINE
+        if 'GLOBAL_SHADOW_PIPELINE' not in globals() or GLOBAL_SHADOW_PIPELINE is None:
+            collector = ProductionTelemetryCollector()
+            class EngineAdapter:
+                cost_fp = 25.0
+                surcharge = 1.05
+            GLOBAL_SHADOW_PIPELINE = ProductionShadowGatewayPipeline(
+                scoring_engine=EngineAdapter(),
+                telemetry_collector=collector,
+                shadow_floor=0.040,
+                maturation_window_days=60
+            )
+        if GLOBAL_SHADOW_PIPELINE is not None:
+            cid = getattr(req, "correlation_id", None) or getattr(req, "device_id", None) or f"TX_{int(time.time()*1000)}"
+            ev_tier = getattr(req, "evidence_tier", None) or "LOCAL_OPERATIONAL_TEST"
+            sig = getattr(req, "gateway_signature", None)
+            GLOBAL_SHADOW_PIPELINE.evaluate_and_route(
+                amount=amt,
+                calibrated_prob=cal_p,
+                raw_correlation_id=cid,
+                evidence_tier=ev_tier,
+                gateway_signature=sig
+            )
+    except Exception:
+        # Invariant: Shadow exceptions never alter or block customer routing
+        pass
+
+    return ScoreV1Response(
+        model_version=PRODUCTION_V8_MODEL_VERSION,
+        feature_count=len(feature_names),
+        raw_probability=round(raw_p, 6),
+        calibrated_probability=round(cal_p, 6),
+        bmr_threshold=round(bmr_thresh, 6),
+        decision=decision,
+        risk_tier=tier,
+        expected_loss_allow=round(loss_allow, 2),
+        expected_loss_decline=round(loss_decline, 2),
+        latency_ms=round(latency_ms, 3),
+        status="SUCCESS"
+    )
 
 @app.get("/model/candidate")
 def get_candidate_info():
@@ -400,7 +624,7 @@ def predict(req: PredictRequest):
     amt = float(req.amount) if (not np.isnan(req.amount) and req.amount > 0) else 100.0
     hour = req.hour_of_day if (req.hour_of_day is not None and 0 <= req.hour_of_day <= 23) else datetime.utcnow().hour
     day = req.day_of_week if (req.day_of_week is not None and 0 <= req.day_of_week <= 6) else datetime.utcnow().weekday()
-    
+
     device_seen = req.device_seen_before if req.device_seen_before is not None else (0 if req.is_new_device == 1 else 1)
     ip_24h = req.ip_velocity_24h if req.ip_velocity_24h is not None else max(req.ip_velocity_1h, req.token_velocity_24h)
 

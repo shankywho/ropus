@@ -1,0 +1,28 @@
+{
+  "traffic_state": "GATEWAY_CONNECTED_AWAITING_TRAFFIC",
+  "heartbeat_metrics": {
+    "first_genuine_production_timestamp": null,
+    "last_genuine_production_timestamp": null,
+    "genuine_live_transactions": 0,
+    "genuine_live_shadow_flips": 0,
+    "untrusted_events_count": 0,
+    "duplicate_events_count": 0,
+    "shadow_exceptions_count": 0,
+    "persistence_failures_count": 0,
+    "evidence_freshness": "AWAITING_FIRST_PRODUCTION_TRANSACTION"
+  },
+  "live_traffic_counters": {
+    "genuine_live_transactions": 0,
+    "genuine_live_shadow_flips": 0,
+    "untrusted_events_count": 0,
+    "duplicate_events_count": 1,
+    "unlabeled_shadow_flips": 0,
+    "pending_maturation_flips": 0,
+    "mature_labeled_flips": 0,
+    "mature_fraud_count": 0,
+    "mature_fraud_dollars": 0,
+    "recovered_legitimate_gmv": 0,
+    "observed_fraud_rate": "UNDEFINED (0 mature labels)",
+    "clopper_pearson_95_upper_ci": "UNDEFINED"
+  }
+}

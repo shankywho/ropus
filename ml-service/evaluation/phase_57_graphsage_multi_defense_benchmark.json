@@ -1,0 +1,80 @@
+{
+  "evaluation_timestamp": "2026-08-26T04:31:29.652594+00:00",
+  "total_samples": 1200,
+  "fraud_cases": 52,
+  "champion_status": "v8.0-bmr-36f UNCHANGED (AUTHORITATIVE)",
+  "graphsage_operational_status": "STRICTLY NON-ENFORCING SHADOW",
+  "configurations": {
+    "1_ROPUS_Baseline": {
+      "ROC_AUC": 0.9476,
+      "PR_AUC": 0.7429,
+      "Precision": 0.4375,
+      "Recall": 0.5385,
+      "FPR": 0.0314,
+      "F1": 0.4828,
+      "Precision@50": 0.76,
+      "Total_Economic_Loss_USD": 2441.6,
+      "TP": 28,
+      "FP": 36,
+      "TN": 1112,
+      "FN": 24
+    },
+    "2_ROPUS_Plus_GraphRules": {
+      "ROC_AUC": 0.9873,
+      "PR_AUC": 0.8642,
+      "Precision": 0.5778,
+      "Recall": 0.5,
+      "FPR": 0.0166,
+      "F1": 0.5361,
+      "Precision@50": 0.8,
+      "Total_Economic_Loss_USD": 2114.11,
+      "TP": 26,
+      "FP": 19,
+      "TN": 1129,
+      "FN": 26
+    },
+    "3_GraphSAGE_Alone": {
+      "ROC_AUC": 0.9974,
+      "PR_AUC": 0.9535,
+      "Precision": 0.5758,
+      "Recall": 0.7308,
+      "FPR": 0.0244,
+      "F1": 0.6441,
+      "Precision@50": 0.9,
+      "Total_Economic_Loss_USD": 1336.89,
+      "TP": 38,
+      "FP": 28,
+      "TN": 1120,
+      "FN": 14
+    },
+    "4_ROPUS_Plus_GraphSAGE": {
+      "ROC_AUC": 0.9947,
+      "PR_AUC": 0.9187,
+      "Precision": 0.5472,
+      "Recall": 0.5577,
+      "FPR": 0.0209,
+      "F1": 0.5524,
+      "Precision@50": 0.86,
+      "Total_Economic_Loss_USD": 1698.77,
+      "TP": 29,
+      "FP": 24,
+      "TN": 1124,
+      "FN": 23
+    },
+    "5_ROPUS_Plus_GraphRules_Plus_GraphSAGE": {
+      "ROC_AUC": 0.999,
+      "PR_AUC": 0.9787,
+      "Precision": 0.6744,
+      "Recall": 0.5577,
+      "FPR": 0.0122,
+      "F1": 0.6105,
+      "Precision@50": 0.94,
+      "Total_Economic_Loss_USD": 1448.77,
+      "TP": 29,
+      "FP": 14,
+      "TN": 1134,
+      "FN": 23
+    }
+  },
+  "recommendation": "Maintain GraphSAGE in SHADOW mode. Baseline Dynamic BMR remains authoritative."
+}

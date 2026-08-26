@@ -1,0 +1,51 @@
+{
+  "verdict": "PASS \u2014 BMR STRESS TEST COMPLETE",
+  "final_determination": "OFFLINE_FLOOR_CANDIDATE \u2014 FORMAL RISK REVIEW REQUIRED",
+  "champion_model": "v8.0-bmr-36f",
+  "sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+  "baseline_cost": 7364.38,
+  "optimal_floor": 0.035,
+  "optimal_floor_cost": 7189.38,
+  "net_opportunity_savings": 175.0,
+  "legit_gmv_recovered": 12341.83,
+  "fraud_leaked": 0,
+  "evidence_notice": "This experiment does not constitute live production evidence. Live traffic and live labels remain completely separate.",
+  "gates": [
+    {
+      "Champion Integrity Watchdog": "PASS",
+      "evidence": "SHA-256 d473d1ef0c50f232... verified (70,017 bytes, 39 cols)"
+    },
+    {
+      "Baseline Reproduction Check": "PASS",
+      "evidence": "Exact $7,364.38 cost and TP=7, FP=67, FN=45, TN=1081 confirmed"
+    },
+    {
+      "Simulation Scope Discipline": "PASS",
+      "evidence": "Evaluated strictly on chronological holdout (N=1,200) without production mutation"
+    },
+    {
+      "Transaction-Level Flip Audit": "PASS",
+      "evidence": "Recovered $12,341.83 legit GMV with $0 fraud leaked"
+    },
+    {
+      "Economic Cost Hierarchy": "PASS",
+      "evidence": "Floor 0.035 cost: $7,189.38 vs Baseline: $7,364.38 ($175.00 savings)"
+    },
+    {
+      "Golden Regression Parity": "PASS",
+      "evidence": "100% deterministic decision match across reference suite"
+    },
+    {
+      "Evidence Boundary Discipline": "PASS",
+      "evidence": "Explicit statement: This experiment does not constitute live production evidence"
+    },
+    {
+      "Final Determination": "PASS",
+      "evidence": "Determination: [OFFLINE_FLOOR_CANDIDATE \u2014 FORMAL RISK REVIEW REQUIRED]"
+    },
+    {
+      "Zero Docs Modification": "PASS",
+      "evidence": "git diff -- docs/ remains 100% empty"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import (
 // ResponseGuard enforces safety invariants and policy guardrails before executing automated containment.
 type ResponseGuard struct {
 	MinConfidenceForAccountFreeze float64
-	MinConfidenceForAutoBlock    float64
+	MinConfidenceForAutoBlock     float64
 }
 
 // NewResponseGuard initializes response safety guardrails.

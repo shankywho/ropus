@@ -1,0 +1,40 @@
+{
+  "data_gate": {
+    "live_genuine_transactions": 0,
+    "required_live_transactions": 5000,
+    "live_mature_flips": 0,
+    "required_mature_flips": 50,
+    "gate_status": "BLOCKED (EXTERNAL_INFRASTRUCTURE_REQUIRED)"
+  },
+  "statistical_gate": {
+    "evidence_status": "AWAITING_PRODUCTION_EVIDENCE",
+    "offline_bootstrap_ci_95": [
+      -0.0287,
+      0.0765
+    ],
+    "offline_p_value": 0.298,
+    "gate_status": "BLOCKED (INCONCLUSIVE_ON_N52)"
+  },
+  "risk_gate": {
+    "fpr_ceiling_passed": true,
+    "ece_ceiling_passed": true,
+    "gate_status": "PASS"
+  },
+  "economic_gate": {
+    "net_savings_delta": 985.32,
+    "gate_status": "PASS_OFFLINE"
+  },
+  "engineering_gate": {
+    "fail_open_isolation_verified": true,
+    "hmac_provenance_verified": true,
+    "privacy_guard_verified": true,
+    "gate_status": "PASS"
+  },
+  "governance_gate": {
+    "production_champion_immutable": true,
+    "docs_untouched": true,
+    "zero_fabricated_evidence": true,
+    "gate_status": "PASS"
+  },
+  "overall_determination": "PROMOTION_BLOCKED"
+}

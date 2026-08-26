@@ -1,0 +1,12 @@
+{
+  "certified_state": "GATEWAY_READY_BUT_EXTERNAL_TRAFFIC_UNAVAILABLE",
+  "governance_status": "INSUFFICIENT_LIVE_EVIDENCE",
+  "operational_blocker": "Public DNS, Ingress Load Balancer, and external merchant/payment-gateway webhook stream required.",
+  "required_actions": [
+    "Deploy stack to staging/production VPC",
+    "Configure external DNS for risk-api.ropus.internal with valid TLS certificates",
+    "Inject production WEBHOOK_SECRET and ROPUS_GATEWAY_PROVENANCE_SECRET",
+    "Route payment gateway (Stripe/Adyen) webhook/merchant traffic to /v1/risk-evaluations",
+    "Mount persistent volume for telemetry storage"
+  ]
+}

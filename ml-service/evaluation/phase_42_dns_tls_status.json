@@ -1,0 +1,10 @@
+{
+  "local_network_binding": "127.0.0.1:8080 & 127.0.0.1:8000 (Active)",
+  "internal_dns_hostname": "risk-api.ropus.internal",
+  "internal_dns_status": "UNRESOLVED_REQUIRES_HOSTS_OR_COREDNS",
+  "public_dns_status": "UNPROVISIONED (Local Sandbox Environment)",
+  "tls_certificate_issuer": "LetsEncrypt Prod (cert-manager.io/cluster-issuer: letsencrypt-prod)",
+  "tls_secret_name": "risk-backend-tls-secret",
+  "tls_external_status": "UNBOUND_AWAITING_PUBLIC_INGRESS",
+  "load_balancer_type": "Kubernetes Ingress / AWS NLB / GCP External HTTPS LB (Target Architecture)"
+}

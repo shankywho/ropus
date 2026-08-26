@@ -11,18 +11,18 @@ import (
 
 // ShowcaseInvestigationReport encapsulates the investor-grade forensic output.
 type ShowcaseInvestigationReport struct {
-	ReportID              string    `json:"report_id"`
-	TransactionID         string    `json:"transaction_id"`
-	UserID                string    `json:"user_id"`
-	Amount                float64   `json:"amount"`
-	RiskScore             float64   `json:"risk_score"`
-	Title                 string    `json:"title"`
-	EvidenceItems         []string  `json:"evidence_items"`
-	HistoricalPrecedents  []string  `json:"historical_precedents"`
-	AutonomousReasoning   string    `json:"autonomous_reasoning"`
-	RecommendedAction     string    `json:"recommended_action"`
-	DecisionActionTaken   string    `json:"decision_action_taken"`
-	InvestigatedAt        time.Time `json:"investigated_at"`
+	ReportID             string    `json:"report_id"`
+	TransactionID        string    `json:"transaction_id"`
+	UserID               string    `json:"user_id"`
+	Amount               float64   `json:"amount"`
+	RiskScore            float64   `json:"risk_score"`
+	Title                string    `json:"title"`
+	EvidenceItems        []string  `json:"evidence_items"`
+	HistoricalPrecedents []string  `json:"historical_precedents"`
+	AutonomousReasoning  string    `json:"autonomous_reasoning"`
+	RecommendedAction    string    `json:"recommended_action"`
+	DecisionActionTaken  string    `json:"decision_action_taken"`
+	InvestigatedAt       time.Time `json:"investigated_at"`
 }
 
 // InvestigationShowcaseEngine orchestrates customer and investor showcase investigations.
@@ -56,17 +56,17 @@ func (e *InvestigationShowcaseEngine) RunShowcaseInvestigation(ctx context.Conte
 	}
 
 	return &ShowcaseInvestigationReport{
-		ReportID:            fmt.Sprintf("rep_%d", now.UnixNano()),
-		TransactionID:       txID,
-		UserID:              userID,
-		Amount:              amount,
-		RiskScore:           94.5,
-		Title:               "Account Takeover & Mule Routing Campaign Detected",
-		EvidenceItems:       evidence,
+		ReportID:             fmt.Sprintf("rep_%d", now.UnixNano()),
+		TransactionID:        txID,
+		UserID:               userID,
+		Amount:               amount,
+		RiskScore:            94.5,
+		Title:                "Account Takeover & Mule Routing Campaign Detected",
+		EvidenceItems:        evidence,
 		HistoricalPrecedents: forensicReport.SimilarPrecedents,
-		AutonomousReasoning: forensicReport.FraudExplanation,
-		RecommendedAction:   "Step-Up WebAuthn Challenge & Freeze Outbound Settlement Rails",
-		DecisionActionTaken: "AUTONOMOUS_BLOCK",
-		InvestigatedAt:      now,
+		AutonomousReasoning:  forensicReport.FraudExplanation,
+		RecommendedAction:    "Step-Up WebAuthn Challenge & Freeze Outbound Settlement Rails",
+		DecisionActionTaken:  "AUTONOMOUS_BLOCK",
+		InvestigatedAt:       now,
 	}, nil
 }

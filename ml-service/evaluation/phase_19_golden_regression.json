@@ -1,0 +1,38 @@
+{
+  "suite_version": "1.0.0",
+  "total_cases": 3,
+  "passed_cases": 3,
+  "cases": [
+    {
+      "case_id": "GOLDEN_01_LEGIT_LOW_VAL",
+      "expected_probability": 0.009556,
+      "actual_probability": 0.009556,
+      "expected_decision": "ALLOW",
+      "actual_decision": "ALLOW",
+      "expected_risk_tier": "LOW_RISK",
+      "actual_risk_tier": "LOW_RISK",
+      "status": "PASS"
+    },
+    {
+      "case_id": "GOLDEN_02_BORDERLINE_MODERATE",
+      "expected_probability": 0.060487,
+      "actual_probability": 0.060487,
+      "expected_decision": "ALLOW",
+      "actual_decision": "ALLOW",
+      "expected_risk_tier": "MODERATE_RISK",
+      "actual_risk_tier": "MODERATE_RISK",
+      "status": "PASS"
+    },
+    {
+      "case_id": "GOLDEN_03_HIGH_RISK_BURST",
+      "expected_probability": 0.088158,
+      "actual_probability": 0.088158,
+      "expected_decision": "DECLINE",
+      "actual_decision": "DECLINE",
+      "expected_risk_tier": "MODERATE_RISK",
+      "actual_risk_tier": "MODERATE_RISK",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}

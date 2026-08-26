@@ -7,13 +7,13 @@ import (
 
 // DigitalTwinResult models the projected impact of counter-fraud policy or containment simulations.
 type DigitalTwinResult struct {
-	ScenarioName             string    `json:"scenario_name"`
-	ProjectedFraudPrevented  float64   `json:"projected_fraud_prevented"`
-	ProjectedFalsePositives  int       `json:"projected_false_positives"`
-	ProjectedLegitimateImpact float64  `json:"projected_legitimate_impact"` // $ value of good transactions blocked
-	ROIProjectedRatio        float64   `json:"roi_projected_ratio"`
-	Recommendation           string    `json:"recommendation"` // "HIGHLY_RECOMMENDED", "PROCEED_WITH_CANARY", "REJECT"
-	SimulatedAt              time.Time `json:"simulated_at"`
+	ScenarioName              string    `json:"scenario_name"`
+	ProjectedFraudPrevented   float64   `json:"projected_fraud_prevented"`
+	ProjectedFalsePositives   int       `json:"projected_false_positives"`
+	ProjectedLegitimateImpact float64   `json:"projected_legitimate_impact"` // $ value of good transactions blocked
+	ROIProjectedRatio         float64   `json:"roi_projected_ratio"`
+	Recommendation            string    `json:"recommendation"` // "HIGHLY_RECOMMENDED", "PROCEED_WITH_CANARY", "REJECT"
+	SimulatedAt               time.Time `json:"simulated_at"`
 }
 
 // FraudDigitalTwin provides predictive sandbox simulations for "what-if" risk scenario testing.

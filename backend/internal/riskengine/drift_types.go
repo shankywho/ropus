@@ -139,13 +139,13 @@ type DriftMeasurement struct {
 
 // DriftSummary provides a concise operational status payload for system status aggregation.
 type DriftSummary struct {
-	Status            ModelDriftStatus `json:"status"`
-	MaxPSI            float64          `json:"max_psi"`
-	MaxJSD            float64          `json:"max_jsd"`
-	MaxKL             float64          `json:"max_kl"`
-	DriftedFeatures   int              `json:"drifted_features"`
-	CriticalFeatures  int              `json:"critical_features"`
-	LastCalculatedAt  string           `json:"last_calculated_at"`
-	BaselineID        string           `json:"baseline_id,omitempty"`
-	BaselineSource    string           `json:"baseline_source,omitempty"`
+	Status           ModelDriftStatus `json:"status"`
+	MaxPSI           float64          `json:"max_psi"`
+	MaxJSD           float64          `json:"max_jsd"`
+	MaxKL            float64          `json:"max_kl"`
+	DriftedFeatures  int              `json:"drifted_features"`
+	CriticalFeatures int              `json:"critical_features"`
+	LastCalculatedAt string           `json:"last_calculated_at"`
+	BaselineID       string           `json:"baseline_id,omitempty"`
+	BaselineSource   string           `json:"baseline_source,omitempty"`
 }

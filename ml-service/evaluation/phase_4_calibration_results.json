@@ -1,0 +1,495 @@
+{
+  "phase": "Phase 4: Probability Calibration",
+  "uncalibrated_baseline": {
+    "brier_score": 0.18437708914279938,
+    "ece": 0.36425698901216197,
+    "mce": 0.5568408370018005,
+    "log_loss": 0.5572646856307983,
+    "mean_prob": 0.41092365980148315
+  },
+  "calibrator_comparison_val": {
+    "Raw (Uncalibrated)": {
+      "brier_score": 0.18437708914279938,
+      "ece": 0.36425698901216197,
+      "mce": 0.5568408370018005,
+      "log_loss": 0.5572646856307983,
+      "mean_predicted_probability": 0.41092365980148315,
+      "observed_prevalence": 0.04666666666666667,
+      "roc_auc": 0.7273507742257741,
+      "pr_auc": 0.18940973859522386,
+      "reliability_table": [
+        {
+          "bin": 0,
+          "range": [
+            0.0,
+            0.2
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.1,
+          "fraud_count": 0
+        },
+        {
+          "bin": 1,
+          "range": [
+            0.2,
+            0.4
+          ],
+          "count": 800,
+          "percentage": 66.67,
+          "observed_fraud_rate": 0.02,
+          "mean_predicted_prob": 0.3234,
+          "fraud_count": 16
+        },
+        {
+          "bin": 2,
+          "range": [
+            0.4,
+            0.6
+          ],
+          "count": 246,
+          "percentage": 20.5,
+          "observed_fraud_rate": 0.0732,
+          "mean_predicted_prob": 0.5181,
+          "fraud_count": 18
+        },
+        {
+          "bin": 3,
+          "range": [
+            0.6,
+            0.8
+          ],
+          "count": 151,
+          "percentage": 12.58,
+          "observed_fraud_rate": 0.1391,
+          "mean_predicted_prob": 0.6923,
+          "fraud_count": 21
+        },
+        {
+          "bin": 4,
+          "range": [
+            0.8,
+            1.0
+          ],
+          "count": 3,
+          "percentage": 0.25,
+          "observed_fraud_rate": 0.3333,
+          "mean_predicted_prob": 0.813,
+          "fraud_count": 1
+        }
+      ]
+    },
+    "Odds-Correction (Analytical w=21.05)": {
+      "brier_score": 0.04261112958192825,
+      "ece": 0.008593281470239163,
+      "mce": 0.06938788839685384,
+      "log_loss": 0.17204178869724274,
+      "mean_predicted_probability": 0.03807338699698448,
+      "observed_prevalence": 0.04666666666666667,
+      "roc_auc": 0.7273507742257741,
+      "pr_auc": 0.18940973859522386,
+      "reliability_table": [
+        {
+          "bin": 0,
+          "range": [
+            0.0,
+            0.2
+          ],
+          "count": 1200,
+          "percentage": 100.0,
+          "observed_fraud_rate": 0.0467,
+          "mean_predicted_prob": 0.0381,
+          "fraud_count": 56
+        },
+        {
+          "bin": 1,
+          "range": [
+            0.2,
+            0.4
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.3,
+          "fraud_count": 0
+        },
+        {
+          "bin": 2,
+          "range": [
+            0.4,
+            0.6
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.5,
+          "fraud_count": 0
+        },
+        {
+          "bin": 3,
+          "range": [
+            0.6,
+            0.8
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.7,
+          "fraud_count": 0
+        },
+        {
+          "bin": 4,
+          "range": [
+            0.8,
+            1.0
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.9,
+          "fraud_count": 0
+        }
+      ]
+    },
+    "Platt / Sigmoid Calibration": {
+      "brier_score": 0.04210978373885155,
+      "ece": 0.008709958186373113,
+      "mce": 0.1556491106748581,
+      "log_loss": 0.16995957493782043,
+      "mean_predicted_probability": 0.04666056111454964,
+      "observed_prevalence": 0.04666666666666667,
+      "roc_auc": 0.7273507742257741,
+      "pr_auc": 0.18940973859522386,
+      "reliability_table": [
+        {
+          "bin": 0,
+          "range": [
+            0.0,
+            0.2
+          ],
+          "count": 1176,
+          "percentage": 98.0,
+          "observed_fraud_rate": 0.04,
+          "mean_predicted_prob": 0.0431,
+          "fraud_count": 47
+        },
+        {
+          "bin": 1,
+          "range": [
+            0.2,
+            0.4
+          ],
+          "count": 24,
+          "percentage": 2.0,
+          "observed_fraud_rate": 0.375,
+          "mean_predicted_prob": 0.2194,
+          "fraud_count": 9
+        },
+        {
+          "bin": 2,
+          "range": [
+            0.4,
+            0.6
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.5,
+          "fraud_count": 0
+        },
+        {
+          "bin": 3,
+          "range": [
+            0.6,
+            0.8
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.7,
+          "fraud_count": 0
+        },
+        {
+          "bin": 4,
+          "range": [
+            0.8,
+            1.0
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.9,
+          "fraud_count": 0
+        }
+      ]
+    },
+    "Isotonic Regression": {
+      "brier_score": 0.04008462280035019,
+      "ece": 3.4117450298185483e-09,
+      "mce": 1.1284374490383442e-08,
+      "log_loss": 0.16001960635185242,
+      "mean_predicted_probability": 0.046666666865348816,
+      "observed_prevalence": 0.04666666666666667,
+      "roc_auc": 0.7578046953046954,
+      "pr_auc": 0.19493713208452995,
+      "reliability_table": [
+        {
+          "bin": 0,
+          "range": [
+            0.0,
+            0.2
+          ],
+          "count": 1180,
+          "percentage": 98.33,
+          "observed_fraud_rate": 0.0398,
+          "mean_predicted_prob": 0.0398,
+          "fraud_count": 47
+        },
+        {
+          "bin": 1,
+          "range": [
+            0.2,
+            0.4
+          ],
+          "count": 4,
+          "percentage": 0.33,
+          "observed_fraud_rate": 0.25,
+          "mean_predicted_prob": 0.25,
+          "fraud_count": 1
+        },
+        {
+          "bin": 2,
+          "range": [
+            0.4,
+            0.6
+          ],
+          "count": 15,
+          "percentage": 1.25,
+          "observed_fraud_rate": 0.4667,
+          "mean_predicted_prob": 0.4667,
+          "fraud_count": 7
+        },
+        {
+          "bin": 3,
+          "range": [
+            0.6,
+            0.8
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.7,
+          "fraud_count": 0
+        },
+        {
+          "bin": 4,
+          "range": [
+            0.8,
+            1.0
+          ],
+          "count": 1,
+          "percentage": 0.08,
+          "observed_fraud_rate": 1.0,
+          "mean_predicted_prob": 1.0,
+          "fraud_count": 1
+        }
+      ]
+    },
+    "Beta Calibration": {
+      "brier_score": 0.042109519243240356,
+      "ece": 0.009119649815062681,
+      "mce": 0.2221103575494554,
+      "log_loss": 0.16999317705631256,
+      "mean_predicted_probability": 0.04671468213200569,
+      "observed_prevalence": 0.04666666666666667,
+      "roc_auc": 0.7273507742257741,
+      "pr_auc": 0.18940973859522386,
+      "reliability_table": [
+        {
+          "bin": 0,
+          "range": [
+            0.0,
+            0.2
+          ],
+          "count": 1182,
+          "percentage": 98.5,
+          "observed_fraud_rate": 0.0406,
+          "mean_predicted_prob": 0.044,
+          "fraud_count": 48
+        },
+        {
+          "bin": 1,
+          "range": [
+            0.2,
+            0.4
+          ],
+          "count": 18,
+          "percentage": 1.5,
+          "observed_fraud_rate": 0.4444,
+          "mean_predicted_prob": 0.2223,
+          "fraud_count": 8
+        },
+        {
+          "bin": 2,
+          "range": [
+            0.4,
+            0.6
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.5,
+          "fraud_count": 0
+        },
+        {
+          "bin": 3,
+          "range": [
+            0.6,
+            0.8
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.7,
+          "fraud_count": 0
+        },
+        {
+          "bin": 4,
+          "range": [
+            0.8,
+            1.0
+          ],
+          "count": 0,
+          "percentage": 0.0,
+          "observed_fraud_rate": 0.0,
+          "mean_predicted_prob": 0.9,
+          "fraud_count": 0
+        }
+      ]
+    }
+  },
+  "selected_calibrator": "Beta Calibration",
+  "validation_reliability_table": [
+    {
+      "bin": 0,
+      "range": [
+        0.0,
+        0.1
+      ],
+      "count": 1066,
+      "percentage": 88.83,
+      "observed_fraud_rate": 0.0347,
+      "mean_predicted_prob": 0.0334,
+      "fraud_count": 37
+    },
+    {
+      "bin": 1,
+      "range": [
+        0.1,
+        0.2
+      ],
+      "count": 116,
+      "percentage": 9.67,
+      "observed_fraud_rate": 0.0948,
+      "mean_predicted_prob": 0.1422,
+      "fraud_count": 11
+    },
+    {
+      "bin": 2,
+      "range": [
+        0.2,
+        0.3
+      ],
+      "count": 18,
+      "percentage": 1.5,
+      "observed_fraud_rate": 0.4444,
+      "mean_predicted_prob": 0.2223,
+      "fraud_count": 8
+    },
+    {
+      "bin": 3,
+      "range": [
+        0.3,
+        0.4
+      ],
+      "count": 0,
+      "percentage": 0.0,
+      "observed_fraud_rate": 0.0,
+      "mean_predicted_prob": 0.35,
+      "fraud_count": 0
+    },
+    {
+      "bin": 4,
+      "range": [
+        0.4,
+        0.5
+      ],
+      "count": 0,
+      "percentage": 0.0,
+      "observed_fraud_rate": 0.0,
+      "mean_predicted_prob": 0.45,
+      "fraud_count": 0
+    },
+    {
+      "bin": 5,
+      "range": [
+        0.5,
+        0.6
+      ],
+      "count": 0,
+      "percentage": 0.0,
+      "observed_fraud_rate": 0.0,
+      "mean_predicted_prob": 0.55,
+      "fraud_count": 0
+    },
+    {
+      "bin": 6,
+      "range": [
+        0.6,
+        0.7
+      ],
+      "count": 0,
+      "percentage": 0.0,
+      "observed_fraud_rate": 0.0,
+      "mean_predicted_prob": 0.65,
+      "fraud_count": 0
+    },
+    {
+      "bin": 7,
+      "range": [
+        0.7,
+        0.8
+      ],
+      "count": 0,
+      "percentage": 0.0,
+      "observed_fraud_rate": 0.0,
+      "mean_predicted_prob": 0.75,
+      "fraud_count": 0
+    },
+    {
+      "bin": 8,
+      "range": [
+        0.8,
+        0.9
+      ],
+      "count": 0,
+      "percentage": 0.0,
+      "observed_fraud_rate": 0.0,
+      "mean_predicted_prob": 0.85,
+      "fraud_count": 0
+    },
+    {
+      "bin": 9,
+      "range": [
+        0.9,
+        1.0
+      ],
+      "count": 0,
+      "percentage": 0.0,
+      "observed_fraud_rate": 0.0,
+      "mean_predicted_prob": 0.95,
+      "fraud_count": 0
+    }
+  ]
+}

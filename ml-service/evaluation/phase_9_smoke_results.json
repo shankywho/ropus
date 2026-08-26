@@ -1,0 +1,58 @@
+{
+  "smoke_tests": [
+    {
+      "scenario": "1. Normal Low-Risk Txn",
+      "status": "SUCCESS",
+      "amount": 45.0,
+      "fraud_probability": 0.021547,
+      "decision": "ALLOW",
+      "expected": "ALLOW",
+      "pass": true
+    },
+    {
+      "scenario": "2. Suspicious High-Value Txn",
+      "status": "SUCCESS",
+      "amount": 14500.0,
+      "fraud_probability": 0.020549,
+      "decision": "DECLINE",
+      "expected": "DECLINE",
+      "pass": true
+    },
+    {
+      "scenario": "3. Malformed Payload",
+      "status": "FAIL_SAFE_ERROR",
+      "amount": 0.0,
+      "fraud_probability": 0.5,
+      "decision": "MANUAL_REVIEW",
+      "expected": "MANUAL_REVIEW",
+      "pass": true
+    },
+    {
+      "scenario": "4. Missing Required Input",
+      "status": "FAIL_SAFE_ERROR",
+      "amount": 0.0,
+      "fraud_probability": 0.5,
+      "decision": "MANUAL_REVIEW",
+      "expected": "MANUAL_REVIEW",
+      "pass": true
+    },
+    {
+      "scenario": "5. NaN / Infinity Input",
+      "status": "FAIL_SAFE_ERROR",
+      "amount": 0.0,
+      "fraud_probability": 0.5,
+      "decision": "MANUAL_REVIEW",
+      "expected": "MANUAL_REVIEW",
+      "pass": true
+    },
+    {
+      "scenario": "6. Unknown Categoricals",
+      "status": "FAIL_SAFE_ERROR",
+      "amount": 0.0,
+      "fraud_probability": 0.5,
+      "decision": "MANUAL_REVIEW",
+      "expected": "MANUAL_REVIEW",
+      "pass": true
+    }
+  ]
+}

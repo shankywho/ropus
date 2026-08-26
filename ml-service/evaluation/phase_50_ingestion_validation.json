@@ -1,0 +1,7 @@
+{
+  "total_ingested_events": 6,
+  "duplicate_suppressions": 1,
+  "malformed_rejections": 1,
+  "shadow_exceptions_logged": 0,
+  "fail_open_guarantee": "100% VERIFIED"
+}

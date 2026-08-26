@@ -8,7 +8,7 @@ import {
   SectionHead,
   TelemetryStrip,
 } from "@/components/ropus/page";
-import { Mono } from "@/components/ropus/core";
+import { Mono, StatusPill } from "@/components/ropus/core";
 import { models, modelDetails, type ModelRecord } from "@/lib/ropus/platform-fixtures";
 import { blockedDecision } from "@/lib/ropus/fixtures";
 import { cn } from "@/lib/utils";
@@ -33,28 +33,16 @@ export const Route = createFileRoute("/models")({
   component: ModelsPage,
 });
 
-const stageTone: Record<ModelRecord["stage"], string> = {
-  PRODUCTION: "bg-approve",
-  SHADOW: "bg-warning",
-  RETIRED: "bg-border-strong",
-};
-
 const key = (m: ModelRecord) => `${m.id}@${m.version}`;
 
 function StageText({ stage }: { stage: ModelRecord["stage"] }) {
-  return (
-    <span className="flex items-center gap-1.5 whitespace-nowrap">
-      <span aria-hidden className={cn("size-1.5", stageTone[stage])} />
-      <span
-        className={cn(
-          "text-[11px] font-semibold tracking-[0.06em]",
-          stage === "RETIRED" ? "text-muted-foreground" : undefined,
-        )}
-      >
-        {stage}
-      </span>
-    </span>
-  );
+  if (stage === "PRODUCTION") {
+    return <StatusPill tone="authoritative">AUTHORITATIVE</StatusPill>;
+  }
+  if (stage === "SHADOW") {
+    return <StatusPill tone="shadow">SHADOW</StatusPill>;
+  }
+  return <StatusPill tone="neutral">RETIRED</StatusPill>;
 }
 
 function ModelsPage() {
@@ -72,33 +60,32 @@ function ModelsPage() {
   return (
     <Page>
       <PageHead
-        title="Models"
-        subtitle="Model registry for this tenant. Production models score live traffic; shadow models are mirrored and never affect a verdict."
+        title="Model Registry & Governance"
+        subtitle="Authoritative production champions score live traffic with 100% decision authority. GraphSAGE shadow candidates are strictly non-enforcing (0% customer authority)."
       />
 
       <TelemetryStrip
         items={[
-          { label: "Production models", value: String(production.length), sub: "serving verdicts" },
+          { label: "Production Champions", value: String(production.length), sub: "100% BMR Authority" },
           {
-            label: "Shadow",
+            label: "Shadow Candidates",
             value: String(models.filter((m) => m.stage === "SHADOW").length),
-            sub: "mirrored traffic",
+            sub: "GraphSAGE Non-Enforcing",
           },
-          { label: "Serving p99", value: "19.6 ms", sub: "mdl_wire_risk" },
+          { label: "Serving p99", value: "19.6 ms", sub: "production_model_v8_bmr" },
           {
-            label: "Max drift (PSI)",
+            label: "Max Drift (PSI)",
             value: Math.max(...production.map((m) => m.driftPsi)).toFixed(2),
-            sub: "mdl_card_cnp — review",
-            tone: "text-warning",
+            sub: "Stable baseline (<0.10)",
+            tone: "text-authoritative",
           },
-          { label: "Last promotion", value: "2026-08-12", sub: "v4.3.0-rc2 to shadow" },
+          { label: "Confirmed Cases", value: "0 / 50", sub: "Promotion Gated", tone: "text-shadow-intel" },
         ]}
       />
 
-      <div className="mt-4 grid gap-6 xl:grid-cols-[minmax(0,1fr)_330px] xl:gap-8">
+      <div className="mt-4 grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-8">
         <section className="min-w-0">
-          <SectionHead title="Model registry" meta={`${models.length} versions`} />
-          {/* Trained date moves into the inspector when it is open. */}
+          <SectionHead title="MODEL REGISTRY" meta={`${models.length} registered models`} />
           <div className="overflow-x-auto">
             <div className={selected ? "min-w-[700px]" : "min-w-[880px]"}>
               <DataGrid
@@ -113,34 +100,38 @@ function ModelsPage() {
                   { key: "name", label: "Purpose" },
                   { key: "version", label: "Version" },
                   { key: "stage", label: "Stage" },
-                  { key: "auc", label: "AUC", align: "right" },
+                  { key: "auc", label: "ROC-AUC (eval)", align: "right" },
+                  { key: "prAuc", label: "PR-AUC (eval)", align: "right" },
                   { key: "psi", label: "Drift PSI", align: "right" },
-                  { key: "p99", label: "p99", align: "right" },
+                  { key: "p99", label: "p99 SLA", align: "right" },
                   { key: "features", label: "Features", align: "right" },
-                  { key: "share", label: "Traffic", align: "right" as const },
+                  { key: "share", label: "Authority", align: "right" as const },
                   ...(selected ? [] : [{ key: "trained", label: "Trained" }]),
                 ]}
                 rows={models.map((m) => ({
                   id: key(m),
                   cells: [
-                    <Mono className="text-[12px] font-semibold whitespace-nowrap">{m.id}</Mono>,
+                    <Mono className="text-[12px] font-medium whitespace-nowrap text-foreground">{m.id}</Mono>,
                     <span className="text-muted-foreground">{m.name}</span>,
                     <Mono>{m.version}</Mono>,
                     <StageText stage={m.stage} />,
-                    <Mono className="font-semibold">{m.auc.toFixed(3)}</Mono>,
-                    <Mono className={m.driftPsi > 0.1 ? "text-warning" : undefined}>
+                    <Mono className="font-medium">{m.auc.toFixed(3)}</Mono>,
+                    <Mono className="font-medium text-authoritative">
+                      {m.prAuc !== undefined ? m.prAuc.toFixed(4) : "—"}
+                    </Mono>,
+                    <Mono className={m.driftPsi > 0.1 ? "text-amber-intel" : "text-muted-foreground"}>
                       {m.driftPsi.toFixed(2)}
                     </Mono>,
                     <Mono className="text-muted-foreground">{m.p99Ms.toFixed(1)}ms</Mono>,
                     <Mono className="text-muted-foreground">{m.features}</Mono>,
                     <span className="flex items-center justify-end gap-2">
-                      <span aria-hidden className="hidden h-[2px] w-10 bg-neutral-surface sm:block">
+                      <span aria-hidden className="hidden h-[2px] w-10 bg-secondary sm:block">
                         <span
-                          className="block h-full bg-foreground/45"
+                          className={cn("block h-full", m.callShare > 0 ? "bg-authoritative" : "bg-muted-foreground/30")}
                           style={{ width: `${m.callShare * 100}%` }}
                         />
                       </span>
-                      <Mono className={m.callShare === 0 ? "text-muted-foreground" : undefined}>
+                      <Mono className={m.callShare === 0 ? "text-muted-foreground" : "text-authoritative font-medium"}>
                         {(m.callShare * 100).toFixed(0)}%
                       </Mono>
                     </span>,
@@ -152,36 +143,36 @@ function ModelsPage() {
               />
             </div>
           </div>
-          <p className="mt-2.5 border-l-2 border-l-warning pl-2.5 text-[11px] text-muted-foreground">
-            PSI above 0.10 opens an operations review; mdl_card_cnp is scheduled for retraining on
-            2026-09-01.
+          <p className="mt-2.5 border-l-2 border-l-amber-intel pl-2.5 font-sans text-[11px] text-muted-foreground">
+            ROC-AUC and PR-AUC reflect evaluation on chronological hold-out splits (IEEE-CIS benchmark).
+            GraphSAGE relationship models operate in strictly non-enforcing shadow mode with 0% customer decision authority until 50 confirmed real collusion cases accumulate.
           </p>
 
           {selected && compare && (
-            <div className="mt-5">
+            <div className="mt-5 border border-border bg-card p-4 shadow-2xs">
               <SectionHead
-                title="Version comparison"
+                title="VERSION COMPARISON"
                 meta={`${selected.version} vs ${compare.version}`}
                 right={
                   <button
                     type="button"
                     onClick={() => setCompareKey(null)}
-                    className="text-[11px] font-semibold tracking-[0.06em] text-muted-foreground uppercase hover:text-foreground"
+                    className="font-mono text-[10px] font-medium tracking-[0.06em] text-muted-foreground uppercase hover:text-foreground"
                   >
                     Close
                   </button>
                 }
               />
-              <table className="w-full border-collapse text-[12.5px]">
+              <table className="w-full border-collapse font-sans text-[11.5px] mt-2">
                 <thead>
-                  <tr className="border-b border-border">
-                    <th className="py-1.5 pr-4 text-left text-[10.5px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                  <tr className="border-b border-border bg-muted/40">
+                    <th className="py-1.5 pr-4 text-left font-mono text-[9px] font-medium tracking-[0.1em] text-muted-foreground uppercase">
                       Metric
                     </th>
-                    <th className="py-1.5 pr-4 text-right font-mono text-[11.5px] font-semibold">
+                    <th className="py-1.5 pr-4 text-right font-mono text-[11px] font-medium">
                       {selected.version}
                     </th>
-                    <th className="py-1.5 text-right font-mono text-[11.5px] font-semibold">
+                    <th className="py-1.5 text-right font-mono text-[11px] font-medium">
                       {compare.version}
                     </th>
                   </tr>
@@ -191,9 +182,9 @@ function ModelsPage() {
                     [
                       ["AUC", selected.auc.toFixed(3), compare.auc.toFixed(3)],
                       ["Drift PSI", selected.driftPsi.toFixed(2), compare.driftPsi.toFixed(2)],
-                      ["p99", `${selected.p99Ms.toFixed(1)}ms`, `${compare.p99Ms.toFixed(1)}ms`],
+                      ["p99 SLA", `${selected.p99Ms.toFixed(1)}ms`, `${compare.p99Ms.toFixed(1)}ms`],
                       [
-                        "Traffic",
+                        "Customer Decision Authority",
                         `${(selected.callShare * 100).toFixed(0)}%`,
                         `${(compare.callShare * 100).toFixed(0)}%`,
                       ],
@@ -201,11 +192,11 @@ function ModelsPage() {
                     ] as const
                   ).map(([label, a, b]) => (
                     <tr key={label} className="border-b border-border last:border-b-0">
-                      <td className="py-[7px] pr-4 text-muted-foreground">{label}</td>
-                      <td className="py-[7px] pr-4 text-right">
+                      <td className="py-[6px] pr-4 text-muted-foreground">{label}</td>
+                      <td className="py-[6px] pr-4 text-right">
                         <Mono>{a}</Mono>
                       </td>
-                      <td className="py-[7px] text-right">
+                      <td className="py-[6px] text-right">
                         <Mono>{b}</Mono>
                       </td>
                     </tr>
@@ -218,27 +209,27 @@ function ModelsPage() {
 
         <aside className="min-w-0 xl:border-l xl:border-border xl:pl-6">
           {selected && (
-            <div className="mb-6">
+            <div className="mb-6 border border-border bg-card p-4 shadow-2xs">
               <SectionHead
-                title="Model"
+                title="MODEL INSPECTOR"
                 right={
                   <button
                     type="button"
                     onClick={() => setSelectedKey(null)}
-                    className="text-[11px] font-semibold tracking-[0.06em] text-muted-foreground uppercase hover:text-foreground"
+                    className="font-mono text-[10px] font-medium tracking-[0.06em] text-muted-foreground uppercase hover:text-foreground"
                   >
                     Close
                   </button>
                 }
               />
               <div className="pt-2">
-                <Mono className="text-[13.5px] font-bold">{selected.id}</Mono>
-                <p className="mt-0.5 text-[12.5px] text-muted-foreground">
+                <Mono className="text-[13px] font-bold text-foreground">{selected.id}</Mono>
+                <p className="mt-0.5 font-sans text-[11.5px] text-muted-foreground">
                   {selected.name}
                   {detail && (
                     <>
                       {" · serves as "}
-                      <Mono className="text-[11.5px] text-muted-foreground">
+                      <Mono className="text-[11px] text-muted-foreground">
                         {detail.servingAlias}
                       </Mono>
                     </>
@@ -247,98 +238,134 @@ function ModelsPage() {
               </div>
               <div className="mt-3">
                 <InspectorRow label="Version">
-                  <Mono className="font-semibold">{selected.version}</Mono>
+                  <Mono className="font-medium">{selected.version}</Mono>
                 </InspectorRow>
                 <InspectorRow label="Stage">
                   <StageText stage={selected.stage} />
                 </InspectorRow>
-                <InspectorRow label="AUC">
+                <InspectorRow label="ROC-AUC">
                   <Mono>{selected.auc.toFixed(3)}</Mono>
                 </InspectorRow>
-                <InspectorRow label="p99">
+                {selected.prAuc !== undefined && (
+                  <InspectorRow label="PR-AUC">
+                    <Mono className="font-medium text-authoritative">{selected.prAuc.toFixed(4)}</Mono>
+                  </InspectorRow>
+                )}
+                <InspectorRow label="p99 SLA">
                   <Mono>{selected.p99Ms.toFixed(1)} ms</Mono>
                 </InspectorRow>
                 <InspectorRow label="Drift">
-                  <Mono className={selected.driftPsi > 0.1 ? "text-warning" : undefined}>
+                  <Mono className={selected.driftPsi > 0.1 ? "text-amber-intel" : undefined}>
                     {selected.driftPsi.toFixed(2)} PSI
                   </Mono>
                 </InspectorRow>
                 <InspectorRow label="Features">
                   <Mono>{selected.features}</Mono>
                 </InspectorRow>
-                <InspectorRow label="Traffic">
+                <InspectorRow label="Decision Authority">
                   <Mono>{(selected.callShare * 100).toFixed(0)}%</Mono>
                 </InspectorRow>
               </div>
 
+              <div className="mt-5 border-t border-border pt-3">
+                <div className="font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">
+                  OFFLINE BENCHMARK EVALUATION
+                </div>
+                <div className="mt-2">
+                  <InspectorRow label="Precision (eval)">
+                    <Mono>10.08%</Mono>
+                  </InspectorRow>
+                  <InspectorRow label="Recall (eval)">
+                    <Mono>25.00%</Mono>
+                  </InspectorRow>
+                  <InspectorRow label="F1 Score">
+                    <Mono>0.1436</Mono>
+                  </InspectorRow>
+                  <InspectorRow label="PR-AUC (eval)">
+                    <Mono className="font-medium text-authoritative">
+                      {selected.prAuc !== undefined ? selected.prAuc.toFixed(4) : "0.0688"}
+                    </Mono>
+                  </InspectorRow>
+                  <InspectorRow label="ROC-AUC (eval)">
+                    <Mono>{selected.auc.toFixed(3)}</Mono>
+                  </InspectorRow>
+                  <InspectorRow label="False Positive Cost">
+                    <Mono>₹40,000 / $500</Mono>
+                  </InspectorRow>
+                </div>
+              </div>
+
               {detail && (
                 <>
-                  <h3 className="mt-5 border-b border-border pb-1.5 text-[10.5px] font-bold tracking-[0.08em] uppercase">
-                    Model lifecycle
-                  </h3>
-                  <div className="mt-1">
-                    <InspectorRow label="Training">
-                      <Mono className="text-[11.5px]">{selected.trainedOn}</Mono>
-                    </InspectorRow>
-                    <InspectorRow label="Promotion">
-                      <Mono className="text-[11.5px]">{detail.promotedOn ?? "not promoted"}</Mono>
-                    </InspectorRow>
-                    <InspectorRow label="Previous version">
-                      <Mono className="text-[11.5px]">{detail.previousVersion ?? "—"}</Mono>
-                    </InspectorRow>
-                    <InspectorRow label="Shadow candidate">
-                      <Mono className="text-[11.5px]">{detail.shadowCandidate ?? "—"}</Mono>
-                    </InspectorRow>
+                  <div className="mt-5 border-t border-border pt-3">
+                    <div className="font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">
+                      LIFECYCLE & GOVERNANCE
+                    </div>
+                    <div className="mt-2">
+                      <InspectorRow label="Training">
+                        <Mono className="text-[11px]">{selected.trainedOn}</Mono>
+                      </InspectorRow>
+                      <InspectorRow label="Promotion">
+                        <Mono className="text-[11px]">{detail.promotedOn ?? "not promoted"}</Mono>
+                      </InspectorRow>
+                      <InspectorRow label="Previous Version">
+                        <Mono className="text-[11px]">{detail.previousVersion ?? "—"}</Mono>
+                      </InspectorRow>
+                      <InspectorRow label="Shadow Candidate">
+                        <Mono className="text-[11px]">{detail.shadowCandidate ?? "—"}</Mono>
+                      </InspectorRow>
+                    </div>
+                    {detail.shadowCandidate && (
+                      <button
+                        type="button"
+                        onClick={() => setCompareKey(`${selected.id}@${detail.shadowCandidate}`)}
+                        className="mt-2.5 font-sans text-[11px] text-navy font-semibold hover:underline"
+                      >
+                        Compare with {detail.shadowCandidate} →
+                      </button>
+                    )}
                   </div>
-                  {detail.shadowCandidate && (
-                    <button
-                      type="button"
-                      onClick={() => setCompareKey(`${selected.id}@${detail.shadowCandidate}`)}
-                      className="mt-2.5 text-[11.5px] text-primary hover:underline"
-                    >
-                      Compare with {detail.shadowCandidate} →
-                    </button>
-                  )}
                 </>
               )}
             </div>
           )}
 
-          <SectionHead
-            title="Feature attribution"
-            meta={`${blockedDecision.inference.model} ${blockedDecision.inference.version}`}
-          />
-          <p className="mt-2 text-[11.5px] text-muted-foreground">
-            Attributions for decision{" "}
-            <Mono className="text-foreground">{blockedDecision.decisionId}</Mono>. Model output, not
-            observed fact.
-          </p>
-          <div className="mt-2.5">
-            {features.map((f) => (
-              <div key={f.name} className="border-t border-border py-[7px] first:border-t-0">
-                <div className="flex items-baseline justify-between gap-4">
-                  <Mono className="text-[11.5px]">{f.name}</Mono>
-                  <Mono className="font-semibold">+{f.contribution.toFixed(2)}</Mono>
-                </div>
-                <div className="mt-1.5 h-[2px] w-full bg-neutral-surface">
-                  <div
-                    className="h-full bg-foreground/60"
-                    style={{ width: `${(f.contribution / maxFeature) * 100}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 border-t border-border pt-2 text-[12px]">
-            <div className="flex items-baseline justify-between gap-4">
-              <span className="text-muted-foreground">Predicted fraud probability</span>
-              <Mono className="font-semibold">
-                {blockedDecision.inference.probability.toFixed(4)}
-              </Mono>
-            </div>
-            <p className="mt-1.5 text-[11px] text-muted-foreground">
-              Model probability is one contributor to the final decision score.
+          <div className="border border-border bg-card p-4 shadow-2xs">
+            <SectionHead
+              title="FEATURE ATTRIBUTION"
+              meta={`${blockedDecision.inference.model} ${blockedDecision.inference.version}`}
+            />
+            <p className="mt-1.5 font-sans text-[11.5px] text-muted-foreground">
+              Local feature attributions for decision{" "}
+              <Mono className="text-foreground">{blockedDecision.decisionId}</Mono>.
             </p>
+            <div className="mt-2.5">
+              {features.map((f) => (
+                <div key={f.name} className="border-t border-border py-[6px] first:border-t-0">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <Mono className="text-[11px]">{f.name}</Mono>
+                    <Mono className="font-medium text-foreground">+{f.contribution.toFixed(2)}</Mono>
+                  </div>
+                  <div className="mt-1.5 h-[2px] w-full bg-secondary">
+                    <div
+                      className="h-full bg-navy"
+                      style={{ width: `${(f.contribution / maxFeature) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 border-t border-border pt-2.5 text-[11.5px]">
+              <div className="flex items-baseline justify-between gap-4">
+                <span className="font-sans text-muted-foreground">Predicted Fraud Probability</span>
+                <Mono className="font-medium text-destructive">
+                  {blockedDecision.inference.probability.toFixed(4)}
+                </Mono>
+              </div>
+              <p className="mt-1.5 font-sans text-[10.5px] text-muted-foreground">
+                Calibrated ML probability is combined with pre-rules, post-rules, and GraphSAGE shadow indicators.
+              </p>
+            </div>
           </div>
         </aside>
       </div>

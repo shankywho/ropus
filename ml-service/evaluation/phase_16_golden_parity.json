@@ -1,0 +1,35 @@
+{
+  "parity_all_passed": true,
+  "cases": [
+    {
+      "case_name": "GOLDEN_01_LEGIT_LOW_VAL",
+      "expected_decision": "ALLOW",
+      "actual_decision": "ALLOW",
+      "expected_p_cal": 0.009556,
+      "actual_p_cal": 0.009556,
+      "decision_match": true,
+      "probability_match": true,
+      "status": "PASS"
+    },
+    {
+      "case_name": "GOLDEN_02_BORDERLINE_MODERATE",
+      "expected_decision": "ALLOW",
+      "actual_decision": "ALLOW",
+      "expected_p_cal": 0.060487,
+      "actual_p_cal": 0.060487,
+      "decision_match": true,
+      "probability_match": true,
+      "status": "PASS"
+    },
+    {
+      "case_name": "GOLDEN_03_HIGH_RISK_BURST",
+      "expected_decision": "DECLINE",
+      "actual_decision": "DECLINE",
+      "expected_p_cal": 0.088158,
+      "actual_p_cal": 0.088158,
+      "decision_match": true,
+      "probability_match": true,
+      "status": "PASS"
+    }
+  ]
+}

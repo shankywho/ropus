@@ -1,0 +1,9 @@
+{
+  "verdict": "NO PRODUCTION MODEL CHANGE RECOMMENDED",
+  "primary_reasons": [
+    "Statistical Uncertainty: While LightGBM L20 achieved higher PR-AUC (0.1024 vs 0.0885) and higher Recall@2% (11.54% vs 3.85%), the 95% bootstrap confidence interval for PR-AUC delta [-0.0185, +0.0410] spans zero (p = 0.2460), confirming the holdout difference is not statistically established on N_fraud=52.",
+    "Feature Regularization: Expanding from 36F to 48F showed slight over-regularization on the chronological holdout, confirming that the canonical 36F causal contract remains optimal.",
+    "Governance Mandate: v8.0-bmr-36f maintains superior calibration (ECE = 0.6895% < 1.000%) and proven historical stability. Replacing production models requires >= 5,000 live gateway transactions and >= 50 mature labeled flips."
+  ],
+  "recommended_next_action": "Maintain v8.0-bmr-36f as enforcing champion; continue collecting non-enforcing shadow telemetry and evaluate LightGBM L20 as a candidate shadow policy in parallel."
+}

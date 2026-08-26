@@ -1,0 +1,489 @@
+{
+  "feat_importances": [
+    {
+      "feature": "email_domain_risk",
+      "importance": 26.595081999082826
+    },
+    {
+      "feature": "product_cd_encoded",
+      "importance": 17.141847952063397
+    },
+    {
+      "feature": "transaction_hour",
+      "importance": 8.745944712126228
+    },
+    {
+      "feature": "sin_tx_hour",
+      "importance": 4.744317820796457
+    },
+    {
+      "feature": "cos_tx_hour",
+      "importance": 4.518033495647392
+    },
+    {
+      "feature": "device_amount_sum_24h",
+      "importance": 4.092575893523689
+    },
+    {
+      "feature": "amount_to_mean_ratio",
+      "importance": 3.6154600901056453
+    },
+    {
+      "feature": "is_night",
+      "importance": 3.581260117959538
+    },
+    {
+      "feature": "transaction_day",
+      "importance": 2.785907009011981
+    },
+    {
+      "feature": "device_amount_concentration_5m_1h",
+      "importance": 2.7518206878236815
+    },
+    {
+      "feature": "cos_tx_day",
+      "importance": 2.38454230798896
+    },
+    {
+      "feature": "amount",
+      "importance": 2.3821411775215937
+    },
+    {
+      "feature": "amt_sqrt",
+      "importance": 2.2762485338964673
+    },
+    {
+      "feature": "ip_burst_ratio",
+      "importance": 2.252903085821867
+    },
+    {
+      "feature": "log_amount",
+      "importance": 1.7231867727583006
+    },
+    {
+      "feature": "ip_velocity_24h",
+      "importance": 1.569733831021253
+    },
+    {
+      "feature": "ip_velocity_1h",
+      "importance": 1.4019225934809518
+    },
+    {
+      "feature": "dev_amount_ratio",
+      "importance": 1.1642923815911552
+    },
+    {
+      "feature": "dev_burst_5m_1h",
+      "importance": 1.0986857804424088
+    },
+    {
+      "feature": "sin_tx_day",
+      "importance": 1.0656952149640149
+    },
+    {
+      "feature": "card_type_encoded",
+      "importance": 0.7362647817972776
+    },
+    {
+      "feature": "device_tx_count_1h",
+      "importance": 0.6520543469140189
+    },
+    {
+      "feature": "amt_novelty_risk",
+      "importance": 0.6243814367744487
+    },
+    {
+      "feature": "dist1_missing",
+      "importance": 0.4998795417227929
+    },
+    {
+      "feature": "device_type_mobile",
+      "importance": 0.41291415930725245
+    },
+    {
+      "feature": "token_velocity_24h",
+      "importance": 0.3119071112939688
+    },
+    {
+      "feature": "card_burst_15m_24h",
+      "importance": 0.2735991778149998
+    },
+    {
+      "feature": "device_tx_count_5m",
+      "importance": 0.26352091809642303
+    },
+    {
+      "feature": "tx_acceleration_5m_1h",
+      "importance": 0.17123691601783828
+    },
+    {
+      "feature": "amt_is_round",
+      "importance": 0.12546582489366723
+    },
+    {
+      "feature": "card_burst_5m_1h",
+      "importance": 0.016987459573324228
+    },
+    {
+      "feature": "card_tx_count_15m",
+      "importance": 0.015477430487992548
+    },
+    {
+      "feature": "dev_amt_novelty",
+      "importance": 0.0037497210669574224
+    },
+    {
+      "feature": "device_seen_before",
+      "importance": 0.0009597166112053619
+    },
+    {
+      "feature": "card_tx_count_1h",
+      "importance": 0.0
+    },
+    {
+      "feature": "device_info_missing",
+      "importance": 0.0
+    },
+    {
+      "feature": "card_tx_count_5m",
+      "importance": 0.0
+    },
+    {
+      "feature": "card_category_encoded",
+      "importance": 0.0
+    },
+    {
+      "feature": "card_seen_before",
+      "importance": 0.0
+    }
+  ],
+  "threshold_analysis": [
+    {
+      "threshold": 0.01,
+      "declines": 1198,
+      "decline_rate": 0.9983333333333333,
+      "precision": 0.04257095158597663,
+      "recall": 0.9807692307692307,
+      "f1": 0.0816,
+      "tp": 51,
+      "fp": 1147,
+      "fn": 1,
+      "tn": 1,
+      "fraud_dollars_captured": 10249.449999999999,
+      "fraud_dollars_missed": 15.45,
+      "legit_dollars_declined": 150567.43,
+      "total_cost": 28691.2225
+    },
+    {
+      "threshold": 0.02,
+      "declines": 954,
+      "decline_rate": 0.795,
+      "precision": 0.0440251572327044,
+      "recall": 0.8076923076923077,
+      "f1": 0.08349900596421471,
+      "tp": 42,
+      "fp": 912,
+      "fn": 10,
+      "tn": 236,
+      "fraud_dollars_captured": 8439.6,
+      "fraud_dollars_missed": 1825.3,
+      "legit_dollars_declined": 109384.82,
+      "total_cost": 24716.565
+    },
+    {
+      "threshold": 0.03,
+      "declines": 558,
+      "decline_rate": 0.465,
+      "precision": 0.06093189964157706,
+      "recall": 0.6538461538461539,
+      "f1": 0.11147540983606558,
+      "tp": 34,
+      "fp": 524,
+      "fn": 18,
+      "tn": 624,
+      "fraud_dollars_captured": 6911.8,
+      "fraud_dollars_missed": 3353.1000000000004,
+      "legit_dollars_declined": 65004.45999999999,
+      "total_cost": 16620.755
+    },
+    {
+      "threshold": 0.04,
+      "declines": 400,
+      "decline_rate": 0.3333333333333333,
+      "precision": 0.0725,
+      "recall": 0.5576923076923077,
+      "f1": 0.12831858407079647,
+      "tp": 29,
+      "fp": 371,
+      "fn": 23,
+      "tn": 777,
+      "fraud_dollars_captured": 6092.860000000001,
+      "fraud_dollars_missed": 4172.039999999999,
+      "legit_dollars_declined": 49819.89,
+      "total_cost": 13655.642
+    },
+    {
+      "threshold": 0.05,
+      "declines": 311,
+      "decline_rate": 0.25916666666666666,
+      "precision": 0.08038585209003216,
+      "recall": 0.4807692307692308,
+      "f1": 0.13774104683195593,
+      "tp": 25,
+      "fp": 286,
+      "fn": 27,
+      "tn": 862,
+      "fraud_dollars_captured": 5194.289999999999,
+      "fraud_dollars_missed": 5070.61,
+      "legit_dollars_declined": 41017.16,
+      "total_cost": 12474.1405
+    },
+    {
+      "threshold": 0.06,
+      "declines": 242,
+      "decline_rate": 0.20166666666666666,
+      "precision": 0.0743801652892562,
+      "recall": 0.34615384615384615,
+      "f1": 0.12244897959183673,
+      "tp": 18,
+      "fp": 224,
+      "fn": 34,
+      "tn": 924,
+      "fraud_dollars_captured": 4765.16,
+      "fraud_dollars_missed": 5499.74,
+      "legit_dollars_declined": 33917.98,
+      "total_cost": 11374.726999999999
+    },
+    {
+      "threshold": 0.08,
+      "declines": 157,
+      "decline_rate": 0.13083333333333333,
+      "precision": 0.10191082802547771,
+      "recall": 0.3076923076923077,
+      "f1": 0.15311004784688995,
+      "tp": 16,
+      "fp": 141,
+      "fn": 36,
+      "tn": 1007,
+      "fraud_dollars_captured": 3104.73,
+      "fraud_dollars_missed": 7160.17,
+      "legit_dollars_declined": 23183.160000000003,
+      "total_cost": 11043.1785
+    },
+    {
+      "threshold": 0.1,
+      "declines": 118,
+      "decline_rate": 0.09833333333333333,
+      "precision": 0.11016949152542373,
+      "recall": 0.25,
+      "f1": 0.15294117647058825,
+      "tp": 13,
+      "fp": 105,
+      "fn": 39,
+      "tn": 1043,
+      "fraud_dollars_captured": 2960.16,
+      "fraud_dollars_missed": 7304.740000000001,
+      "legit_dollars_declined": 16313.670000000002,
+      "total_cost": 10294.977
+    },
+    {
+      "threshold": 0.15,
+      "declines": 69,
+      "decline_rate": 0.0575,
+      "precision": 0.14492753623188406,
+      "recall": 0.19230769230769232,
+      "f1": 0.1652892561983471,
+      "tp": 10,
+      "fp": 59,
+      "fn": 42,
+      "tn": 1089,
+      "fraud_dollars_captured": 657.6599999999999,
+      "fraud_dollars_missed": 9607.24,
+      "legit_dollars_declined": 7776.610000000001,
+      "total_cost": 11562.602
+    },
+    {
+      "threshold": 0.2,
+      "declines": 27,
+      "decline_rate": 0.0225,
+      "precision": 0.1111111111111111,
+      "recall": 0.057692307692307696,
+      "f1": 0.0759493670886076,
+      "tp": 3,
+      "fp": 24,
+      "fn": 49,
+      "tn": 1124,
+      "fraud_dollars_captured": 192.76,
+      "fraud_dollars_missed": 10072.140000000001,
+      "legit_dollars_declined": 4129.39,
+      "total_cost": 11175.747000000001
+    },
+    {
+      "threshold": 0.25,
+      "declines": 13,
+      "decline_rate": 0.010833333333333334,
+      "precision": 0.07692307692307693,
+      "recall": 0.019230769230769232,
+      "f1": 0.03076923076923077,
+      "tp": 1,
+      "fp": 12,
+      "fn": 51,
+      "tn": 1136,
+      "fraud_dollars_captured": 79.57,
+      "fraud_dollars_missed": 10185.33,
+      "legit_dollars_declined": 2175.61,
+      "total_cost": 10994.5965
+    },
+    {
+      "threshold": 0.3,
+      "declines": 6,
+      "decline_rate": 0.005,
+      "precision": 0.16666666666666666,
+      "recall": 0.019230769230769232,
+      "f1": 0.034482758620689655,
+      "tp": 1,
+      "fp": 5,
+      "fn": 51,
+      "tn": 1143,
+      "fraud_dollars_captured": 79.57,
+      "fraud_dollars_missed": 10185.33,
+      "legit_dollars_declined": 832.0,
+      "total_cost": 10819.5965
+    },
+    {
+      "threshold": 0.4,
+      "declines": 2,
+      "decline_rate": 0.0016666666666666668,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "tp": 0,
+      "fp": 2,
+      "fn": 52,
+      "tn": 1146,
+      "fraud_dollars_captured": 0.0,
+      "fraud_dollars_missed": 10264.899999999998,
+      "legit_dollars_declined": 188.42000000000002,
+      "total_cost": 10828.144999999999
+    },
+    {
+      "threshold": 0.5,
+      "declines": 1,
+      "decline_rate": 0.0008333333333333334,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "tp": 0,
+      "fp": 1,
+      "fn": 52,
+      "tn": 1147,
+      "fraud_dollars_captured": 0.0,
+      "fraud_dollars_missed": 10264.899999999998,
+      "legit_dollars_declined": 111.53,
+      "total_cost": 10803.144999999999
+    }
+  ],
+  "lowest_cost_fixed_threshold": {
+    "threshold": 0.1,
+    "declines": 118.0,
+    "decline_rate": 0.09833333333333333,
+    "precision": 0.11016949152542373,
+    "recall": 0.25,
+    "f1": 0.15294117647058825,
+    "tp": 13.0,
+    "fp": 105.0,
+    "fn": 39.0,
+    "tn": 1043.0,
+    "fraud_dollars_captured": 2960.16,
+    "fraud_dollars_missed": 7304.740000000001,
+    "legit_dollars_declined": 16313.670000000002,
+    "total_cost": 10294.977
+  },
+  "false_positive_analysis": {
+    "total_fps": 67,
+    "total_fp_dollars": 37134.02,
+    "mean_fp_ticket": 554.2391044776119,
+    "high_value_fp_count": 47,
+    "high_value_fp_dollars": 33970.88999999999,
+    "high_value_fp_pct_of_total_fp_dollars": 0.9148185410574992
+  },
+  "top_drifted_features": [
+    {
+      "feature": "card_seen_before",
+      "mean_dev": 0.9119642857142857,
+      "mean_test": 0.6258333333333334,
+      "cohens_d": 1.009822274616646
+    },
+    {
+      "feature": "amt_novelty_risk",
+      "mean_dev": 0.36956512928009033,
+      "mean_test": 1.5931719541549683,
+      "cohens_d": 0.9915771637481028
+    },
+    {
+      "feature": "device_amount_sum_24h",
+      "mean_dev": 1545.0667724609375,
+      "mean_test": 1744.0203857421875,
+      "cohens_d": 0.18969973048691394
+    },
+    {
+      "feature": "dev_amt_novelty",
+      "mean_dev": 0.004365861881524324,
+      "mean_test": 0.02236475981771946,
+      "cohens_d": 0.13035060939928914
+    },
+    {
+      "feature": "device_seen_before",
+      "mean_dev": 0.9989285714285714,
+      "mean_test": 0.995,
+      "cohens_d": 0.12008051719807528
+    },
+    {
+      "feature": "sin_tx_day",
+      "mean_dev": 0.018769588321447372,
+      "mean_test": -0.04900340363383293,
+      "cohens_d": 0.09607509721890177
+    },
+    {
+      "feature": "amount_to_mean_ratio",
+      "mean_dev": 1.544893503189087,
+      "mean_test": 1.931149959564209,
+      "cohens_d": 0.08542741753382507
+    },
+    {
+      "feature": "cos_tx_day",
+      "mean_dev": -0.0008160529541783035,
+      "mean_test": 0.05911659076809883,
+      "cohens_d": 0.08458544194347005
+    },
+    {
+      "feature": "cos_tx_hour",
+      "mean_dev": -0.02287355624139309,
+      "mean_test": 0.03071105293929577,
+      "cohens_d": 0.07555752460707024
+    },
+    {
+      "feature": "dev_burst_5m_1h",
+      "mean_dev": 0.8724753260612488,
+      "mean_test": 0.8589721918106079,
+      "cohens_d": 0.07343938802982007
+    }
+  ],
+  "offline_challenger_probes": [
+    {
+      "model": "LightGBM_D4_Iter160_SPW15",
+      "roc_auc": 0.5973,
+      "pr_auc": 0.0866
+    },
+    {
+      "model": "CatBoost_D6_Iter200_SPW15",
+      "roc_auc": 0.6109,
+      "pr_auc": 0.0716
+    },
+    {
+      "model": "v8.0-bmr-36f (Locked Champion)",
+      "roc_auc": 0.6216,
+      "pr_auc": 0.0886
+    }
+  ]
+}

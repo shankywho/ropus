@@ -604,12 +604,12 @@ func (c *RetrainingCoordinator) evaluateShadowGates(ctx context.Context, candida
 
 	// Shadow verification metrics
 	samplesEvaluated := uint32(100)
-	scoreDivergenceRate := 0.02   // 2% divergence (< 5% threshold)
-	decisionChangeRate := 0.015   // 1.5% change (< 10% limit)
-	errorRate := 0.0              // 0% errors
-	fallbackRate := 0.0           // 0% fallbacks
-	avgScoreDelta := 0.008        // 0.008 score delta
-	p95LatencyMs := 5.80          // 5.8ms
+	scoreDivergenceRate := 0.02 // 2% divergence (< 5% threshold)
+	decisionChangeRate := 0.015 // 1.5% change (< 10% limit)
+	errorRate := 0.0            // 0% errors
+	fallbackRate := 0.0         // 0% fallbacks
+	avgScoreDelta := 0.008      // 0.008 score delta
+	p95LatencyMs := 5.80        // 5.8ms
 
 	if scoreDivergenceRate > 0.05 {
 		violations = append(violations, fmt.Sprintf("Score divergence rate (%.4f) exceeds threshold 0.05", scoreDivergenceRate))

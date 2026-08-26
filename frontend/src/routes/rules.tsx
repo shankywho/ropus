@@ -8,7 +8,7 @@ import {
   SectionHead,
   TelemetryStrip,
 } from "@/components/ropus/page";
-import { Mono } from "@/components/ropus/core";
+import { Mono, StatusPill } from "@/components/ropus/core";
 import { rules, ruleDetails, type RuleRecord } from "@/lib/ropus/platform-fixtures";
 import { cn } from "@/lib/utils";
 
@@ -33,36 +33,23 @@ export const Route = createFileRoute("/rules")({
   component: RulesPage,
 });
 
-const stateTone: Record<RuleRecord["state"], string> = {
-  ENABLED: "bg-approve",
-  SHADOW: "bg-warning",
-  DISABLED: "bg-border-strong",
-};
-
 const actionTone: Record<RuleRecord["action"], string> = {
-  BLOCK: "text-block",
-  REVIEW: "text-warning",
-  CHALLENGE: "text-primary",
+  BLOCK: "text-blocked font-semibold",
+  REVIEW: "text-amber-intel font-semibold",
+  CHALLENGE: "text-local font-semibold",
   SCORE: "text-muted-foreground",
 };
 
 const filters = ["ALL", "ENABLED", "SHADOW", "DISABLED"] as const;
 
-/** State reads as text plus a 4px semantic square — never a pill. */
 function StateText({ state }: { state: RuleRecord["state"] }) {
-  return (
-    <span className="flex items-center gap-1.5 whitespace-nowrap">
-      <span aria-hidden className={cn("size-1.5", stateTone[state])} />
-      <span
-        className={cn(
-          "text-[11px] font-semibold tracking-[0.06em]",
-          state === "DISABLED" ? "text-muted-foreground" : undefined,
-        )}
-      >
-        {state}
-      </span>
-    </span>
-  );
+  if (state === "ENABLED") {
+    return <StatusPill tone="authoritative">ENABLED</StatusPill>;
+  }
+  if (state === "SHADOW") {
+    return <StatusPill tone="shadow">SHADOW</StatusPill>;
+  }
+  return <StatusPill tone="neutral">DISABLED</StatusPill>;
 }
 
 function RulesPage() {
@@ -75,8 +62,8 @@ function RulesPage() {
   return (
     <Page>
       <PageHead
-        title="Rules"
-        subtitle="Deterministic conditions evaluated before the model on every request. Weights are additive contributions to the risk score."
+        title="Deterministic Rules Engine"
+        subtitle="Deterministic JSON-AST conditions evaluated before the ML model on every request. Evaluated in <0.5ms with strict Maker-Checker dual control."
       />
 
       <TelemetryStrip
@@ -86,21 +73,24 @@ function RulesPage() {
             label: "Enabled",
             value: String(rules.filter((r) => r.state === "ENABLED").length),
             sub: "scoring live traffic",
+            tone: "text-authoritative",
           },
           {
             label: "Shadow",
             value: String(rules.filter((r) => r.state === "SHADOW").length),
-            sub: "evaluated, not applied",
+            sub: "evaluated, non-blocking",
+            tone: "text-amber-intel",
           },
           {
-            label: "Hits",
+            label: "Hits (24h)",
             value: rules.reduce((s, r) => s + r.hits24h, 0).toLocaleString(),
-            sub: "last 24 hours",
+            sub: "active triggers",
           },
           {
-            label: "Hard stops",
+            label: "Hard Blocks",
             value: String(rules.filter((r) => r.action === "BLOCK").length),
-            sub: "action = BLOCK",
+            sub: "instant decline",
+            tone: "text-blocked",
           },
         ]}
       />
@@ -108,15 +98,15 @@ function RulesPage() {
       <div
         className={cn(
           "mt-4 grid gap-6",
-          selected ? "xl:grid-cols-[minmax(0,1fr)_330px] xl:gap-8" : "grid-cols-1",
+          selected ? "xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-8" : "grid-cols-1",
         )}
       >
         <section className="min-w-0">
           <SectionHead
-            title="Rule set"
-            meta={`${rows.length} shown`}
+            title="RULE SET"
+            meta={`${rows.length} rules matching filter`}
             right={
-              <div className="flex items-center gap-3.5">
+              <div className="flex items-center gap-3">
                 {filters.map((f) => (
                   <button
                     key={f}
@@ -124,9 +114,9 @@ function RulesPage() {
                     onClick={() => setFilter(f)}
                     aria-pressed={filter === f}
                     className={cn(
-                      "border-b-[1.5px] pb-[3px] text-[11px] font-semibold tracking-[0.06em] uppercase",
+                      "border-b-2 pb-1 font-mono text-[10px] font-medium tracking-[0.08em] uppercase transition-colors",
                       filter === f
-                        ? "border-b-foreground text-foreground"
+                        ? "border-b-navy text-foreground font-bold"
                         : "border-b-transparent text-muted-foreground hover:text-foreground",
                     )}
                   >
@@ -136,7 +126,6 @@ function RulesPage() {
               </div>
             }
           />
-          {/* Policy and Updated live in the inspector, so they yield column width when it is open. */}
           <div className="overflow-x-auto">
             <div className={selected ? "min-w-[720px]" : "min-w-[920px]"}>
               <DataGrid
@@ -150,7 +139,7 @@ function RulesPage() {
                   { key: "scope", label: "Scope" },
                   { key: "action", label: "Action" },
                   { key: "weight", label: "Weight", align: "right" as const },
-                  { key: "hits", label: "Hits 24h", align: "right" as const },
+                  { key: "hits", label: "Hits (24h)", align: "right" as const },
                   { key: "precision", label: "Precision", align: "right" as const },
                   { key: "state", label: "State" },
                   ...(selected ? [] : [{ key: "updated", label: "Updated" }]),
@@ -158,25 +147,25 @@ function RulesPage() {
                 rows={rows.map((r) => ({
                   id: r.id,
                   cells: [
-                    <Mono className="text-[12px] font-semibold whitespace-nowrap">{r.id}</Mono>,
+                    <Mono className="text-[12px] font-medium whitespace-nowrap text-foreground">{r.id}</Mono>,
                     <span className="text-muted-foreground">{r.name}</span>,
                     ...(selected
                       ? []
-                      : [<Mono className="text-[11.5px] text-muted-foreground">{r.policy}</Mono>]),
-                    <span className="text-[11px] tracking-[0.06em] text-muted-foreground uppercase">
+                      : [<Mono className="text-[11px] text-muted-foreground">{r.policy}</Mono>]),
+                    <span className="font-mono text-[10px] tracking-[0.06em] text-muted-foreground uppercase">
                       {r.scope}
                     </span>,
                     <span
                       className={cn(
-                        "text-[11px] font-semibold tracking-[0.06em]",
+                        "font-mono text-[10.5px] tracking-[0.06em] uppercase",
                         actionTone[r.action],
                       )}
                     >
                       {r.action}
                     </span>,
-                    <Mono className="font-semibold">+{r.weight.toFixed(2)}</Mono>,
+                    <Mono className="font-medium text-foreground">+{r.weight.toFixed(2)}</Mono>,
                     <Mono className="text-muted-foreground">{r.hits24h.toLocaleString()}</Mono>,
-                    <Mono className={r.precision < 0.4 ? "text-warning" : undefined}>
+                    <Mono className={r.precision < 0.4 ? "text-amber-intel" : undefined}>
                       {(r.precision * 100).toFixed(0)}%
                     </Mono>,
                     <StateText state={r.state} />,
@@ -184,7 +173,7 @@ function RulesPage() {
                       ? []
                       : [
                           <span className="whitespace-nowrap text-muted-foreground">
-                            <Mono className="text-[11.5px] text-muted-foreground">
+                            <Mono className="text-[11px] text-muted-foreground">
                               {r.updatedAt}
                             </Mono>{" "}
                             · {r.updatedBy}
@@ -195,9 +184,8 @@ function RulesPage() {
               />
             </div>
           </div>
-          <p className="mt-2.5 border-l-2 border-l-border-strong pl-2.5 text-[11px] text-muted-foreground">
-            Low-precision rules are retained deliberately: they contribute score rather than a
-            verdict, and are only decisive in combination.
+          <p className="mt-2.5 border-l-2 border-l-border-strong pl-2.5 font-sans text-[11px] text-muted-foreground">
+            Low-precision heuristic rules are retained deliberately: they contribute score increments rather than a hard verdict, and become decisive when combined with ML calibration.
           </p>
         </section>
 
@@ -206,104 +194,110 @@ function RulesPage() {
             aria-label="Rule inspector"
             className="min-w-0 xl:border-l xl:border-border xl:pl-6"
           >
-            <SectionHead
-              title="Rule"
-              right={
-                <button
-                  type="button"
-                  onClick={() => setSelectedId(null)}
-                  className="text-[11px] font-semibold tracking-[0.06em] text-muted-foreground uppercase hover:text-foreground"
-                >
-                  Close
-                </button>
-              }
-            />
-            <div className="pt-2">
-              <Mono className="text-[13.5px] font-bold">{selected.id}</Mono>
-              <p className="mt-0.5 text-[12.5px] text-muted-foreground">{selected.name}</p>
-            </div>
-
-            <div className="mt-3">
-              <InspectorRow label="Status">
-                <StateText state={selected.state} />
-              </InspectorRow>
-              <InspectorRow label="Policy">
-                <Mono className="text-[12px] text-muted-foreground">{selected.policy}</Mono>
-              </InspectorRow>
-              <InspectorRow label="Scope">
-                <span className="text-[11px] tracking-[0.06em] uppercase">{selected.scope}</span>
-              </InspectorRow>
-              <InspectorRow label="Action">
-                <span
-                  className={cn(
-                    "text-[11px] font-semibold tracking-[0.06em]",
-                    actionTone[selected.action],
-                  )}
-                >
-                  {selected.action}
-                </span>
-              </InspectorRow>
-              <InspectorRow label="Weight">
-                <Mono className="font-semibold">+{selected.weight.toFixed(2)}</Mono>
-              </InspectorRow>
-              <InspectorRow label="Hits">
-                <Mono>{selected.hits24h.toLocaleString()} / 24h</Mono>
-              </InspectorRow>
-              <InspectorRow label="Precision">
-                <Mono>{(selected.precision * 100).toFixed(0)}%</Mono>
-              </InspectorRow>
-            </div>
-
-            {detail && (
-              <>
-                <h3 className="mt-5 border-b border-border pb-1.5 text-[10.5px] font-bold tracking-[0.08em] uppercase">
-                  Example logic
-                </h3>
-                <dl className="mt-2 font-mono text-[11.5px] leading-[1.55]">
-                  <div className="flex gap-2">
-                    <dt className="w-10 shrink-0 text-muted-foreground">IF</dt>
-                    <dd>{detail.logic.if}</dd>
-                  </div>
-                  {detail.logic.and && (
-                    <div className="mt-1 flex gap-2">
-                      <dt className="w-10 shrink-0 text-muted-foreground">AND</dt>
-                      <dd>{detail.logic.and}</dd>
-                    </div>
-                  )}
-                  <div className="mt-1 flex gap-2">
-                    <dt className="w-10 shrink-0 text-muted-foreground">THEN</dt>
-                    <dd>{detail.logic.then}</dd>
-                  </div>
-                </dl>
-
-                <h3 className="mt-5 border-b border-border pb-1.5 text-[10.5px] font-bold tracking-[0.08em] uppercase">
-                  Recent evaluation activity
-                </h3>
-                <div className="mt-1">
-                  <InspectorRow label="Hits">
-                    <Mono>{selected.hits24h.toLocaleString()}</Mono>
-                  </InspectorRow>
-                  <InspectorRow label="Avg contribution">
-                    <Mono>+{detail.avgContribution.toFixed(2)}</Mono>
-                  </InspectorRow>
-                  <InspectorRow label="Last triggered">
-                    <Mono className="text-[11.5px]">{detail.lastTriggeredAt ?? "never"}</Mono>
-                  </InspectorRow>
-                  <InspectorRow label="Triggered by">
-                    <Mono className="text-[11.5px]">{detail.lastTriggeredBy ?? "—"}</Mono>
-                  </InspectorRow>
-                </div>
-                {detail.lastDecisionId && (
-                  <Link
-                    to="/decisions/$decisionId"
-                    params={{ decisionId: detail.lastDecisionId }}
-                    className="mt-2.5 inline-block text-[11.5px] text-primary hover:underline"
+            <div className="border border-border bg-card p-4 shadow-2xs">
+              <SectionHead
+                title="RULE INSPECTOR"
+                right={
+                  <button
+                    type="button"
+                    onClick={() => setSelectedId(null)}
+                    className="font-mono text-[10px] font-medium tracking-[0.06em] text-muted-foreground uppercase hover:text-foreground"
                   >
-                    View decision →
-                  </Link>
-                )}
-              </>
-            )}
+                    Close
+                  </button>
+                }
+              />
+              <div className="pt-2">
+                <Mono className="text-[13px] font-bold text-foreground">{selected.id}</Mono>
+                <p className="mt-0.5 font-sans text-[11.5px] text-muted-foreground">{selected.name}</p>
+              </div>
+
+              <div className="mt-3">
+                <InspectorRow label="Status">
+                  <StateText state={selected.state} />
+                </InspectorRow>
+                <InspectorRow label="Policy">
+                  <Mono className="text-[11.5px] text-muted-foreground">{selected.policy}</Mono>
+                </InspectorRow>
+                <InspectorRow label="Scope">
+                  <span className="font-mono text-[10px] tracking-[0.06em] uppercase">{selected.scope}</span>
+                </InspectorRow>
+                <InspectorRow label="Action">
+                  <span
+                    className={cn(
+                      "font-mono text-[10.5px] tracking-[0.06em] uppercase",
+                      actionTone[selected.action],
+                    )}
+                  >
+                    {selected.action}
+                  </span>
+                </InspectorRow>
+                <InspectorRow label="Weight">
+                  <Mono className="font-medium text-foreground">+{selected.weight.toFixed(2)}</Mono>
+                </InspectorRow>
+                <InspectorRow label="Hits">
+                  <Mono>{selected.hits24h.toLocaleString()} / 24h</Mono>
+                </InspectorRow>
+                <InspectorRow label="Precision">
+                  <Mono>{(selected.precision * 100).toFixed(0)}%</Mono>
+                </InspectorRow>
+              </div>
+
+              {detail && (
+                <>
+                  <div className="mt-5 border-t border-border pt-3">
+                    <div className="font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">
+                      JSON-AST EVALUATION LOGIC
+                    </div>
+                    <dl className="mt-2 font-mono text-[11px] leading-[1.55] bg-secondary/50 p-2.5 border border-border">
+                      <div className="flex gap-2">
+                        <dt className="w-10 shrink-0 text-muted-foreground font-semibold">IF</dt>
+                        <dd className="text-foreground">{detail.logic.if}</dd>
+                      </div>
+                      {detail.logic.and && (
+                        <div className="mt-1 flex gap-2">
+                          <dt className="w-10 shrink-0 text-muted-foreground font-semibold">AND</dt>
+                          <dd className="text-foreground">{detail.logic.and}</dd>
+                        </div>
+                      )}
+                      <div className="mt-1 flex gap-2">
+                        <dt className="w-10 shrink-0 text-muted-foreground font-semibold">THEN</dt>
+                        <dd className="text-foreground">{detail.logic.then}</dd>
+                      </div>
+                    </dl>
+                  </div>
+
+                  <div className="mt-5 border-t border-border pt-3">
+                    <div className="font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">
+                      RECENT EVALUATION ACTIVITY
+                    </div>
+                    <div className="mt-2">
+                      <InspectorRow label="Hits">
+                        <Mono>{selected.hits24h.toLocaleString()}</Mono>
+                      </InspectorRow>
+                      <InspectorRow label="Avg Contribution">
+                        <Mono>+{detail.avgContribution.toFixed(2)}</Mono>
+                      </InspectorRow>
+                      <InspectorRow label="Last Triggered">
+                        <Mono className="text-[11px]">{detail.lastTriggeredAt ?? "never"}</Mono>
+                      </InspectorRow>
+                      <InspectorRow label="Triggered By">
+                        <Mono className="text-[11px]">{detail.lastTriggeredBy ?? "—"}</Mono>
+                      </InspectorRow>
+                    </div>
+                    {detail.lastDecisionId && (
+                      <Link
+                        to="/decisions/$decisionId"
+                        params={{ decisionId: detail.lastDecisionId }}
+                        className="mt-2.5 inline-block font-sans text-[11px] text-navy font-semibold hover:underline"
+                      >
+                        View Decision Audit →
+                      </Link>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
           </aside>
         )}
       </div>

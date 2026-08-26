@@ -7,13 +7,13 @@ import (
 
 // EpisodicMemoryEntry stores post-incident findings and learning signals for agent evolution.
 type EpisodicMemoryEntry struct {
-	EntryID         string    `json:"entry_id"`
-	IncidentID      string    `json:"incident_id"`
-	OutcomeType     string    `json:"outcome_type"` // "SUCCESSFUL_DEFENSE", "FAILED_DEFENSE", "ANALYST_CORRECTION", "POLICY_OVERRIDE"
-	HashedEntities  []string  `json:"hashed_entities"`
-	ActionTaken     string    `json:"action_taken"`
-	LessonsLearned  string    `json:"lessons_learned"`
-	RecordedAt      time.Time `json:"recorded_at"`
+	EntryID        string    `json:"entry_id"`
+	IncidentID     string    `json:"incident_id"`
+	OutcomeType    string    `json:"outcome_type"` // "SUCCESSFUL_DEFENSE", "FAILED_DEFENSE", "ANALYST_CORRECTION", "POLICY_OVERRIDE"
+	HashedEntities []string  `json:"hashed_entities"`
+	ActionTaken    string    `json:"action_taken"`
+	LessonsLearned string    `json:"lessons_learned"`
+	RecordedAt     time.Time `json:"recorded_at"`
 }
 
 // CollectiveAgentMemory maintains organizational learning across all participating AI agents.

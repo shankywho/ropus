@@ -1,0 +1,21 @@
+{
+  "champion_ece": 0.006895037240654564,
+  "challenger_ece": 0.0029676691876518698,
+  "calibration_audit": [
+    {
+      "engine": "Sigmoid",
+      "ece": 0.004296,
+      "brier": 0.04084
+    },
+    {
+      "engine": "BetaCalibrator",
+      "ece": 0.006895,
+      "brier": 0.0415
+    },
+    {
+      "engine": "Isotonic",
+      "ece": 0.018597,
+      "brier": 0.04452
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "policy_id": "ROPUS-CCP-2026",
+  "governance_status": "ENFORCED",
+  "definition_of_production_change": [
+    "1. Any modification to model artifact weights, trees, or hyperparameters.",
+    "2. Any addition, deletion, or re-ordering of the 36 causal feature fields.",
+    "3. Any alteration to Beta calibration curves or scaling coefficients.",
+    "4. Any change to BMR cost parameters ($C_FP=$25.00, Surcharge=1.05).",
+    "5. Any change to API request/response contracts or health status schemas."
+  ],
+  "mandatory_promotion_gates": 10,
+  "authorization_required": "Formal Model Risk Management (MRM) Sign-Off",
+  "unauthorized_changes": "FAIL CLOSED (Blocked from production activation)"
+}

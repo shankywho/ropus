@@ -1,0 +1,36 @@
+{
+  "kubernetes_manifests_present": [
+    "deploy/kubernetes/deployment.yaml",
+    "deploy/kubernetes/service.yaml",
+    "deploy/kubernetes/ingress.yaml",
+    "deploy/kubernetes/configmap.yaml",
+    "deploy/kubernetes/secret-template.yaml",
+    "deploy/kubernetes/network-policy.yaml",
+    "deploy/kubernetes/hpa.yaml",
+    "deploy/kubernetes/pdb.yaml"
+  ],
+  "docker_compose_manifests_present": [
+    "docker-compose.yml",
+    "docker-compose.production.yml"
+  ],
+  "active_runtime_environment": "macOS Local Docker Engine (Bridge Network)",
+  "active_container_services": [
+    {
+      "service": "risk-ml-service",
+      "port": 8000,
+      "status": "UP (Healthy)"
+    },
+    {
+      "service": "risk-backend",
+      "port": 8080,
+      "status": "UP (Healthy)"
+    },
+    {
+      "service": "risk-frontend",
+      "port": 3000,
+      "status": "UP (Healthy)"
+    }
+  ],
+  "cloud_provider_target": "AWS (EKS / NLB / Route53) or GCP (GKE / HTTPS LB / Cloud DNS)",
+  "cloud_access_state": "EXTERNAL_CLOUD_ACCESS_UNAVAILABLE (Local Sandbox Execution)"
+}

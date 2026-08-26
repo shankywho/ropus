@@ -1,0 +1,12 @@
+{
+  "total_ingested": 61,
+  "duplicate_suppressed": 1,
+  "malformed_rejected": 3,
+  "hmac_failures": 2,
+  "pan_cvv_blocked": 1,
+  "shadow_exceptions": 0,
+  "dispute_labels_ingested": 3,
+  "unknown_labels_rejected": 1,
+  "shadow_flips_observed": 0,
+  "avg_shadow_latency_ms": 0.46831079484511995
+}

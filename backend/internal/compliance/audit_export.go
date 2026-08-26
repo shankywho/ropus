@@ -10,21 +10,21 @@ import (
 
 // EvidenceItem represents a verified artifact in the SOC2 audit package.
 type EvidenceItem struct {
-	ControlID   string    `json:"control_id"`   // e.g. "CC6.1", "CC7.2", "PCI-Req-3.4"
-	Category    string    `json:"category"`     // "ACCESS_CONTROL", "ENCRYPTION", "INCIDENT_LOGS"
+	ControlID   string    `json:"control_id"` // e.g. "CC6.1", "CC7.2", "PCI-Req-3.4"
+	Category    string    `json:"category"`   // "ACCESS_CONTROL", "ENCRYPTION", "INCIDENT_LOGS"
 	Description string    `json:"description"`
-	Status      string    `json:"status"`       // "COMPLIANT", "AUDITED"
+	Status      string    `json:"status"` // "COMPLIANT", "AUDITED"
 	VerifiedAt  time.Time `json:"verified_at"`
 }
 
 // SOC2EvidencePackage aggregates all compliance artifacts.
 type SOC2EvidencePackage struct {
-	PackageID       string         `json:"package_id"`
-	AuditPeriod     string         `json:"audit_period"`
-	Framework       string         `json:"framework"` // "SOC2_TYPE_II", "PCI_DSS_v4", "ISO27001", "NIST_AI_RMF"
-	EvidenceItems   []EvidenceItem `json:"evidence_items"`
-	IntegrityHash   string         `json:"integrity_hash"`
-	GeneratedAt     time.Time      `json:"generated_at"`
+	PackageID     string         `json:"package_id"`
+	AuditPeriod   string         `json:"audit_period"`
+	Framework     string         `json:"framework"` // "SOC2_TYPE_II", "PCI_DSS_v4", "ISO27001", "NIST_AI_RMF"
+	EvidenceItems []EvidenceItem `json:"evidence_items"`
+	IntegrityHash string         `json:"integrity_hash"`
+	GeneratedAt   time.Time      `json:"generated_at"`
 }
 
 // ComplianceOperationsEngine automates regulatory evidence collection.

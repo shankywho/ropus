@@ -100,28 +100,28 @@ func (c *ClickHouseClient) InsertAuditRecord(ctx context.Context, record AuditRe
 
 // ShadowScoreEvaluation represents a structured shadow scoring record in ClickHouse.
 type ShadowScoreEvaluation struct {
-	EvaluationID               string    `json:"evaluation_id"`
-	TenantID                   string    `json:"tenant_id"`
-	TransactionID               string    `json:"transaction_id"`
-	Timestamp                  time.Time `json:"timestamp"`
-	ProductionModelVersion     string    `json:"production_model_version"`
-	ShadowModelVersion         string    `json:"shadow_model_version"`
-	ProductionFeatureContract  string    `json:"production_feature_contract"`
-	ShadowFeatureContract      string    `json:"shadow_feature_contract"`
-	ProductionRawScore         float64   `json:"production_raw_score"`
-	ProductionCalibratedScore  float64   `json:"production_calibrated_score"`
-	ShadowRawScore             float64   `json:"shadow_raw_score"`
-	ShadowCalibratedScore      float64   `json:"shadow_calibrated_score"`
-	ProductionDecision         string    `json:"production_decision"`
-	ShadowDecision             string    `json:"shadow_decision"`
-	ScoreDelta                 float64   `json:"score_delta"`
-	AbsoluteScoreDelta         float64   `json:"absolute_score_delta"`
-	DecisionChanged            uint8     `json:"decision_changed"`
-	DivergenceCategory         string    `json:"divergence_category"`
-	ProductionLatencyMs        float64   `json:"production_latency_ms"`
-	ShadowInferenceLatencyMs   float64   `json:"shadow_inference_latency_ms"`
-	ShadowTotalLatencyMs       float64   `json:"shadow_total_latency_ms"`
-	ShadowError                string    `json:"shadow_error"`
+	EvaluationID              string    `json:"evaluation_id"`
+	TenantID                  string    `json:"tenant_id"`
+	TransactionID             string    `json:"transaction_id"`
+	Timestamp                 time.Time `json:"timestamp"`
+	ProductionModelVersion    string    `json:"production_model_version"`
+	ShadowModelVersion        string    `json:"shadow_model_version"`
+	ProductionFeatureContract string    `json:"production_feature_contract"`
+	ShadowFeatureContract     string    `json:"shadow_feature_contract"`
+	ProductionRawScore        float64   `json:"production_raw_score"`
+	ProductionCalibratedScore float64   `json:"production_calibrated_score"`
+	ShadowRawScore            float64   `json:"shadow_raw_score"`
+	ShadowCalibratedScore     float64   `json:"shadow_calibrated_score"`
+	ProductionDecision        string    `json:"production_decision"`
+	ShadowDecision            string    `json:"shadow_decision"`
+	ScoreDelta                float64   `json:"score_delta"`
+	AbsoluteScoreDelta        float64   `json:"absolute_score_delta"`
+	DecisionChanged           uint8     `json:"decision_changed"`
+	DivergenceCategory        string    `json:"divergence_category"`
+	ProductionLatencyMs       float64   `json:"production_latency_ms"`
+	ShadowInferenceLatencyMs  float64   `json:"shadow_inference_latency_ms"`
+	ShadowTotalLatencyMs      float64   `json:"shadow_total_latency_ms"`
+	ShadowError               string    `json:"shadow_error"`
 }
 
 // InsertShadowEvaluation inserts a single shadow scoring evaluation record into shadow_score_evaluations.
@@ -177,23 +177,23 @@ func (c *ClickHouseClient) InsertShadowEvaluation(ctx context.Context, record Sh
 
 // CanaryRolloutEvaluation represents a structured canary rollout evaluation record in ClickHouse.
 type CanaryRolloutEvaluation struct {
-	EvaluationID             string    `json:"evaluation_id"`
-	TenantID                 string    `json:"tenant_id"`
-	TransactionID            string    `json:"transaction_id"`
-	Timestamp                time.Time `json:"timestamp"`
-	ModelRoute               string    `json:"model_route"`
-	ProductionModelVersion   string    `json:"production_model_version"`
-	CandidateModelVersion    string    `json:"candidate_model_version"`
-	ProductionScore          float64   `json:"production_score"`
-	CandidateScore           float64   `json:"candidate_score"`
-	ProductionDecision       string    `json:"production_decision"`
-	CandidateDecision        string    `json:"candidate_decision"`
-	ScoreDelta               float64   `json:"score_delta"`
-	AbsoluteScoreDelta       float64   `json:"absolute_score_delta"`
-	DecisionChanged          uint8     `json:"decision_changed"`
-	CandidateLatencyMs       float64   `json:"candidate_latency_ms"`
-	FallbackUsed             uint8     `json:"fallback_used"`
-	Error                    string    `json:"error"`
+	EvaluationID           string    `json:"evaluation_id"`
+	TenantID               string    `json:"tenant_id"`
+	TransactionID          string    `json:"transaction_id"`
+	Timestamp              time.Time `json:"timestamp"`
+	ModelRoute             string    `json:"model_route"`
+	ProductionModelVersion string    `json:"production_model_version"`
+	CandidateModelVersion  string    `json:"candidate_model_version"`
+	ProductionScore        float64   `json:"production_score"`
+	CandidateScore         float64   `json:"candidate_score"`
+	ProductionDecision     string    `json:"production_decision"`
+	CandidateDecision      string    `json:"candidate_decision"`
+	ScoreDelta             float64   `json:"score_delta"`
+	AbsoluteScoreDelta     float64   `json:"absolute_score_delta"`
+	DecisionChanged        uint8     `json:"decision_changed"`
+	CandidateLatencyMs     float64   `json:"candidate_latency_ms"`
+	FallbackUsed           uint8     `json:"fallback_used"`
+	Error                  string    `json:"error"`
 }
 
 // InsertCanaryEvaluation inserts a single canary evaluation record into canary_rollout_evaluations.
@@ -240,22 +240,22 @@ func (c *ClickHouseClient) InsertCanaryEvaluation(ctx context.Context, record Ca
 
 // CanaryRolloutEvent represents an administrative or automated rollout change event in ClickHouse.
 type CanaryRolloutEvent struct {
-	EventID               string    `json:"event_id"`
-	Timestamp             time.Time `json:"timestamp"`
-	EventType             string    `json:"event_type"`
-	PreviousPercentage    uint8     `json:"previous_percentage"`
-	NewPercentage         uint8     `json:"new_percentage"`
-	PreviousModelVersion  string    `json:"previous_model_version"`
-	NewModelVersion       string    `json:"new_model_version"`
-	Trigger               string    `json:"trigger"`
-	SafetyStatus          string    `json:"safety_status"`
-	ErrorRate             float64   `json:"error_rate"`
-	FallbackRate          float64   `json:"fallback_rate"`
-	DecisionChangeRate    float64   `json:"decision_change_rate"`
-	P95LatencyMs          float64   `json:"p95_latency_ms"`
-	P99LatencyMs          float64   `json:"p99_latency_ms"`
-	Actor                 string    `json:"actor"`
-	Reason                string    `json:"reason"`
+	EventID              string    `json:"event_id"`
+	Timestamp            time.Time `json:"timestamp"`
+	EventType            string    `json:"event_type"`
+	PreviousPercentage   uint8     `json:"previous_percentage"`
+	NewPercentage        uint8     `json:"new_percentage"`
+	PreviousModelVersion string    `json:"previous_model_version"`
+	NewModelVersion      string    `json:"new_model_version"`
+	Trigger              string    `json:"trigger"`
+	SafetyStatus         string    `json:"safety_status"`
+	ErrorRate            float64   `json:"error_rate"`
+	FallbackRate         float64   `json:"fallback_rate"`
+	DecisionChangeRate   float64   `json:"decision_change_rate"`
+	P95LatencyMs         float64   `json:"p95_latency_ms"`
+	P99LatencyMs         float64   `json:"p99_latency_ms"`
+	Actor                string    `json:"actor"`
+	Reason               string    `json:"reason"`
 }
 
 // InsertCanaryRolloutEvent inserts a single rollout event into canary_rollout_events.
@@ -639,19 +639,19 @@ func (c *ClickHouseClient) InsertValidationResult(ctx context.Context, res Model
 
 // ModelShadowEvaluationRecord represents shadow evaluation summary metrics in ClickHouse.
 type ModelShadowEvaluationRecord struct {
-	EvaluationID            string    `json:"evaluation_id"`
-	Timestamp               time.Time `json:"timestamp"`
-	CandidateModelVersion   string    `json:"candidate_model_version"`
-	ProductionModelVersion  string    `json:"production_model_version"`
-	SamplesEvaluated        uint32    `json:"samples_evaluated"`
-	ScoreDivergenceRate     float64   `json:"score_divergence_rate"`
-	DecisionChangeRate      float64   `json:"decision_change_rate"`
-	ErrorRate               float64   `json:"error_rate"`
-	FallbackRate            float64   `json:"fallback_rate"`
-	AvgScoreDelta           float64   `json:"avg_score_delta"`
-	P95LatencyMs            float64   `json:"p95_latency_ms"`
-	Passed                  uint8     `json:"passed"`
-	GateDetails             string    `json:"gate_details"`
+	EvaluationID           string    `json:"evaluation_id"`
+	Timestamp              time.Time `json:"timestamp"`
+	CandidateModelVersion  string    `json:"candidate_model_version"`
+	ProductionModelVersion string    `json:"production_model_version"`
+	SamplesEvaluated       uint32    `json:"samples_evaluated"`
+	ScoreDivergenceRate    float64   `json:"score_divergence_rate"`
+	DecisionChangeRate     float64   `json:"decision_change_rate"`
+	ErrorRate              float64   `json:"error_rate"`
+	FallbackRate           float64   `json:"fallback_rate"`
+	AvgScoreDelta          float64   `json:"avg_score_delta"`
+	P95LatencyMs           float64   `json:"p95_latency_ms"`
+	Passed                 uint8     `json:"passed"`
+	GateDetails            string    `json:"gate_details"`
 }
 
 // InsertModelShadowEvaluation records shadow evaluation gate results.

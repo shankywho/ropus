@@ -1,0 +1,8 @@
+tag_id,entity_type,entity_id,scenario_type,is_adversarial,is_hard_negative
+tag_000998,DEVICE,device_000037,graph_poisoning_flood,True,False
+tag_000999,EMPLOYEE,emp_000026,graph_poisoning_injected_edge,True,False
+tag_001000,EMPLOYEE,emp_000017,graph_poisoning_injected_edge,True,False
+tag_001001,EMPLOYEE,emp_000020,graph_poisoning_injected_edge,True,False
+tag_001002,TRANSACTION,txn_004180,graph_poisoning_low_and_slow,True,False
+tag_001003,TRANSACTION,txn_004181,graph_poisoning_low_and_slow,True,False
+tag_001004,TRANSACTION,txn_004182,graph_poisoning_low_and_slow,True,False

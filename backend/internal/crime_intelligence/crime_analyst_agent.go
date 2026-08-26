@@ -7,15 +7,15 @@ import (
 
 // ThreatIntelligenceReport represents a comprehensive strategic dossier on an active adversary campaign.
 type ThreatIntelligenceReport struct {
-	ReportID              string    `json:"report_id"`
-	ThreatActorAlias      string    `json:"threat_actor_alias"`
-	ActiveCampaignID      string    `json:"active_campaign_id"`
-	ObservedTechniques    []string  `json:"observed_techniques"`
-	Confidence            float64   `json:"confidence"`
-	FinancialImpactUSD    float64   `json:"financial_impact_usd"`
-	PredictedNextMove     string    `json:"predicted_next_move"`
-	StrategicRecommendation string  `json:"strategic_recommendation"`
-	GeneratedAt           time.Time `json:"generated_at"`
+	ReportID                string    `json:"report_id"`
+	ThreatActorAlias        string    `json:"threat_actor_alias"`
+	ActiveCampaignID        string    `json:"active_campaign_id"`
+	ObservedTechniques      []string  `json:"observed_techniques"`
+	Confidence              float64   `json:"confidence"`
+	FinancialImpactUSD      float64   `json:"financial_impact_usd"`
+	PredictedNextMove       string    `json:"predicted_next_move"`
+	StrategicRecommendation string    `json:"strategic_recommendation"`
+	GeneratedAt             time.Time `json:"generated_at"`
 }
 
 // AICrimeAnalystAgent investigates adversary profiles, tactics, and operational infrastructure.

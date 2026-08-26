@@ -135,10 +135,10 @@ func TestRecovery_PromotionRestart(t *testing.T) {
 			IsProductionActive: true,
 		},
 		"fraud-xgb-25f-v3.0": {
-			ModelID:            "model_prod_prev",
-			Version:            "fraud-xgb-25f-v3.0",
-			LifecycleState:     LifecyclePromoted,
-			IsFallbackActive:   true,
+			ModelID:          "model_prod_prev",
+			Version:          "fraud-xgb-25f-v3.0",
+			LifecycleState:   LifecyclePromoted,
+			IsFallbackActive: true,
 		},
 	}
 

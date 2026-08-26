@@ -7,20 +7,20 @@ import (
 
 // DefenseOutcomeRecord documents the actual measured effectiveness of an applied containment control.
 type DefenseOutcomeRecord struct {
-	IncidentID          string    `json:"incident_id"`
-	LossPreventedUSD    float64   `json:"loss_prevented_usd"`
-	IsFalsePositive     bool      `json:"is_false_positive"`
-	StrategyAdaptationDelta float64 `json:"strategy_adaptation_delta"`
-	MeasuredAt          time.Time `json:"measured_at"`
+	IncidentID              string    `json:"incident_id"`
+	LossPreventedUSD        float64   `json:"loss_prevented_usd"`
+	IsFalsePositive         bool      `json:"is_false_positive"`
+	StrategyAdaptationDelta float64   `json:"strategy_adaptation_delta"`
+	MeasuredAt              time.Time `json:"measured_at"`
 }
 
 // SelfLearningDefenseLoop implements closed-loop adaptation to continuously improve future defense models.
 type SelfLearningDefenseLoop struct {
-	mu                  sync.RWMutex
-	outcomes            map[string]*DefenseOutcomeRecord
+	mu                      sync.RWMutex
+	outcomes                map[string]*DefenseOutcomeRecord
 	cumulativeLossPrevented float64
-	falsePositiveCount  int
-	truePositiveCount   int
+	falsePositiveCount      int
+	truePositiveCount       int
 }
 
 // NewSelfLearningDefenseLoop initializes the self-learning defense loop.

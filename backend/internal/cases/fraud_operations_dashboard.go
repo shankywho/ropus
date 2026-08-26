@@ -6,15 +6,15 @@ import (
 
 // OperationsDashboardSummary aggregates high-level metrics for fraud operation centers (FOC).
 type OperationsDashboardSummary struct {
-	Timestamp                    time.Time `json:"timestamp"`
-	OpenCasesCount               int       `json:"open_cases_count"`
-	CriticalCasesCount           int       `json:"critical_cases_count"`
-	TotalExposureUnderReview     float64   `json:"total_exposure_under_review"`
-	FraudLossPrevented           float64   `json:"fraud_loss_prevented"`
-	FalsePositiveRate            float64   `json:"false_positive_rate"`
-	AverageInvestigationSeconds  float64   `json:"average_investigation_seconds"`
-	ActiveAlertsCount            int       `json:"active_alerts_count"`
-	AnalystWorkloadCount         int       `json:"analyst_workload_count"`
+	Timestamp                   time.Time `json:"timestamp"`
+	OpenCasesCount              int       `json:"open_cases_count"`
+	CriticalCasesCount          int       `json:"critical_cases_count"`
+	TotalExposureUnderReview    float64   `json:"total_exposure_under_review"`
+	FraudLossPrevented          float64   `json:"fraud_loss_prevented"`
+	FalsePositiveRate           float64   `json:"false_positive_rate"`
+	AverageInvestigationSeconds float64   `json:"average_investigation_seconds"`
+	ActiveAlertsCount           int       `json:"active_alerts_count"`
+	AnalystWorkloadCount        int       `json:"analyst_workload_count"`
 }
 
 // FraudOperationsDashboard compiles operational metrics.

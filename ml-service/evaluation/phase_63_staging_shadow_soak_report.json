@@ -1,0 +1,90 @@
+{
+  "metadata": {
+    "phase": "PHASE_63_REAL_STAGING_CONNECTIVITY_AND_SHADOW_SOAK",
+    "executed_at": "2026-08-26T07:40:49.681520+00:00",
+    "active_production_champion": "production_model_v8_bmr.joblib",
+    "champion_sha256_before": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "champion_sha256_after": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "champion_immutability_verified": true,
+    "frozen_52_case_holdout": "sample_ieee_fixture.csv",
+    "holdout_sha256_before": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+    "holdout_sha256_after": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+    "holdout_immutability_verified": true,
+    "customer_decision_routing": "100% Baseline Dynamic BMR (Authoritative)",
+    "graphsage_customer_enforcement": "0% (STRICTLY NON-ENFORCING SHADOW)",
+    "lifecycle_state": "SYNTHETICALLY_VALIDATED / REAL_DATA_SHADOW_READY / REAL_DATA_REQUIRED / PROMOTION_BLOCKED"
+  },
+  "configuration_discovery_and_audit": {
+    "environment_status": "INTEGRATION_BLOCKED",
+    "is_live_staging_connected": false,
+    "missing_configurations_count": 5,
+    "missing_configurations": [
+      "KAFKA_BROKERS (e.g. kafka-staging-01.internal:9092,kafka-staging-02.internal:9092)",
+      "KAFKA_AUTH_CREDENTIALS (SASL_SSL username/password or mTLS certificates)",
+      "CLICKHOUSE_HOST (e.g. clickhouse-cluster.internal)",
+      "CLICKHOUSE_AUTH (CLICKHOUSE_USER / CLICKHOUSE_PASSWORD)",
+      "PROMETHEUS_CONFIG (PROMETHEUS_PUSHGATEWAY_URL / PROMETHEUS_HOST)"
+    ],
+    "infrastructure_audit": {
+      "kafka_broker_reachable": true,
+      "kafka_broker_address": "127.0.0.1:9092 (Local Dev Broker)",
+      "clickhouse_reachable": true,
+      "clickhouse_address": "127.0.0.1:8123 (Local Dev Instance)",
+      "prometheus_reachable": true,
+      "prometheus_address": "127.0.0.1:9090"
+    },
+    "stop_condition_status": "STAGING_CONNECTIVITY_BLOCKED (Minimum infrastructure credentials required)"
+  },
+  "controlled_shadow_soak_scorecard": {
+    "soak_started_at": "2026-08-26T07:40:49.245980Z",
+    "soak_completed_at": "2026-08-26T07:40:49.676770Z",
+    "soak_duration_seconds": 0.431,
+    "data_source_classification": "CONTROLLED_SHADOW_SOAK_SIMULATION",
+    "total_events_received": 315,
+    "total_events_processed": 300,
+    "total_events_quarantined_dlq": 5,
+    "total_events_dropped_backpressure": 5,
+    "duplicate_events_count": 10,
+    "out_of_order_events_count": 20,
+    "consumer_lag_final": 0,
+    "graph_nodes_total": 0,
+    "graph_edges_total": 285,
+    "dossiers_generated_total": 2,
+    "evidence_ledger_entries_total": 2,
+    "latency_p50_us": 0.58,
+    "latency_p95_us": 0.71,
+    "latency_p99_us": 2.22,
+    "pipeline_latency_p95_ms": 0.7082,
+    "error_count": 0,
+    "restart_count": 0,
+    "data_drift_status": "ELEVATED_ISOLATION",
+    "topology_drift_status": "STABLE",
+    "score_drift_status": "STABLE",
+    "customer_enforcement_authority_pct": 0.0,
+    "bmr_enforcement_authority_pct": 100.0
+  },
+  "collusion_accumulation_view": {
+    "tracked_at": "2026-08-26T07:40:49.679723Z",
+    "total_employees_observed": 0,
+    "employees_with_account_access": 0,
+    "employees_with_concentrated_access": 0,
+    "total_self_approval_events": 0,
+    "total_off_hours_access_events": 0,
+    "total_shared_device_overlaps": 0,
+    "total_shared_ip_overlaps": 0,
+    "confirmed_real_internal_collusion_labels": 0,
+    "required_collusion_labels_for_promotion": 50,
+    "collusion_gate_status": "DATA_REQUIRED: Found 0/50 confirmed real internal collusion cases.",
+    "operational_mode": "NON_ENFORCING_INVESTIGATION_INTELLIGENCE",
+    "legal_notice": "Investigation intelligence only. High risk scores denote structural anomaly, not legal guilt."
+  },
+  "governance_decision": {
+    "is_promotion_eligible": false,
+    "promotion_status": "PROMOTION_BLOCKED",
+    "confirmed_real_internal_collusion_cases_available": 0,
+    "required_real_collusion_cases_for_promotion": 50,
+    "progress_pct": 0.0,
+    "blocking_reason": "DATA_REQUIRED: Requires >= 50 confirmed real internal collusion labels from mature production cases before empirical calibration or promotion review.",
+    "next_required_step": "Provision AWS MSK staging credentials to connect live staging broker and begin passive real case accumulation."
+  }
+}

@@ -168,12 +168,12 @@ func TestMLFeatures_CanonicalContract_Comprehensive(t *testing.T) {
 			TokenUniqueDevices1h: 2,
 		}
 		velFeatures := &features.DeviceVelocityFeatures{
-			DeviceTxCount5m:                  4,
-			DeviceTxCount1h:                  12,
-			DeviceAmountSum24h:               50000.0,
-			TxAcceleration5m1h:               8.5,
-			DeviceAmountConcentration5m1h:   0.65,
-			DeviceAvgAmount24h:               2500.0,
+			DeviceTxCount5m:               4,
+			DeviceTxCount1h:               12,
+			DeviceAmountSum24h:            50000.0,
+			TxAcceleration5m1h:            8.5,
+			DeviceAmountConcentration5m1h: 0.65,
+			DeviceAvgAmount24h:            2500.0,
 		}
 		repFeatures := &features.DeviceReputationFeatures{
 			DeviceReputationScore: 0.15,

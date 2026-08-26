@@ -1,0 +1,13 @@
+{
+  "certified_state": "GATEWAY_READY_BUT_EXTERNAL_TRAFFIC_UNAVAILABLE",
+  "governance_status": "INSUFFICIENT_LIVE_EVIDENCE",
+  "enforced_policy": "Baseline Dynamic BMR (No Floor)",
+  "shadow_policy": "Floor tau_floor = 0.040 (Non-Enforcing)",
+  "live_evidence_progress": {
+    "live_transactions": "0 / 5,000",
+    "shadow_flips": "0 / 50",
+    "mature_labels": "0 / 50",
+    "observed_fraud_rate": "UNDEFINED (0 mature labels)",
+    "exact_95_upper_ci": "UNDEFINED"
+  }
+}

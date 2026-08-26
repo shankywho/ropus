@@ -76,12 +76,12 @@ func (s *InMemoryAlertSink) GetRecentAlerts() []Alert {
 
 // AlertManager dispatches alerts asynchronously to registered sinks.
 type AlertManager struct {
-	sinks    []AlertSink
-	queue    chan Alert
-	stopCh   chan struct{}
-	wg       sync.WaitGroup
-	closed   bool
-	mu       sync.Mutex
+	sinks  []AlertSink
+	queue  chan Alert
+	stopCh chan struct{}
+	wg     sync.WaitGroup
+	closed bool
+	mu     sync.Mutex
 }
 
 // NewAlertManager initializes an asynchronous non-blocking alert manager.

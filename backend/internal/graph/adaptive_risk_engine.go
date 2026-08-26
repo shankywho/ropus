@@ -8,22 +8,22 @@ import (
 
 // AdaptiveScoreWeights defines the multi-dimensional attribution weights for final decisioning.
 type AdaptiveScoreWeights struct {
-	MLModelWeight  float64 `json:"ml_model_weight"`  // default: 0.35
-	GraphWeight    float64 `json:"graph_weight"`     // default: 0.25
-	BehaviorWeight float64 `json:"behavior_weight"`  // default: 0.20
-	ThreatWeight   float64 `json:"threat_weight"`    // default: 0.15
-	RulesWeight    float64 `json:"rules_weight"`     // default: 0.05
+	MLModelWeight  float64 `json:"ml_model_weight"` // default: 0.35
+	GraphWeight    float64 `json:"graph_weight"`    // default: 0.25
+	BehaviorWeight float64 `json:"behavior_weight"` // default: 0.20
+	ThreatWeight   float64 `json:"threat_weight"`   // default: 0.15
+	RulesWeight    float64 `json:"rules_weight"`    // default: 0.05
 }
 
 // AdaptiveRiskResult encapsulates the synthesized multi-layered risk decision.
 type AdaptiveRiskResult struct {
-	FinalScore        float64                 `json:"final_score"` // 0.0 to 1.0
-	Decision          string                  `json:"decision"`    // "ALLOW", "MANUAL_REVIEW", "BLOCK"
-	MLScore           float64                 `json:"ml_score"`
-	GraphScore        float64                 `json:"graph_score"`
-	BehaviorScore     float64                 `json:"behavior_score"`
-	ThreatScore       float64                 `json:"threat_score"`
-	RulesScore        float64                 `json:"rules_score"`
+	FinalScore          float64              `json:"final_score"` // 0.0 to 1.0
+	Decision            string               `json:"decision"`    // "ALLOW", "MANUAL_REVIEW", "BLOCK"
+	MLScore             float64              `json:"ml_score"`
+	GraphScore          float64              `json:"graph_score"`
+	BehaviorScore       float64              `json:"behavior_score"`
+	ThreatScore         float64              `json:"threat_score"`
+	RulesScore          float64              `json:"rules_score"`
 	ContributingReasons []AdaptiveRiskReason `json:"contributing_reasons"`
 }
 

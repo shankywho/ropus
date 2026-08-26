@@ -1,0 +1,7 @@
+{
+  "challenger": "LightGBM L20 D4",
+  "role": "STRICTLY_NON_ENFORCING_SHADOW",
+  "fail_open_guarantee": "100% VERIFIED",
+  "tau_floor": 0.04,
+  "tau_floor_role": "NON_ENFORCING_OBSERVATIONAL_TELEMETRY"
+}

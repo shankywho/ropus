@@ -12,21 +12,21 @@ import (
 type BudgetPolicyAction string
 
 const (
-	ActionBudgetHealthy            BudgetPolicyAction = "BUDGET_HEALTHY"
-	ActionThrottlePromotions       BudgetPolicyAction = "THROTTLE_PROMOTIONS"
-	ActionFreezePromotions         BudgetPolicyAction = "FREEZE_PROMOTIONS"
-	ActionEmergencyModelFreeze     BudgetPolicyAction = "EMERGENCY_MODEL_FREEZE"
+	ActionBudgetHealthy        BudgetPolicyAction = "BUDGET_HEALTHY"
+	ActionThrottlePromotions   BudgetPolicyAction = "THROTTLE_PROMOTIONS"
+	ActionFreezePromotions     BudgetPolicyAction = "FREEZE_PROMOTIONS"
+	ActionEmergencyModelFreeze BudgetPolicyAction = "EMERGENCY_MODEL_FREEZE"
 )
 
 // BudgetPolicyEvaluation encapsulates the outcome of error budget evaluation.
 type BudgetPolicyEvaluation struct {
-	Timestamp            time.Time          `json:"timestamp"`
-	MinRemainingBudget   float64            `json:"min_remaining_budget_percent"`
-	ConstrainedSLO       string             `json:"constrained_slo"`
-	Action               BudgetPolicyAction `json:"action"`
-	PromotionPermitted   bool               `json:"promotion_permitted"`
-	AutoFrozenEnacted    bool               `json:"auto_frozen_enacted"`
-	Reason               string             `json:"reason"`
+	Timestamp          time.Time          `json:"timestamp"`
+	MinRemainingBudget float64            `json:"min_remaining_budget_percent"`
+	ConstrainedSLO     string             `json:"constrained_slo"`
+	Action             BudgetPolicyAction `json:"action"`
+	PromotionPermitted bool               `json:"promotion_permitted"`
+	AutoFrozenEnacted  bool               `json:"auto_frozen_enacted"`
+	Reason             string             `json:"reason"`
 }
 
 // ErrorBudgetPolicyEngine monitors SLO error budgets and enforces automated safeguards on model lifecycle.

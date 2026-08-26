@@ -84,20 +84,20 @@ type ShadowScoreResult struct {
 
 // ShadowMetrics tracks live shadow scoring operational counters atomically.
 type ShadowMetrics struct {
-	RequestsTotal             atomic.Int64
-	SuccessTotal              atomic.Int64
-	ErrorsTotal               atomic.Int64
-	QueueDroppedTotal         atomic.Int64
-	ScoreDivergenceTotal      atomic.Int64
-	DecisionDivergenceTotal   atomic.Int64
-	ProductionAllowTotal      atomic.Int64
-	ProductionReviewTotal     atomic.Int64
-	ProductionDeclineTotal    atomic.Int64
-	CandidateAllowTotal       atomic.Int64
-	CandidateReviewTotal      atomic.Int64
-	CandidateDeclineTotal     atomic.Int64
-	TotalInferenceLatencyUs   atomic.Int64
-	TotalPipelineLatencyUs    atomic.Int64
+	RequestsTotal           atomic.Int64
+	SuccessTotal            atomic.Int64
+	ErrorsTotal             atomic.Int64
+	QueueDroppedTotal       atomic.Int64
+	ScoreDivergenceTotal    atomic.Int64
+	DecisionDivergenceTotal atomic.Int64
+	ProductionAllowTotal    atomic.Int64
+	ProductionReviewTotal   atomic.Int64
+	ProductionDeclineTotal  atomic.Int64
+	CandidateAllowTotal     atomic.Int64
+	CandidateReviewTotal    atomic.Int64
+	CandidateDeclineTotal   atomic.Int64
+	TotalInferenceLatencyUs atomic.Int64
+	TotalPipelineLatencyUs  atomic.Int64
 }
 
 // Snapshot returns a point-in-time dictionary of current shadow metrics.
@@ -111,21 +111,21 @@ func (m *ShadowMetrics) Snapshot(queueDepth int) map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"requests_total":             m.RequestsTotal.Load(),
-		"success_total":              success,
-		"errors_total":               m.ErrorsTotal.Load(),
-		"queue_depth":                queueDepth,
-		"queue_dropped_total":        m.QueueDroppedTotal.Load(),
-		"score_divergence_total":     m.ScoreDivergenceTotal.Load(),
-		"decision_divergence_total":  m.DecisionDivergenceTotal.Load(),
-		"production_allow_total":     m.ProductionAllowTotal.Load(),
-		"production_review_total":    m.ProductionReviewTotal.Load(),
-		"production_decline_total":   m.ProductionDeclineTotal.Load(),
-		"candidate_allow_total":      m.CandidateAllowTotal.Load(),
-		"candidate_review_total":     m.CandidateReviewTotal.Load(),
-		"candidate_decline_total":    m.CandidateDeclineTotal.Load(),
-		"avg_inference_latency_ms":   math.Round(avgInfMs*100) / 100,
-		"avg_total_latency_ms":       math.Round(avgTotMs*100) / 100,
+		"requests_total":            m.RequestsTotal.Load(),
+		"success_total":             success,
+		"errors_total":              m.ErrorsTotal.Load(),
+		"queue_depth":               queueDepth,
+		"queue_dropped_total":       m.QueueDroppedTotal.Load(),
+		"score_divergence_total":    m.ScoreDivergenceTotal.Load(),
+		"decision_divergence_total": m.DecisionDivergenceTotal.Load(),
+		"production_allow_total":    m.ProductionAllowTotal.Load(),
+		"production_review_total":   m.ProductionReviewTotal.Load(),
+		"production_decline_total":  m.ProductionDeclineTotal.Load(),
+		"candidate_allow_total":     m.CandidateAllowTotal.Load(),
+		"candidate_review_total":    m.CandidateReviewTotal.Load(),
+		"candidate_decline_total":   m.CandidateDeclineTotal.Load(),
+		"avg_inference_latency_ms":  math.Round(avgInfMs*100) / 100,
+		"avg_total_latency_ms":      math.Round(avgTotMs*100) / 100,
 	}
 }
 
@@ -373,19 +373,19 @@ func (s *ShadowScorer) processTask(task ShadowScoreTask) {
 
 	// Structured Observability Logging (Safe: Zero PII/PAN/Credentials logged)
 	logEntry, _ := json.Marshal(map[string]interface{}{
-		"event":                    "shadow_score_completed",
-		"evaluation_id":            result.EvaluationID,
-		"tenant_id":                result.TenantID,
-		"production_decision":      result.ProductionDecision,
-		"shadow_decision":          result.ShadowDecision,
-		"production_cal_score":     result.ProductionCalibratedScore,
-		"shadow_cal_score":         result.ShadowCalibratedScore,
-		"score_delta":              result.ScoreDelta,
-		"decision_changed":         result.DecisionChanged,
-		"divergence_category":      result.DivergenceCategory,
-		"shadow_inf_latency_ms":    result.ShadowInferenceLatencyMs,
-		"shadow_total_latency_ms":  result.ShadowTotalLatencyMs,
-		"duration_ms":              float64(time.Since(startProcessTime).Microseconds()) / 1000.0,
+		"event":                   "shadow_score_completed",
+		"evaluation_id":           result.EvaluationID,
+		"tenant_id":               result.TenantID,
+		"production_decision":     result.ProductionDecision,
+		"shadow_decision":         result.ShadowDecision,
+		"production_cal_score":    result.ProductionCalibratedScore,
+		"shadow_cal_score":        result.ShadowCalibratedScore,
+		"score_delta":             result.ScoreDelta,
+		"decision_changed":        result.DecisionChanged,
+		"divergence_category":     result.DivergenceCategory,
+		"shadow_inf_latency_ms":   result.ShadowInferenceLatencyMs,
+		"shadow_total_latency_ms": result.ShadowTotalLatencyMs,
+		"duration_ms":             float64(time.Since(startProcessTime).Microseconds()) / 1000.0,
 	})
 	log.Println(string(logEntry))
 
@@ -462,15 +462,15 @@ func (s *ShadowScorer) categorizeDivergence(prodAction, shadowAction string, abs
 func (s *ShadowScorer) GetStatus() map[string]interface{} {
 	queueDepth := len(s.workQueue)
 	status := map[string]interface{}{
-		"enabled":                     s.config.Enabled,
-		"closed":                      s.closed.Load(),
-		"worker_count":                s.config.WorkerCount,
-		"queue_capacity":              s.config.QueueCapacity,
-		"sample_rate":                 s.config.SampleRate,
-		"score_divergence_threshold":  s.config.ScoreDivergenceThreshold,
-		"candidate_model_version":     s.config.CandidateModelVersion,
-		"candidate_feature_contract":  s.config.CandidateFeatureContract,
-		"metrics":                     s.metrics.Snapshot(queueDepth),
+		"enabled":                    s.config.Enabled,
+		"closed":                     s.closed.Load(),
+		"worker_count":               s.config.WorkerCount,
+		"queue_capacity":             s.config.QueueCapacity,
+		"sample_rate":                s.config.SampleRate,
+		"score_divergence_threshold": s.config.ScoreDivergenceThreshold,
+		"candidate_model_version":    s.config.CandidateModelVersion,
+		"candidate_feature_contract": s.config.CandidateFeatureContract,
+		"metrics":                    s.metrics.Snapshot(queueDepth),
 	}
 	return status
 }

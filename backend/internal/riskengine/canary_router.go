@@ -204,23 +204,23 @@ func (m *CanaryMetrics) Snapshot() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"total_requests":                  totalRequests,
-		"legacy_requests_total":           legacyTotal,
-		"candidate_requests_total":        candidateTotal,
-		"candidate_success_total":         candidateSuccess,
-		"candidate_error_total":           candidateErrors,
-		"candidate_fallback_total":        candidateFallbacks,
-		"candidate_error_rate":            math.Round(errorRate*10000) / 10000,
-		"candidate_fallback_rate":         math.Round(fallbackRate*10000) / 10000,
-		"candidate_decision_allow_total":  m.CandidateDecisionAllowTotal.Load(),
-		"candidate_decision_review_total": m.CandidateDecisionReviewTotal.Load(),
+		"total_requests":                   totalRequests,
+		"legacy_requests_total":            legacyTotal,
+		"candidate_requests_total":         candidateTotal,
+		"candidate_success_total":          candidateSuccess,
+		"candidate_error_total":            candidateErrors,
+		"candidate_fallback_total":         candidateFallbacks,
+		"candidate_error_rate":             math.Round(errorRate*10000) / 10000,
+		"candidate_fallback_rate":          math.Round(fallbackRate*10000) / 10000,
+		"candidate_decision_allow_total":   m.CandidateDecisionAllowTotal.Load(),
+		"candidate_decision_review_total":  m.CandidateDecisionReviewTotal.Load(),
 		"candidate_decision_decline_total": m.CandidateDecisionDeclineTotal.Load(),
-		"decision_changed_total":          m.DecisionChangedTotal.Load(),
-		"actual_canary_percentage":        math.Round(actualCanaryPct*100) / 100,
-		"candidate_avg_latency_ms":        math.Round(avgLatencyMs*100) / 100,
-		"candidate_p50_latency_ms":        math.Round(p50*100) / 100,
-		"candidate_p95_latency_ms":        math.Round(p95*100) / 100,
-		"candidate_p99_latency_ms":        math.Round(p99*100) / 100,
+		"decision_changed_total":           m.DecisionChangedTotal.Load(),
+		"actual_canary_percentage":         math.Round(actualCanaryPct*100) / 100,
+		"candidate_avg_latency_ms":         math.Round(avgLatencyMs*100) / 100,
+		"candidate_p50_latency_ms":         math.Round(p50*100) / 100,
+		"candidate_p95_latency_ms":         math.Round(p95*100) / 100,
+		"candidate_p99_latency_ms":         math.Round(p99*100) / 100,
 	}
 }
 
@@ -588,16 +588,16 @@ func (cr *CanaryRouter) GetStatus() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"enabled":                  cfg.Enabled,
-		"target_percentage":        cfg.Percentage,
-		"production_model":         "fraud-xgb-25f-v3.0",
-		"candidate_model":          cfg.CandidateModelVersion,
-		"feature_contract":         "fraud-risk-25f-v2.5",
-		"calibration_version":      "beta-calibrated-v2.5",
-		"safety_gate_status":       safety.Status,
-		"safety_violations":        safety.Violations,
-		"safety_warnings":          safety.Warnings,
-		"circuit_breaker":          cbStatus,
+		"enabled":             cfg.Enabled,
+		"target_percentage":   cfg.Percentage,
+		"production_model":    "fraud-xgb-25f-v3.0",
+		"candidate_model":     cfg.CandidateModelVersion,
+		"feature_contract":    "fraud-risk-25f-v2.5",
+		"calibration_version": "beta-calibrated-v2.5",
+		"safety_gate_status":  safety.Status,
+		"safety_violations":   safety.Violations,
+		"safety_warnings":     safety.Warnings,
+		"circuit_breaker":     cbStatus,
 		"thresholds": map[string]interface{}{
 			"max_error_rate":           cfg.MaxErrorRate,
 			"max_fallback_rate":        cfg.MaxFallbackRate,
@@ -627,4 +627,3 @@ func (cr *CanaryRouter) GetCircuitBreaker() *CircuitBreaker {
 	defer cr.mu.RUnlock()
 	return cr.circuitBreaker
 }
-

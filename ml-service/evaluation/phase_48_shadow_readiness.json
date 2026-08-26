@@ -1,0 +1,7 @@
+{
+  "shadow_pipeline_initialized": true,
+  "challenger_model": "LightGBM_L20_D4",
+  "fail_open_isolation_active": true,
+  "live_traffic_connected": false,
+  "live_traffic_status": "EXTERNAL_INFRASTRUCTURE_REQUIRED"
+}

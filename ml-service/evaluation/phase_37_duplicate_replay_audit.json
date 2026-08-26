@@ -1,0 +1,6 @@
+{
+  "deduplication_engine": "HMAC-SHA256 In-Memory & Disk Store Cache",
+  "duplicate_replay_test": "PASS",
+  "duplicate_suppression_verified": true,
+  "total_duplicate_replays_suppressed": 1
+}

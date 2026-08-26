@@ -19,10 +19,10 @@ type FraudInvestigationDossier struct {
 
 // AutonomousInvestigatorAgent orchestrates autonomous forensic investigations.
 type AutonomousInvestigatorAgent struct {
-	AgentID          string
-	memory           *AgentMemory
-	reasoningEngine  *FraudReasoningEngine
-	explainer        *DecisionExplainer
+	AgentID         string
+	memory          *AgentMemory
+	reasoningEngine *FraudReasoningEngine
+	explainer       *DecisionExplainer
 }
 
 // NewAutonomousInvestigatorAgent initializes the autonomous investigator.

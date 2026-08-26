@@ -26,8 +26,8 @@ func NewThreatIntelligenceEngine() *ThreatIntelligenceEngine {
 }
 
 func (t *ThreatIntelligenceEngine) initializeBaselineFeeds() {
-	t.maliciousIPs["198.51.100.44"] = 0.95 // Known Bulletproof proxy
-	t.maliciousIPs["203.0.113.88"] = 0.99  // Tor exit node cluster
+	t.maliciousIPs["198.51.100.44"] = 0.95           // Known Bulletproof proxy
+	t.maliciousIPs["203.0.113.88"] = 0.99            // Tor exit node cluster
 	t.compromisedDevices["dev_emul_root_89a"] = 0.90 // Cloned emulator fingerprint
 	t.riskyDomains["temp-mail.org"] = 0.85
 	t.riskyDomains["disposable-inbox.com"] = 0.90

@@ -12,8 +12,8 @@ type DemoScenarioType string
 
 const (
 	ScenarioSyntheticIdentity DemoScenarioType = "SYNTHETIC_IDENTITY_FRAUD"
-	ScenarioAccountTakeover    DemoScenarioType = "ACCOUNT_TAKEOVER"
-	ScenarioFraudRingAttack    DemoScenarioType = "FRAUD_RING_ATTACK"
+	ScenarioAccountTakeover   DemoScenarioType = "ACCOUNT_TAKEOVER"
+	ScenarioFraudRingAttack   DemoScenarioType = "FRAUD_RING_ATTACK"
 )
 
 // ScenarioExecutionStep represents a discrete phase in the demo narrative.
@@ -27,14 +27,14 @@ type ScenarioExecutionStep struct {
 
 // ScenarioRunResult encapsulates the full narrative output of a simulated attack.
 type ScenarioRunResult struct {
-	ScenarioID       string                     `json:"scenario_id"`
-	Type             DemoScenarioType           `json:"type"`
-	Title            string                     `json:"title"`
-	StorySummary     string                     `json:"story_summary"`
-	Steps            []ScenarioExecutionStep    `json:"steps"`
-	SampleRequest    product_api.EvaluateRiskRequest  `json:"sample_request"`
-	RiskResponse     product_api.EvaluateRiskResponse `json:"risk_response"`
-	ExecutedAt       time.Time                  `json:"executed_at"`
+	ScenarioID    string                           `json:"scenario_id"`
+	Type          DemoScenarioType                 `json:"type"`
+	Title         string                           `json:"title"`
+	StorySummary  string                           `json:"story_summary"`
+	Steps         []ScenarioExecutionStep          `json:"steps"`
+	SampleRequest product_api.EvaluateRiskRequest  `json:"sample_request"`
+	RiskResponse  product_api.EvaluateRiskResponse `json:"risk_response"`
+	ExecutedAt    time.Time                        `json:"executed_at"`
 }
 
 // DemoOrchestrator coordinates end-to-end interactive demo attacks.

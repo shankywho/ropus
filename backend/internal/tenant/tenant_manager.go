@@ -40,14 +40,14 @@ type UserAccount struct {
 
 // APIKeyRecord represents an API key linked to a tenant organization.
 type APIKeyRecord struct {
-	KeyID        string    `json:"key_id"`
-	OrgID        string    `json:"org_id"`
-	Name         string    `json:"name"`
-	HashedKey    string    `json:"-"`
-	Prefix       string    `json:"prefix"` // e.g. "ropus_live_abc..."
-	IsActive     bool      `json:"is_active"`
-	CreatedAt    time.Time `json:"created_at"`
-	LastUsedAt   time.Time `json:"last_used_at"`
+	KeyID      string    `json:"key_id"`
+	OrgID      string    `json:"org_id"`
+	Name       string    `json:"name"`
+	HashedKey  string    `json:"-"`
+	Prefix     string    `json:"prefix"` // e.g. "ropus_live_abc..."
+	IsActive   bool      `json:"is_active"`
+	CreatedAt  time.Time `json:"created_at"`
+	LastUsedAt time.Time `json:"last_used_at"`
 }
 
 // TenantManager handles multi-tenant lifecycle, API keys, and rate limits.

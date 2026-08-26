@@ -9,13 +9,13 @@ import (
 
 // GlobalGraphNode stores privacy-preserved SHA-256 identifiers across financial institutions.
 type GlobalGraphNode struct {
-	HashedEntityID string    `json:"hashed_entity_id"`
-	EntityType     string    `json:"entity_type"` // "HASHED_USER", "DEVICE_FINGERPRINT", "MERCHANT_ID", "IP_SUBNET"
-	GlobalRiskScore float64  `json:"global_risk_score"`
-	TenantsSeen    []string  `json:"tenants_seen"`
-	IsKnownBad     bool      `json:"is_known_bad"`
-	FirstSeenAt    time.Time `json:"first_seen_at"`
-	LastSeenAt     time.Time `json:"last_seen_at"`
+	HashedEntityID  string    `json:"hashed_entity_id"`
+	EntityType      string    `json:"entity_type"` // "HASHED_USER", "DEVICE_FINGERPRINT", "MERCHANT_ID", "IP_SUBNET"
+	GlobalRiskScore float64   `json:"global_risk_score"`
+	TenantsSeen     []string  `json:"tenants_seen"`
+	IsKnownBad      bool      `json:"is_known_bad"`
+	FirstSeenAt     time.Time `json:"first_seen_at"`
+	LastSeenAt      time.Time `json:"last_seen_at"`
 }
 
 // GlobalFraudGraph provides cross-tenant collective intelligence without disclosing raw customer PII.

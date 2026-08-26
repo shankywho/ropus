@@ -1,0 +1,7 @@
+{
+  "endpoint": "/api/v1/disputes/webhook",
+  "method": "POST",
+  "authentication": "HMAC Webhook Signature",
+  "maturation_rule": "T+60 Days Maturation Window with Reversal Support",
+  "status": "API_ROUTE_AND_CONTRACT_VERIFIED"
+}

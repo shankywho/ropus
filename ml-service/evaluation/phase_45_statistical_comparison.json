@@ -1,0 +1,28 @@
+{
+  "lightgbm_l20_vs_v8": {
+    "pr_auc_delta_mean": 0.015315974217492838,
+    "pr_auc_delta_95_ci": [
+      -0.028673939938055643,
+      0.07649320057150559
+    ],
+    "recall_at_2pct_fpr_delta_95_ci": [
+      -0.055666666666666656,
+      0.15384615384615385
+    ],
+    "recall_at_5pct_fpr_delta_95_ci": [
+      -0.1373235294117647,
+      0.07696078431372547
+    ],
+    "p_value_one_tailed": 0.298,
+    "is_statistically_significant": false
+  },
+  "weighted_ensemble_vs_v8": {
+    "pr_auc_delta_mean": 0.010455822751445272,
+    "pr_auc_delta_95_ci": [
+      -0.011635625185767936,
+      0.039489977133824086
+    ],
+    "p_value_one_tailed": 0.225,
+    "is_statistically_significant": false
+  }
+}

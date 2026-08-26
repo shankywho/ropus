@@ -17,13 +17,13 @@ var embeddedBaseline25F []byte
 
 // DriftDetector orchestrates periodic drift evaluation, feature distribution collection, and ClickHouse persistence.
 type DriftDetector struct {
-	config            DriftConfig
-	baseline          ModelBaseline
-	collector         *DriftCollector
-	chClient          *audit.ClickHouseClient
-	mu                sync.RWMutex
-	currentStatus     ModelDriftStatus
-	latestMeasurement *DriftMeasurement
+	config                 DriftConfig
+	baseline               ModelBaseline
+	collector              *DriftCollector
+	chClient               *audit.ClickHouseClient
+	mu                     sync.RWMutex
+	currentStatus          ModelDriftStatus
+	latestMeasurement      *DriftMeasurement
 	history                []DriftMeasurement
 	maxHistory             int
 	stopChan               chan struct{}

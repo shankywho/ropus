@@ -157,7 +157,7 @@ func TestDriftCalculator_DescriptiveStatsAndPercentiles(t *testing.T) {
 	// Generate 100 synthetic observations around mean=100
 	vals := make([]float64, 100)
 	for i := 0; i < 100; i++ {
-		vals[i] = float64(i + 1) * 2.0 // 2 to 200, mean ≈ 101, min=2, max=200
+		vals[i] = float64(i+1) * 2.0 // 2 to 200, mean ≈ 101, min=2, max=200
 	}
 	vals = append(vals, math.NaN()) // 1 missing
 
@@ -248,31 +248,31 @@ func TestDriftDetector_LifecycleAndStatus(t *testing.T) {
 	// Ingest 20 normal vectors matching baseline means
 	for i := 0; i < 20; i++ {
 		detector.IngestVector(map[string]float64{
-			"amount":                 120.0,
-			"ip_velocity_1h":         1.0,
-			"ip_velocity_24h":        8.0,
-			"token_velocity_24h":     1.0,
-			"device_seen_before":     0.0,
-			"transaction_hour":       12.0,
-			"transaction_day":        2.0,
-			"product_cd_encoded":     0.0,
-			"card_type_encoded":      1.0,
-			"card_category_encoded":  0.0,
-			"email_domain_risk":      0.03,
-			"dist1_missing":          1.0,
-			"device_type_mobile":     0.0,
-			"device_info_missing":    0.0,
-			"amount_to_mean_ratio":   1.0,
-			"device_tx_count_5m":     0.0,
-			"device_tx_count_1h":     0.0,
-			"device_amount_sum_24h":  0.0,
-			"tx_acceleration_5m_1h":  0.0,
+			"amount":                            120.0,
+			"ip_velocity_1h":                    1.0,
+			"ip_velocity_24h":                   8.0,
+			"token_velocity_24h":                1.0,
+			"device_seen_before":                0.0,
+			"transaction_hour":                  12.0,
+			"transaction_day":                   2.0,
+			"product_cd_encoded":                0.0,
+			"card_type_encoded":                 1.0,
+			"card_category_encoded":             0.0,
+			"email_domain_risk":                 0.03,
+			"dist1_missing":                     1.0,
+			"device_type_mobile":                0.0,
+			"device_info_missing":               0.0,
+			"amount_to_mean_ratio":              1.0,
+			"device_tx_count_5m":                0.0,
+			"device_tx_count_1h":                0.0,
+			"device_amount_sum_24h":             0.0,
+			"tx_acceleration_5m_1h":             0.0,
 			"device_amount_concentration_5m_1h": 0.0,
-			"device_unique_tokens_1h": 1.0,
-			"token_unique_devices_1h": 1.0,
-			"device_reputation_score": 0.5,
-			"device_fraud_rate":       0.0,
-			"device_dispute_rate":     0.0,
+			"device_unique_tokens_1h":           1.0,
+			"token_unique_devices_1h":           1.0,
+			"device_reputation_score":           0.5,
+			"device_fraud_rate":                 0.0,
+			"device_dispute_rate":               0.0,
 		})
 	}
 
@@ -313,31 +313,31 @@ func TestDriftDetector_SyntheticDriftAndRecovery(t *testing.T) {
 	// 1. INGEST SYNTHETIC SHIFTED DATA: amount = $3000 (extreme shift from baseline ~$123)
 	for i := 0; i < 50; i++ {
 		detector.IngestVector(map[string]float64{
-			"amount":                 3000.0,
-			"ip_velocity_1h":         10.0, // baseline max ~5
-			"ip_velocity_24h":        50.0, // baseline max ~19
-			"token_velocity_24h":     5.0,
-			"device_seen_before":     1.0,
-			"transaction_hour":       3.0,
-			"transaction_day":        6.0,
-			"product_cd_encoded":     9.0,
-			"card_type_encoded":      4.0,
-			"card_category_encoded":  3.0,
-			"email_domain_risk":      0.95,
-			"dist1_missing":          0.0,
-			"device_type_mobile":     1.0,
-			"device_info_missing":    1.0,
-			"amount_to_mean_ratio":   10.0,
-			"device_tx_count_5m":     50.0,
-			"device_tx_count_1h":     100.0,
-			"device_amount_sum_24h":  10000.0,
-			"tx_acceleration_5m_1h":  5.0,
+			"amount":                            3000.0,
+			"ip_velocity_1h":                    10.0, // baseline max ~5
+			"ip_velocity_24h":                   50.0, // baseline max ~19
+			"token_velocity_24h":                5.0,
+			"device_seen_before":                1.0,
+			"transaction_hour":                  3.0,
+			"transaction_day":                   6.0,
+			"product_cd_encoded":                9.0,
+			"card_type_encoded":                 4.0,
+			"card_category_encoded":             3.0,
+			"email_domain_risk":                 0.95,
+			"dist1_missing":                     0.0,
+			"device_type_mobile":                1.0,
+			"device_info_missing":               1.0,
+			"amount_to_mean_ratio":              10.0,
+			"device_tx_count_5m":                50.0,
+			"device_tx_count_1h":                100.0,
+			"device_amount_sum_24h":             10000.0,
+			"tx_acceleration_5m_1h":             5.0,
 			"device_amount_concentration_5m_1h": 0.8,
-			"device_unique_tokens_1h": 10.0,
-			"token_unique_devices_1h": 10.0,
-			"device_reputation_score": 0.99,
-			"device_fraud_rate":       0.9,
-			"device_dispute_rate":     0.8,
+			"device_unique_tokens_1h":           10.0,
+			"token_unique_devices_1h":           10.0,
+			"device_reputation_score":           0.99,
+			"device_fraud_rate":                 0.9,
+			"device_dispute_rate":               0.8,
 		})
 	}
 

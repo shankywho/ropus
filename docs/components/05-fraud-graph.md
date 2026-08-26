@@ -42,16 +42,16 @@ func (g *InMemoryGraphEngine) Traverse3Hop(rootID string) GraphNeighborhood {
     visited := make(map[string]bool)
     queue := []string{rootID}
     visited[rootID] = true
-    
+
     depth := 0
     neighborhood := GraphNeighborhood{RootID: rootID}
-    
+
     for len(queue) > 0 && depth < 3 {
         levelSize := len(queue)
         for i := 0; i < levelSize; i++ {
             curr := queue[0]
             queue = queue[1:]
-            
+
             // Expand adjacent edges in memory
             for _, edge := range g.adjList[curr] {
                 if !visited[edge.TargetID] {
@@ -64,7 +64,7 @@ func (g *InMemoryGraphEngine) Traverse3Hop(rootID string) GraphNeighborhood {
         }
         depth++
     }
-    
+
     // Compute local graph metrics
     neighborhood.DegreeCentrality = len(neighborhood.Edges)
     neighborhood.SyndicateCluster = neighborhood.DegreeCentrality >= 4
@@ -109,13 +109,31 @@ type GraphNeighborhood struct {
 
 ---
 
-## 6. Source Code Map
-- [`backend/internal/graph/graph_engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/graph_engine.go): In-memory graph representation, BFS traversal, and syndicate detection.
-- [`backend/internal/graph/graph_schema.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/graph_schema.go): Node/Edge schema definitions.
-- [`backend/internal/graph/adaptive_risk_engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/adaptive_risk_engine.go): Graph exposure risk scoring.
+ ## 6. GraphSAGE Inductive Relationship Intelligence Subsystem (Phase 68 Status)
 
----
+ In addition to the synchronous BFS engine, ROPUS includes the **GraphSAGE Inductive Relationship Intelligence Subsystem** (`backend/internal/graph/graphsage/` and `ml-service/graphsage/`), designed to detect internal employee-consumer collusion and synthetic identity rings using 2-hop GNN embeddings.
 
-## 7. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Ingests graph exposure score during decisioning.
-- [Component 07: AI Investigators](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/07-ai-investigators.md) — Analyzes graph clusters to synthesize evidentiary dossiers.
+ ### Phase 68 Status Summary:
+ * **Software Engineering & Unit Validation:** **Substantially Complete** (44 Go tests, 124 Python tests passing).
+ * **Enforcement Authority:** **0% (Strictly Non-Enforcing Shadow Mode)**.
+ * **Customer Decision Authority:** **100% Baseline Dynamic BMR Authoritative**.
+ * **Real Staging Connectivity:** **`INFRASTRUCTURE_BLOCKED`** (Awaiting AWS STS staging credentials and MSK broker endpoints).
+ * **Governance Gate:** **`PROMOTION_BLOCKED`** under `REAL_DATA_REQUIRED` (0 / 50 confirmed real collusion cases).
+
+ For details, see [`docs/architecture/graphsage-status-and-roadmap.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-status-and-roadmap.md).
+
+ ---
+
+ ## 7. Source Code Map
+ - [`backend/internal/graph/graph_engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/graph_engine.go): In-memory graph representation, BFS traversal, and syndicate detection.
+ - [`backend/internal/graph/graph_schema.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/graph_schema.go): Node/Edge schema definitions.
+ - [`backend/internal/graph/adaptive_risk_engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/adaptive_risk_engine.go): Graph exposure risk scoring.
+ - [`backend/internal/graph/graphsage/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/graphsage/): GraphSAGE Go shadow telemetry, privacy boundary, and evidence ledger.
+ - [`ml-service/graphsage/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/graphsage/): GraphSAGE Python GNN modeling, temporal sampling, and drift monitoring.
+
+ ---
+
+ ## 8. Cross-Component Links
+ - [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Ingests graph exposure score during decisioning.
+ - [Component 07: AI Investigators](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/07-ai-investigators.md) — Analyzes graph clusters to synthesize evidentiary dossiers.
+ - [GraphSAGE Status & Roadmap](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-status-and-roadmap.md) — Authoritative Phase 68 status specification.

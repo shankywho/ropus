@@ -9,12 +9,12 @@ type StreamEventType string
 
 const (
 	EventTransactionCreated StreamEventType = "transaction_created"
-	EventLoginAttempt        StreamEventType = "login_attempt"
-	EventDeviceRegistered    StreamEventType = "device_registered"
-	EventAccountCreated      StreamEventType = "account_created"
-	EventPaymentFailed       StreamEventType = "payment_failed"
-	EventChargebackReceived  StreamEventType = "chargeback_received"
-	EventFraudConfirmed      StreamEventType = "fraud_confirmed"
+	EventLoginAttempt       StreamEventType = "login_attempt"
+	EventDeviceRegistered   StreamEventType = "device_registered"
+	EventAccountCreated     StreamEventType = "account_created"
+	EventPaymentFailed      StreamEventType = "payment_failed"
+	EventChargebackReceived StreamEventType = "chargeback_received"
+	EventFraudConfirmed     StreamEventType = "fraud_confirmed"
 )
 
 // StreamingEvent represents an immutable, ordered event in the streaming intelligence mesh.

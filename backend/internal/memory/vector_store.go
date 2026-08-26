@@ -19,8 +19,8 @@ type CaseEmbeddingRecord struct {
 
 // ScoredCaseResult represents a semantic search match with cosine similarity score.
 type ScoredCaseResult struct {
-	Case      *CaseEmbeddingRecord `json:"case"`
-	Similarity float64             `json:"similarity"` // 0.0 to 1.0
+	Case       *CaseEmbeddingRecord `json:"case"`
+	Similarity float64              `json:"similarity"` // 0.0 to 1.0
 }
 
 // VectorStore provides vector storage and nearest-neighbor search for RAG.

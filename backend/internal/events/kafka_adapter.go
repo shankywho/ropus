@@ -21,12 +21,12 @@ type EventHandler func(ctx context.Context, event *StreamEvent) error
 
 // EventStreamingEngine abstracts Kafka, Redis Streams, and memory-backed streaming backbones.
 type EventStreamingEngine struct {
-	mu           sync.RWMutex
-	brokers      []string
-	subscribers  map[string][]EventHandler
-	eventBuffer  []*StreamEvent
-	dlqEngine    *DeadLetterQueueEngine
-	isKafkaLive  bool
+	mu          sync.RWMutex
+	brokers     []string
+	subscribers map[string][]EventHandler
+	eventBuffer []*StreamEvent
+	dlqEngine   *DeadLetterQueueEngine
+	isKafkaLive bool
 }
 
 // NewEventStreamingEngine initializes the streaming backbone.

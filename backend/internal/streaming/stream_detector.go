@@ -8,13 +8,13 @@ import (
 
 // StreamDetectionAlert represents an immediate real-time threat signal detected on the event stream.
 type StreamDetectionAlert struct {
-	AlertID        string    `json:"alert_id"`
-	PatternType    string    `json:"pattern_type"` // "VELOCITY_ATTACK", "CARD_TESTING_BURST", "ACCOUNT_TAKEOVER_WAVE", "MERCHANT_COMPROMISE"
-	EntityID       string    `json:"entity_id"`
-	Confidence     float64   `json:"confidence"`
-	EventCount     int       `json:"event_count"`
-	Message        string    `json:"message"`
-	DetectedAt     time.Time `json:"detected_at"`
+	AlertID     string    `json:"alert_id"`
+	PatternType string    `json:"pattern_type"` // "VELOCITY_ATTACK", "CARD_TESTING_BURST", "ACCOUNT_TAKEOVER_WAVE", "MERCHANT_COMPROMISE"
+	EntityID    string    `json:"entity_id"`
+	Confidence  float64   `json:"confidence"`
+	EventCount  int       `json:"event_count"`
+	Message     string    `json:"message"`
+	DetectedAt  time.Time `json:"detected_at"`
 }
 
 // StreamFraudDetector maintains sliding windows across high-velocity entity streams.

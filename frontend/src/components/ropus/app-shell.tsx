@@ -24,7 +24,8 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex items-center gap-2.5 border-b border-sidebar-border px-4 py-3.5">
+      {/* Application Wordmark: 18px, Weight 800, Letter spacing .18em */}
+      <div className="flex items-center gap-3 border-b border-sidebar-border px-4 py-3.5">
         <span
           aria-hidden
           className="grid size-6 place-items-center bg-sidebar-primary font-mono text-[11px] font-bold text-sidebar-primary-foreground"
@@ -32,27 +33,27 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
           R
         </span>
         <div className="leading-tight">
-          <div className="text-[13px] font-bold tracking-tight">ROPUS</div>
-          <div className="font-mono text-[10px] tracking-[0.08em] text-sidebar-muted uppercase">
-            Risk control plane
+          <div className="text-[18px] font-extrabold tracking-[0.18em] text-white">ROPUS</div>
+          <div className="font-mono text-[9.5px] tracking-[0.13em] text-sidebar-muted uppercase">
+            Risk Control Plane
           </div>
         </div>
       </div>
 
       <div className="border-b border-sidebar-border px-4 py-2.5">
-        <div className="text-[10px] font-semibold tracking-[0.08em] text-sidebar-muted uppercase">
-          Workspace
+        <div className="font-mono text-[10px] tracking-[0.13em] text-sidebar-muted uppercase">
+          WORKSPACE
         </div>
-        <div className="mt-0.5 truncate text-[13px] font-medium">{session.organization}</div>
-        <div className="mt-0.5 font-mono text-[11px] text-sidebar-muted">{session.tenantId}</div>
+        <div className="mt-0.5 truncate text-[12.5px] font-semibold text-white">{session.organization}</div>
+        <div className="mt-0.5 font-mono text-[10.5px] text-sidebar-muted">{session.tenantId}</div>
       </div>
 
       <nav aria-label="Primary" className="flex-1 overflow-y-auto py-2">
         {/* Control Plane Group */}
         <div className="mb-4">
-          <div className="bg-black/40 px-4 py-1.5">
-            <span className="text-[9.5px] font-semibold tracking-[0.12em] text-sidebar-muted/80 uppercase">
-              Control Plane
+          <div className="px-4 py-1.5">
+            <span className="font-mono text-[9.5px] tracking-[0.13em] text-sidebar-muted uppercase">
+              CONTROL PLANE
             </span>
           </div>
           <ul className="mt-1 space-y-0.5">
@@ -65,16 +66,16 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
                     onClick={onNavigate}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex items-center justify-between border-l-2 px-4 py-[6px] text-[13px] transition-colors",
+                      "flex items-center justify-between border-l-2 px-4 py-[6px] text-[12px] font-sans transition-colors",
                       active
-                        ? "border-l-sidebar-primary bg-sidebar-accent font-semibold text-white"
-                        : "border-l-transparent text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-white",
-                      item.to === "/demo" && !active && "text-sidebar-foreground/90 font-medium",
+                        ? "border-l-sidebar-primary bg-sidebar-primary/12 font-semibold text-white"
+                        : "border-l-transparent text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-white",
+                      item.to === "/demo" && !active && "text-sidebar-foreground font-medium",
                     )}
                   >
                     <span>{item.label}</span>
                     {item.to === "/demo" && (
-                      <span className="font-mono text-[10px] text-primary">●</span>
+                      <span className="font-mono text-[10px] text-sidebar-primary">●</span>
                     )}
                   </Link>
                 </li>
@@ -85,9 +86,9 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
 
         {/* Platform Services Group */}
         <div>
-          <div className="bg-black/40 px-4 py-1.5">
-            <span className="text-[9.5px] font-semibold tracking-[0.12em] text-sidebar-muted/80 uppercase">
-              Platform Services
+          <div className="px-4 py-1.5">
+            <span className="font-mono text-[9.5px] tracking-[0.13em] text-sidebar-muted uppercase">
+              PLATFORM SERVICES
             </span>
           </div>
           <ul className="mt-1 space-y-0.5">
@@ -100,10 +101,10 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
                     onClick={onNavigate}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex items-center border-l-2 px-4 py-[5px] text-[12.5px] transition-colors",
+                      "flex items-center border-l-2 px-4 py-[5.5px] text-[12px] font-sans transition-colors",
                       active
-                        ? "border-l-sidebar-primary bg-sidebar-accent font-semibold text-white"
-                        : "border-l-transparent text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-white",
+                        ? "border-l-sidebar-primary bg-sidebar-primary/12 font-semibold text-white"
+                        : "border-l-transparent text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-white",
                     )}
                   >
                     {item.label}
@@ -118,14 +119,14 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
       <div className="border-t border-sidebar-border px-4 py-3">
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0">
-            <div className="truncate text-[13px] font-medium">{session.user}</div>
-            <div className="truncate text-[11px] text-sidebar-muted">{session.role}</div>
+            <div className="truncate text-[12.5px] font-semibold text-white">{session.user}</div>
+            <div className="truncate font-mono text-[10.5px] text-sidebar-muted">{session.role}</div>
           </div>
           <span
             className={cn(
-              "shrink-0 border px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-[0.08em]",
+              "shrink-0 border px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em]",
               session.environment === "PRODUCTION"
-                ? "border-block/60 bg-block/20 text-white"
+                ? "border-destructive/60 bg-destructive/20 text-white"
                 : "border-sidebar-border bg-sidebar-accent text-sidebar-muted",
             )}
           >
@@ -146,7 +147,7 @@ function UtcClock() {
     return () => clearInterval(id);
   }, []);
   return (
-    <span className="font-mono text-[11px] text-muted-foreground" suppressHydrationWarning>
+    <span className="font-mono text-[11px] text-muted-foreground tabular" suppressHydrationWarning>
       UTC {now ?? "--:--:--"}
     </span>
   );
@@ -166,10 +167,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             aria-label="Close navigation"
-            className="absolute inset-0 bg-navy/60"
+            className="absolute inset-0 bg-navy/60 backdrop-blur-xs"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute inset-y-0 left-0 w-[212px] shadow-lg">
+          <div className="absolute inset-y-0 left-0 w-[212px] shadow-xl">
             <SidebarBody onNavigate={() => setOpen(false)} />
           </div>
         </div>
@@ -182,7 +183,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               type="button"
               onClick={() => setOpen(true)}
               aria-label="Open navigation"
-              className="grid size-8 place-items-center border border-border text-muted-foreground lg:hidden"
+              className="grid size-8 place-items-center border border-border bg-surface text-muted-foreground lg:hidden"
             >
               <span aria-hidden>≡</span>
             </button>
@@ -192,22 +193,24 @@ export function AppShell({ children }: { children: ReactNode }) {
             {isLiveBackend ? (
               <span
                 title="Connected to authoritative Go API at localhost:8080"
-                className="border border-approve/40 bg-approve/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-approve uppercase"
+                className="inline-flex items-center gap-1 border border-approve/40 bg-approve-surface px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] text-approve uppercase"
               >
+                <span aria-hidden className="size-1 rounded-full bg-approve" />
                 LIVE BACKEND
               </span>
             ) : (
               <span
                 title="Offline fixtures rendered locally"
-                className="border border-warning/40 bg-warning/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-warning uppercase"
+                className="inline-flex items-center gap-1 border border-amber-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] text-shadow-intel uppercase"
               >
+                <span aria-hidden className="size-1 rounded-full bg-amber-intel" />
                 DEMO DATA
               </span>
             )}
           </div>
           <div className="flex items-center gap-4">
-            <span className="hidden items-center gap-1.5 text-[11px] font-semibold tracking-[0.06em] text-review md:inline-flex">
-              <span aria-hidden className="size-1.5 bg-review" /> 2 SERVICES DEGRADED
+            <span className="hidden items-center gap-1.5 font-mono text-[10px] tracking-[0.06em] text-shadow-intel md:inline-flex">
+              <span aria-hidden className="size-1.5 rounded-full bg-amber-intel animate-pulse" /> 2 SERVICES DEGRADED
             </span>
             <UtcClock />
             <span className="hidden font-mono text-[11px] text-muted-foreground sm:inline">
@@ -215,7 +218,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
           </div>
         </header>
-        <main className="min-w-0 flex-1">{children}</main>
+        <main className="min-w-0 flex-1 paper-deck-grid">{children}</main>
       </div>
     </div>
   );

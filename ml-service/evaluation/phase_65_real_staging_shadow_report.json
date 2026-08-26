@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "phase": "PHASE_65_VERIFIED_REAL_STAGING_SHADOW_CONSUMPTION",
+    "executed_at": "2026-08-26T07:50:09.799084+00:00",
+    "active_production_champion": "production_model_v8_bmr.joblib",
+    "champion_sha256_before": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "champion_sha256_after": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "champion_immutability_verified": true,
+    "frozen_52_case_holdout": "sample_ieee_fixture.csv",
+    "holdout_sha256_before": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+    "holdout_sha256_after": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+    "holdout_immutability_verified": true,
+    "customer_decision_routing": "100% Baseline Dynamic BMR (Authoritative)",
+    "graphsage_customer_enforcement": "0% (STRICTLY NON-ENFORCING SHADOW)",
+    "lifecycle_state": "SYNTHETICALLY_VALIDATED / REAL_DATA_SHADOW_READY / REAL_DATA_REQUIRED / PROMOTION_BLOCKED"
+  },
+  "staging_shadow_scorecard": {
+    "real_staging_connectivity": "BLOCKED",
+    "real_events_consumed": 0,
+    "real_events_persisted": 0,
+    "real_dlq_events": 0,
+    "real_confirmed_internal_collusion_cases": "0 / 50",
+    "clickhouse": "BLOCKED",
+    "prometheus": "BLOCKED",
+    "kafka": "BLOCKED",
+    "consumer_lag": 0,
+    "shadow_p95_latency_ms": 0.0,
+    "graphsage_customer_enforcement_pct": 0.0,
+    "bmr_customer_decision_authority_pct": 100.0,
+    "production_model_status": "UNCHANGED",
+    "frozen_holdout_status": "UNCHANGED",
+    "promotion_status": "BLOCKED"
+  },
+  "preflight_dependency_audit": {
+    "overall_status": "STAGING_CONNECTIVITY_BLOCKED",
+    "is_ready_for_live_shadow": false,
+    "missing_configurations": [
+      "KAFKA_BROKERS",
+      "KAFKA_SASL_USERNAME / KAFKA_SASL_PASSWORD or KAFKA_SSL_CA_LOCATION",
+      "READ permissions on audit.events",
+      "READ permissions on transactions.created",
+      "CLICKHOUSE_HOST",
+      "PROMETHEUS_PUSHGATEWAY_URL / PROMETHEUS_HOST"
+    ],
+    "blocking_reasons": [
+      "KAFKA_BROKERS environment variable is missing.",
+      "Kafka staging authentication credentials are missing.",
+      "CLICKHOUSE_HOST environment variable is missing.",
+      "Prometheus push/scrape destination not configured."
+    ],
+    "required_unblocking_actions": [
+      "Export KAFKA_BROKERS pointing to AWS MSK staging cluster (e.g. b-1.ropus-kafka-staging.internal:9092).",
+      "Inject staging Kafka SASL/SCRAM credentials or mTLS certificates from AWS Secrets Manager.",
+      "Export CLICKHOUSE_HOST pointing to staging ClickHouse cluster.",
+      "Configure PROMETHEUS_PUSHGATEWAY_URL or Prometheus scrape config for /metrics."
+    ]
+  },
+  "governance_decision": {
+    "is_promotion_eligible": false,
+    "promotion_status": "PROMOTION_BLOCKED",
+    "confirmed_real_internal_collusion_cases_available": 0,
+    "required_real_collusion_cases_for_promotion": 50,
+    "progress_pct": 0.0,
+    "blocking_reason": "DATA_REQUIRED: Requires >= 50 confirmed real internal collusion labels from mature production cases before empirical calibration or promotion review.",
+    "next_required_action": "Provision AWS MSK staging credentials to activate live shadow intake."
+  }
+}

@@ -215,49 +215,49 @@ type ModelCandidate struct {
 
 // ShadowGateResult represents the outcome of live shadow evaluation.
 type ShadowGateResult struct {
-	EvaluationID            string    `json:"evaluation_id"`
-	Timestamp               time.Time `json:"timestamp"`
-	CandidateModelVersion   string    `json:"candidate_model_version"`
-	ProductionModelVersion  string    `json:"production_model_version"`
-	SamplesEvaluated        uint32    `json:"samples_evaluated"`
-	ScoreDivergenceRate     float64   `json:"score_divergence_rate"`
-	DecisionChangeRate      float64   `json:"decision_change_rate"`
-	ErrorRate               float64   `json:"error_rate"`
-	FallbackRate            float64   `json:"fallback_rate"`
-	AvgScoreDelta           float64   `json:"avg_score_delta"`
-	P95LatencyMs            float64   `json:"p95_latency_ms"`
-	Passed                  bool      `json:"passed"`
-	Violations              []string  `json:"violations"`
-	GateDetails             string    `json:"gate_details"`
+	EvaluationID           string    `json:"evaluation_id"`
+	Timestamp              time.Time `json:"timestamp"`
+	CandidateModelVersion  string    `json:"candidate_model_version"`
+	ProductionModelVersion string    `json:"production_model_version"`
+	SamplesEvaluated       uint32    `json:"samples_evaluated"`
+	ScoreDivergenceRate    float64   `json:"score_divergence_rate"`
+	DecisionChangeRate     float64   `json:"decision_change_rate"`
+	ErrorRate              float64   `json:"error_rate"`
+	FallbackRate           float64   `json:"fallback_rate"`
+	AvgScoreDelta          float64   `json:"avg_score_delta"`
+	P95LatencyMs           float64   `json:"p95_latency_ms"`
+	Passed                 bool      `json:"passed"`
+	Violations             []string  `json:"violations"`
+	GateDetails            string    `json:"gate_details"`
 }
 
 // CanaryGateResult represents candidate safety gate evaluations across canary stages.
 type CanaryGateResult struct {
-	RolloutID             string    `json:"rollout_id"`
-	CandidateModelVersion string    `json:"candidate_model_version"`
-	StagePercentage       int       `json:"stage_percentage"`
-	Passed                bool      `json:"passed"`
-	Violations            []string  `json:"violations"`
-	Warnings              []string  `json:"warnings"`
-	ErrorRate             float64   `json:"error_rate"`
-	FallbackRate          float64   `json:"fallback_rate"`
-	P95LatencyMs          float64   `json:"p95_latency_ms"`
-	P99LatencyMs          float64   `json:"p99_latency_ms"`
-	DecisionChangeRate    float64   `json:"decision_change_rate"`
-	ActionTaken           string    `json:"action_taken"` // "STAGE_ADVANCED", "PROMOTED", "ROLLED_BACK"
+	RolloutID             string   `json:"rollout_id"`
+	CandidateModelVersion string   `json:"candidate_model_version"`
+	StagePercentage       int      `json:"stage_percentage"`
+	Passed                bool     `json:"passed"`
+	Violations            []string `json:"violations"`
+	Warnings              []string `json:"warnings"`
+	ErrorRate             float64  `json:"error_rate"`
+	FallbackRate          float64  `json:"fallback_rate"`
+	P95LatencyMs          float64  `json:"p95_latency_ms"`
+	P99LatencyMs          float64  `json:"p99_latency_ms"`
+	DecisionChangeRate    float64  `json:"decision_change_rate"`
+	ActionTaken           string   `json:"action_taken"` // "STAGE_ADVANCED", "PROMOTED", "ROLLED_BACK"
 }
 
 // RetrainingStatusSummary provides a clean overview for GET /v1/system/status.
 type RetrainingStatusSummary struct {
-	Enabled               bool      `json:"enabled"`
-	State                 JobState  `json:"state"`
-	ActiveJobID           *string   `json:"active_job_id"`
-	CandidateModel        *string   `json:"candidate_model"`
-	LastTrigger           string    `json:"last_trigger"`
-	LastSuccessfulTrain   string    `json:"last_successful_training"`
-	LastFailure           string    `json:"last_failure"`
-	CooldownRemainingSec  int64     `json:"cooldown_remaining_sec"`
-	TrainingAdapterStatus string    `json:"training_adapter_status"`
+	Enabled               bool     `json:"enabled"`
+	State                 JobState `json:"state"`
+	ActiveJobID           *string  `json:"active_job_id"`
+	CandidateModel        *string  `json:"candidate_model"`
+	LastTrigger           string   `json:"last_trigger"`
+	LastSuccessfulTrain   string   `json:"last_successful_training"`
+	LastFailure           string   `json:"last_failure"`
+	CooldownRemainingSec  int64    `json:"cooldown_remaining_sec"`
+	TrainingAdapterStatus string   `json:"training_adapter_status"`
 }
 
 // ModelLifecycleEvent tracks auditable state transitions.

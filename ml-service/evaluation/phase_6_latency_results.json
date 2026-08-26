@@ -1,0 +1,14 @@
+{
+  "requests_benchmarked": 1000,
+  "mean_latency_ms": 5.915576486906502,
+  "p50_latency_ms": 5.509124996024184,
+  "p90_latency_ms": 5.939057702198625,
+  "p95_latency_ms": 6.347606845520203,
+  "p99_latency_ms": 11.888052507274551,
+  "throughput_rps": 169.04523206037373,
+  "acceptance_criteria": {
+    "p95_max_ms": 15.0,
+    "p99_max_ms": 30.0,
+    "status": "PASS"
+  }
+}

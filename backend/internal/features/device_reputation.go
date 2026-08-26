@@ -26,30 +26,30 @@ const (
 
 // DeviceReputationFeatures encapsulates point-in-time trust, dispute, and fraud history.
 type DeviceReputationFeatures struct {
-	DeviceTotalTransactions      int64   `json:"device_total_transactions"`
-	DeviceSuccessfulTransactions int64   `json:"device_successful_transactions"`
-	DeviceFailedTransactions     int64   `json:"device_failed_transactions"`
-	DeviceDisputedTransactions   int64   `json:"device_disputed_transactions"`
-	DeviceFraudTransactions      int64   `json:"device_fraud_transactions"`
-	DeviceRefundedTransactions   int64   `json:"device_refunded_transactions"`
-	DeviceChargebackCount        int64   `json:"device_chargeback_count"`
+	DeviceTotalTransactions      int64 `json:"device_total_transactions"`
+	DeviceSuccessfulTransactions int64 `json:"device_successful_transactions"`
+	DeviceFailedTransactions     int64 `json:"device_failed_transactions"`
+	DeviceDisputedTransactions   int64 `json:"device_disputed_transactions"`
+	DeviceFraudTransactions      int64 `json:"device_fraud_transactions"`
+	DeviceRefundedTransactions   int64 `json:"device_refunded_transactions"`
+	DeviceChargebackCount        int64 `json:"device_chargeback_count"`
 
-	DeviceDisputeRate            float64 `json:"device_dispute_rate"`
-	DeviceFraudRate              float64 `json:"device_fraud_rate"`
-	DeviceRefundRate             float64 `json:"device_refund_rate"`
-	DeviceSuccessRate            float64 `json:"device_success_rate"`
+	DeviceDisputeRate float64 `json:"device_dispute_rate"`
+	DeviceFraudRate   float64 `json:"device_fraud_rate"`
+	DeviceRefundRate  float64 `json:"device_refund_rate"`
+	DeviceSuccessRate float64 `json:"device_success_rate"`
 
-	DeviceRecentDisputeCount     int64   `json:"device_recent_dispute_count"`     // 30-day window
-	DeviceRecentFraudCount       int64   `json:"device_recent_fraud_count"`       // 30-day window
-	DeviceRecentChargebackCount  int64   `json:"device_recent_chargeback_count"`  // 30-day window
+	DeviceRecentDisputeCount    int64 `json:"device_recent_dispute_count"`    // 30-day window
+	DeviceRecentFraudCount      int64 `json:"device_recent_fraud_count"`      // 30-day window
+	DeviceRecentChargebackCount int64 `json:"device_recent_chargeback_count"` // 30-day window
 
-	DeviceDaysSinceFirstSeen     float64 `json:"device_days_since_first_seen"`
-	DeviceDaysSinceLastDispute   float64 `json:"device_days_since_last_dispute"` // -1.0 if never
-	DeviceDaysSinceLastFraud     float64 `json:"device_days_since_last_fraud"`   // -1.0 if never
+	DeviceDaysSinceFirstSeen   float64 `json:"device_days_since_first_seen"`
+	DeviceDaysSinceLastDispute float64 `json:"device_days_since_last_dispute"` // -1.0 if never
+	DeviceDaysSinceLastFraud   float64 `json:"device_days_since_last_fraud"`   // -1.0 if never
 
-	DeviceReputationScore        float64 `json:"device_reputation_score"` // 0.0 (Trusted) to 1.0 (High Risk)
-	IsDegraded                   bool    `json:"is_degraded"`
-	DegradeReason                string  `json:"degrade_reason,omitempty"`
+	DeviceReputationScore float64 `json:"device_reputation_score"` // 0.0 (Trusted) to 1.0 (High Risk)
+	IsDegraded            bool    `json:"is_degraded"`
+	DegradeReason         string  `json:"degrade_reason,omitempty"`
 }
 
 // DeviceReputationStore provides real-time Redis-backed and point-in-time reputation analysis.

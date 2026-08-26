@@ -1,0 +1,12 @@
+{
+  "current_live_observations": 0,
+  "target_live_observations": 5000,
+  "current_mature_frauds": 0,
+  "required_mature_frauds": 86,
+  "alpha_spending_status": {
+    "information_fraction": 0.01,
+    "critical_z_score": 19.59963984540054,
+    "nominal_alpha_level": 0.0
+  },
+  "monitoring_decision": "CONTINUE_DATA_COLLECTION"
+}

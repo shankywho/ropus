@@ -10,7 +10,10 @@ import (
 	"time"
 
 	"github.com/shankywho/ropus/backend/internal/auth/api_keys"
+	"github.com/shankywho/ropus/backend/internal/bot_defense"
+	"github.com/shankywho/ropus/backend/internal/graph/graphsage"
 	"github.com/shankywho/ropus/backend/internal/ml"
+	"github.com/shankywho/ropus/backend/internal/riskengine"
 	"github.com/shankywho/ropus/backend/internal/saas"
 	"github.com/shankywho/ropus/backend/internal/security/hardening"
 )
@@ -38,25 +41,29 @@ type CanonicalRiskRequest struct {
 
 // CanonicalRiskResponse represents the comprehensive production decision response.
 type CanonicalRiskResponse struct {
-	RequestID        string                   `json:"request_id"`
-	DecisionID       string                   `json:"decision_id"`
-	TenantID         string                   `json:"tenant_id"`
-	TransactionID    string                   `json:"transaction_id"`
-	Decision         string                   `json:"decision"` // "APPROVE", "REVIEW", "CHALLENGE", "BLOCK"
-	Verdict          string                   `json:"verdict"`  // Synonym for Decision
-	RiskScore        float64                  `json:"risk_score"`
-	Confidence       float64                  `json:"confidence"`
-	Recommendation   string                   `json:"recommendation"` // "ALLOW", "STEP_UP_MFA", "MANUAL_REVIEW", "BLOCK_AND_REVIEW"
-	Reasons          []string                 `json:"reasons"`
-	RiskFactors      []RiskFactorContribution `json:"risk_factors"`
-	ObservedFacts    []string                 `json:"observed_facts"`
-	InferredPatterns []string                 `json:"inferred_patterns"`
-	ModelVersion     string                   `json:"model_version"`
-	PolicyVersion    string                   `json:"policy_version"`
-	LatencyMs        float64                  `json:"latency_ms"`
-	CaseID           string                   `json:"case_id,omitempty"`
-	Timestamp        time.Time                `json:"timestamp"`
-	HumanExplanation string                   `json:"human_explanation"`
+	RequestID              string                   `json:"request_id"`
+	DecisionID             string                   `json:"decision_id"`
+	TenantID               string                   `json:"tenant_id"`
+	TransactionID          string                   `json:"transaction_id"`
+	Decision               string                   `json:"decision"` // "APPROVE", "REVIEW", "CHALLENGE", "BLOCK"
+	Verdict                string                   `json:"verdict"`  // Synonym for Decision
+	RiskScore              float64                  `json:"risk_score"`
+	Confidence             float64                  `json:"confidence"`
+	Recommendation         string                   `json:"recommendation"` // "ALLOW", "STEP_UP_MFA", "MANUAL_REVIEW", "BLOCK_AND_REVIEW"
+	Reasons                []string                 `json:"reasons"`
+	RiskFactors            []RiskFactorContribution `json:"risk_factors"`
+	ObservedFacts          []string                 `json:"observed_facts"`
+	InferredPatterns       []string                 `json:"inferred_patterns"`
+	ModelVersion           string                   `json:"model_version"`
+	PolicyVersion          string                   `json:"policy_version"`
+	LatencyMs              float64                  `json:"latency_ms"`
+	CaseID                 string                   `json:"case_id,omitempty"`
+	Timestamp              time.Time                `json:"timestamp"`
+	HumanExplanation       string                   `json:"human_explanation"`
+	CalibratedProbability  float64                  `json:"calibrated_probability,omitempty"`
+	ExpectedFraudExposure  float64                  `json:"expected_fraud_exposure,omitempty"`
+	ExpectedActionCosts    map[string]float64       `json:"expected_action_costs,omitempty"`
+	EconomicDecisionReason string                   `json:"economic_decision_reason,omitempty"`
 }
 
 // StoredDecisionRecord represents the persistent decision record.
@@ -71,12 +78,14 @@ type StoredDecisionRecord struct {
 
 // UnifiedRiskPipeline orchestrates the true end-to-end fintech decision workflow.
 type UnifiedRiskPipeline struct {
-	mu           sync.RWMutex
-	keyService   *api_keys.APIKeyService
-	usageMeter   *saas.UsageMeterEngine
-	mlEngine     *ml.RealMLInferenceEngine
-	decisions    map[string]*StoredDecisionRecord
-	emittedHooks []map[string]interface{}
+	mu              sync.RWMutex
+	keyService      *api_keys.APIKeyService
+	usageMeter      *saas.UsageMeterEngine
+	mlEngine        *ml.RealMLInferenceEngine
+	botEngine       *bot_defense.BotDefenseEngine
+	graphsageEngine *graphsage.RelationshipIntelligenceEngine
+	decisions       map[string]*StoredDecisionRecord
+	emittedHooks    []map[string]interface{}
 }
 
 // NewUnifiedRiskPipeline initializes the complete risk decision pipeline.
@@ -95,11 +104,13 @@ func NewUnifiedRiskPipeline(
 		mlEngine = ml.NewRealMLInferenceEngine()
 	}
 	return &UnifiedRiskPipeline{
-		keyService:   keyService,
-		usageMeter:   usageMeter,
-		mlEngine:     mlEngine,
-		decisions:    make(map[string]*StoredDecisionRecord),
-		emittedHooks: make([]map[string]interface{}, 0),
+		keyService:      keyService,
+		usageMeter:      usageMeter,
+		mlEngine:        mlEngine,
+		botEngine:       bot_defense.NewBotDefenseEngine(),
+		graphsageEngine: graphsage.NewRelationshipIntelligenceEngine(nil),
+		decisions:       make(map[string]*StoredDecisionRecord),
+		emittedHooks:    make([]map[string]interface{}, 0),
 	}
 }
 
@@ -129,6 +140,39 @@ func (p *UnifiedRiskPipeline) EvaluateRisk(ctx context.Context, apiKeyToken stri
 	var reasons []string
 	var observedFacts []string
 	var inferredPatterns []string
+
+	// Feature 0: Automated Attack & Bot Cadence Defense Layer
+	botCtx := &bot_defense.BotDefenseContext{
+		TenantID:          keyMeta.OrgID,
+		PlanTier:          "ENTERPRISE",
+		TransactionID:     req.TransactionID,
+		AccountID:         req.CustomerID,
+		DeviceFingerprint: req.DeviceID,
+		IPAddress:         req.IPAddress,
+		UserAgent:         "Mozilla/5.0 (Standard)",
+		CardHash:          fmt.Sprintf("card_%s", req.CustomerID),
+		Amount:            req.Amount,
+		Currency:          req.Currency,
+		Timestamp:         req.Timestamp,
+	}
+	botRes := p.botEngine.Evaluate(botCtx)
+
+	botContrib := 0.0
+	if botRes.AutomationRiskScore >= 0.30 {
+		botContrib = math.Round(botRes.AutomationRiskScore*0.25*100) / 100.0
+		factors = append(factors, RiskFactorContribution{
+			FactorName:   "Automated Attack & Bot Risk Layer",
+			Contribution: botContrib,
+			Description:  fmt.Sprintf("Cadence & Automation Score: %.2f (%s)", botRes.AutomationRiskScore, botRes.RiskLevel),
+		})
+		for _, pat := range botRes.ObservedPatterns {
+			inferredPatterns = append(inferredPatterns, pat)
+		}
+		for _, r := range botRes.TriggeredRules {
+			reasons = append(reasons, r)
+		}
+		observedFacts = append(observedFacts, fmt.Sprintf("Bot defense triggered %d rules (action: %s)", len(botRes.TriggeredRules), botRes.RecommendedAction))
+	}
 
 	// Feature A: Transaction Velocity / Amount Deviation
 	amountContrib := 0.0
@@ -233,8 +277,18 @@ func (p *UnifiedRiskPipeline) EvaluateRisk(ctx context.Context, apiKeyToken stri
 		Description:  fmt.Sprintf("XGBoost/LightGBM model score contribution (base prob: %.2f)", mlPred.FraudProbability),
 	})
 
+	// Feature G: Non-Enforcing GraphSAGE Relationship Intelligence (Shadow Mode)
+	if p.graphsageEngine != nil {
+		gReport := p.graphsageEngine.EvaluateRelationship(ctx, req.CustomerID, req.Timestamp)
+		if gReport != nil {
+			for _, pat := range gReport.InferredPatterns {
+				inferredPatterns = append(inferredPatterns, pat)
+			}
+		}
+	}
+
 	// 5. Total Score Aggregation with Exact Mathematical Sum
-	rawSum := amountContrib + geoContrib + deviceContrib + ipContrib + graphContrib + mlContrib
+	rawSum := botContrib + amountContrib + geoContrib + deviceContrib + ipContrib + graphContrib + mlContrib
 	if rawSum == 0 {
 		rawSum = 0.04 // Clean baseline
 		factors = append(factors, RiskFactorContribution{
@@ -248,7 +302,9 @@ func (p *UnifiedRiskPipeline) EvaluateRisk(ctx context.Context, apiKeyToken stri
 	}
 	normalizedScore := math.Round(rawSum*100) / 100.0
 
-	// 6. Policy Decision & Recommendation
+	// 6. Cost-Sensitive Bayes Minimum Risk Decision & Policy Precedence
+	econResult := riskengine.EvaluateCostSensitiveDecision(normalizedScore, req.Amount, riskengine.DefaultEconomicPolicyConfig())
+
 	decision := "APPROVE"
 	recommendation := "ALLOW"
 	confidence := 0.96
@@ -270,6 +326,30 @@ func (p *UnifiedRiskPipeline) EvaluateRisk(ctx context.Context, apiKeyToken stri
 		confidence = 0.90
 		caseID = fmt.Sprintf("CASE-%d", time.Now().UnixNano()%1000000)
 		p.usageMeter.RecordCaseCreation(keyMeta.OrgID)
+	} else {
+		// For lower scores, allow Bayes Minimum Risk to elevate action if expected fraud exposure is high
+		switch econResult.OptimalAction {
+		case "DECLINE_RECOMMENDATION":
+			decision = "BLOCK"
+			recommendation = "BLOCK_AND_REVIEW"
+			confidence = 0.94
+			caseID = fmt.Sprintf("CASE-%d", time.Now().UnixNano()%1000000)
+			p.usageMeter.RecordCaseCreation(keyMeta.OrgID)
+		case "MANUAL_REVIEW":
+			decision = "REVIEW"
+			recommendation = "MANUAL_REVIEW"
+			confidence = 0.90
+			caseID = fmt.Sprintf("CASE-%d", time.Now().UnixNano()%1000000)
+			p.usageMeter.RecordCaseCreation(keyMeta.OrgID)
+		case "STEP_UP_RECOMMENDATION":
+			decision = "CHALLENGE"
+			recommendation = "STEP_UP_MFA"
+			confidence = 0.92
+		default:
+			decision = "APPROVE"
+			recommendation = "ALLOW"
+			confidence = 0.96
+		}
 	}
 
 	// 7. Request ID, Decision ID & Persistence
@@ -310,25 +390,29 @@ func (p *UnifiedRiskPipeline) EvaluateRisk(ctx context.Context, apiKeyToken stri
 	explanation := fmt.Sprintf("Transaction %s evaluated with risk score %.2f. Final Decision: %s.", req.TransactionID, normalizedScore, decision)
 
 	return &CanonicalRiskResponse{
-		RequestID:        requestID,
-		DecisionID:       decisionID,
-		TenantID:         keyMeta.OrgID,
-		TransactionID:    req.TransactionID,
-		Decision:         decision,
-		Verdict:          decision,
-		RiskScore:        normalizedScore,
-		Confidence:       confidence,
-		Recommendation:   recommendation,
-		Reasons:          reasons,
-		RiskFactors:      factors,
-		ObservedFacts:    observedFacts,
-		InferredPatterns: inferredPatterns,
-		ModelVersion:     mlPred.ModelVersion,
-		PolicyVersion:    "policy_enterprise_v3.39",
-		LatencyMs:        math.Round(latency*100) / 100.0,
-		CaseID:           caseID,
-		Timestamp:        now,
-		HumanExplanation: explanation,
+		RequestID:              requestID,
+		DecisionID:             decisionID,
+		TenantID:               keyMeta.OrgID,
+		TransactionID:          req.TransactionID,
+		Decision:               decision,
+		Verdict:                decision,
+		RiskScore:              normalizedScore,
+		Confidence:             confidence,
+		Recommendation:         recommendation,
+		Reasons:                reasons,
+		RiskFactors:            factors,
+		ObservedFacts:          observedFacts,
+		InferredPatterns:       inferredPatterns,
+		ModelVersion:           mlPred.ModelVersion,
+		PolicyVersion:          "policy_enterprise_v3.39",
+		LatencyMs:              math.Round(latency*100) / 100.0,
+		CaseID:                 caseID,
+		Timestamp:              now,
+		HumanExplanation:       explanation,
+		CalibratedProbability:  normalizedScore,
+		ExpectedFraudExposure:  econResult.ExpectedFraudExposure,
+		ExpectedActionCosts:    econResult.ActionCosts,
+		EconomicDecisionReason: econResult.DecisionReason,
 	}, nil
 }
 

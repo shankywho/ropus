@@ -1,0 +1,17 @@
+{
+  "all_failure_modes_isolated": true,
+  "failure_modes_tested": [
+    {
+      "Fault Mode 4A: Shadow Runtime Exception": "PASS",
+      "description": "Enforced decision strictly preserved as DECLINE; exception isolated"
+    },
+    {
+      "Fault Mode 4B: Disk Persistence Failure": "PASS",
+      "description": "Enforced customer decision returned successfully despite simulated disk error"
+    },
+    {
+      "Fault Mode 4C: Shadow Latency Spike": "PASS",
+      "description": "Enforced decision returned in 0.07ms within SLO budget"
+    }
+  ]
+}

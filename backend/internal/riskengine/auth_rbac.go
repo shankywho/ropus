@@ -199,10 +199,10 @@ func writeJSONAuthError(w http.ResponseWriter, statusCode int, errCode, message 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"type":    fmt.Sprintf("https://errors.ropus.io/%s", errCode),
-		"title":   strings.Title(strings.ReplaceAll(errCode, "_", " ")),
-		"status":  statusCode,
-		"detail":  message,
-		"code":    errCode,
+		"type":   fmt.Sprintf("https://errors.ropus.io/%s", errCode),
+		"title":  strings.Title(strings.ReplaceAll(errCode, "_", " ")),
+		"status": statusCode,
+		"detail": message,
+		"code":   errCode,
 	})
 }

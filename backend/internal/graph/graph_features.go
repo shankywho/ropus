@@ -2,6 +2,7 @@ package graph
 
 import (
 	"math"
+	"time"
 )
 
 // GraphFeatureVector holds real-time network topology features extracted from the graph.
@@ -26,21 +27,26 @@ func NewGraphFeatureExtractor(engine *GraphEngine) *GraphFeatureExtractor {
 
 // ExtractFeatures computes real-time graph attributes for an incoming transaction.
 func (x *GraphFeatureExtractor) ExtractFeatures(userID, deviceFingerprint, ipAddress string) (*GraphFeatureVector, error) {
+	return x.ExtractFeaturesTemporal(userID, deviceFingerprint, ipAddress, time.Now().UTC(), DefaultTemporalWindow)
+}
+
+// ExtractFeaturesTemporal computes time-decayed graph features constrained to [asOf - window, asOf].
+func (x *GraphFeatureExtractor) ExtractFeaturesTemporal(userID, deviceFingerprint, ipAddress string, asOf time.Time, window time.Duration) (*GraphFeatureVector, error) {
 	var fraudNeighbors int
 	var deviceAccounts int
 	var ipAccounts int
 
-	// 1. Check user neighbors for fraud links
-	userNeighbors, _ := x.engine.Store().QueryNeighbors(userID, "")
+	// 1. Check user neighbors with temporal filtering
+	userNeighbors, _ := x.engine.Store().QueryNeighborsTemporal(userID, "", asOf, window)
 	for _, n := range userNeighbors {
 		if n.IsKnownBad || n.RiskScore > 0.80 {
 			fraudNeighbors++
 		}
 	}
 
-	// 2. Check device sharing fan-out
+	// 2. Check device sharing fan-out with temporal filtering
 	if deviceFingerprint != "" {
-		devNeighbors, _ := x.engine.Store().QueryNeighbors(deviceFingerprint, "")
+		devNeighbors, _ := x.engine.Store().QueryNeighborsTemporal(deviceFingerprint, "", asOf, window)
 		deviceAccounts = len(devNeighbors)
 		for _, n := range devNeighbors {
 			if n.IsKnownBad {
@@ -49,9 +55,9 @@ func (x *GraphFeatureExtractor) ExtractFeatures(userID, deviceFingerprint, ipAdd
 		}
 	}
 
-	// 3. Check IP address sharing fan-out
+	// 3. Check IP address sharing fan-out with temporal filtering
 	if ipAddress != "" {
-		ipNeighbors, _ := x.engine.Store().QueryNeighbors(ipAddress, "")
+		ipNeighbors, _ := x.engine.Store().QueryNeighborsTemporal(ipAddress, "", asOf, window)
 		ipAccounts = len(ipNeighbors)
 		for _, n := range ipNeighbors {
 			if n.IsKnownBad {

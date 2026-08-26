@@ -1,0 +1,25 @@
+{
+  "all_failure_modes_passed": true,
+  "tests": [
+    {
+      "Fault 1: Shadow Runtime Exception": "PASS",
+      "description": "Enforced decision preserved as DECLINE; exception isolated"
+    },
+    {
+      "Fault 2: Disk Persistence Failure": "PASS",
+      "description": "Enforced customer decision returned successfully despite disk error"
+    },
+    {
+      "Fault 3: Shadow Latency Spike": "PASS",
+      "description": "Enforced decision returned in 0.22ms within SLO budget"
+    },
+    {
+      "Fault 4: Malformed Request / NaN Input": "PASS",
+      "description": "Inputs bounded safely to fail-closed defaults"
+    },
+    {
+      "Fault 5: Process Restart Recovery": "PASS",
+      "description": "Durable state restored from disk without data loss"
+    }
+  ]
+}

@@ -57,29 +57,29 @@ var GlobalCardTestingThresholds = CardTestingThresholds{
 // PaymentTokenFeatures represents point-in-time device ↔ payment token features computed by Redis.
 type PaymentTokenFeatures struct {
 	// Device -> Payment Token Metrics
-	DeviceUniqueTokens5m      int64             `json:"device_unique_tokens_5m"`
-	DeviceUniqueTokens1h      int64             `json:"device_unique_tokens_1h"`
-	DeviceUniqueTokens24h     int64             `json:"device_unique_tokens_24h"`
-	DeviceTokenTxCount5m      int64             `json:"device_token_tx_count_5m"`
-	DeviceTokenTxCount1h      int64             `json:"device_token_tx_count_1h"`
-	DeviceTokenTxCount24h     int64             `json:"device_token_tx_count_24h"`
-	DeviceTokenAmountSum24h   int64             `json:"device_token_amount_sum_24h"`
-	CardTestingSignal         CardTestingSignal `json:"card_testing_signal"`
+	DeviceUniqueTokens5m    int64             `json:"device_unique_tokens_5m"`
+	DeviceUniqueTokens1h    int64             `json:"device_unique_tokens_1h"`
+	DeviceUniqueTokens24h   int64             `json:"device_unique_tokens_24h"`
+	DeviceTokenTxCount5m    int64             `json:"device_token_tx_count_5m"`
+	DeviceTokenTxCount1h    int64             `json:"device_token_tx_count_1h"`
+	DeviceTokenTxCount24h   int64             `json:"device_token_tx_count_24h"`
+	DeviceTokenAmountSum24h int64             `json:"device_token_amount_sum_24h"`
+	CardTestingSignal       CardTestingSignal `json:"card_testing_signal"`
 
 	// Payment Token -> Device Metrics
-	TokenUniqueDevices1h      int64             `json:"token_unique_devices_1h"`
-	TokenUniqueDevices24h     int64             `json:"token_unique_devices_24h"`
-	TokenTxCount1h            int64             `json:"token_tx_count_1h"`
-	TokenTxCount24h           int64             `json:"token_tx_count_24h"`
-	TokenFanOutSignal         TokenFanOutSignal `json:"token_fan_out_signal"`
+	TokenUniqueDevices1h  int64             `json:"token_unique_devices_1h"`
+	TokenUniqueDevices24h int64             `json:"token_unique_devices_24h"`
+	TokenTxCount1h        int64             `json:"token_tx_count_1h"`
+	TokenTxCount24h       int64             `json:"token_tx_count_24h"`
+	TokenFanOutSignal     TokenFanOutSignal `json:"token_fan_out_signal"`
 
 	// Pair Metrics
-	DeviceTokenSeenBefore     int64             `json:"device_token_seen_before"` // 0 = New Link, 1 = Existing Link
-	DeviceTokenTxCount        int64             `json:"device_token_tx_count"`
+	DeviceTokenSeenBefore int64 `json:"device_token_seen_before"` // 0 = New Link, 1 = Existing Link
+	DeviceTokenTxCount    int64 `json:"device_token_tx_count"`
 
 	// Degradation / Safety
-	IsDegraded                bool              `json:"is_degraded"`
-	DegradeReason             string            `json:"degrade_reason,omitempty"`
+	IsDegraded    bool   `json:"is_degraded"`
+	DegradeReason string `json:"degrade_reason,omitempty"`
 }
 
 var rawPANRegex = regexp.MustCompile(`^[0-9]{13,19}$`)

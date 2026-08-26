@@ -57,9 +57,9 @@ type TenantRateLimiterConfig struct {
 // DefaultRateLimiterConfig returns standard production defaults.
 func DefaultRateLimiterConfig() TenantRateLimiterConfig {
 	return TenantRateLimiterConfig{
-		DefaultRatePerSec: 5000.0, // 5,000 req/sec per tenant
-		DefaultBurstCap:   10000.0, // 10,000 burst per tenant
-		GlobalRatePerSec:  50000.0, // 50,000 req/sec global
+		DefaultRatePerSec: 5000.0,   // 5,000 req/sec per tenant
+		DefaultBurstCap:   10000.0,  // 10,000 burst per tenant
+		GlobalRatePerSec:  50000.0,  // 50,000 req/sec global
 		GlobalBurstCap:    100000.0, // 100,000 burst global
 		CleanupInterval:   10 * time.Minute,
 	}

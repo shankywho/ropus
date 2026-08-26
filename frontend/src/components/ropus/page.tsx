@@ -9,7 +9,7 @@ import { isLiveBackend } from "@/lib/ropus/api";
  */
 export function Page({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn("mx-auto w-full max-w-[1560px] px-5 py-5 lg:px-7", className)}>
+    <div className={cn("mx-auto w-full max-w-[1560px] px-5 py-5 lg:px-8", className)}>
       {children}
     </div>
   );
@@ -30,13 +30,17 @@ export function PageHead({
     <header className="flex flex-wrap items-start justify-between gap-x-8 gap-y-3 border-b border-border pb-4">
       <div className="min-w-0">
         {breadcrumb && (
-          <div className="mb-1.5 flex items-center gap-2 text-[11.5px] text-muted-foreground">
+          <div className="mb-1.5 flex items-center gap-2 font-mono text-[10px] tracking-[0.13em] text-muted-foreground uppercase">
             {breadcrumb}
           </div>
         )}
-        <h1 className="text-[20px] leading-tight font-bold tracking-[-0.01em]">{title}</h1>
+        <h1 className="font-sans text-[25px] font-extrabold leading-[1.15] tracking-[-0.045em] text-foreground">
+          {title}
+        </h1>
         {subtitle && (
-          <p className="mt-1 max-w-[78ch] text-[12.5px] text-muted-foreground">{subtitle}</p>
+          <p className="mt-1 max-w-[80ch] font-sans text-[12px] font-normal leading-relaxed text-muted-foreground">
+            {subtitle}
+          </p>
         )}
       </div>
       <div className="flex shrink-0 items-center gap-3">
@@ -66,8 +70,10 @@ export function SectionHead({
       )}
     >
       <div className="flex items-baseline gap-3">
-        <h2 className="text-[11px] font-bold tracking-[0.08em] uppercase">{title}</h2>
-        {meta && <span className="text-[11.5px] text-muted-foreground">{meta}</span>}
+        <h2 className="font-mono text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+          {title}
+        </h2>
+        {meta && <span className="font-mono text-[10px] text-muted-foreground">{meta}</span>}
       </div>
       {right}
     </div>
@@ -83,7 +89,7 @@ export function DataGrid({
   empty = "No records.",
   onSelect,
   selectedId,
-  rowClassName = "py-[7px]",
+  rowClassName = "py-[6.5px]",
 }: {
   columns: Column[];
   rows: Array<{ id: string; cells: ReactNode[] }>;
@@ -94,77 +100,79 @@ export function DataGrid({
   rowClassName?: string;
 }) {
   return (
-    <table className="w-full border-collapse text-[12.5px]">
-      <thead>
-        <tr className="border-b border-border">
-          {columns.map((c) => (
-            <th
-              key={c.key}
-              scope="col"
-              style={c.width ? { width: c.width } : undefined}
-              className={cn(
-                "py-1.5 pr-4 text-[10.5px] font-semibold tracking-[0.08em] whitespace-nowrap text-muted-foreground uppercase last:pr-0",
-                c.align === "right" ? "text-right" : "text-left",
-              )}
-            >
-              {c.label}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((r) => (
-          <tr
-            key={r.id}
-            onClick={onSelect ? () => onSelect(r.id) : undefined}
-            tabIndex={onSelect ? 0 : undefined}
-            onKeyDown={
-              onSelect
-                ? (e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      onSelect(r.id);
-                    }
-                  }
-                : undefined
-            }
-            aria-selected={onSelect ? selectedId === r.id : undefined}
-            className={cn(
-              "border-b border-border last:border-b-0 hover:bg-accent",
-              onSelect && "cursor-pointer outline-none focus-visible:bg-accent",
-              selectedId === r.id && "bg-accent",
-            )}
-          >
-            {r.cells.map((cell, i) => (
-              <td
-                key={columns[i]?.key ?? i}
+    <div className="w-full overflow-x-auto">
+      <table className="w-full border-collapse font-sans text-[11.5px]">
+        <thead>
+          <tr className="border-b border-border bg-muted/40">
+            {columns.map((c) => (
+              <th
+                key={c.key}
+                scope="col"
+                style={c.width ? { width: c.width } : undefined}
                 className={cn(
-                  "pr-4 align-top last:pr-0",
-                  rowClassName,
-                  columns[i]?.align === "right" ? "text-right" : "text-left",
-                  selectedId === r.id && i === 0 && "relative",
+                  "py-2 pr-4 font-mono text-[9px] font-medium tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase last:pr-0",
+                  c.align === "right" ? "text-right" : "text-left",
                 )}
               >
-                {selectedId === r.id && i === 0 && (
-                  <span
-                    aria-hidden
-                    className="absolute top-0 bottom-0 -left-2 w-[2px] bg-primary"
-                  />
-                )}
-                {cell}
-              </td>
+                {c.label}
+              </th>
             ))}
           </tr>
-        ))}
-        {rows.length === 0 && (
-          <tr>
-            <td colSpan={columns.length} className="py-4 text-[12.5px] text-muted-foreground">
-              {empty}
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr
+              key={r.id}
+              onClick={onSelect ? () => onSelect(r.id) : undefined}
+              tabIndex={onSelect ? 0 : undefined}
+              onKeyDown={
+                onSelect
+                  ? (e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onSelect(r.id);
+                      }
+                    }
+                  : undefined
+              }
+              aria-selected={onSelect ? selectedId === r.id : undefined}
+              className={cn(
+                "border-b border-border last:border-b-0 hover:bg-secondary/60 transition-colors",
+                onSelect && "cursor-pointer outline-none focus-visible:bg-secondary/80",
+                selectedId === r.id && "bg-secondary",
+              )}
+            >
+              {r.cells.map((cell, i) => (
+                <td
+                  key={columns[i]?.key ?? i}
+                  className={cn(
+                    "pr-4 align-top last:pr-0",
+                    rowClassName,
+                    columns[i]?.align === "right" ? "text-right" : "text-left",
+                    selectedId === r.id && i === 0 && "relative",
+                  )}
+                >
+                  {selectedId === r.id && i === 0 && (
+                    <span
+                      aria-hidden
+                      className="absolute top-0 bottom-0 -left-2 w-[2px] bg-amber-intel"
+                    />
+                  )}
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+          {rows.length === 0 && (
+            <tr>
+              <td colSpan={columns.length} className="py-4 text-[11.5px] text-muted-foreground">
+                {empty}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -178,11 +186,13 @@ export function MetricStrip({
     <dl className="grid grid-cols-2 divide-x divide-border border-b border-border sm:grid-cols-3 lg:grid-cols-5">
       {items.map((m, i) => (
         <div key={m.label} className={cn("px-5 py-3.5", i === 0 && "pl-0")}>
-          <dd className={cn("font-mono text-[21px] leading-none font-bold tabular", m.tone)}>
+          <dd className={cn("font-mono text-[28px] leading-none font-medium tracking-[-0.06em] tabular", m.tone)}>
             {m.value}
           </dd>
-          <dt className="mt-2 text-[11.5px] font-medium">{m.label}</dt>
-          {m.sub && <dd className="mt-0.5 text-[11px] text-muted-foreground">{m.sub}</dd>}
+          <dt className="mt-2 font-mono text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+            {m.label}
+          </dt>
+          {m.sub && <dd className="mt-0.5 font-sans text-[11px] text-muted-foreground">{m.sub}</dd>}
         </div>
       ))}
     </dl>
@@ -204,13 +214,13 @@ export function TelemetryStrip({
     <dl className={cn("flex flex-wrap divide-x divide-border border-b border-border", className)}>
       {items.map((m, i) => (
         <div key={m.label} className={cn("px-4 py-2.5", i === 0 && "pl-0")}>
-          <dd className={cn("font-mono text-[17px] leading-none font-bold tabular", m.tone)}>
+          <dd className={cn("font-mono text-[20px] leading-none font-medium tracking-[-0.05em] tabular", m.tone)}>
             {m.value}
           </dd>
-          <dt className="mt-1.5 text-[10.5px] font-semibold tracking-[0.07em] text-muted-foreground uppercase">
+          <dt className="mt-1.5 font-mono text-[9.5px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
             {m.label}
           </dt>
-          {m.sub && <dd className="mt-0.5 text-[10.5px] text-muted-foreground">{m.sub}</dd>}
+          {m.sub && <dd className="mt-0.5 font-sans text-[10.5px] text-muted-foreground">{m.sub}</dd>}
         </div>
       ))}
     </dl>
@@ -220,11 +230,11 @@ export function TelemetryStrip({
 /** Label/value row used inside inspectors. Aligned, quiet label, mono-friendly value. */
 export function InspectorRow({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-border py-[5px] last:border-b-0">
-      <span className="text-[10.5px] font-semibold tracking-[0.07em] whitespace-nowrap text-muted-foreground uppercase">
+    <div className="flex items-baseline justify-between gap-4 border-b border-border py-[5.5px] last:border-b-0">
+      <span className="font-mono text-[9.5px] font-medium tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase">
         {label}
       </span>
-      <span className="min-w-0 truncate text-right text-[12.5px]">{children}</span>
+      <span className="min-w-0 truncate text-right font-sans text-[12px]">{children}</span>
     </div>
   );
 }

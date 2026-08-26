@@ -14,10 +14,10 @@ type LLMMessage struct {
 
 // LLMResponse represents generated output from the reasoning model.
 type LLMResponse struct {
-	Content      string    `json:"content"`
-	Model        string    `json:"model"`
-	TokensUsed   int       `json:"tokens_used"`
-	GeneratedAt  time.Time `json:"generated_at"`
+	Content     string    `json:"content"`
+	Model       string    `json:"model"`
+	TokensUsed  int       `json:"tokens_used"`
+	GeneratedAt time.Time `json:"generated_at"`
 }
 
 // LLMClient abstracts calls to OpenAI, Claude, or local LLaMA/vLLM models.

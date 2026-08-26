@@ -60,57 +60,57 @@ var GlobalVelocityThresholds = DeviceVelocityThresholds{
 // DeviceVelocityFeatures holds point-in-time multi-window velocity and anomaly metrics.
 type DeviceVelocityFeatures struct {
 	// Transaction Counts across 7 windows
-	DeviceTxCount10s               int64          `json:"device_tx_count_10s"`
-	DeviceTxCount1m                int64          `json:"device_tx_count_1m"`
-	DeviceTxCount5m                int64          `json:"device_tx_count_5m"`
-	DeviceTxCount15m               int64          `json:"device_tx_count_15m"`
-	DeviceTxCount1h                int64          `json:"device_tx_count_1h"`
-	DeviceTxCount6h                int64          `json:"device_tx_count_6h"`
-	DeviceTxCount24h               int64          `json:"device_tx_count_24h"`
+	DeviceTxCount10s int64 `json:"device_tx_count_10s"`
+	DeviceTxCount1m  int64 `json:"device_tx_count_1m"`
+	DeviceTxCount5m  int64 `json:"device_tx_count_5m"`
+	DeviceTxCount15m int64 `json:"device_tx_count_15m"`
+	DeviceTxCount1h  int64 `json:"device_tx_count_1h"`
+	DeviceTxCount6h  int64 `json:"device_tx_count_6h"`
+	DeviceTxCount24h int64 `json:"device_tx_count_24h"`
 
 	// Amount Velocity (Sums in minor units)
-	DeviceAmountSum10s             int64          `json:"device_amount_sum_10s"`
-	DeviceAmountSum1m              int64          `json:"device_amount_sum_1m"`
-	DeviceAmountSum5m              int64          `json:"device_amount_sum_5m"`
-	DeviceAmountSum15m             int64          `json:"device_amount_sum_15m"`
-	DeviceAmountSum1h              int64          `json:"device_amount_sum_1h"`
-	DeviceAmountSum6h              int64          `json:"device_amount_sum_6h"`
-	DeviceAmountSum24h             int64          `json:"device_amount_sum_24h"`
+	DeviceAmountSum10s int64 `json:"device_amount_sum_10s"`
+	DeviceAmountSum1m  int64 `json:"device_amount_sum_1m"`
+	DeviceAmountSum5m  int64 `json:"device_amount_sum_5m"`
+	DeviceAmountSum15m int64 `json:"device_amount_sum_15m"`
+	DeviceAmountSum1h  int64 `json:"device_amount_sum_1h"`
+	DeviceAmountSum6h  int64 `json:"device_amount_sum_6h"`
+	DeviceAmountSum24h int64 `json:"device_amount_sum_24h"`
 
 	// Average Transaction Amounts
-	DeviceAvgAmount1m              float64        `json:"device_avg_amount_1m"`
-	DeviceAvgAmount5m              float64        `json:"device_avg_amount_5m"`
-	DeviceAvgAmount1h              float64        `json:"device_avg_amount_1h"`
-	DeviceAvgAmount24h             float64        `json:"device_avg_amount_24h"`
+	DeviceAvgAmount1m  float64 `json:"device_avg_amount_1m"`
+	DeviceAvgAmount5m  float64 `json:"device_avg_amount_5m"`
+	DeviceAvgAmount1h  float64 `json:"device_avg_amount_1h"`
+	DeviceAvgAmount24h float64 `json:"device_avg_amount_24h"`
 
 	// Maximum Transaction Amounts
-	DeviceMaxAmount1h              int64          `json:"device_max_amount_1h"`
-	DeviceMaxAmount24h             int64          `json:"device_max_amount_24h"`
+	DeviceMaxAmount1h  int64 `json:"device_max_amount_1h"`
+	DeviceMaxAmount24h int64 `json:"device_max_amount_24h"`
 
 	// Velocity Rates (Transactions per second)
-	DeviceTxRate10s                float64        `json:"device_tx_rate_10s"`
-	DeviceTxRate1m                 float64        `json:"device_tx_rate_1m"`
-	DeviceTxRate5m                 float64        `json:"device_tx_rate_5m"`
-	DeviceTxRate15m                float64        `json:"device_tx_rate_15m"`
-	DeviceTxRate1h                 float64        `json:"device_tx_rate_1h"`
+	DeviceTxRate10s float64 `json:"device_tx_rate_10s"`
+	DeviceTxRate1m  float64 `json:"device_tx_rate_1m"`
+	DeviceTxRate5m  float64 `json:"device_tx_rate_5m"`
+	DeviceTxRate15m float64 `json:"device_tx_rate_15m"`
+	DeviceTxRate1h  float64 `json:"device_tx_rate_1h"`
 
 	// Velocity Acceleration Ratios
-	TxAcceleration1m15m            float64        `json:"tx_acceleration_1m_15m"`
-	TxAcceleration5m1h             float64        `json:"tx_acceleration_5m_1h"`
-	TxAcceleration15m1h            float64        `json:"tx_acceleration_15m_1h"`
-	AmountAcceleration5m1h         float64        `json:"amount_acceleration_5m_1h"`
-	AmountAcceleration15m1h        float64        `json:"amount_acceleration_15m_1h"`
+	TxAcceleration1m15m     float64 `json:"tx_acceleration_1m_15m"`
+	TxAcceleration5m1h      float64 `json:"tx_acceleration_5m_1h"`
+	TxAcceleration15m1h     float64 `json:"tx_acceleration_15m_1h"`
+	AmountAcceleration5m1h  float64 `json:"amount_acceleration_5m_1h"`
+	AmountAcceleration15m1h float64 `json:"amount_acceleration_15m_1h"`
 
 	// Amount Concentration Ratios [0.0 - 1.0]
-	DeviceAmountConcentration5m1h  float64        `json:"device_amount_concentration_5m_1h"`
-	DeviceAmountConcentration15m24h float64       `json:"device_amount_concentration_15m_24h"`
+	DeviceAmountConcentration5m1h   float64 `json:"device_amount_concentration_5m_1h"`
+	DeviceAmountConcentration15m24h float64 `json:"device_amount_concentration_15m_24h"`
 
 	// Anomaly Classification
-	VelocitySignal                 VelocitySignal `json:"velocity_signal"`
+	VelocitySignal VelocitySignal `json:"velocity_signal"`
 
 	// Reliability / Graceful Degradation
-	IsDegraded                     bool           `json:"is_degraded"`
-	DegradeReason                  string         `json:"degrade_reason,omitempty"`
+	IsDegraded    bool   `json:"is_degraded"`
+	DegradeReason string `json:"degrade_reason,omitempty"`
 }
 
 // DeviceVelocityStore manages multi-window device velocity in Redis.

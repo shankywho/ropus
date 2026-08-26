@@ -10,13 +10,13 @@ import (
 
 // PlanDetails defines pricing and quotas for each tier.
 type PlanDetails struct {
-	Tier              saas.PlanTier `json:"tier"`
-	Name              string        `json:"name"`
-	MonthlyBasePrice  float64       `json:"monthly_base_price"`
-	IncludedChecks    uint64        `json:"included_checks"`
-	OveragePerCheck   float64       `json:"overage_per_check"`
-	DedicatedCluster  bool          `json:"dedicated_cluster"`
-	CustomMLModels    bool          `json:"custom_ml_models"`
+	Tier             saas.PlanTier `json:"tier"`
+	Name             string        `json:"name"`
+	MonthlyBasePrice float64       `json:"monthly_base_price"`
+	IncludedChecks   uint64        `json:"included_checks"`
+	OveragePerCheck  float64       `json:"overage_per_check"`
+	DedicatedCluster bool          `json:"dedicated_cluster"`
+	CustomMLModels   bool          `json:"custom_ml_models"`
 }
 
 // InvoiceItem represents a billed line item.
@@ -29,16 +29,16 @@ type InvoiceItem struct {
 
 // MonthlyInvoice represents a generated billing statement.
 type MonthlyInvoice struct {
-	InvoiceID     string        `json:"invoice_id"`
-	OrgID         string        `json:"org_id"`
-	Period        string        `json:"period"`
-	Plan          saas.PlanTier `json:"plan"`
-	BaseFee       float64       `json:"base_fee"`
-	OverageFee    float64       `json:"overage_fee"`
-	TotalAmount   float64       `json:"total_amount"`
-	Status        string        `json:"status"` // "PAID", "PENDING", "DRAFT"
-	Items         []InvoiceItem `json:"items"`
-	GeneratedAt   time.Time     `json:"generated_at"`
+	InvoiceID   string        `json:"invoice_id"`
+	OrgID       string        `json:"org_id"`
+	Period      string        `json:"period"`
+	Plan        saas.PlanTier `json:"plan"`
+	BaseFee     float64       `json:"base_fee"`
+	OverageFee  float64       `json:"overage_fee"`
+	TotalAmount float64       `json:"total_amount"`
+	Status      string        `json:"status"` // "PAID", "PENDING", "DRAFT"
+	Items       []InvoiceItem `json:"items"`
+	GeneratedAt time.Time     `json:"generated_at"`
 }
 
 // BillingEngine manages enterprise subscription plans and invoice generation.

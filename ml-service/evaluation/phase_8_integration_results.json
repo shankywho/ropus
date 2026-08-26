@@ -1,0 +1,9 @@
+{
+  "artifact_path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/model/candidates/production_model_28f.joblib",
+  "model_version": "v4.0-bmr-28f",
+  "sha256": "92d298722ddccfd5784b7b3a048cbac12ce01c5ec1d5ef7183dac2878f8783f2",
+  "feature_count": 28,
+  "startup_latency_ms": 13.651208995725028,
+  "missing_artifact_safe": true,
+  "checksum_mismatch_safe": true
+}

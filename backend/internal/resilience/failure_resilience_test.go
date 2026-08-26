@@ -25,10 +25,10 @@ func TestResilience_DegradedModeFallbacks(t *testing.T) {
 
 	// Verify core risk decision continues while buffering Kafka event
 	hm.BufferFallbackEvent(map[string]interface{}{
-		"event":         "risk.decision.created",
-		"decision_id":   "dec_fallback_9918",
-		"decision":      "BLOCK",
-		"risk_score":    0.95,
+		"event":       "risk.decision.created",
+		"decision_id": "dec_fallback_9918",
+		"decision":    "BLOCK",
+		"risk_score":  0.95,
 	})
 
 	buffered := hm.FlushFallbackBuffer()

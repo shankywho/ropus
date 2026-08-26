@@ -8,12 +8,12 @@ import (
 
 // ConsortiumDefenseBroadcast encapsulates an indicator or rule deployed across the global defense network.
 type ConsortiumDefenseBroadcast struct {
-	BroadcastID     string    `json:"broadcast_id"`
-	ActionType      string    `json:"action_type"` // "BLOCK_INFRASTRUCTURE", "SYNC_MULE_ACCOUNTS", "DEPLOY_RULE_DSL"
-	PayloadSummary  string    `json:"payload_summary"`
-	OriginatorNode  string    `json:"originator_node"`
-	ParticipatingPeersCount int `json:"participating_peers_count"`
-	DispatchedAt    time.Time `json:"dispatched_at"`
+	BroadcastID             string    `json:"broadcast_id"`
+	ActionType              string    `json:"action_type"` // "BLOCK_INFRASTRUCTURE", "SYNC_MULE_ACCOUNTS", "DEPLOY_RULE_DSL"
+	PayloadSummary          string    `json:"payload_summary"`
+	OriginatorNode          string    `json:"originator_node"`
+	ParticipatingPeersCount int       `json:"participating_peers_count"`
+	DispatchedAt            time.Time `json:"dispatched_at"`
 }
 
 // GlobalThreatResponseNetwork coordinates real-time defense synchronization across financial institutions.

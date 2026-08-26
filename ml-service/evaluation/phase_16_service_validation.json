@@ -1,0 +1,11 @@
+{
+  "service_name": "calibrated-onnx-ml-sidecar",
+  "api_entry_point": "ml-service/serve.py",
+  "active_model_version": "v8.0-bmr-36f",
+  "sha256_checksum": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+  "artifact_size_bytes": 70017,
+  "production_champion_loaded": true,
+  "feature_count": 39,
+  "calibration_engine": "BetaCalibrator",
+  "decision_policy": "Bayes Minimum Risk (BMR)"
+}

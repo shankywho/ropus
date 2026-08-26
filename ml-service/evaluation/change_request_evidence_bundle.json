@@ -1,0 +1,72 @@
+{
+  "evidence_type": "LOCAL_OPERATIONAL_TEST",
+  "bundle_version": "1.0.0",
+  "triggered_at": "2026-08-25T16:02:00.723230+00:00",
+  "trigger_reason": "Sustained score drift PSI >= 0.25 observed across 5 consecutive measurement windows.",
+  "active_model": {
+    "version": "v8.0-bmr-36f",
+    "sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "file_size": 70017
+  },
+  "consecutive_critical_windows": 8,
+  "telemetry_evidence": {
+    "evidence_type": "LOCAL_OPERATIONAL_TEST",
+    "evaluated_at": "2026-08-25T16:02:00.723211+00:00",
+    "window_event_count": 500,
+    "total_lifetime_requests": 500,
+    "champion_integrity": {
+      "active_model_version": "v8.0-bmr-36f",
+      "active_sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+      "expected_sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+      "integrity_verified": true
+    },
+    "latency_slos": {
+      "p50_ms": 2.0,
+      "p95_ms": 2.0,
+      "p99_ms": 2.0,
+      "slo_compliant": true
+    },
+    "error_rates": {
+      "http_4xx_rate": 0.0,
+      "http_5xx_rate": 0.0,
+      "schema_invalid_count": 0
+    },
+    "statistical_drift": {
+      "calibrated_prob_psi": 0.791,
+      "prob_ks_statistic": 0.3534,
+      "amount_feature_psi": 13.8824,
+      "prob_drift_level": "CRITICAL"
+    },
+    "decision_distribution": {
+      "allow_count": 0,
+      "decline_count": 500,
+      "allow_rate": 0.0,
+      "decline_rate": 1.0
+    },
+    "financial_risk_proxies": {
+      "gross_processed_volume": 125000.0,
+      "gross_declined_dollars": 125000.0,
+      "mean_declined_ticket": 250.0,
+      "dollar_decline_rate": 1.0
+    },
+    "delayed_label_metrics": {
+      "matched_label_count": 0,
+      "status": "ACCUMULATING_LABELS"
+    },
+    "escalation": {
+      "state": "CHANGE_REQUEST_REQUIRED",
+      "consecutive_critical_windows": 8,
+      "consecutive_normal_windows": 0,
+      "reasons": [
+        "SLO breach: High 5xx error rate, high p95 latency, or severe prediction drift (PSI >= 0.25)",
+        "Sustained degradation confirmed over multiple consecutive measurement windows (>= 5)"
+      ]
+    }
+  },
+  "required_next_steps": [
+    "1. Document production incident or newly acquired ground-truth chargeback data.",
+    "2. Submit formal Model Risk Management (MRM) Change Request.",
+    "3. Execute 11-step change lifecycle (Chronological CV, Beta calibration, hardening, certification, activation)."
+  ],
+  "automatic_retraining_initiated": false
+}

@@ -1,0 +1,139 @@
+{
+  "metadata": {
+    "phase": "PHASE_61_PRODUCTION_SHADOW_TELEMETRY_DEPLOYMENT",
+    "executed_at": "2026-08-26T07:18:09.321480+00:00",
+    "active_production_champion": "production_model_v8_bmr.joblib",
+    "champion_sha256_before": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "champion_sha256_after": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "champion_immutability_verified": true,
+    "frozen_52_case_holdout": "sample_ieee_fixture.csv",
+    "holdout_sha256_before": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+    "holdout_sha256_after": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+    "holdout_immutability_verified": true,
+    "customer_decision_routing": "100% Baseline Dynamic BMR (Authoritative)",
+    "graphsage_customer_enforcement": "0% (STRICTLY NON-ENFORCING SHADOW)",
+    "real_data_connectivity": "NOT_CONNECTED (Offline Shadow Adapter Tested)",
+    "lifecycle_state": "SYNTHETICALLY_VALIDATED / REAL_DATA_SHADOW_READY / REAL_DATA_REQUIRED / PROMOTION_BLOCKED"
+  },
+  "frozen_52_case_holdout_evaluation": {
+    "evaluation_timestamp": "2026-08-26T07:18:08.987538+00:00",
+    "holdout_dataset": "sample_ieee_fixture.csv (Test Split)",
+    "holdout_sha256_before": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+    "holdout_sha256_after": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+    "holdout_immutability_verified": true,
+    "champion_sha256_before": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "champion_sha256_after": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "champion_immutability_verified": true,
+    "total_holdout_transactions": 1200,
+    "confirmed_real_fraud_cases_in_holdout": 52,
+    "confirmed_legitimate_cases_in_holdout": 1148,
+    "test_time_window": [
+      13104601,
+      15290421
+    ],
+    "temporal_leakage_audit": "PASSED (Zero lookahead across time boundary)",
+    "metrics": {
+      "roc_auc": 0.6216,
+      "pr_auc": 0.0886,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "false_positive_rate": 0.0009,
+      "false_negative_rate": 1.0,
+      "brier_score": 0.0416,
+      "expected_calibration_error_ece": 0.0084
+    },
+    "fixed_threshold_confusion_matrix": {
+      "threshold": 0.5,
+      "true_positives_tp": 0,
+      "false_positives_fp": 1,
+      "true_negatives_tn": 1147,
+      "false_negatives_fn": 52
+    },
+    "bmr_economic_confusion_matrix": {
+      "true_positives_tp": 7,
+      "false_positives_fp": 67,
+      "true_negatives_tn": 1081,
+      "false_negatives_fn": 45
+    },
+    "governance_holdout_notice": "The 52-case real fraud holdout is strictly frozen. It was evaluated purely offline and was not used for model training, threshold tuning, or calibration fitting."
+  },
+  "shadow_telemetry_scorecard": {
+    "events_streamed": 146,
+    "events_processed": 144,
+    "buffered_events_remaining": 0,
+    "dlq_privacy_rejections": 2,
+    "graph_nodes_in_store": 0,
+    "graph_edges_in_store": 132,
+    "dossiers_generated": 2,
+    "real_data_connectivity": "NOT_CONNECTED"
+  },
+  "investigation_dossiers_summary": {
+    "legitimate_support_dossier": {
+      "employee_id": "emp_alice_support",
+      "risk_score": 0.2561,
+      "risk_level": "LOW",
+      "counter_evidence_count": 2
+    },
+    "rogue_collusion_dossier": {
+      "employee_id": "emp_charlie_rogue",
+      "risk_score": 0.3341,
+      "risk_level": "LOW",
+      "supporting_evidence_count": 2
+    }
+  },
+  "evidence_ledger_scorecard": {
+    "total_dossiers_recorded": 2,
+    "high_risk_dossiers_count": 0,
+    "unique_employees_investigated": 2,
+    "ledger_integrity": "CRYPTOGRAPHICALLY_LINKED",
+    "storage_mode": "APPEND_ONLY_AUDIT"
+  },
+  "label_maturation_scorecard": {
+    "generated_at": "2026-11-09T09:00:00Z",
+    "total_observations": 0,
+    "mature_labels_count": 0,
+    "immature_labels_count": 0,
+    "confirmed_fraud_count": 0,
+    "confirmed_legitimate_count": 0,
+    "confirmed_internal_collusion_count": 0,
+    "rejected_count": 0,
+    "target_collusion_threshold": 50,
+    "progress_to_collusion_gate_pct": 0.0,
+    "average_maturation_days": 0.0,
+    "dispute_maturation_window_days": 90,
+    "governance_status": "DATA_REQUIRED (0 / 50 Confirmed Real Collusion Cases)"
+  },
+  "collusion_accumulation_view": {
+    "tracked_at": "2026-08-26T07:18:09.319935Z",
+    "total_employees_observed": 2,
+    "employees_with_account_access": 2,
+    "employees_with_concentrated_access": 1,
+    "total_self_approval_events": 0,
+    "total_off_hours_access_events": 1,
+    "total_shared_device_overlaps": 0,
+    "total_shared_ip_overlaps": 0,
+    "confirmed_real_internal_collusion_labels": 0,
+    "required_collusion_labels_for_promotion": 50,
+    "collusion_gate_status": "DATA_REQUIRED: Found 0/50 confirmed real internal collusion cases.",
+    "operational_mode": "NON_ENFORCING_INVESTIGATION_INTELLIGENCE",
+    "legal_notice": "Investigation intelligence only. High risk scores denote structural anomaly, not legal guilt."
+  },
+  "performance_latency_benchmarks": {
+    "async_enqueue_p50_ms": 0.0006,
+    "async_enqueue_p95_ms": 0.0007,
+    "async_enqueue_p99_ms": 0.0032,
+    "end_to_end_shadow_pipeline_p95_ms": 0.7082,
+    "latency_sla_budget_ms": 15.0,
+    "is_within_budget": true
+  },
+  "governance_decision": {
+    "is_promotion_eligible": false,
+    "promotion_status": "PROMOTION_BLOCKED",
+    "confirmed_real_internal_collusion_cases_available": 0,
+    "required_real_collusion_cases_for_promotion": 50,
+    "progress_pct": 0.0,
+    "blocking_reason": "DATA_REQUIRED: Requires >= 50 confirmed real internal collusion labels from mature production cases before empirical calibration or promotion review.",
+    "next_required_step": "Deploy passive shadow consumer to live staging/production event bus to begin passive evidence accumulation."
+  }
+}

@@ -20,9 +20,9 @@ type FraudRing struct {
 
 // FraudRingDetector analyzes knowledge graph topology to detect synthetic identity farms and mule rings.
 type FraudRingDetector struct {
-	store    GraphStore
-	mu       sync.RWMutex
-	rings    map[string]*FraudRing
+	store GraphStore
+	mu    sync.RWMutex
+	rings map[string]*FraudRing
 }
 
 // NewFraudRingDetector initializes the fraud ring detector.

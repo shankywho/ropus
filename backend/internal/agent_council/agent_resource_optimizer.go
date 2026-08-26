@@ -2,10 +2,10 @@ package agent_council
 
 // AgentResourceAllocation represents compute and concurrency limits dynamically assigned to an agent role.
 type AgentResourceAllocation struct {
-	AgentRole         string  `json:"agent_role"`
-	PriorityScore     int     `json:"priority_score"` // 1 (lowest) to 10 (highest)
-	MaxConcurrentRuns int     `json:"max_concurrent_runs"`
-	TimeoutSeconds    int     `json:"timeout_seconds"`
+	AgentRole         string `json:"agent_role"`
+	PriorityScore     int    `json:"priority_score"` // 1 (lowest) to 10 (highest)
+	MaxConcurrentRuns int    `json:"max_concurrent_runs"`
+	TimeoutSeconds    int    `json:"timeout_seconds"`
 }
 
 // AgentResourceOptimizer dynamically tunes agent compute allocations according to incident severity.

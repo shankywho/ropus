@@ -1,0 +1,12 @@
+{
+  "evidence_type": "LOCAL_OPERATIONAL_TEST",
+  "total_requests": 1000,
+  "latency_p50_ms": 1.245,
+  "latency_p95_ms": 1.944,
+  "latency_p99_ms": 2.517,
+  "throughput_req_sec": 709.5,
+  "http_5xx_rate": 0.0,
+  "nan_inf_count": 0,
+  "golden_p_cal": 0.009556,
+  "status": "PASS"
+}

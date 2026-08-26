@@ -1,0 +1,7 @@
+{
+  "maturation_window_days": 60,
+  "unlabeled_discipline": "NEVER_ASSUME_UNLABELED_IS_LEGITIMATE",
+  "disputes_store_path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/monitoring/telemetry_store/shadow_disputes.jsonl",
+  "live_disputes_ingested": 0,
+  "operational_test_disputes": 2
+}

@@ -1,0 +1,6 @@
+{
+  "algorithm": "HMAC-SHA256",
+  "hmac_failures": 2,
+  "pan_cvv_blocked": 1,
+  "status": "100% VERIFIED"
+}

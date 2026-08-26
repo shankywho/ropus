@@ -28,14 +28,14 @@ const (
 
 // OperationalIncident represents an active or historical incident ticket.
 type OperationalIncident struct {
-	IncidentID   string           `json:"incident_id"`
-	Title        string           `json:"title"`
-	Severity     IncidentSeverity `json:"severity"`
-	State        IncidentState    `json:"state"`
-	RootCause    string           `json:"root_cause"`
-	Mitigation   string           `json:"mitigation"`
-	DetectedAt   time.Time        `json:"detected_at"`
-	ResolvedAt   *time.Time       `json:"resolved_at,omitempty"`
+	IncidentID string           `json:"incident_id"`
+	Title      string           `json:"title"`
+	Severity   IncidentSeverity `json:"severity"`
+	State      IncidentState    `json:"state"`
+	RootCause  string           `json:"root_cause"`
+	Mitigation string           `json:"mitigation"`
+	DetectedAt time.Time        `json:"detected_at"`
+	ResolvedAt *time.Time       `json:"resolved_at,omitempty"`
 }
 
 // IncidentManager coordinates automated incident detection and recovery tracking.

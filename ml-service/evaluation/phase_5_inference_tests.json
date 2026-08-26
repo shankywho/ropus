@@ -1,0 +1,190 @@
+{
+  "total_cases_tested": 8,
+  "all_passed": true,
+  "cases": [
+    {
+      "case": "Standard Normal Transaction",
+      "input": {
+        "TransactionID": 90001,
+        "TransactionDT": 16000000,
+        "TransactionAmt": 150.0,
+        "ProductCD": "W",
+        "card1": 1001,
+        "card4": "visa",
+        "card6": "debit",
+        "addr1": 200.0,
+        "DeviceInfo": "iOS_17",
+        "P_emaildomain": "gmail.com"
+      },
+      "output": {
+        "amount": 150.0,
+        "raw_score": 0.519954,
+        "calibrated_fraud_probability": 0.059139,
+        "expected_loss_allow": 9.3144,
+        "expected_loss_decline": 23.5215,
+        "decision": "ALLOW"
+      }
+    },
+    {
+      "case": "Amount = 0 (Zero Amount Auth)",
+      "input": {
+        "TransactionID": 90002,
+        "TransactionDT": 16000000,
+        "TransactionAmt": 0.0,
+        "ProductCD": "W",
+        "card1": 1001,
+        "card4": "visa",
+        "card6": "debit",
+        "addr1": 200.0,
+        "DeviceInfo": "iOS_17",
+        "P_emaildomain": "gmail.com"
+      },
+      "output": {
+        "amount": 0.0,
+        "raw_score": 0.517706,
+        "calibrated_fraud_probability": 0.058528,
+        "expected_loss_allow": 0.0,
+        "expected_loss_decline": 23.5368,
+        "decision": "ALLOW"
+      }
+    },
+    {
+      "case": "Micro Amount ($0.01 Card Testing)",
+      "input": {
+        "TransactionID": 90003,
+        "TransactionDT": 16000000,
+        "TransactionAmt": 0.01,
+        "ProductCD": "C",
+        "card1": 9999,
+        "card4": "mastercard",
+        "card6": "credit",
+        "addr1": 500.0,
+        "DeviceInfo": "unknown",
+        "P_emaildomain": "tempmail.com"
+      },
+      "output": {
+        "amount": 0.01,
+        "raw_score": 0.415319,
+        "calibrated_fraud_probability": 0.036414,
+        "expected_loss_allow": 0.0004,
+        "expected_loss_decline": 24.0896,
+        "decision": "ALLOW"
+      }
+    },
+    {
+      "case": "High Value (\u20b914.5 Lakhs / $14,500)",
+      "input": {
+        "TransactionID": 90004,
+        "TransactionDT": 16000000,
+        "TransactionAmt": 14500.0,
+        "ProductCD": "W",
+        "card1": 1001,
+        "card4": "visa",
+        "card6": "debit",
+        "addr1": 200.0,
+        "DeviceInfo": "iOS_17",
+        "P_emaildomain": "gmail.com"
+      },
+      "output": {
+        "amount": 14500.0,
+        "raw_score": 0.519346,
+        "calibrated_fraud_probability": 0.058973,
+        "expected_loss_allow": 897.864,
+        "expected_loss_decline": 23.5257,
+        "decision": "DECLINE"
+      }
+    },
+    {
+      "case": "High Value + Suspicious Proxy Email",
+      "input": {
+        "TransactionID": 90005,
+        "TransactionDT": 16000000,
+        "TransactionAmt": 14500.0,
+        "ProductCD": "R",
+        "card1": 8888,
+        "card4": "discover",
+        "card6": "credit",
+        "addr1": 999.0,
+        "DeviceInfo": "Linux_Tor",
+        "P_emaildomain": "protonmail.com"
+      },
+      "output": {
+        "amount": 14500.0,
+        "raw_score": 0.564354,
+        "calibrated_fraud_probability": 0.072689,
+        "expected_loss_allow": 1106.6946,
+        "expected_loss_decline": 23.1828,
+        "decision": "DECLINE"
+      }
+    },
+    {
+      "case": "Completely Unseen Categoricals",
+      "input": {
+        "TransactionID": 90006,
+        "TransactionDT": 16000000,
+        "TransactionAmt": 250.0,
+        "ProductCD": "UNKNOWN_PRODUCT",
+        "card1": 7777,
+        "card4": "rupay",
+        "card6": "prepaid",
+        "addr1": 888.0,
+        "DeviceInfo": "Embedded_POS",
+        "P_emaildomain": "rarecompany.co.jp"
+      },
+      "output": {
+        "amount": 250.0,
+        "raw_score": 0.573054,
+        "calibrated_fraud_probability": 0.075719,
+        "expected_loss_allow": 19.8762,
+        "expected_loss_decline": 23.107,
+        "decision": "ALLOW"
+      }
+    },
+    {
+      "case": "Missing Device & Missing Email",
+      "input": {
+        "TransactionID": 90007,
+        "TransactionDT": 16000000,
+        "TransactionAmt": 100.0,
+        "ProductCD": "W",
+        "card1": 1001,
+        "card4": "visa",
+        "card6": "debit",
+        "addr1": 200.0,
+        "DeviceInfo": null,
+        "P_emaildomain": null
+      },
+      "output": {
+        "amount": 100.0,
+        "raw_score": 0.574594,
+        "calibrated_fraud_probability": 0.07627,
+        "expected_loss_allow": 8.0083,
+        "expected_loss_decline": 23.0933,
+        "decision": "ALLOW"
+      }
+    },
+    {
+      "case": "Extreme Velocity Surge (Burst)",
+      "input": {
+        "TransactionID": 90008,
+        "TransactionDT": 16000000,
+        "TransactionAmt": 500.0,
+        "ProductCD": "C",
+        "card1": 5555,
+        "card4": "visa",
+        "card6": "credit",
+        "addr1": 100.0,
+        "DeviceInfo": "Android_Bot",
+        "P_emaildomain": "mail.ru"
+      },
+      "output": {
+        "amount": 500.0,
+        "raw_score": 0.573054,
+        "calibrated_fraud_probability": 0.075719,
+        "expected_loss_allow": 39.7524,
+        "expected_loss_decline": 23.107,
+        "decision": "DECLINE"
+      }
+    }
+  ]
+}

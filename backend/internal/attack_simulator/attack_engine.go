@@ -26,18 +26,18 @@ type AttackTimelineEvent struct {
 
 // AttackSimulationResult details the end-to-end outcome of an executed campaign.
 type AttackSimulationResult struct {
-	CampaignID           string                `json:"campaign_id"`
-	ScenarioType         AttackScenarioType    `json:"scenario_type"`
-	Title                string                `json:"title"`
-	TargetVictim         string                `json:"target_victim"`
-	AttackerInfrastructure string              `json:"attacker_infrastructure"`
-	TotalGrossLossAtRisk float64               `json:"total_gross_loss_at_risk"`
-	MitigatedLossUSD     float64               `json:"mitigated_loss_usd"`
-	FinalVerdict         string                `json:"final_verdict"` // "AUTONOMOUS_BLOCK", "STEP_UP_CHALLENGE", "CONSORTIUM_FREEZE"
-	Confidence           float64               `json:"confidence"`
-	Timeline             []AttackTimelineEvent `json:"timeline"`
-	InvestigationReport  string                `json:"investigation_report"`
-	ExecutedAt           time.Time             `json:"executed_at"`
+	CampaignID             string                `json:"campaign_id"`
+	ScenarioType           AttackScenarioType    `json:"scenario_type"`
+	Title                  string                `json:"title"`
+	TargetVictim           string                `json:"target_victim"`
+	AttackerInfrastructure string                `json:"attacker_infrastructure"`
+	TotalGrossLossAtRisk   float64               `json:"total_gross_loss_at_risk"`
+	MitigatedLossUSD       float64               `json:"mitigated_loss_usd"`
+	FinalVerdict           string                `json:"final_verdict"` // "AUTONOMOUS_BLOCK", "STEP_UP_CHALLENGE", "CONSORTIUM_FREEZE"
+	Confidence             float64               `json:"confidence"`
+	Timeline               []AttackTimelineEvent `json:"timeline"`
+	InvestigationReport    string                `json:"investigation_report"`
+	ExecutedAt             time.Time             `json:"executed_at"`
 }
 
 // RealFraudAttackSimulator orchestrates live reproducible multi-vector attack scenarios.

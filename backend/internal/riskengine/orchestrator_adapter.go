@@ -23,13 +23,13 @@ const (
 
 // PipelineRequest specifies inputs and hyperparameters for training orchestration.
 type PipelineRequest struct {
-	PipelineID       string            `json:"pipeline_id"`
-	ModelVersion     string            `json:"model_version"`
-	DatasetPath      string            `json:"dataset_path"`
-	DatasetChecksum  string            `json:"dataset_checksum"`
-	Hyperparameters  map[string]string `json:"hyperparameters"`
-	TriggerReason    string            `json:"trigger_reason"`
-	InitiatorActor   string            `json:"initiator_actor"`
+	PipelineID      string            `json:"pipeline_id"`
+	ModelVersion    string            `json:"model_version"`
+	DatasetPath     string            `json:"dataset_path"`
+	DatasetChecksum string            `json:"dataset_checksum"`
+	Hyperparameters map[string]string `json:"hyperparameters"`
+	TriggerReason   string            `json:"trigger_reason"`
+	InitiatorActor  string            `json:"initiator_actor"`
 }
 
 // PipelineRun describes a running or completed training execution instance.

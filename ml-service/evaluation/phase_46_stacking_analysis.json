@@ -1,0 +1,9 @@
+{
+  "meta_lr_oof_pr_auc": 0.11725691238905878,
+  "meta_lgb_oof_pr_auc": 0.17629956493129262,
+  "disagreement_stats": {
+    "high_disagreement_fraud_rate": 0.06862745098039216,
+    "low_disagreement_fraud_rate": 0.04493464052287582,
+    "enrichment_ratio": 1.526932915293033
+  }
+}

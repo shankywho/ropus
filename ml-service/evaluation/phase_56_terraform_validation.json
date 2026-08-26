@@ -1,0 +1,37 @@
+{
+  "main.tf": {
+    "exists": true,
+    "size_bytes": 419,
+    "status": "VALID_STRUCTURE"
+  },
+  "s3.tf": {
+    "exists": true,
+    "size_bytes": 585,
+    "status": "VALID_STRUCTURE"
+  },
+  "secrets.tf": {
+    "exists": true,
+    "size_bytes": 767,
+    "status": "VALID_STRUCTURE"
+  },
+  "elasticache_redis.tf": {
+    "exists": true,
+    "size_bytes": 499,
+    "status": "VALID_STRUCTURE"
+  },
+  "eks.tf": {
+    "exists": true,
+    "size_bytes": 1344,
+    "status": "VALID_STRUCTURE"
+  },
+  "msk_kafka.tf": {
+    "exists": true,
+    "size_bytes": 613,
+    "status": "VALID_STRUCTURE"
+  },
+  "rds.tf": {
+    "exists": true,
+    "size_bytes": 720,
+    "status": "VALID_STRUCTURE"
+  }
+}

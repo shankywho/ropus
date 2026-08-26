@@ -1,0 +1,35 @@
+{
+  "data_gate": {
+    "live_genuine_transactions": 0,
+    "required_live_transactions": 5000,
+    "live_mature_flips": 0,
+    "required_mature_flips": 50,
+    "status": "BLOCKED (EXTERNAL_INFRASTRUCTURE_REQUIRED)"
+  },
+  "statistical_gate": {
+    "bootstrap_ci_strictly_positive": false,
+    "p_value": 0.298,
+    "status": "BLOCKED (INCONCLUSIVE_ON_N52)"
+  },
+  "risk_gate": {
+    "fpr_ceiling_passed": true,
+    "ece_passed": true,
+    "status": "PASS"
+  },
+  "economic_gate": {
+    "net_savings_delta": 985.32,
+    "status": "PASS_OFFLINE"
+  },
+  "engineering_gate": {
+    "fail_open_isolation_verified": true,
+    "idempotency_verified": true,
+    "status": "PASS"
+  },
+  "governance_gate": {
+    "production_champion_immutable": true,
+    "docs_untouched": true,
+    "zero_fabricated_evidence": true,
+    "status": "PASS"
+  },
+  "overall_promotion_determination": "PROMOTION_BLOCKED"
+}

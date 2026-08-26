@@ -7,12 +7,12 @@ import (
 
 // ThreatHypothesisRecord models an emergent attack pattern discovered by the AI Threat Hunter.
 type ThreatHypothesisRecord struct {
-	HypothesisID        string    `json:"hypothesis_id"`
-	PatternSummary      string    `json:"pattern_summary"`
-	InvolvedEntities    []string  `json:"involved_entities"`
-	Confidence          float64   `json:"confidence"`
-	RecommendedRuleDSL  string    `json:"recommended_rule_dsl"`
-	DiscoveredAt        time.Time `json:"discovered_at"`
+	HypothesisID       string    `json:"hypothesis_id"`
+	PatternSummary     string    `json:"pattern_summary"`
+	InvolvedEntities   []string  `json:"involved_entities"`
+	Confidence         float64   `json:"confidence"`
+	RecommendedRuleDSL string    `json:"recommended_rule_dsl"`
+	DiscoveredAt       time.Time `json:"discovered_at"`
 }
 
 // AIThreatHunterAgent scans the knowledge graph and activity stream to propose new detection rules.

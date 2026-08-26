@@ -20,10 +20,10 @@ type SLOEngine struct {
 	windowDuration time.Duration
 
 	// Request & latency sample buffer
-	evalSamples    []evalSample
-	evalIdx        int
-	evalCount      int
-	evalCapacity   int
+	evalSamples  []evalSample
+	evalIdx      int
+	evalCount    int
+	evalCapacity int
 
 	// Model divergence samples
 	divergenceSamples []bool

@@ -1,0 +1,16 @@
+{
+  "correlation_id": "ANON_TX_828707d31838994d",
+  "evidence_tier": "STAGING_TEST",
+  "ingress_timestamp_utc": "2026-08-25T17:34:45.692765+00:00",
+  "hop_1_ingress_gateway": "HTTP 200 (risk-api.ropus.internal:8080)",
+  "hop_2_backend_orchestrator": "HTTP 200 (/v1/risk-evaluations)",
+  "hop_3_ml_sidecar": "HTTP 200 (/v1/score)",
+  "calibrated_probability": 0.007511,
+  "bmr_threshold_p_star": 0.05305,
+  "enforced_decision": "ALLOW",
+  "shadow_candidate_decision": "ALLOW",
+  "is_shadow_flip": false,
+  "telemetry_persistence": "EXCLUDED_FROM_PRODUCTION_EVIDENCE (STAGING_TEST)",
+  "total_hop_latency_ms": 36.747,
+  "zero_pii_pci_verified": true
+}

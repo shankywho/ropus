@@ -1,0 +1,32 @@
+{
+  "calibration_analysis": [
+    {
+      "method": "Uncalibrated Raw Tree Scores",
+      "brier_score": 0.17213811202290527,
+      "ece": 0.3425897587946479,
+      "mce": 0.8508884512786251,
+      "log_loss": 0.529032805194948
+    },
+    {
+      "method": "Isotonic Regression",
+      "brier_score": 0.04451694395519095,
+      "ece": 0.018596935943736646,
+      "mce": 1.0,
+      "log_loss": 0.2248580815655893
+    },
+    {
+      "method": "Sigmoid (Platt Scaling)",
+      "brier_score": 0.04084411789107282,
+      "ece": 0.004295740949733315,
+      "mce": 0.004418495978962822,
+      "log_loss": 0.1730165534537873
+    },
+    {
+      "method": "Continuous BetaCalibrator (Active)",
+      "brier_score": 0.04149625949424714,
+      "ece": 0.006895037240654564,
+      "mce": 0.5108555483376744,
+      "log_loss": 0.1759086133902457
+    }
+  ]
+}

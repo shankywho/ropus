@@ -7,13 +7,13 @@ import (
 
 // DigitalTwinScenarioResult models the simulated impact of a hypothetical policy modification.
 type DigitalTwinScenarioResult struct {
-	ScenarioID            string    `json:"scenario_id"`
-	PolicyChange          string    `json:"policy_change"`
-	SimulatedFraudSaved   float64   `json:"simulated_fraud_saved"`
-	SimulatedFPRate       float64   `json:"simulated_fp_rate"`
-	ExpectedROI           float64   `json:"expected_roi"`
-	DecisionRecommendation string   `json:"decision_recommendation"` // "SAFE_TO_DEPLOY", "REQUIRES_CANARY", "DANGEROUS_HIGH_FP"
-	SimulatedAt           time.Time `json:"simulated_at"`
+	ScenarioID             string    `json:"scenario_id"`
+	PolicyChange           string    `json:"policy_change"`
+	SimulatedFraudSaved    float64   `json:"simulated_fraud_saved"`
+	SimulatedFPRate        float64   `json:"simulated_fp_rate"`
+	ExpectedROI            float64   `json:"expected_roi"`
+	DecisionRecommendation string    `json:"decision_recommendation"` // "SAFE_TO_DEPLOY", "REQUIRES_CANARY", "DANGEROUS_HIGH_FP"
+	SimulatedAt            time.Time `json:"simulated_at"`
 }
 
 // DefenseDigitalTwin2 provides counter-factual sandbox evaluations for policy adjustments.

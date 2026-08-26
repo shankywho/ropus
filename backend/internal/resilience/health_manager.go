@@ -27,9 +27,9 @@ type HealthCheckFn func(ctx context.Context) error
 
 // HealthManager monitors multi-component system reliability.
 type HealthManager struct {
-	mu           sync.RWMutex
-	checkers     map[string]HealthCheckFn
-	statuses     map[string]ServiceHealthStatus
+	mu             sync.RWMutex
+	checkers       map[string]HealthCheckFn
+	statuses       map[string]ServiceHealthStatus
 	fallbackBuffer []map[string]interface{}
 }
 

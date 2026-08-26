@@ -1,0 +1,6 @@
+{
+  "persistence_format": "Append-Only JSONL Store",
+  "store_path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/monitoring/telemetry_store/shadow_flips.jsonl",
+  "restart_recovery_verified": true,
+  "data_loss_on_restart": 0
+}

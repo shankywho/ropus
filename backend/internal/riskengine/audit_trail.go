@@ -11,21 +11,21 @@ import (
 
 // SecurityAuditAction constants representing all privileged operations.
 const (
-	ActionAuthFailure          = "AUTH_FAILURE"
-	ActionPrivilegedAPICall    = "PRIVILEGED_API_CALL"
-	ActionModelPromoted        = "MODEL_PROMOTED"
-	ActionModelRollback        = "MODEL_ROLLBACK"
-	ActionCandidateApproved    = "CANDIDATE_APPROVED"
-	ActionCandidateRejected    = "CANDIDATE_REJECTED"
-	ActionRetrainingTriggered  = "RETRAINING_TRIGGERED"
-	ActionMaintenanceEnabled   = "MAINTENANCE_ENABLED"
-	ActionMaintenanceDisabled  = "MAINTENANCE_DISABLED"
-	ActionModelFrozen          = "MODEL_FROZEN"
-	ActionModelUnfrozen        = "MODEL_UNFROZEN"
-	ActionRecoveryTriggered    = "RECOVERY_TRIGGERED"
-	ActionCanaryUpdated        = "CANARY_UPDATED"
-	ActionCircuitBreakerTrip   = "CIRCUIT_BREAKER_TRIPPED"
-	ActionInvariantBreach      = "INVARIANT_BREACH"
+	ActionAuthFailure         = "AUTH_FAILURE"
+	ActionPrivilegedAPICall   = "PRIVILEGED_API_CALL"
+	ActionModelPromoted       = "MODEL_PROMOTED"
+	ActionModelRollback       = "MODEL_ROLLBACK"
+	ActionCandidateApproved   = "CANDIDATE_APPROVED"
+	ActionCandidateRejected   = "CANDIDATE_REJECTED"
+	ActionRetrainingTriggered = "RETRAINING_TRIGGERED"
+	ActionMaintenanceEnabled  = "MAINTENANCE_ENABLED"
+	ActionMaintenanceDisabled = "MAINTENANCE_DISABLED"
+	ActionModelFrozen         = "MODEL_FROZEN"
+	ActionModelUnfrozen       = "MODEL_UNFROZEN"
+	ActionRecoveryTriggered   = "RECOVERY_TRIGGERED"
+	ActionCanaryUpdated       = "CANARY_UPDATED"
+	ActionCircuitBreakerTrip  = "CIRCUIT_BREAKER_TRIPPED"
+	ActionInvariantBreach     = "INVARIANT_BREACH"
 )
 
 // SecurityAuditEvent models an immutable, PII-sanitized audit log entry.

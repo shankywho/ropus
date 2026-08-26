@@ -10,11 +10,11 @@ import (
 
 // TrainingJobConfig configures the model training run.
 type TrainingJobConfig struct {
-	DatasetPath       string  `json:"dataset_path"`
-	Algorithm         string  `json:"algorithm"` // "XGBOOST", "LIGHTGBM", "ONNX_NEURAL_NET"
-	Hyperparameters   map[string]interface{} `json:"hyperparameters"`
-	TestSplitRatio    float64 `json:"test_split_ratio"` // e.g. 0.20
-	MinimumTargetAUC  float64 `json:"minimum_target_auc"`
+	DatasetPath      string                 `json:"dataset_path"`
+	Algorithm        string                 `json:"algorithm"` // "XGBOOST", "LIGHTGBM", "ONNX_NEURAL_NET"
+	Hyperparameters  map[string]interface{} `json:"hyperparameters"`
+	TestSplitRatio   float64                `json:"test_split_ratio"` // e.g. 0.20
+	MinimumTargetAUC float64                `json:"minimum_target_auc"`
 }
 
 // ModelEvaluationMetrics encapsulates the comprehensive validation metrics.
@@ -62,7 +62,7 @@ func (p *MLTrainingPipeline) RunTrainingJob(cfg TrainingJobConfig) (*TrainedMode
 	recall := 0.934
 	f1 := 2 * (precision * recall) / (precision + recall)
 	ks := 0.745 + (rng.Float64() * 0.020)
-	psi := 0.018 // Stable (< 0.10)
+	psi := 0.018     // Stable (< 0.10)
 	inferTime := 4.2 // 4.2ms
 
 	metrics := ModelEvaluationMetrics{

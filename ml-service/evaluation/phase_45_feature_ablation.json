@@ -1,0 +1,20 @@
+{
+  "feature_ablation": [
+    {
+      "tier": "36F Canonical (Active)",
+      "pr_auc": 0.0885,
+      "roc_auc": 0.6285,
+      "f1": 0.0952,
+      "fpr": 0.0592,
+      "net_savings": 3053.5
+    },
+    {
+      "tier": "48F Advanced Causal",
+      "pr_auc": 0.0707,
+      "roc_auc": 0.5843,
+      "f1": 0.0702,
+      "fpr": 0.0505,
+      "net_savings": 3067.29
+    }
+  ]
+}

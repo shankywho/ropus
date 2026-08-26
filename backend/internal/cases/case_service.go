@@ -51,13 +51,13 @@ type Case struct {
 
 type CaseWithDecision struct {
 	Case
-	Amount             int64           `json:"amount"`
-	Currency           string          `json:"currency"`
-	RiskScore          int             `json:"risk_score"`
-	RecommendedAction  string          `json:"recommended_action"`
-	ReasonCodes        json.RawMessage `json:"reason_codes"`
-	FeatureSnapshot    json.RawMessage `json:"feature_snapshot"`
-	RawPayload         json.RawMessage `json:"raw_payload"`
+	Amount            int64           `json:"amount"`
+	Currency          string          `json:"currency"`
+	RiskScore         int             `json:"risk_score"`
+	RecommendedAction string          `json:"recommended_action"`
+	ReasonCodes       json.RawMessage `json:"reason_codes"`
+	FeatureSnapshot   json.RawMessage `json:"feature_snapshot"`
+	RawPayload        json.RawMessage `json:"raw_payload"`
 }
 
 type Service struct {
@@ -185,7 +185,7 @@ func (s *Service) GetCase(ctx context.Context, tenantID, caseID string) (*CaseWi
 	}
 
 	query := `
-		SELECT 
+		SELECT
 			c.case_id, c.tenant_id, c.decision_id, c.transaction_id, c.status, c.priority,
 			c.assigned_to, c.resolution_reason, c.resolved_at, c.sla_expires_at, c.created_at, c.updated_at,
 			d.amount, d.currency, d.risk_score, d.recommended_action, d.reason_codes, d.feature_snapshot, d.raw_payload

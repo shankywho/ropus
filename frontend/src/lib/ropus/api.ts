@@ -224,15 +224,13 @@ export const evaluateRisk = async (payload: {
   ip_address?: string;
   device_id?: string;
 }): Promise<LiveEvaluationResponse> => {
-  const amountCents =
-    payload.amount > 100000 ? Math.round(payload.amount) : Math.round(payload.amount * 100);
   const res = await fetch(`${BASE}/v1/risk-evaluations`, {
     method: "POST",
     headers: DEFAULT_HEADERS,
     body: JSON.stringify({
       transaction_id: payload.transaction_id,
       customer_id: payload.customer_id,
-      amount: amountCents,
+      amount: Math.round(payload.amount),
       currency: payload.currency || "INR",
       ip_address: payload.ip_address || "198.51.100.44",
       device_fingerprint: payload.device_id || "9f8a84b12c",

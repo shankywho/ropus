@@ -18,12 +18,12 @@ type MLInferenceResult struct {
 
 // TransactionFeatures represents transformed numeric features fed into the model tensor.
 type TransactionFeatures struct {
-	AmountUSD           float64
-	Velocity10m         float64
-	DeviceEntropy       float64
-	IsEmulator          float64
-	IsVPN               float64
-	GeoDistanceKm       float64
+	AmountUSD             float64
+	Velocity10m           float64
+	DeviceEntropy         float64
+	IsEmulator            float64
+	IsVPN                 float64
+	GeoDistanceKm         float64
 	GraphDegreeCentrality float64
 }
 

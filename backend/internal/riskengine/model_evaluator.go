@@ -37,9 +37,9 @@ type EvaluationReport struct {
 
 // ModelEvaluator executes offline validation and calibration verification against test datasets.
 type ModelEvaluator struct {
-	MinROCAUC      float64
-	MinF1Score     float64
-	MaxBrierScore  float64
+	MinROCAUC       float64
+	MinF1Score      float64
+	MaxBrierScore   float64
 	MaxLatencyP99Ms float64
 }
 

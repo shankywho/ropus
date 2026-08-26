@@ -1,0 +1,46 @@
+{
+  "phase": "PHASE_42_EXTERNAL_GATEWAY_READINESS",
+  "infrastructure_classification": [
+    {
+      "component": "ML Sidecar Service (:8000)",
+      "configured": "YES",
+      "deployed": "YES",
+      "locally_reachable": "YES",
+      "externally_reachable": "NO (Local Binding)",
+      "receiving_live_traffic": "NO (0 Live Tx)"
+    },
+    {
+      "component": "Risk Backend Engine (:8080)",
+      "configured": "YES",
+      "deployed": "YES",
+      "locally_reachable": "YES",
+      "externally_reachable": "NO (Local Binding)",
+      "receiving_live_traffic": "NO (0 Live Tx)"
+    },
+    {
+      "component": "Analyst Console (:3000)",
+      "configured": "YES",
+      "deployed": "YES",
+      "locally_reachable": "YES",
+      "externally_reachable": "NO (Local Binding)",
+      "receiving_live_traffic": "NO"
+    },
+    {
+      "component": "K8s Ingress Controller",
+      "configured": "YES (ingress.yaml)",
+      "deployed": "CONFIGURED",
+      "locally_reachable": "NO (Cluster-Internal)",
+      "externally_reachable": "NO (Requires Cloud LB)",
+      "receiving_live_traffic": "NO"
+    },
+    {
+      "component": "External Merchant Gateway",
+      "configured": "YES (HMAC Secret)",
+      "deployed": "PENDING_VPC",
+      "locally_reachable": "NO",
+      "externally_reachable": "NO",
+      "receiving_live_traffic": "NO (Awaiting Traffic)"
+    }
+  ],
+  "certified_state": "GATEWAY_READY_BUT_EXTERNAL_TRAFFIC_UNAVAILABLE"
+}

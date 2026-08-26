@@ -6,15 +6,15 @@ import (
 
 // DashboardOverview summarizes key governance, fairness, and compliance metrics for executive dashboards.
 type DashboardOverview struct {
-	Timestamp                    time.Time `json:"timestamp"`
-	ActiveModelsCount            int       `json:"active_models_count"`
-	ModelsPendingApproval        int       `json:"models_pending_approval"`
-	TotalAuditedDecisions        int       `json:"total_audited_decisions"`
-	OpenManualReviews            int       `json:"open_manual_reviews"`
-	FairnessCompliant            bool      `json:"fairness_compliant"`
-	AuditChainIntegrityVerified  bool      `json:"audit_chain_integrity_verified"`
-	ActivePolicyVersion          string    `json:"active_policy_version"`
-	RegulatoryReadinessStatus    string    `json:"regulatory_readiness_status"`
+	Timestamp                   time.Time `json:"timestamp"`
+	ActiveModelsCount           int       `json:"active_models_count"`
+	ModelsPendingApproval       int       `json:"models_pending_approval"`
+	TotalAuditedDecisions       int       `json:"total_audited_decisions"`
+	OpenManualReviews           int       `json:"open_manual_reviews"`
+	FairnessCompliant           bool      `json:"fairness_compliant"`
+	AuditChainIntegrityVerified bool      `json:"audit_chain_integrity_verified"`
+	ActivePolicyVersion         string    `json:"active_policy_version"`
+	RegulatoryReadinessStatus   string    `json:"regulatory_readiness_status"`
 }
 
 // GovernanceDashboardAggregator compiles real-time compliance status across all governance subsystems.

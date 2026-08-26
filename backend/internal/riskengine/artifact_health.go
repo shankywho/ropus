@@ -25,9 +25,9 @@ type ArtifactHealthReport struct {
 
 // ArtifactHealthScanner performs automated integrity checks, quarantines corrupted artifacts, and cleans up orphans.
 type ArtifactHealthScanner struct {
-	mu           sync.RWMutex
-	store        ArtifactStore
-	verifier     *ArtifactVerifier
+	mu            sync.RWMutex
+	store         ArtifactStore
+	verifier      *ArtifactVerifier
 	quarantineDir string
 }
 

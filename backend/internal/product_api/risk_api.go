@@ -53,15 +53,18 @@ type ExplanationBreakdown struct {
 
 // EvaluateRiskResponse represents the comprehensive customer response.
 type EvaluateRiskResponse struct {
-	TransactionID     string               `json:"transaction_id"`
-	RiskScore         float64              `json:"risk_score"` // 0.0 to 1.0 (or 0 to 100)
-	Decision          RiskDecision         `json:"decision"`
-	Confidence        float64              `json:"confidence"`
-	Reasons           []string             `json:"reasons"`
-	HumanExplanation  string               `json:"human_explanation"`
-	Breakdown         ExplanationBreakdown `json:"breakdown"`
-	ModelVersion      string               `json:"model_version"`
-	GraphSignals      []string             `json:"graph_signals"`
-	RecommendedAction string               `json:"recommended_action"`
-	EvaluatedAt       time.Time            `json:"evaluated_at"`
+	TransactionID          string               `json:"transaction_id"`
+	RiskScore              float64              `json:"risk_score"` // 0.0 to 1.0 (or 0 to 100)
+	Decision               RiskDecision         `json:"decision"`
+	Confidence             float64              `json:"confidence"`
+	Reasons                []string             `json:"reasons"`
+	HumanExplanation       string               `json:"human_explanation"`
+	Breakdown              ExplanationBreakdown `json:"breakdown"`
+	ModelVersion           string               `json:"model_version"`
+	GraphSignals           []string             `json:"graph_signals"`
+	RecommendedAction      string               `json:"recommended_action"`
+	EvaluatedAt            time.Time            `json:"evaluated_at"`
+	ExpectedFraudExposure  float64              `json:"expected_fraud_exposure,omitempty"`
+	ExpectedActionCosts    map[string]float64   `json:"expected_action_costs,omitempty"`
+	EconomicDecisionReason string               `json:"economic_decision_reason,omitempty"`
 }

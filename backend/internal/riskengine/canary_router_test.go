@@ -56,11 +56,11 @@ func TestCanaryRouter_StatisticalDistribution(t *testing.T) {
 		percentage int
 		tolerance  float64 // acceptable absolute % error over 10k samples
 	}{
-		{1, 0.6},   // [0.4% - 1.6%]
-		{5, 1.0},   // [4.0% - 6.0%]
-		{10, 1.5},  // [8.5% - 11.5%]
-		{25, 2.0},  // [23.0% - 27.0%]
-		{50, 2.5},  // [47.5% - 52.5%]
+		{1, 0.6},  // [0.4% - 1.6%]
+		{5, 1.0},  // [4.0% - 6.0%]
+		{10, 1.5}, // [8.5% - 11.5%]
+		{25, 2.0}, // [23.0% - 27.0%]
+		{50, 2.5}, // [47.5% - 52.5%]
 	}
 
 	sampleSize := 10000
@@ -404,4 +404,3 @@ func BenchmarkCanaryRouter_ReservoirPercentiles(b *testing.B) {
 		_, _, _ = res.Percentiles()
 	}
 }
-

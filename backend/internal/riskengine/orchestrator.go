@@ -325,18 +325,20 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 		startTime,
 	)
 	legacy15Vector := ExtractLegacy15FeatureVector(canonical25Vector)
-	if o.driftDetector != nil { o.driftDetector.IngestVector(canonical25Vector.FeatureMap) }
+	if o.driftDetector != nil {
+		o.driftDetector.IngestVector(canonical25Vector.FeatureMap)
+	}
 
 	// Build the in-memory evaluation context for real-time inference & rules
 	evalContext := map[string]interface{}{
-		"transaction_id":      req.TransactionID,
-		"account_id":          req.AccountID,
-		"amount":              req.Amount,
-		"currency":            req.Currency,
-		"device_fingerprint":  devIdentity.CanonicalFingerprint,
-		"device_id":           devIdentity.DeviceID,
-		"device_status":       string(devIdentity.Status),
-		"ip_address":          ip,
+		"transaction_id":     req.TransactionID,
+		"account_id":         req.AccountID,
+		"amount":             req.Amount,
+		"currency":           req.Currency,
+		"device_fingerprint": devIdentity.CanonicalFingerprint,
+		"device_id":          devIdentity.DeviceID,
+		"device_status":      string(devIdentity.Status),
+		"ip_address":         ip,
 		"ml_feature_contract": map[string]interface{}{
 			"canonical_version": MLFeatureContractV25,
 			"legacy_version":    MLFeatureContractV15,
@@ -467,6 +469,7 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 	reasonCodes := make([]string, 0)
 	var finalAction string
 	var preRuleTriggered bool
+	var economicDecision ActionCostBreakdown
 	riskScore := 10 // baseline low score
 
 	// Record telemetry warnings if client provided malformed/oversized device data
@@ -746,11 +749,21 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 		}
 
 		// -------------------------------------------------------------
-		// STEP 4: Post-Rules & Dynamic Thresholds
+		// STEP 4: Cost-Sensitive Decisioning & Post-Rules Precedence
 		// -------------------------------------------------------------
 		evalContext["risk_score"] = riskScore
+		calibratedProb := float64(riskScore) / 100.0
+		amountFloat := float64(req.Amount)
 
-		// Threshold-based outcome mapping
+		economicDecision = EvaluateCostSensitiveDecision(calibratedProb, amountFloat, DefaultEconomicPolicyConfig())
+
+		evalContext["calibrated_probability"] = calibratedProb
+		evalContext["expected_fraud_exposure"] = economicDecision.ExpectedFraudExposure
+		evalContext["expected_action_costs"] = economicDecision.ActionCosts
+		evalContext["economic_decision_reason"] = economicDecision.DecisionReason
+
+		// Threshold & Cost-Sensitive Decision Precedence:
+		// If pre-rules did not force an action, determine optimal action:
 		if finalAction == "" {
 			switch {
 			case riskScore >= 85:
@@ -760,7 +773,14 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 			case riskScore >= 45:
 				finalAction = "STEP_UP_RECOMMENDATION"
 			default:
-				finalAction = "ALLOW_RECOMMENDATION"
+				// For lower scores, allow Bayes Minimum Risk to elevate action if expected fraud exposure is high
+				if economicDecision.OptimalAction == "DECLINE_RECOMMENDATION" ||
+					economicDecision.OptimalAction == "MANUAL_REVIEW" ||
+					economicDecision.OptimalAction == "STEP_UP_RECOMMENDATION" {
+					finalAction = economicDecision.OptimalAction
+				} else {
+					finalAction = "ALLOW_RECOMMENDATION"
+				}
 			}
 		}
 	}
@@ -1068,16 +1088,19 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 	}
 
 	return &RiskEvaluationResponse{
-		DecisionID:         decisionID,
-		TransactionID:      req.TransactionID,
-		RecommendedAction:  finalAction,
-		RiskScore:          riskScore,
-		ReasonCodes:        reasonCodes,
-		FeatureSnapshotRef: snapshotRef,
-		Features:           evalContext,
-		EvaluatedAt:        nowUTC.Format(time.RFC3339),
-		IsDegraded:         isDegraded,
-		LatencyMs:          latencyMs,
+		DecisionID:             decisionID,
+		TransactionID:          req.TransactionID,
+		RecommendedAction:      finalAction,
+		RiskScore:              riskScore,
+		ReasonCodes:            reasonCodes,
+		FeatureSnapshotRef:     snapshotRef,
+		Features:               evalContext,
+		EvaluatedAt:            nowUTC.Format(time.RFC3339),
+		IsDegraded:             isDegraded,
+		LatencyMs:              latencyMs,
+		ExpectedFraudExposure:  economicDecision.ExpectedFraudExposure,
+		ExpectedActionCosts:    economicDecision.ActionCosts,
+		EconomicDecisionReason: economicDecision.DecisionReason,
 	}, nil
 }
 
@@ -1136,4 +1159,3 @@ func (o *Orchestrator) callLegacyML(ctx context.Context, legacy15Vector *MLFeatu
 
 	return o.mlClient.Predict(ctx, mlReq)
 }
-

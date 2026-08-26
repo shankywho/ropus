@@ -1,0 +1,9 @@
+{
+  "local_loopback_binding": "127.0.0.1:8080 (Operational)",
+  "internal_container_network": "risk_network (Bridge: 172.x.x.x)",
+  "dns_resolution_internal": "risk-api.ropus.internal -> UNRESOLVED (Requires /etc/hosts or CoreDNS)",
+  "public_ingress_endpoint": "NONE (Local Sandbox Execution Environment)",
+  "tls_certificate_status": "Kubernetes Cert-Manager LetsEncrypt Prod (Configured in ingress.yaml)",
+  "gateway_hmac_secret_status": "ROPUS_GATEWAY_PROVENANCE_SECRET configured",
+  "external_traffic_status": "EXTERNAL_INFRASTRUCTURE_REQUIRED"
+}

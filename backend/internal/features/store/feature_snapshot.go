@@ -13,13 +13,13 @@ type FeatureVector map[string]float64
 
 // FeatureSnapshot represents a point-in-time snapshot of training features with an immutable SHA-256 checksum.
 type FeatureSnapshot struct {
-	SnapshotID    string                   `json:"snapshot_id"`
-	CreatedAt     time.Time                `json:"created_at"`
-	EntityKey     string                   `json:"entity_key"`
-	FeatureNames  []string                 `json:"feature_names"`
-	Records       []map[string]interface{} `json:"records"`
-	SampleCount   int                      `json:"sample_count"`
-	ChecksumSHA256 string                  `json:"checksum_sha256"`
+	SnapshotID     string                   `json:"snapshot_id"`
+	CreatedAt      time.Time                `json:"created_at"`
+	EntityKey      string                   `json:"entity_key"`
+	FeatureNames   []string                 `json:"feature_names"`
+	Records        []map[string]interface{} `json:"records"`
+	SampleCount    int                      `json:"sample_count"`
+	ChecksumSHA256 string                   `json:"checksum_sha256"`
 }
 
 // ComputeSnapshotChecksum computes the deterministic SHA-256 hash over the snapshot records.

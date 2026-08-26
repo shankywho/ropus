@@ -1,0 +1,52 @@
+# synthetic_ropus config
+# All proportions are targets, not exact guarantees — the generator samples
+# stochastically around them using the run seed.
+
+time_range:
+  start_date: "2025-01-01"
+  end_date: "2026-01-01"
+
+splits:
+  train: 0.70
+  validation: 0.15
+  test: 0.15
+
+# Fraction of total transaction volume produced by each scenario module.
+# Must sum to ~1.0. Everything except "legitimate" is a suspicious/fraud
+# mechanism, so together they should land in the 3-10% band requested.
+scenario_weights:
+  legitimate: 0.94
+  employee_collusion: 0.015
+  fraud_ring: 0.015
+  account_takeover: 0.008
+  card_testing: 0.008
+  bot_attack: 0.008
+  sybil: 0.004
+  graph_poisoning: 0.002
+
+entity_scaling:
+  consumers_per_1000_events: 180
+  employees_per_1000_events: 6
+  min_employees: 40
+  merchants_per_1000_events: 12
+  min_merchants: 80
+
+employee_roles:
+  customer_support: 0.40
+  fraud_analyst: 0.15
+  risk_operations: 0.15
+  payments_operations: 0.10
+  merchant_support: 0.05
+  engineering: 0.10
+  finance: 0.03
+  compliance: 0.01
+  administrator: 0.01
+
+label_sources:
+  - internal_investigation
+  - fraud_analyst_review
+  - automated_rule_confirmation
+  - consumer_dispute
+  - automated_baseline
+
+random_seed_default: 42

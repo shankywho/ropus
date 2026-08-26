@@ -1,0 +1,62 @@
+{
+  "model_name": "graphsage_synthetic_v1",
+  "lifecycle_state": "SYNTHETIC_TRAINED",
+  "governance_status": "SYNTHETIC-TRAINED / NON-PRODUCTION / SHADOW-ONLY",
+  "enforcement_mode": "STRICTLY NON-ENFORCING",
+  "architecture": {
+    "type": "Heterogeneous 2-Layer GraphSAGE",
+    "input_dim": 32,
+    "hidden_dim": 64,
+    "output_dim": 64,
+    "aggregator": "mean",
+    "activation": "ReLU + LayerNorm",
+    "risk_heads": [
+      "employee_risk",
+      "consumer_risk",
+      "relationship_collusion_risk",
+      "entity_neighborhood_risk",
+      "graph_anomaly_score",
+      "transaction_context_score"
+    ]
+  },
+  "training_provenance": {
+    "training_dataset_sha256": "a2698eafd24e5266d8f6d268c8cd3d06e374465c31378ffa5586e8b79258d05e",
+    "labels_dataset_sha256": "cd31bf7d190fb52dbe8a1fcad32aa63bfa5aeb9bfb23ba53ed3f04922d1611cb",
+    "splits_dataset_sha256": "3eb662277043812dbdec476e6478ca6a96532b165eb778362ce4af236d1a1456",
+    "model_artifact_sha256": "63dd04e27f4a9632722e4a3ca2e41cac7d50dd23db6cf1bf9d3bc073ce5f4f1b",
+    "trained_timestamp": "2026-08-26T06:03:35.178155+00:00",
+    "generator_seed": 42,
+    "splits": {
+      "train_count": 58372,
+      "val_count": 12508,
+      "test_count": 12509
+    },
+    "epochs": 3,
+    "best_val_roc_auc": 0.798
+  },
+  "training_history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.172,
+      "val_roc_auc": 0.7931,
+      "val_pr_auc": 0.3131
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.1672,
+      "val_roc_auc": 0.7365,
+      "val_pr_auc": 0.3243
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.1601,
+      "val_roc_auc": 0.798,
+      "val_pr_auc": 0.4121
+    }
+  ],
+  "production_champion_invariant": {
+    "production_champion": "production_model_v8_bmr.joblib",
+    "production_champion_sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+    "status": "UNCHANGED (AUTHORITATIVE)"
+  }
+}

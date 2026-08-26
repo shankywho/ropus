@@ -1,0 +1,113 @@
+{
+  "final_regression_parity": {
+    "pr_auc": {
+      "target": 0.087433,
+      "release": 0.08743324268281442,
+      "match": true
+    },
+    "roc_auc": {
+      "target": 0.63299,
+      "release": 0.6329904851246315,
+      "match": true
+    },
+    "ece": {
+      "target": 0.0092,
+      "release": 0.009193985833333335,
+      "match": true
+    },
+    "brier": {
+      "target": 0.041,
+      "release": 0.041044339201442494,
+      "match": true
+    },
+    "tp": {
+      "target": 5,
+      "release": 5,
+      "match": true
+    },
+    "fp": {
+      "target": 72,
+      "release": 72,
+      "match": true
+    },
+    "tn": {
+      "target": 1076,
+      "release": 1076,
+      "match": true
+    },
+    "fn": {
+      "target": 47,
+      "release": 47,
+      "match": true
+    },
+    "total_loss": {
+      "target": 7670.52,
+      "release": 7670.5185,
+      "match": true
+    }
+  },
+  "overall_status": "PASS",
+  "release_gates": [
+    {
+      "Gate": "1. Release Artifact Packaging",
+      "Status": "PASS",
+      "Criterion": "28F bundle, Beta calibrator, SHA-256 verified",
+      "Evidence": "SHA-256 verified: 92d298722ddccfd5... (118,684 bytes)."
+    },
+    {
+      "Gate": "2. Actual Deployment Config",
+      "Status": "PASS",
+      "Criterion": "Dockerfile, requirements.txt, K8s manifests verified",
+      "Evidence": "Docker 3.11-slim, port 8000, ClusterIP deployment verified."
+    },
+    {
+      "Gate": "3. Release Reproducibility",
+      "Status": "PASS",
+      "Criterion": "Clean environment initialization & deterministic output",
+      "Evidence": "Deterministic startup in 13.65ms with bit-for-bit parity."
+    },
+    {
+      "Gate": "4. Health & Readiness Behavior",
+      "Status": "PASS",
+      "Criterion": "Blocks traffic on missing or corrupted bundle",
+      "Evidence": "Missing artifact and checksum mismatch raise immediate fail-safe blocks."
+    },
+    {
+      "Gate": "5. Zero-Downtime Rollback",
+      "Status": "PASS",
+      "Criterion": "Hot-swap reloading without request drop",
+      "Evidence": "Hot-swap in 1.62ms; restored active to v4.0-bmr-28f."
+    },
+    {
+      "Gate": "6. Operational Guardrails",
+      "Status": "PASS",
+      "Criterion": "Strict fail-safe routing to MANUAL_REVIEW",
+      "Evidence": "8/8 guardrail checks routed malformed/oversized inputs to MANUAL_REVIEW."
+    },
+    {
+      "Gate": "7. Monitoring & Telemetry",
+      "Status": "PASS",
+      "Criterion": "Privacy-safe metrics & alert triggers active",
+      "Evidence": "6 metric series active; zero PAN/PII emitted to logs."
+    },
+    {
+      "Gate": "8. Production Smoke Suite",
+      "Status": "PASS",
+      "Criterion": "6/6 deterministic scenarios verified",
+      "Evidence": "All 6 smoke scenarios (ALLOW, DECLINE, MANUAL_REVIEW) passed."
+    },
+    {
+      "Gate": "9. Final Regression Parity",
+      "Status": "PASS",
+      "Criterion": "Exact parity with Phase 8 baseline (N=1,200)",
+      "Evidence": "9/9 test metrics match baseline (Loss: $7,670.52, PR-AUC: 0.0874)."
+    },
+    {
+      "Gate": "10. Repository & Docs Freeze",
+      "Status": "PASS",
+      "Criterion": "docs/ remains 100% frozen (0 diffs)",
+      "Evidence": "git diff -- docs/ is 100% empty."
+    }
+  ],
+  "verdict": "GO \u2014 RELEASE READY"
+}

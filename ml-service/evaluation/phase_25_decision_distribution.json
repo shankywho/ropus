@@ -1,0 +1,21 @@
+{
+  "live_production_decisions": {
+    "evidence_type": "LIVE_PRODUCTION_EVIDENCE",
+    "status": "AWAITING_GATEWAY_TRAFFIC",
+    "allow_rate": null,
+    "decline_rate": null,
+    "total_gpv": null,
+    "gross_declined_dollars": null
+  },
+  "local_operational_decisions": {
+    "evidence_type": "LOCAL_OPERATIONAL_TEST",
+    "total_requests": 500,
+    "allow_count": 479,
+    "decline_count": 21,
+    "allow_rate": 0.958,
+    "decline_rate": 0.042,
+    "gross_processed_volume": 66044.63,
+    "gross_declined_dollars": 16866.91,
+    "dollar_decline_rate": 0.2554
+  }
+}

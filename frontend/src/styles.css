@@ -5,19 +5,19 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * ROPUS design tokens.
- * Institutional fintech control plane: precise, dense, low-decoration.
- * All colors oklch. Status colors are semantic only — never decorative.
+ * ROPUS Paper Command Deck Design System
+ * Warm, investigative, and technical institutional control plane.
+ * Typography: Manrope (Primary) + DM Mono (Technical Metadata & Evidence)
  */
 
 @theme inline {
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 12px;
-  --radius-xl: 12px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
 
-  --font-sans: Mulish, Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -44,20 +44,37 @@
   --color-navy: var(--navy);
   --color-navy-foreground: var(--navy-foreground);
 
+  /* Semantic State Colors */
+  --color-authoritative: var(--authoritative);
+  --color-authoritative-surface: var(--authoritative-surface);
   --color-approve: var(--approve);
   --color-approve-surface: var(--approve-surface);
+
+  --color-shadow-intel: var(--shadow-intel);
+  --color-shadow-intel-surface: var(--shadow-intel-surface);
+  --color-amber-intel: var(--amber-intel);
   --color-review: var(--review);
   --color-review-surface: var(--review-surface);
-  --color-challenge: var(--challenge);
-  --color-challenge-surface: var(--challenge-surface);
+  --color-warning: var(--warning);
+  --color-warning-surface: var(--warning-surface);
+
+  --color-blocked: var(--blocked-critical);
+  --color-blocked-surface: var(--blocked-critical-surface);
   --color-block: var(--block);
   --color-block-surface: var(--block-surface);
   --color-critical: var(--critical);
   --color-critical-surface: var(--critical-surface);
-  --color-warning: var(--warning);
-  --color-warning-surface: var(--warning-surface);
-  --color-neutral-surface: var(--neutral-surface);
 
+  --color-local: var(--local-validation);
+  --color-local-surface: var(--local-validation-surface);
+  --color-challenge: var(--challenge);
+  --color-challenge-surface: var(--challenge-surface);
+
+  --color-synthetic: var(--synthetic-data);
+  --color-synthetic-surface: var(--synthetic-data-surface);
+  --color-neutral-surface: var(--secondary);
+
+  /* Sidebar Tokens */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-muted: var(--sidebar-muted);
@@ -68,102 +85,155 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-accent-foreground: var(--sidebar-foreground);
 
-  --color-chart-1: var(--approve);
-  --color-chart-2: var(--review);
-  --color-chart-3: var(--challenge);
-  --color-chart-4: var(--block);
-  --color-chart-5: var(--muted-foreground);
+  --color-chart-1: var(--authoritative);
+  --color-chart-2: var(--shadow-intel);
+  --color-chart-3: var(--local-validation);
+  --color-chart-4: var(--blocked-critical);
+  --color-chart-5: var(--synthetic-data);
 }
 
 :root {
   --radius: 4px;
 
-  /* ROPUS palette — light. Hex values are the contract from the design system. */
-  --background: #ffffff;
-  --foreground: #172b4d;
-  --surface: #ffffff;
-  --card: #ffffff;
-  --card-foreground: #172b4d;
-  --popover: #ffffff;
-  --popover-foreground: #172b4d;
+  /* Paper Command Deck — Light Canvas */
+  --background: #F6F4EE;         /* Warm canvas background */
+  --foreground: #1D2839;         /* Primary text */
+  --surface: #FCFBF8;            /* Surface/card background */
+  --card: #FCFBF8;               /* Panels, tables, investigation surfaces */
+  --card-foreground: #1D2839;
+  --popover: #FCFBF8;
+  --popover-foreground: #1D2839;
 
-  --primary: #0d94fb;
-  --primary-foreground: #ffffff;
-  --secondary: #f4f5f7;
-  --secondary-foreground: #172b4d;
-  --muted: #f4f5f7;
-  --muted-foreground: #5e6c84;
-  --accent: #f1f4f8;
-  --accent-foreground: #172b4d;
-  --destructive: #de350b;
-  --destructive-foreground: #ffffff;
+  --navy: #1C2B45;               /* Deep ink navy */
+  --navy-foreground: #FCFBF8;
+  --primary: #1C2B45;            /* Primary action ink navy */
+  --primary-foreground: #FCFBF8;
 
-  --border: #ebecf0;
-  --border-strong: #dfe1e6;
-  --input: #dfe1e6;
-  --ring: #0d94fb;
+  --secondary: #EAE5DC;          /* Soft secondary surface */
+  --secondary-foreground: #1D2839;
+  --muted: #EEEAE2;              /* Muted surface */
+  --muted-foreground: #647182;   /* Muted text */
+  --accent: #EAE5DC;
+  --accent-foreground: #1D2839;
 
-  --navy: #012652;
-  --navy-foreground: #f4f5f7;
+  --border: #DCD5CB;             /* Border/hairline */
+  --border-strong: #C8BFB3;
+  --input: #DCD5CB;
+  --ring: #F5A524;               /* Focus ring in investigation amber */
 
-  /* Color budget: brand blue, success green, danger red, warning amber. */
-  --approve: #0a7a52; /* accessible text weight of success #04db7c */
-  --approve-surface: #e6faf1;
-  --review: #a35b00; /* accessible text weight of warning amber */
-  --review-surface: #fff5e6;
-  --challenge: #0d94fb;
-  --challenge-surface: #e7f4ff;
-  --block: #c9310a;
-  --block-surface: #fdeae5;
-  --critical: #9e2708;
-  --critical-surface: #fbdfd8;
-  --warning: #a35b00;
-  --warning-surface: #fff5e6;
-  --neutral-surface: #f4f5f7;
+  --destructive: #CE3227;        /* Destructive red */
+  --destructive-foreground: #FCFBF8;
 
-  --sidebar: #012652;
-  --sidebar-foreground: #f4f5f7;
-  --sidebar-muted: #8fa3bd;
-  --sidebar-border: #123361;
-  --sidebar-accent: #0a3163;
-  --sidebar-primary: #0d94fb;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-ring: #0d94fb;
+  /* Semantic State Colors */
+  /* 1. Authoritative / Verified (Baseline Dynamic BMR & Authoritative routing) */
+  --authoritative: #1E7257;
+  --authoritative-surface: #E8F2EB;
+  --approve: #1E7257;
+  --approve-surface: #E8F2EB;
+
+  /* 2. Shadow / Investigation (GraphSAGE shadow observations & non-enforcing signals) */
+  --shadow-intel: #7C5A1C;
+  --shadow-intel-surface: #F7EED7;
+  --amber-intel: #F5A524;
+  --review: #7C5A1C;
+  --review-surface: #F7EED7;
+  --warning: #7C5A1C;
+  --warning-surface: #F7EED7;
+
+  /* 3. Blocked / Critical (Blocked promotion, AWS STS failure, critical risk) */
+  --blocked-critical: #A0443A;
+  --blocked-critical-surface: #F8E5E0;
+  --block: #A0443A;
+  --block-surface: #F8E5E0;
+  --critical: #A0443A;
+  --critical-surface: #F8E5E0;
+
+  /* 4. Local Validation (Local test state, non-production validation) */
+  --local-validation: #476C87;
+  --local-validation-surface: #E3EDF2;
+  --challenge: #476C87;
+  --challenge-surface: #E3EDF2;
+
+  /* 5. Simulated / Synthetic (Synthetic demonstration data, simulated records) */
+  --synthetic-data: #6B5B88;
+  --synthetic-data-surface: #ECE7F3;
+
+  /* Sidebar (Deep Ink Navy) */
+  --sidebar: #1C2B45;
+  --sidebar-foreground: #FCFBF8;
+  --sidebar-muted: #8FA3BD;
+  --sidebar-border: #283B5C;
+  --sidebar-accent: #233452;
+  --sidebar-primary: #F5A524;    /* Investigation amber indicator */
+  --sidebar-primary-foreground: #1C2B45;
+  --sidebar-ring: #F5A524;
 }
 
 .dark {
-  --background: #070e1c;
-  --foreground: #f4f5f7;
-  --surface: #0f172a;
-  --card: #0f172a;
-  --card-foreground: #f4f5f7;
-  --popover: #0f172a;
-  --popover-foreground: #f4f5f7;
-  --primary: #0d94fb;
-  --primary-foreground: #ffffff;
-  --secondary: #131e33;
-  --secondary-foreground: #f4f5f7;
-  --muted: #131e33;
-  --muted-foreground: #97a0af;
-  --accent: #16223a;
-  --accent-foreground: #f4f5f7;
-  --border: #1c2536;
-  --border-strong: #2a3550;
-  --input: #26314a;
-  --neutral-surface: #131e33;
+  --background: #0F1724;         /* Dark background */
+  --foreground: #FCFBF8;         /* Warm off-white */
+  --surface: #162031;            /* Dark card */
+  --card: #162031;
+  --card-foreground: #FCFBF8;
+  --popover: #162031;
+  --popover-foreground: #FCFBF8;
 
-  --approve: #04db7c;
-  --approve-surface: #06291d;
-  --review: #ff991f;
-  --review-surface: #2e1f06;
-  --challenge: #0d94fb;
-  --challenge-surface: #071f33;
-  --block: #ff6b4a;
-  --block-surface: #2e1109;
-  --critical: #ff6b4a;
-  --critical-surface: #2e1109;
-  --warning: #ff991f;
-  --warning-surface: #2e1f06;
+  --navy: #0B1220;               /* Dark sidebar */
+  --navy-foreground: #FCFBF8;
+  --primary: #F5A524;            /* Amber primary in dark mode */
+  --primary-foreground: #0B1220;
+
+  --secondary: #1E2B3E;
+  --secondary-foreground: #FCFBF8;
+  --muted: #1A2536;
+  --muted-foreground: #94A3B8;
+  --accent: #202D42;
+  --accent-foreground: #FCFBF8;
+
+  --border: #24344B;
+  --border-strong: #334663;
+  --input: #24344B;
+  --ring: #F5A524;
+
+  --destructive: #E04D43;
+  --destructive-foreground: #FCFBF8;
+
+  --authoritative: #2ECC71;
+  --authoritative-surface: #0E331E;
+  --approve: #2ECC71;
+  --approve-surface: #0E331E;
+
+  --shadow-intel: #F5A524;
+  --shadow-intel-surface: #382506;
+  --amber-intel: #F5A524;
+  --review: #F5A524;
+  --review-surface: #382506;
+  --warning: #F5A524;
+  --warning-surface: #382506;
+
+  --blocked-critical: #FF6B5E;
+  --blocked-critical-surface: #3D120F;
+  --block: #FF6B5E;
+  --block-surface: #3D120F;
+  --critical: #FF6B5E;
+  --critical-surface: #3D120F;
+
+  --local-validation: #70A5CC;
+  --local-validation-surface: #11283B;
+  --challenge: #70A5CC;
+  --challenge-surface: #11283B;
+
+  --synthetic-data: #A794CA;
+  --synthetic-data-surface: #281D3D;
+
+  --sidebar: #0B1220;
+  --sidebar-foreground: #FCFBF8;
+  --sidebar-muted: #7E90A8;
+  --sidebar-border: #182438;
+  --sidebar-accent: #152033;
+  --sidebar-primary: #F5A524;
+  --sidebar-primary-foreground: #0B1220;
+  --sidebar-ring: #F5A524;
 }
 
 @layer base {
@@ -179,16 +249,13 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.5;
   }
 
-  h1,
-  h2,
-  h3,
-  h4 {
-    font-weight: 700;
-    letter-spacing: -0.01em;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    color: var(--color-foreground);
   }
 
   :focus-visible {
@@ -197,22 +264,82 @@
   }
 
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-thumb {
     background: var(--color-border-strong);
-    border: 3px solid var(--color-background);
-    border-radius: 6px;
+    border: 2px solid var(--color-background);
+    border-radius: 4px;
   }
 }
 
-@utility label-xs {
-  font-size: 11px;
+/* Analytical Hairline Workspace Grid */
+.paper-deck-grid {
+  background-image:
+    linear-gradient(to right, rgba(28, 43, 69, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(28, 43, 69, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.dark .paper-deck-grid {
+  background-image:
+    linear-gradient(to right, rgba(252, 251, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(252, 251, 248, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Specialized Typography & UI Utility Classes */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-muted-foreground);
+}
+
+@utility section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-muted-foreground);
+}
+
+@utility metric-value {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility status-pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
   line-height: 1.2;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 6px;
+  border-width: 1px;
+}
+
+@utility table-header-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
   color: var(--color-muted-foreground);
 }
 

@@ -1,0 +1,15 @@
+{
+  "protocol": "HTTPS POST",
+  "endpoint": "/api/v1/risk/evaluate",
+  "authentication": "HMAC-SHA256 (Header: X-HMAC-Signature)",
+  "required_fields": [
+    "transaction_id",
+    "event_id",
+    "timestamp_utc",
+    "amount",
+    "features",
+    "provenance_tier"
+  ],
+  "feature_contract": "36 Causal Point-in-Time Features (39 encoded columns)",
+  "privacy_contract": "Zero PAN / Zero CVV / Zero Plaintext Credentials"
+}

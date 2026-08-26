@@ -1,0 +1,7 @@
+{
+  "canary_mode": "CONTROLLED_GATEWAY_CANARY",
+  "enforced_policy": "Baseline Dynamic BMR (No Floor)",
+  "shadow_policy": "Floor tau_floor = 0.040 (Non-Enforcing)",
+  "live_canary_tx_count": 0,
+  "live_canary_flips": 0
+}

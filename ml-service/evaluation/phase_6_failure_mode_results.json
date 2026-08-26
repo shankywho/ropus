@@ -1,0 +1,69 @@
+{
+  "failure_mode_tests": [
+    {
+      "case": "Null payload pointer",
+      "response": {
+        "status": "FAIL_SAFE_REVIEW",
+        "error": "Empty or malformed transaction payload",
+        "fraud_probability": 0.5,
+        "expected_loss_allow": 0.0,
+        "expected_loss_decline": 0.0,
+        "decision": "MANUAL_REVIEW",
+        "bmr_threshold": 0.5,
+        "latency_ms": 0.00145800004247576
+      }
+    },
+    {
+      "case": "Nested invalid object",
+      "response": {
+        "status": "FAIL_SAFE_ERROR",
+        "error": "Feature extraction failed: 'TransactionDT'",
+        "fraud_probability": 0.5,
+        "expected_loss_allow": 0.0,
+        "expected_loss_decline": 0.0,
+        "decision": "MANUAL_REVIEW",
+        "bmr_threshold": 0.5,
+        "latency_ms": 0.13100000796839595
+      }
+    },
+    {
+      "case": "NaN amount",
+      "response": {
+        "status": "FAIL_SAFE_ERROR",
+        "error": "Feature extraction failed: 'TransactionDT'",
+        "fraud_probability": 0.5,
+        "expected_loss_allow": 0.0,
+        "expected_loss_decline": 0.0,
+        "decision": "MANUAL_REVIEW",
+        "bmr_threshold": 0.5,
+        "latency_ms": 0.091583002358675
+      }
+    },
+    {
+      "case": "Negative infinity amount",
+      "response": {
+        "status": "FAIL_SAFE_ERROR",
+        "error": "Feature extraction failed: 'TransactionDT'",
+        "fraud_probability": 0.5,
+        "expected_loss_allow": 0.0,
+        "expected_loss_decline": 0.0,
+        "decision": "MANUAL_REVIEW",
+        "bmr_threshold": 0.5,
+        "latency_ms": 0.08091700146906078
+      }
+    },
+    {
+      "case": "100k Character malicious string in DeviceInfo",
+      "response": {
+        "status": "FAIL_SAFE_ERROR",
+        "error": "Feature extraction failed: 'TransactionDT'",
+        "fraud_probability": 0.5,
+        "expected_loss_allow": 0.0,
+        "expected_loss_decline": 0.0,
+        "decision": "MANUAL_REVIEW",
+        "bmr_threshold": 0.5,
+        "latency_ms": 0.1035839959513396
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "status": "AWAITING_PRODUCTION_EVIDENCE",
+  "live_genuine_transactions": 0,
+  "live_mature_fraud_observations": 0,
+  "live_mature_legit_observations": 0,
+  "required_mature_fraud_observations": 86,
+  "alpha_spending_fraction": 0.0,
+  "sequential_test_statistic": null,
+  "sequential_verdict": "DATA_INSUFFICIENT (EXTERNAL_INFRASTRUCTURE_REQUIRED)"
+}

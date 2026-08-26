@@ -1,4 +1,4 @@
-# Binaries
+# Binaries and Compiled Artifacts
 bin/
 *.exe
 *.exe~
@@ -6,27 +6,60 @@ bin/
 *.so
 *.dylib
 dist/
-
-# Environment files
-.env
-.env.local
-
-# Go workspace / cache
-vendor/
-
-# Node / Next.js (for future frontend)
-node_modules/
-.next/
+build/
+.output/
+.nitro/
 out/
 
-# Python / ML (for future ml-service)
+# Environment Configuration Files
+.env
+.env.*
+!.env.example
+
+# Go Workspace & Test Binaries
+vendor/
+*.test
+*.out
+*.prof
+
+# Node / Frontend Build & Caches
+node_modules/
+frontend/node_modules/
+.next/
+.vinxi/
+.tanstack/
+*.tsbuildinfo
+
+# Python / ML Environments & Caches
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 .venv/
+venv/
 env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 *.onnx
 
-# IDE / OS
+# Testing, Coverage & Execution Logs
+coverage/
+*.coverprofile
+*.lcov
+*.log
+ml-service/monitoring/telemetry_store/
+ml-service/monitoring/quarantine_store/
+
+# IDE & Operating System Files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 .idea/
 .vscode/
+*.swp
+*.swo
+*.tmp

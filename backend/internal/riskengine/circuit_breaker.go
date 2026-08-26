@@ -20,14 +20,14 @@ const (
 
 // CircuitBreakerConfig defines operational parameters and thresholds for automated rollback.
 type CircuitBreakerConfig struct {
-	MaxErrorRate          float64 `json:"max_error_rate"`             // Default: 0.01 (1%)
-	MaxFallbackRate       float64 `json:"max_fallback_rate"`          // Default: 0.01 (1%)
-	MaxP95LatencyMs       float64 `json:"max_p95_latency_ms"`         // Default: 15.0 ms
-	MaxP99LatencyMs       float64 `json:"max_p99_latency_ms"`         // Default: 25.0 ms
-	MaxDecisionChangeRate float64 `json:"max_decision_change_rate"`   // Default: 0.10 (10%)
-	MinSampleCount        int     `json:"min_sample_count"`           // Default: 10
-	FailureWindow         int     `json:"failure_window"`             // Default: 3 consecutive breaches
-	CooldownSeconds       int     `json:"cooldown_seconds"`           // Default: 300 seconds (5 min)
+	MaxErrorRate          float64 `json:"max_error_rate"`           // Default: 0.01 (1%)
+	MaxFallbackRate       float64 `json:"max_fallback_rate"`        // Default: 0.01 (1%)
+	MaxP95LatencyMs       float64 `json:"max_p95_latency_ms"`       // Default: 15.0 ms
+	MaxP99LatencyMs       float64 `json:"max_p99_latency_ms"`       // Default: 25.0 ms
+	MaxDecisionChangeRate float64 `json:"max_decision_change_rate"` // Default: 0.10 (10%)
+	MinSampleCount        int     `json:"min_sample_count"`         // Default: 10
+	FailureWindow         int     `json:"failure_window"`           // Default: 3 consecutive breaches
+	CooldownSeconds       int     `json:"cooldown_seconds"`         // Default: 300 seconds (5 min)
 }
 
 // DefaultCircuitBreakerConfig returns conservative production safety thresholds.
@@ -46,13 +46,13 @@ func DefaultCircuitBreakerConfig() CircuitBreakerConfig {
 
 // CircuitBreaker automatically monitors rollout metrics and trips to 0% on sustained degradation.
 type CircuitBreaker struct {
-	config             CircuitBreakerConfig
-	mu                 sync.RWMutex
-	state              CircuitBreakerState
+	config              CircuitBreakerConfig
+	mu                  sync.RWMutex
+	state               CircuitBreakerState
 	consecutiveFailures int
-	lastTrippedAt      time.Time
-	lastTripReason     string
-	trippedCount       int
+	lastTrippedAt       time.Time
+	lastTripReason      string
+	trippedCount        int
 }
 
 // NewCircuitBreaker initializes an automated rollback circuit breaker.

@@ -18,13 +18,13 @@ const (
 
 // GeneratedRuleCandidate represents a candidate detection rule synthesized by AI.
 type GeneratedRuleCandidate struct {
-	RuleID          string                  `json:"rule_id"`
-	RuleName        string                  `json:"rule_name"`
-	RuleDSL         string                  `json:"rule_dsl"`
-	TriggerPattern  string                  `json:"trigger_pattern"`
-	EstimatedFPDelta float64                `json:"estimated_fp_delta"`
-	Stage           RuleDeploymentLifecycle `json:"stage"`
-	DiscoveredAt    time.Time               `json:"discovered_at"`
+	RuleID           string                  `json:"rule_id"`
+	RuleName         string                  `json:"rule_name"`
+	RuleDSL          string                  `json:"rule_dsl"`
+	TriggerPattern   string                  `json:"trigger_pattern"`
+	EstimatedFPDelta float64                 `json:"estimated_fp_delta"`
+	Stage            RuleDeploymentLifecycle `json:"stage"`
+	DiscoveredAt     time.Time               `json:"discovered_at"`
 }
 
 // AutonomousRuleGenerationAgent synthesizes new deterministic rules from emergent cluster patterns.

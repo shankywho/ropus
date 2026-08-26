@@ -7,13 +7,13 @@ import (
 
 // StrategicEcosystemDirective represents the top-level macro directive issued by the AI Strategic Council.
 type StrategicEcosystemDirective struct {
-	DirectiveID              string    `json:"directive_id"`
-	EcosystemThreatLevel     string    `json:"ecosystem_threat_level"` // "DEFCON_1_CRITICAL", "DEFCON_2_ELEVATED", "DEFCON_3_NORMAL"
+	DirectiveID               string    `json:"directive_id"`
+	EcosystemThreatLevel      string    `json:"ecosystem_threat_level"` // "DEFCON_1_CRITICAL", "DEFCON_2_ELEVATED", "DEFCON_3_NORMAL"
 	ConsortiumPriorityActions []string  `json:"consortium_priority_actions"`
-	TargetSyndicateFocus     string    `json:"target_syndicate_focus"`
-	RecommendedBudgetUSD     float64   `json:"recommended_budget_usd"`
-	StrategicRationale       string    `json:"strategic_rationale"`
-	IssuedAt                 time.Time `json:"issued_at"`
+	TargetSyndicateFocus      string    `json:"target_syndicate_focus"`
+	RecommendedBudgetUSD      float64   `json:"recommended_budget_usd"`
+	StrategicRationale        string    `json:"strategic_rationale"`
+	IssuedAt                  time.Time `json:"issued_at"`
 }
 
 // StrategicIntelligenceCouncil synthesizes multi-disciplinary AI assessments for macro threat posture.
@@ -59,12 +59,12 @@ func (c *StrategicIntelligenceCouncil) IssueMacroDirective(activeSyndicatesCount
 	rationale := fmt.Sprintf("Council issued %s based on %d active monitored syndicates and $%.2f gross network exposure", level, activeSyndicatesCount, totalGrossExposure)
 
 	return &StrategicEcosystemDirective{
-		DirectiveID:              fmt.Sprintf("dir_%d", now.UnixNano()),
-		EcosystemThreatLevel:     level,
+		DirectiveID:               fmt.Sprintf("dir_%d", now.UnixNano()),
+		EcosystemThreatLevel:      level,
 		ConsortiumPriorityActions: actions,
-		TargetSyndicateFocus:     "Transnational Carding & Mule Laundering Networks",
-		RecommendedBudgetUSD:     budget,
-		StrategicRationale:       rationale,
-		IssuedAt:                 now,
+		TargetSyndicateFocus:      "Transnational Carding & Mule Laundering Networks",
+		RecommendedBudgetUSD:      budget,
+		StrategicRationale:        rationale,
+		IssuedAt:                  now,
 	}
 }

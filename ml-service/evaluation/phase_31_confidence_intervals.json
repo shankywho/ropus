@@ -1,0 +1,40 @@
+{
+  "live_confidence_state": {
+    "mature_flips_n": 0,
+    "frauds_observed_k": 0,
+    "exact_95_upper_ci": "UNDEFINED (Awaiting observations)",
+    "hurdle_met": false
+  },
+  "qualification_curve_samples": [
+    {
+      "n": 50,
+      "k": 0,
+      "upper_ci": 0.0582,
+      "meets_gate": false
+    },
+    {
+      "n": 100,
+      "k": 0,
+      "upper_ci": 0.0295,
+      "meets_gate": false
+    },
+    {
+      "n": 149,
+      "k": 0,
+      "upper_ci": 0.0199,
+      "meets_gate": true
+    },
+    {
+      "n": 200,
+      "k": 0,
+      "upper_ci": 0.0149,
+      "meets_gate": true
+    },
+    {
+      "n": 300,
+      "k": 0,
+      "upper_ci": 0.0099,
+      "meets_gate": true
+    }
+  ]
+}

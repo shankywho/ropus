@@ -13,12 +13,12 @@ const CurrentSchemaVersion = 1
 
 // PersistentStateEnvelope wraps the persistent state with schema versioning, checksums, and generation numbers.
 type PersistentStateEnvelope struct {
-	SchemaVersion int                      `json:"schema_version"`
-	Generation    uint64                   `json:"generation"`
-	ChecksumSHA256 string                  `json:"checksum_sha256"`
-	CreatedAt     time.Time                `json:"created_at"`
-	UpdatedAt     time.Time                `json:"updated_at"`
-	Payload       PersistedRetrainingState `json:"payload"`
+	SchemaVersion  int                      `json:"schema_version"`
+	Generation     uint64                   `json:"generation"`
+	ChecksumSHA256 string                   `json:"checksum_sha256"`
+	CreatedAt      time.Time                `json:"created_at"`
+	UpdatedAt      time.Time                `json:"updated_at"`
+	Payload        PersistedRetrainingState `json:"payload"`
 }
 
 // ComputePayloadChecksum calculates the canonical SHA-256 checksum over the state payload.

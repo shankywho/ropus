@@ -1,0 +1,31 @@
+{
+  "flowchart": {
+    "step_1_checksum_audit": {
+      "condition": "SHA-256 != d473d1ef0c50f232...",
+      "if_true": "TRIGGER INC-03 (Isolate Container, Reload Verified Image)",
+      "if_false": "Proceed to Step 2"
+    },
+    "step_2_api_availability": {
+      "condition": "HTTP 5xx > 0.1% or /health != 200",
+      "if_true": "TRIGGER INC-04 (Inspect Logs, Hot-Swap Rollback)",
+      "if_false": "Proceed to Step 3"
+    },
+    "step_3_latency_slo": {
+      "condition": "p95 Latency > 15ms continuously",
+      "if_true": "TRIGGER INC-01 (Scale Pods; If > 50ms Rollback to v7)",
+      "if_false": "Proceed to Step 4"
+    },
+    "step_4_drift_monitoring": {
+      "condition": "Calibrated Score PSI >= 0.25 for > 15 mins",
+      "if_true": "TRIGGER INC-02 (Triage Traffic; If Insult Rate > 12% Rollback)",
+      "if_false": "CONTINUE_PRODUCTION"
+    }
+  },
+  "active_evaluation": {
+    "checksum_status": "PASS",
+    "availability_status": "PASS",
+    "latency_status": "PASS (1.49ms)",
+    "drift_status": "PASS (PSI=0.0111 NORMAL)",
+    "final_operator_verdict": "CONTINUE_PRODUCTION"
+  }
+}

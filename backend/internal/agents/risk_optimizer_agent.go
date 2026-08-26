@@ -18,14 +18,14 @@ const (
 
 // RiskOptimizationProposal describes a candidate parameter adjustment.
 type RiskOptimizationProposal struct {
-	ProposalID       string            `json:"proposal_id"`
-	TargetParameter  string            `json:"target_parameter"`
-	CurrentValue     float64           `json:"current_value"`
-	ProposedValue    float64           `json:"proposed_value"`
-	ExpectedFPDelta  float64           `json:"expected_fp_delta"` // e.g. -0.02 (2% FP reduction)
-	ExpectedFNReduction float64        `json:"expected_fn_reduction"`
-	Stage            OptimizationStage `json:"stage"`
-	ProposedAt       time.Time         `json:"proposed_at"`
+	ProposalID          string            `json:"proposal_id"`
+	TargetParameter     string            `json:"target_parameter"`
+	CurrentValue        float64           `json:"current_value"`
+	ProposedValue       float64           `json:"proposed_value"`
+	ExpectedFPDelta     float64           `json:"expected_fp_delta"` // e.g. -0.02 (2% FP reduction)
+	ExpectedFNReduction float64           `json:"expected_fn_reduction"`
+	Stage               OptimizationStage `json:"stage"`
+	ProposedAt          time.Time         `json:"proposed_at"`
 }
 
 // RiskOptimizerAgent autonomously identifies opportunities to tighten or loosen detection thresholds safely.

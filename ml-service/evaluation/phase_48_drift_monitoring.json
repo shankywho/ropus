@@ -1,0 +1,7 @@
+{
+  "feature_missingness_rate": 0.0,
+  "max_temporal_drift_ratio": 0.35,
+  "psi_drift_status": "STABLE",
+  "champion_challenger_disagreement_rate": 0.092,
+  "disagreement_enrichment_ratio": 1.53
+}

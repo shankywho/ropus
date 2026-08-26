@@ -1,0 +1,44 @@
+{
+  "confidence_level": 0.95,
+  "methodology": "Clopper-Pearson Exact Binomial Bounds",
+  "target_hurdle": "Exact 95% Upper Bound < 2.0%",
+  "live_state": {
+    "mature_labels_n": 0,
+    "mature_frauds_k": 0,
+    "observed_fraud_rate": "UNDEFINED (0 mature labels)",
+    "exact_95_ci_upper": "UNDEFINED",
+    "hurdle_met": false
+  },
+  "reference_qualification_scale": [
+    {
+      "n": 8,
+      "k": 0,
+      "upper_ci": 0.3123,
+      "qualifies": false
+    },
+    {
+      "n": 50,
+      "k": 0,
+      "upper_ci": 0.0582,
+      "qualifies": false
+    },
+    {
+      "n": 100,
+      "k": 0,
+      "upper_ci": 0.0295,
+      "qualifies": false
+    },
+    {
+      "n": 149,
+      "k": 0,
+      "upper_ci": 0.0199,
+      "qualifies": true
+    },
+    {
+      "n": 200,
+      "k": 0,
+      "upper_ci": 0.0149,
+      "qualifies": true
+    }
+  ]
+}

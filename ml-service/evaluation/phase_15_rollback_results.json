@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "rollback_trail": [
+    {
+      "step": "1. Active v8",
+      "model": "v8.0-bmr-36f",
+      "decision": "ALLOW",
+      "prob": 0.009556
+    },
+    {
+      "step": "2. Rollback to v7",
+      "model": "v7.0-bmr-39f",
+      "decision": "ALLOW",
+      "prob": 0.010385
+    },
+    {
+      "step": "3. Rollback to v6",
+      "model": "v6.0-bmr-39f",
+      "decision": "ALLOW",
+      "prob": 0.010385
+    },
+    {
+      "step": "4. Restore to v8",
+      "model": "v8.0-bmr-36f",
+      "decision": "ALLOW",
+      "prob": 0.009556
+    }
+  ]
+}

@@ -8,8 +8,8 @@ import (
 
 // CaseManager maintains the active investigation case registry, state machine, and audit trail.
 type CaseManager struct {
-	mu         sync.RWMutex
-	cases      map[string]*FraudCase
+	mu          sync.RWMutex
+	cases       map[string]*FraudCase
 	prioritizer *CasePrioritizer
 }
 

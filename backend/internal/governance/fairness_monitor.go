@@ -31,10 +31,10 @@ type FairnessAuditReport struct {
 
 // FairnessMonitor tracks statistical parity across non-sensitive transaction operational cohorts.
 type FairnessMonitor struct {
-	mu           sync.RWMutex
-	metrics      map[string]*GroupFairnessMetrics
-	minDIRatio   float64
-	maxFPRDelta  float64
+	mu          sync.RWMutex
+	metrics     map[string]*GroupFairnessMetrics
+	minDIRatio  float64
+	maxFPRDelta float64
 }
 
 // NewFairnessMonitor initializes the fairness monitoring sub-engine.

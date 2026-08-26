@@ -1,0 +1,44 @@
+{
+  "champion_version": "v8.0-bmr-36f",
+  "sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
+  "enforced_policy": "Baseline Dynamic BMR (No Floor)",
+  "c_fp": 25.0,
+  "surcharge": 1.05,
+  "bmr_threshold_table": [
+    {
+      "amount": 10.0,
+      "p_star": 0.704225,
+      "policy": "Baseline Dynamic BMR (No Floor)"
+    },
+    {
+      "amount": 50.0,
+      "p_star": 0.322581,
+      "policy": "Baseline Dynamic BMR (No Floor)"
+    },
+    {
+      "amount": 100.0,
+      "p_star": 0.192308,
+      "policy": "Baseline Dynamic BMR (No Floor)"
+    },
+    {
+      "amount": 250.0,
+      "p_star": 0.086957,
+      "policy": "Baseline Dynamic BMR (No Floor)"
+    },
+    {
+      "amount": 500.0,
+      "p_star": 0.045455,
+      "policy": "Baseline Dynamic BMR (No Floor)"
+    },
+    {
+      "amount": 1000.0,
+      "p_star": 0.023256,
+      "policy": "Baseline Dynamic BMR (No Floor)"
+    },
+    {
+      "amount": 5000.0,
+      "p_star": 0.004739,
+      "policy": "Baseline Dynamic BMR (No Floor)"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "champion_pr_auc": 0.08846294494290374,
+  "challenger_pr_auc": 0.1021870148056052,
+  "pr_auc_delta_mean": 0.015315974217492838,
+  "pr_auc_delta_95_ci": [
+    -0.028673939938055643,
+    0.07649320057150559
+  ],
+  "p_value_one_tailed": 0.298,
+  "statistical_verdict": "INCONCLUSIVE"
+}

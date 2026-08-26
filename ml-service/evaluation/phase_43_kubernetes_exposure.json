@@ -1,0 +1,23 @@
+{
+  "service_name": "risk-backend-svc",
+  "service_namespace": "risk-engine",
+  "service_type": "ClusterIP",
+  "target_port": 8080,
+  "ingress_name": "risk-backend-ingress",
+  "ingress_class": "nginx",
+  "ingress_host": "risk-api.ropus.internal",
+  "ingress_path": "/",
+  "ingress_path_type": "Prefix",
+  "annotations": {
+    "kubernetes.io/ingress.class": "nginx",
+    "cert-manager.io/cluster-issuer": "letsencrypt-prod",
+    "nginx.ingress.kubernetes.io/ssl-redirect": "true",
+    "nginx.ingress.kubernetes.io/proxy-body-size": "1m",
+    "nginx.ingress.kubernetes.io/proxy-connect-timeout": "5",
+    "nginx.ingress.kubernetes.io/proxy-read-timeout": "10",
+    "nginx.ingress.kubernetes.io/proxy-send-timeout": "10"
+  },
+  "target_backend_endpoint": "POST /v1/risk-evaluations",
+  "internal_ml_endpoint": "POST /v1/score",
+  "exposure_status": "CONFIGURED_IN_REPO_AWAITING_CLUSTER_PROVISIONING"
+}

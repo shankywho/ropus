@@ -1,0 +1,35 @@
+{
+  "evidence_type": "LOCAL_OPERATIONAL_TEST",
+  "startup_command": "PYTHONPATH=ml-service python3 ml-service/serve.py",
+  "health_endpoints": [
+    "/health",
+    "/v1/health"
+  ],
+  "checks": [
+    {
+      "Artifact Existence": "PASS",
+      "detail": "Path: /Users/shankar/PROJECTS/Ai Risk Manager/ml-service/model/candidates/production_model_v8_bmr.joblib"
+    },
+    {
+      "SHA-256 Checksum": "PASS",
+      "detail": "SHA: d473d1ef0c50f232..."
+    },
+    {
+      "File Size Match": "PASS",
+      "detail": "Size: 70,017 bytes"
+    },
+    {
+      "Endpoint /health": "PASS",
+      "detail": "HTTP 200 (status=ok)"
+    },
+    {
+      "Endpoint /v1/health": "PASS",
+      "detail": "HTTP 200 (status=ok)"
+    },
+    {
+      "Active Model Metadata": "PASS",
+      "detail": "Model: v8.0-bmr-36f"
+    }
+  ],
+  "status": "PASS"
+}

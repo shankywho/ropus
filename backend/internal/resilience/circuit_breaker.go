@@ -29,14 +29,14 @@ type CircuitBreakerConfig struct {
 
 // CircuitBreaker provides resilient dependency wrapping.
 type CircuitBreaker struct {
-	mu           sync.RWMutex
-	name         string
-	state        State
-	failures     int
-	successes    int
-	threshold    int
-	reqThreshold int
-	timeout      time.Duration
+	mu              sync.RWMutex
+	name            string
+	state           State
+	failures        int
+	successes       int
+	threshold       int
+	reqThreshold    int
+	timeout         time.Duration
 	lastStateChange time.Time
 }
 

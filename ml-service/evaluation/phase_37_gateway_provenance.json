@@ -1,0 +1,13 @@
+{
+  "phase": "PHASE_37_REAL_GATEWAY_CANARY",
+  "provenance_layer_status": "ACTIVE_ENFORCING",
+  "provenance_rules": {
+    "PRODUCTION_LIVE": "Genuine live merchant gateway transactions (Increments evidence counters)",
+    "INTERNAL_HEALTH_CHECK": "System health probes (Excluded from evidence counters)",
+    "STAGING_TEST": "Staging integration tests (Excluded from evidence counters)",
+    "SYNTHETIC_TEST": "Local test vectors and fault injection (Excluded from evidence counters)",
+    "HISTORICAL_REPLAY": "Historical holdout benchmark data (Excluded from evidence counters)",
+    "UNTRUSTED": "Unverified or unknown traffic origins (Excluded from evidence counters)"
+  },
+  "provenance_test_results": "PASS (All 6 tiers correctly segregated)"
+}

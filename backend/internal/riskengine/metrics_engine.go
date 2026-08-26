@@ -195,11 +195,11 @@ func (m *MetricsEngine) GetSnapshot() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"requests_total":          atomic.LoadInt64(&m.requestsTotal),
-		"requests_success":        atomic.LoadInt64(&m.requestsSuccess),
-		"requests_failed":         atomic.LoadInt64(&m.requestsFailed),
-		"inference_errors_total":  atomic.LoadInt64(&m.inferenceErrors),
-		"fallbacks_total":         atomic.LoadInt64(&m.fallbacks),
+		"requests_total":         atomic.LoadInt64(&m.requestsTotal),
+		"requests_success":       atomic.LoadInt64(&m.requestsSuccess),
+		"requests_failed":        atomic.LoadInt64(&m.requestsFailed),
+		"inference_errors_total": atomic.LoadInt64(&m.inferenceErrors),
+		"fallbacks_total":        atomic.LoadInt64(&m.fallbacks),
 		"decisions": map[string]int64{
 			"allow":  atomic.LoadInt64(&m.decisionsAllow),
 			"review": atomic.LoadInt64(&m.decisionsReview),

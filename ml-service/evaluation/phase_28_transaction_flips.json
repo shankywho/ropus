@@ -1,0 +1,84 @@
+{
+  "floor_tested": 0.035,
+  "total_flips_count": 7,
+  "legitimate_flips_count": 7,
+  "fraud_flips_count": 0,
+  "total_legitimate_gmv_recovered": 12341.83,
+  "total_fraud_dollars_leaked": 0,
+  "recovered_insult_cost": 175.0,
+  "incremental_chargeback_loss": 0.0,
+  "net_economic_benefit": 175.0,
+  "legitimate_flips": [
+    {
+      "index": 12,
+      "transaction_id": 3006812,
+      "amount": 1271.04,
+      "calibrated_prob": 0.021881,
+      "p_star_hurdle": 0.01838786930196706,
+      "actual_label": "LEGITIMATE",
+      "original_decision": "DECLINE",
+      "new_floor_decision": "ALLOW"
+    },
+    {
+      "index": 67,
+      "transaction_id": 3006867,
+      "amount": 1890.8,
+      "calibrated_prob": 0.017574,
+      "p_star_hurdle": 0.01243570739277933,
+      "actual_label": "LEGITIMATE",
+      "original_decision": "DECLINE",
+      "new_floor_decision": "ALLOW"
+    },
+    {
+      "index": 104,
+      "transaction_id": 3006904,
+      "amount": 2010.72,
+      "calibrated_prob": 0.018707,
+      "p_star_hurdle": 0.011702717277330056,
+      "actual_label": "LEGITIMATE",
+      "original_decision": "DECLINE",
+      "new_floor_decision": "ALLOW"
+    },
+    {
+      "index": 123,
+      "transaction_id": 3006923,
+      "amount": 2898.07,
+      "calibrated_prob": 0.016757,
+      "p_star_hurdle": 0.008148701414793836,
+      "actual_label": "LEGITIMATE",
+      "original_decision": "DECLINE",
+      "new_floor_decision": "ALLOW"
+    },
+    {
+      "index": 214,
+      "transaction_id": 3007014,
+      "amount": 868.13,
+      "calibrated_prob": 0.031735,
+      "p_star_hurdle": 0.02669410108415422,
+      "actual_label": "LEGITIMATE",
+      "original_decision": "DECLINE",
+      "new_floor_decision": "ALLOW"
+    },
+    {
+      "index": 844,
+      "transaction_id": 3007644,
+      "amount": 2475.74,
+      "calibrated_prob": 0.016742,
+      "p_star_hurdle": 0.009525525932863332,
+      "actual_label": "LEGITIMATE",
+      "original_decision": "DECLINE",
+      "new_floor_decision": "ALLOW"
+    },
+    {
+      "index": 1045,
+      "transaction_id": 3007845,
+      "amount": 927.33,
+      "calibrated_prob": 0.032552,
+      "p_star_hurdle": 0.025032630033248335,
+      "actual_label": "LEGITIMATE",
+      "original_decision": "DECLINE",
+      "new_floor_decision": "ALLOW"
+    }
+  ],
+  "fraud_flips": []
+}

@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	ErrInvalidKeySize    = errors.New("crypto: invalid key size, must be 16, 24, or 32 bytes")
+	ErrInvalidKeySize     = errors.New("crypto: invalid key size, must be 16, 24, or 32 bytes")
 	ErrCiphertextTooShort = errors.New("crypto: ciphertext too short")
-	ErrDecryptionFailed  = errors.New("crypto: message authentication/decryption failed")
+	ErrDecryptionFailed   = errors.New("crypto: message authentication/decryption failed")
 )
 
 // Encrypt encrypts plaintext using AES-GCM with a prepended cryptographic nonce.

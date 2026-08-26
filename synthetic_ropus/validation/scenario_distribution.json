@@ -1,0 +1,77 @@
+{
+  "config_reconciliation": {
+    "configured_weights": {
+      "legitimate": 0.94,
+      "employee_collusion": 0.015,
+      "fraud_ring": 0.015,
+      "account_takeover": 0.008,
+      "card_testing": 0.008,
+      "bot_attack": 0.008,
+      "sybil": 0.004,
+      "graph_poisoning": 0.002
+    },
+    "configured_legitimate_weight": 0.94,
+    "configured_non_legitimate_weight": 0.06,
+    "target_events": 100000,
+    "target_legitimate_txns": 94000,
+    "target_non_legitimate_txns": 6000,
+    "observed_total_txns": 83389,
+    "observed_legitimate_txns": 77568,
+    "observed_non_legitimate_txns": 5821,
+    "observed_legitimate_pct": 93.0195,
+    "observed_non_legitimate_pct": 6.9805,
+    "mathematical_root_cause": "In legitimate.py, the generator allocates n_transactions = 94,000, but generates n_bulk = int(94,000 * 0.78) = 73,320 base transactions, plus ~4% refunds (~2,932), plus ~25% of customer-support events (~1,410), yielding ~77,500 total materialized legitimate transactions (~82.45% of allocated target). In contrast, all 7 fraud scenario modules materialize nearly 100% of their allocations (~5,889 transactions out of 6,000 allocated). Because legitimate transactions materialize at ~82.45% while fraud materializes at ~98.15%, the total transaction denominator drops from 100,000 to 83,389. Calculating the ratio: 5,889 / 83,389 = 7.062% (reported in README as ~7.07%), while legitimate is 77,500 / 83,389 = 92.938% (reported as ~92.93%). This is a deterministic mathematical artifact of the relative generation yields between legitimate.py and the fraud scenario modules, fully explaining the observed 7.07% vs 6.0% configured weights."
+  },
+  "transaction_labels_breakdown": {
+    "LEGITIMATE": 77568,
+    "FRAUD_RING": 1462,
+    "SUSPECTED_FRAUD": 1062,
+    "INTERNAL_COLLUSION": 939,
+    "BOT_ATTACK": 918,
+    "ACCOUNT_TAKEOVER": 801,
+    "CARD_TESTING": 639
+  },
+  "scenario_tags_breakdown": {
+    "legitimate_high_volume_support": 5640,
+    "employee_collusion": 2930,
+    "legitimate_household_sharing": 1466,
+    "fraud_ring": 1430,
+    "legitimate_access_before_txn": 1414,
+    "legitimate_analyst_repeated_review": 1410,
+    "legitimate_shared_corporate_infra": 940,
+    "legitimate_transaction_modification": 940,
+    "bot_attack": 918,
+    "card_testing": 839,
+    "account_takeover": 801,
+    "legitimate_account_recovery": 470,
+    "sybil": 328,
+    "graph_poisoning_low_and_slow": 40,
+    "graph_poisoning_injected_edge": 10,
+    "graph_poisoning_flood": 1
+  },
+  "entity_type_tag_breakdown": {
+    "EMPLOYEE": 10405,
+    "TRANSACTION": 7235,
+    "ACCOUNT": 1936,
+    "DEVICE": 1
+  },
+  "hard_negatives_count": 12280,
+  "adversarial_events_count": 51,
+  "event_counts_by_scenario": {
+    "legitimate_bulk": 77568,
+    "employee_collusion": 2930,
+    "fraud_ring": 1430,
+    "account_takeover": 801,
+    "card_testing": 839,
+    "bot_attack": 918,
+    "sybil": 328,
+    "graph_poisoning_flood": 1,
+    "graph_poisoning_injected_edge": 10,
+    "graph_poisoning_low_and_slow": 40
+  },
+  "split_breakdown": {
+    "train": 58372,
+    "validation": 12508,
+    "test": 12509
+  }
+}

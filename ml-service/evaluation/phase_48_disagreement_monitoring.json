@@ -1,0 +1,5 @@
+{
+  "disagreement_q90_threshold": 0.15,
+  "disagreement_enrichment_ratio": 1.53,
+  "shadow_review_trigger_active": true
+}

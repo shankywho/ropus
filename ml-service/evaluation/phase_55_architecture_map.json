@@ -1,0 +1,28 @@
+{
+  "authoritative_enforcing_path": {
+    "step_1": "Payment Gateway / Customer Ingress -> HTTPS POST with HMAC-SHA256 signature",
+    "step_2": "Kubernetes Ingress (deploy/kubernetes/ingress.yaml) -> Route to risk-backend:8080",
+    "step_3": "Authentication & Privacy Guard -> Verify HMAC, enforce Zero PAN/CVV retention",
+    "step_4": "Feature Engine -> 36 Causal Point-in-Time Features (39 encoded columns)",
+    "step_5": "Production Champion (CatBoost D4, v8.0-bmr-36f) -> Raw fraud score",
+    "step_6": "Continuous BetaCalibrator -> Calibrated fraud probability P",
+    "step_7": "Baseline Dynamic BMR (No Floor) -> Threshold P*(A) = 25.00 / (1.05 * A + 25.00)",
+    "step_8": "Authoritative Decision -> ALLOW or DECLINE returned synchronously to customer"
+  },
+  "non_enforcing_shadow_learning_path": {
+    "step_1": "Transaction Event -> Asynchronous Shadow Dispatch (100% Fail-Open Isolation)",
+    "step_2": "Shadow Challenger (LightGBM L20 D4) -> Raw score & Calibrated probability",
+    "step_3": "Shadow Evaluation -> Candidate Floor tau_floor = 0.040 (Observational Telemetry Only)",
+    "step_4": "Disagreement Engine -> Calculate |P_champ - P_chal|, log disagreement telemetry",
+    "step_5": "Append-Only Telemetry Ledger -> Durable JSONL with HMAC Correlation ID",
+    "step_6": "Chargeback / Dispute Webhook -> Ingest genuine dispute outcomes (/api/v1/disputes/webhook)",
+    "step_7": "Label Maturation Engine -> Enforce 60-day maturation window (T+60)",
+    "step_8": "Eligible Evidence Ledger -> PRODUCTION_LIVE_MATURE tier only",
+    "step_9": "Sequential Statistical Monitor -> Alpha-spending stopping boundaries & power tracking",
+    "step_10": "Promotion Governance -> All 6 gates must pass before any promotion recommendation"
+  },
+  "boundary_analysis": {
+    "current_stopping_point": "Application software, shadow adapter, telemetry ledger, and mathematical monitors are 100% completed and hardened.",
+    "next_required_connection": "Deployment of the containerized services into the Kubernetes cluster (deploy/kubernetes/) and injection of live gateway HMAC secrets via AWS Secrets Manager."
+  }
+}

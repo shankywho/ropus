@@ -1,0 +1,8 @@
+{
+  "bundle_path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/model/candidates/production_model_28f.joblib",
+  "sha256": "92d298722ddccfd5784b7b3a048cbac12ce01c5ec1d5ef7183dac2878f8783f2",
+  "size_bytes": 118684,
+  "load_latency_ms": 1.4674169942736626,
+  "feature_count": 28,
+  "model_version": "v4.0-bmr-28f"
+}

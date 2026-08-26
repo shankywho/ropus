@@ -10,13 +10,13 @@ import (
 
 // BackupMetadata details a completed snapshot artifact.
 type BackupMetadata struct {
-	BackupID      string    `json:"backup_id"`
-	Type          string    `json:"type"` // "FULL", "INCREMENTAL_WAL", "MODEL_REGISTRY"
-	SizeBytes     int64     `json:"size_bytes"`
-	ChecksumSHA256 string   `json:"checksum_sha256"`
-	Destination   string    `json:"destination"` // e.g. "s3://ropus-backups-us-west-2/2026/08/"
-	CreatedAt     time.Time `json:"created_at"`
-	IsReplicated  bool      `json:"is_replicated"`
+	BackupID       string    `json:"backup_id"`
+	Type           string    `json:"type"` // "FULL", "INCREMENTAL_WAL", "MODEL_REGISTRY"
+	SizeBytes      int64     `json:"size_bytes"`
+	ChecksumSHA256 string    `json:"checksum_sha256"`
+	Destination    string    `json:"destination"` // e.g. "s3://ropus-backups-us-west-2/2026/08/"
+	CreatedAt      time.Time `json:"created_at"`
+	IsReplicated   bool      `json:"is_replicated"`
 }
 
 // DisasterRecoveryEngine manages automated backup scheduling, cross-region sync, and restoration drills.

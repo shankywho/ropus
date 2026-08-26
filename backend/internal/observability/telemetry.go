@@ -8,13 +8,13 @@ import (
 
 // PlatformMetricsTracker records real-time Prometheus / OpenTelemetry telemetry counters.
 type PlatformMetricsTracker struct {
-	mu                   sync.RWMutex
-	RiskRequestsTotal    uint64
-	FraudDetectedTotal   uint64
-	TotalLatencyMs       float64
-	ModelInferenceCount  uint64
+	mu                    sync.RWMutex
+	RiskRequestsTotal     uint64
+	FraudDetectedTotal    uint64
+	TotalLatencyMs        float64
+	ModelInferenceCount   uint64
 	AgentEvaluationsCount uint64
-	CasesResolvedTotal   uint64
+	CasesResolvedTotal    uint64
 }
 
 // GlobalMetrics provides an active singleton metrics instance.
@@ -58,11 +58,11 @@ func (m *PlatformMetricsTracker) GetSnapshot() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"risk_requests_total":    reqs,
-		"fraud_detected_total":   frauds,
-		"avg_latency_ms":         avgLatency,
+		"risk_requests_total":     reqs,
+		"fraud_detected_total":    frauds,
+		"avg_latency_ms":          avgLatency,
 		"agent_evaluations_total": agents,
-		"cases_resolved_total":   cases,
-		"timestamp":              time.Now().UTC(),
+		"cases_resolved_total":    cases,
+		"timestamp":               time.Now().UTC(),
 	}
 }

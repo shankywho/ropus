@@ -7,12 +7,12 @@ import (
 
 // DefenseCandidateStrategy encapsulates a strategic defense response package.
 type DefenseCandidateStrategy struct {
-	StrategyName        string  `json:"strategy_name"`
-	ActionPlan          string  `json:"action_plan"`
-	ProjectedSavings    float64 `json:"projected_savings"`
+	StrategyName         string  `json:"strategy_name"`
+	ActionPlan           string  `json:"action_plan"`
+	ProjectedSavings     float64 `json:"projected_savings"`
 	CustomerFrictionCost float64 `json:"customer_friction_cost"`
-	ComplianceRiskScore float64 `json:"compliance_risk_score"`
-	NetScore            float64 `json:"net_score"`
+	ComplianceRiskScore  float64 `json:"compliance_risk_score"`
+	NetScore             float64 `json:"net_score"`
 }
 
 // StrategyPlanReport details the chosen strategic containment path.

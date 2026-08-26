@@ -1,0 +1,11 @@
+{
+  "benchmark_type": "End-to-End Live FastAPI Endpoint (/v1/score)",
+  "iterations": 1000,
+  "mean_latency_ms": 1.203,
+  "p50_latency_ms": 1.18,
+  "p95_latency_ms": 1.334,
+  "p99_latency_ms": 1.7,
+  "throughput_req_sec": 831.3,
+  "error_rate": 0.0,
+  "status": "PASS (p95 < 15.0ms SLA)"
+}

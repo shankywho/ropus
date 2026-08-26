@@ -7,12 +7,12 @@ import (
 
 // InfrastructureRecord documents a monitored adversary tool, proxy pool, or bot cluster.
 type InfrastructureRecord struct {
-	HashedFingerprint string    `json:"hashed_fingerprint"`
-	InfrastructureType string   `json:"infrastructure_type"` // "RESIDENTIAL_PROXY_POOL", "EMULATOR_FARM", "BOTNET_C2_DOMAIN"
-	ReputationScore   float64   `json:"reputation_score"`   // 0.0 (clean) to 1.0 (malicious)
-	IsActivelyHostile bool      `json:"is_actively_hostile"`
-	AssociatedGroups  []string  `json:"associated_groups"`
-	LastSeenActive    time.Time `json:"last_seen_active"`
+	HashedFingerprint  string    `json:"hashed_fingerprint"`
+	InfrastructureType string    `json:"infrastructure_type"` // "RESIDENTIAL_PROXY_POOL", "EMULATOR_FARM", "BOTNET_C2_DOMAIN"
+	ReputationScore    float64   `json:"reputation_score"`    // 0.0 (clean) to 1.0 (malicious)
+	IsActivelyHostile  bool      `json:"is_actively_hostile"`
+	AssociatedGroups   []string  `json:"associated_groups"`
+	LastSeenActive     time.Time `json:"last_seen_active"`
 }
 
 // InfrastructureIntelligenceEngine tracks and scores malicious underground infrastructure.

@@ -1,0 +1,11 @@
+{
+  "status": "AWAITING_PRODUCTION_EVIDENCE",
+  "live_genuine_transactions": 0,
+  "live_mature_fraud_observations": 0,
+  "live_mature_legit_observations": 0,
+  "required_mature_fraud_observations": 86,
+  "required_live_transactions": 5000,
+  "power_status": "AWAITING_PRODUCTION_EVIDENCE",
+  "alpha_spending_level": "N/A (N_live = 0)",
+  "sequential_decision": "CONTINUE_DATA_COLLECTION"
+}

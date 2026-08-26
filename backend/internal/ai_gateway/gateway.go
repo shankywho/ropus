@@ -11,32 +11,32 @@ import (
 type ProviderType string
 
 const (
-	ProviderOpenAI    ProviderType = "OPENAI"
-	ProviderAnthropic ProviderType = "ANTHROPIC"
+	ProviderOpenAI     ProviderType = "OPENAI"
+	ProviderAnthropic  ProviderType = "ANTHROPIC"
 	ProviderLocalLLaMA ProviderType = "LOCAL_LLAMA"
-	ProviderMistral   ProviderType = "MISTRAL"
+	ProviderMistral    ProviderType = "MISTRAL"
 )
 
 // GatewayRequest encapsulates an LLM prompt request from investigation agents.
 type GatewayRequest struct {
-	Prompt          string       `json:"prompt"`
-	SystemMessage   string       `json:"system_message"`
-	PreferredModel  string       `json:"preferred_model"`
-	Provider        ProviderType `json:"provider"`
-	MaxTokens       int          `json:"max_tokens"`
-	Temperature     float64      `json:"temperature"`
+	Prompt         string       `json:"prompt"`
+	SystemMessage  string       `json:"system_message"`
+	PreferredModel string       `json:"preferred_model"`
+	Provider       ProviderType `json:"provider"`
+	MaxTokens      int          `json:"max_tokens"`
+	Temperature    float64      `json:"temperature"`
 }
 
 // GatewayResponse encapsulates the reasoning completion and cost tracking.
 type GatewayResponse struct {
-	Content         string       `json:"content"`
-	ProviderUsed    ProviderType `json:"provider_used"`
-	ModelUsed       string       `json:"model_used"`
-	InputTokens     int          `json:"input_tokens"`
-	OutputTokens    int          `json:"output_tokens"`
-	EstimatedCostUSD float64     `json:"estimated_cost_usd"`
-	LatencyMs       float64      `json:"latency_ms"`
-	Timestamp       time.Time    `json:"timestamp"`
+	Content          string       `json:"content"`
+	ProviderUsed     ProviderType `json:"provider_used"`
+	ModelUsed        string       `json:"model_used"`
+	InputTokens      int          `json:"input_tokens"`
+	OutputTokens     int          `json:"output_tokens"`
+	EstimatedCostUSD float64      `json:"estimated_cost_usd"`
+	LatencyMs        float64      `json:"latency_ms"`
+	Timestamp        time.Time    `json:"timestamp"`
 }
 
 // AIGateway provides multi-provider LLM routing, cost governance, and automated failover.
@@ -69,7 +69,7 @@ func (g *AIGateway) GenerateCompletion(ctx context.Context, req GatewayRequest) 
 	outTokens := 280
 
 	// Pricing: $0.003 / 1k input tokens, $0.015 / 1k output tokens (Claude 3.7 Sonnet)
-	cost := (float64(inTokens)*0.000003) + (float64(outTokens)*0.000015)
+	cost := (float64(inTokens) * 0.000003) + (float64(outTokens) * 0.000015)
 
 	analysis := fmt.Sprintf(
 		"Autonomous Forensic Assessment [Provider: %s | Model: %s]: Multi-factor correlation uncovers suspicious account hijacking signature. Graph analysis reveals 14 shared entity links with known emulator proxy infrastructure. Recommendation: Execute step-up MFA challenge and isolate session.",

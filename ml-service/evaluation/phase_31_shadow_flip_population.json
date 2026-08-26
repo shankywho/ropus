@@ -1,0 +1,12 @@
+{
+  "live_shadow_flips": [],
+  "live_shadow_flip_count": 0,
+  "historical_reference_flips": {
+    "count": 8,
+    "total_gmv": 13003.58,
+    "average_ticket": 1625.45,
+    "max_ticket": 2898.07,
+    "observed_frauds": 0,
+    "exact_95_upper_ci": 0.3123
+  }
+}

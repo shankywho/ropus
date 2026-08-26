@@ -1,0 +1,91 @@
+{
+  "telemetry_metrics": {
+    "request_throughput": {
+      "metric": "http_requests_total",
+      "unit": "req/sec",
+      "sla_target": "> 100 req/sec"
+    },
+    "latency_p50": {
+      "metric": "http_request_duration_ms_p50",
+      "unit": "ms",
+      "sla_target": "< 5.0 ms"
+    },
+    "latency_p95": {
+      "metric": "http_request_duration_ms_p95",
+      "unit": "ms",
+      "sla_target": "< 15.0 ms"
+    },
+    "latency_p99": {
+      "metric": "http_request_duration_ms_p99",
+      "unit": "ms",
+      "sla_target": "< 25.0 ms"
+    },
+    "error_rate_5xx": {
+      "metric": "http_5xx_rate",
+      "unit": "%",
+      "warning_threshold": 0.001,
+      "critical_threshold": 0.005
+    },
+    "error_rate_4xx": {
+      "metric": "http_4xx_rate",
+      "unit": "%",
+      "warning_threshold": 0.02,
+      "critical_threshold": 0.05
+    }
+  },
+  "drift_metrics": {
+    "feature_psi": {
+      "NORMAL": [
+        0.0,
+        0.1
+      ],
+      "WARNING": [
+        0.1,
+        0.25
+      ],
+      "CRITICAL": [
+        0.25,
+        999.0
+      ]
+    },
+    "score_psi": {
+      "NORMAL": [
+        0.0,
+        0.1
+      ],
+      "WARNING": [
+        0.1,
+        0.25
+      ],
+      "CRITICAL": [
+        0.25,
+        999.0
+      ]
+    },
+    "decline_rate_shift": {
+      "baseline_decline_rate": 0.0617,
+      "warning_band": [
+        0.03,
+        0.1
+      ],
+      "critical_band": [
+        0.01,
+        0.15
+      ]
+    }
+  },
+  "data_quality_metrics": {
+    "missing_feature_rate_max": {
+      "threshold": 0.05,
+      "severity": "WARNING"
+    },
+    "novel_device_rate_max": {
+      "threshold": 0.2,
+      "severity": "WARNING"
+    },
+    "nan_inf_rate_max": {
+      "threshold": 0.0,
+      "severity": "CRITICAL"
+    }
+  }
+}

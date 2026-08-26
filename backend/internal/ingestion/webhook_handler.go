@@ -205,15 +205,15 @@ func (h *WebhookHandler) handleDisputeOpened(w http.ResponseWriter, r *http.Requ
 
 	// Construct immutable Evidence Packet
 	evidenceMap := map[string]interface{}{
-		"dispute_id":             disputeID,
-		"transaction_id":         txnID,
-		"dispute_reason":         reason,
-		"original_decision_id":   decisionID,
-		"original_risk_score":    riskScore,
+		"dispute_id":              disputeID,
+		"transaction_id":          txnID,
+		"dispute_reason":          reason,
+		"original_decision_id":    decisionID,
+		"original_risk_score":     riskScore,
 		"original_recommendation": recAction,
-		"original_reason_codes":  reasonCodes,
-		"feature_snapshot":       featureSnapshot,
-		"correlated_at":          now.Format(time.RFC3339),
+		"original_reason_codes":   reasonCodes,
+		"feature_snapshot":        featureSnapshot,
+		"correlated_at":           now.Format(time.RFC3339),
 	}
 	evidenceBytes, _ := json.Marshal(evidenceMap)
 

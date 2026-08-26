@@ -1,0 +1,355 @@
+{
+  "feature_audit": [
+    {
+      "feature_name": "amount",
+      "train_mean": 120.91573333740234,
+      "val_mean": 123.60725402832031,
+      "test_mean": 134.03419494628906,
+      "temporal_drift_ratio": 0.10849258538882788,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "log_amount",
+      "train_mean": 4.217519760131836,
+      "val_mean": 4.244632244110107,
+      "test_mean": 4.276227951049805,
+      "temporal_drift_ratio": 0.013920041886351407,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "amt_sqrt",
+      "train_mean": 9.460954666137695,
+      "val_mean": 9.570232391357422,
+      "test_mean": 9.832427024841309,
+      "temporal_drift_ratio": 0.03926368735242953,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "amt_is_round",
+      "train_mean": 0.0016071428544819355,
+      "val_mean": 0.0,
+      "test_mean": 0.0016666667070239782,
+      "temporal_drift_ratio": 0.03680803608479702,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "amount_to_mean_ratio",
+      "train_mean": 1.544893503189087,
+      "val_mean": 1.8768664598464966,
+      "test_mean": 1.931149959564209,
+      "temporal_drift_ratio": 0.2500197944905861,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "dev_amount_ratio",
+      "train_mean": 0.9805275201797485,
+      "val_mean": 1.0719538927078247,
+      "test_mean": 1.0607891082763672,
+      "temporal_drift_ratio": 0.08185468321692106,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "amt_novelty_risk",
+      "train_mean": 0.36956512928009033,
+      "val_mean": 1.5971592664718628,
+      "test_mean": 1.5931719541549683,
+      "temporal_drift_ratio": 3.31084731610157,
+      "stability_status": "MODERATE_SHIFT",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "dev_amt_novelty",
+      "train_mean": 0.004365861881524324,
+      "val_mean": 0.020212985575199127,
+      "test_mean": 0.02236475981771946,
+      "temporal_drift_ratio": 4.11322350282346,
+      "stability_status": "MODERATE_SHIFT",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "device_seen_before",
+      "train_mean": 0.9989285469055176,
+      "val_mean": 0.9950000047683716,
+      "test_mean": 0.9950000047683716,
+      "temporal_drift_ratio": 0.003932716531277843,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "card_seen_before",
+      "train_mean": 0.9119642972946167,
+      "val_mean": 0.6258333325386047,
+      "test_mean": 0.6258333325386047,
+      "temporal_drift_ratio": 0.31374893525488945,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "transaction_hour",
+      "train_mean": 11.586071014404297,
+      "val_mean": 11.726666450500488,
+      "test_mean": 11.433333396911621,
+      "temporal_drift_ratio": 0.013182854263040802,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "transaction_day",
+      "train_mean": 2.934821367263794,
+      "val_mean": 2.949166774749756,
+      "test_mean": 3.0183334350585938,
+      "temporal_drift_ratio": 0.02845549108079075,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "sin_tx_hour",
+      "train_mean": -0.0048307133838534355,
+      "val_mean": -0.021351993083953857,
+      "test_mean": 0.003324480028823018,
+      "temporal_drift_ratio": 1.6847090017514188,
+      "stability_status": "MODERATE_SHIFT",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "cos_tx_hour",
+      "train_mean": -0.02287355624139309,
+      "val_mean": -0.03129906207323074,
+      "test_mean": 0.03071105293929577,
+      "temporal_drift_ratio": 2.341620708575092,
+      "stability_status": "MODERATE_SHIFT",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "sin_tx_day",
+      "train_mean": 0.018769588321447372,
+      "val_mean": 0.01620575413107872,
+      "test_mean": -0.04900340363383293,
+      "temporal_drift_ratio": 3.6088646244646183,
+      "stability_status": "MODERATE_SHIFT",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "cos_tx_day",
+      "train_mean": -0.0008160529541783035,
+      "val_mean": 0.04772918298840523,
+      "test_mean": 0.05911659076809883,
+      "temporal_drift_ratio": 72.55302873638858,
+      "stability_status": "MODERATE_SHIFT",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "is_night",
+      "train_mean": 0.23964285850524902,
+      "val_mean": 0.23499999940395355,
+      "test_mean": 0.2708333432674408,
+      "temporal_drift_ratio": 0.1301486030950414,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "ip_velocity_1h",
+      "train_mean": 1.2869642972946167,
+      "val_mean": 1.2991666793823242,
+      "test_mean": 1.2891666889190674,
+      "temporal_drift_ratio": 0.001711294179751989,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "ip_velocity_24h",
+      "train_mean": 7.9103569984436035,
+      "val_mean": 7.788333415985107,
+      "test_mean": 7.9091668128967285,
+      "temporal_drift_ratio": 0.00015045895432021976,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "ip_burst_ratio",
+      "train_mean": 0.31350386142730713,
+      "val_mean": 0.3205139935016632,
+      "test_mean": 0.3163301944732666,
+      "temporal_drift_ratio": 0.009015017814817736,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "token_velocity_24h",
+      "train_mean": 1.0907143354415894,
+      "val_mean": 1.090000033378601,
+      "test_mean": 1.090000033378601,
+      "temporal_drift_ratio": 0.0006548878023328321,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "card_tx_count_5m",
+      "train_mean": 1.0010714530944824,
+      "val_mean": 1.0,
+      "test_mean": 1.0,
+      "temporal_drift_ratio": 0.0010702956199721918,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "card_tx_count_15m",
+      "train_mean": 1.0019643306732178,
+      "val_mean": 1.0041667222976685,
+      "test_mean": 1.0008333921432495,
+      "temporal_drift_ratio": 0.001128710083030165,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "card_tx_count_1h",
+      "train_mean": 1.0044642686843872,
+      "val_mean": 1.0075000524520874,
+      "test_mean": 1.002500057220459,
+      "temporal_drift_ratio": 0.0019554622006403943,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "card_burst_5m_1h",
+      "train_mean": 0.9988691210746765,
+      "val_mean": 0.9975000023841858,
+      "test_mean": 0.9991666674613953,
+      "temporal_drift_ratio": 0.0002978802744406401,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "card_burst_15m_24h",
+      "train_mean": 0.9709821343421936,
+      "val_mean": 0.9719444513320923,
+      "test_mean": 0.9711110591888428,
+      "temporal_drift_ratio": 0.00013277640682075257,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "device_tx_count_5m",
+      "train_mean": 1.0401785373687744,
+      "val_mean": 1.0383332967758179,
+      "test_mean": 1.0425000190734863,
+      "temporal_drift_ratio": 0.002231789354826246,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "device_tx_count_1h",
+      "train_mean": 1.4810714721679688,
+      "val_mean": 1.4783333539962769,
+      "test_mean": 1.5291666984558105,
+      "temporal_drift_ratio": 0.03247304567077006,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "device_amount_sum_24h",
+      "train_mean": 1545.0667724609375,
+      "val_mean": 1409.5965576171875,
+      "test_mean": 1744.0203857421875,
+      "temporal_drift_ratio": 0.12876699929071186,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "dev_burst_5m_1h",
+      "train_mean": 0.8724753260612488,
+      "val_mean": 0.8717777729034424,
+      "test_mean": 0.8589721918106079,
+      "temporal_drift_ratio": 0.015476631924114383,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "tx_acceleration_5m_1h",
+      "train_mean": 5.995357036590576,
+      "val_mean": 5.985000133514404,
+      "test_mean": 5.994999885559082,
+      "temporal_drift_ratio": 5.9571170424495645e-05,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "device_amount_concentration_5m_1h",
+      "train_mean": 0.7968447208404541,
+      "val_mean": 0.7925524115562439,
+      "test_mean": 0.7826614379882812,
+      "temporal_drift_ratio": 0.01779908241895529,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "dist1_missing",
+      "train_mean": 0.39321428537368774,
+      "val_mean": 0.40833333134651184,
+      "test_mean": 0.3916666805744171,
+      "temporal_drift_ratio": 0.003935679602799493,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "device_type_mobile",
+      "train_mean": 0.24982142448425293,
+      "val_mean": 0.25083333253860474,
+      "test_mean": 0.24583333730697632,
+      "temporal_drift_ratio": 0.015963112668910807,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "device_info_missing",
+      "train_mean": 0.4028571546077728,
+      "val_mean": 0.36916667222976685,
+      "test_mean": 0.40583333373069763,
+      "temporal_drift_ratio": 0.007387495080909192,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "product_cd_encoded",
+      "train_mean": 3.0791070461273193,
+      "val_mean": 3.1675000190734863,
+      "test_mean": 3.1658332347869873,
+      "temporal_drift_ratio": 0.02816592788141835,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "card_type_encoded",
+      "train_mean": 2.5794641971588135,
+      "val_mean": 2.5833332538604736,
+      "test_mean": 2.568333387374878,
+      "temporal_drift_ratio": 0.004315146783090788,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "card_category_encoded",
+      "train_mean": 0.7582142949104309,
+      "val_mean": 0.753333330154419,
+      "test_mean": 0.762499988079071,
+      "temporal_drift_ratio": 0.005652276242541669,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    },
+    {
+      "feature_name": "email_domain_risk",
+      "train_mean": 0.04508858174085617,
+      "val_mean": 0.04500697925686836,
+      "test_mean": 0.04485677555203438,
+      "temporal_drift_ratio": 0.005139988440297056,
+      "stability_status": "STABLE",
+      "causality_status": "POINT_IN_TIME_CERTIFIED"
+    }
+  ]
+}

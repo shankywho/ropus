@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "forbidden_sensitive_keywords": [
+    "api_key",
+    "auth_token",
+    "card_number",
+    "cid",
+    "credit_card",
+    "cvc",
+    "cvv",
+    "cvv2",
+    "pan",
+    "password",
+    "pin",
+    "private_key",
+    "raw_cardholder_name",
+    "secret",
+    "social_security",
+    "ssn",
+    "token_secret"
+  ],
+  "anonymization_salt_present": true,
+  "test_results": [
+    {
+      "test": "1. Clean Sanitized Payload",
+      "passed": true,
+      "violations": []
+    },
+    {
+      "test": "2. Forbidden PAN Detection",
+      "passed": true,
+      "violations": [
+        "Forbidden sensitive field detected: pan"
+      ]
+    },
+    {
+      "test": "3. Forbidden CVV & Password Detection",
+      "passed": true,
+      "violations": [
+        "Forbidden sensitive field detected: cvv",
+        "Forbidden sensitive field detected: user_password"
+      ]
+    }
+  ]
+}
