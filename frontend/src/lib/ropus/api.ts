@@ -207,33 +207,105 @@ export interface LiveEvaluationResponse {
   risk_score: number;
   reason_codes: string[];
   latency_ms: number;
+  feature_snapshot_ref?: string;
   features?: {
+    account_id?: string;
+    amount?: number;
+    currency?: string;
+    calibrated_probability?: number;
+    economic_decision_reason?: string;
+    expected_fraud_exposure?: number;
+    expected_action_costs?: Record<string, number>;
+    threat_intelligence?: {
+      asn?: string;
+      geo_distance_km?: number;
+      implied_speed_kmh?: number;
+      is_impossible_travel?: boolean;
+      is_malicious_ip?: boolean;
+      is_proxy_datacenter?: boolean;
+      is_compromised_device?: boolean;
+      origin_city?: string;
+      origin_country?: string;
+      risk_score?: number;
+    };
+    graph_intelligence?: {
+      connected_account_count?: number;
+      degree_centrality?: number;
+      fraud_nodes_count?: number;
+      fraud_ring_detected?: boolean;
+      graph_risk_contribution?: number;
+      shared_device_count?: number;
+      start_node_id?: string;
+      traversed_edges_count?: number;
+      visited_nodes_count?: number;
+    };
     ml_feature_contract?: {
       canonical_version?: string;
       canonical_25?: Record<string, number>;
+      legacy_version?: string;
+      legacy_15?: Record<string, number>;
     };
+    [key: string]: any;
   };
+  expected_fraud_exposure?: number;
+  expected_action_costs?: Record<string, number>;
+  economic_decision_reason?: string;
+  threat_intelligence?: {
+    asn?: string;
+    geo_distance_km?: number;
+    implied_speed_kmh?: number;
+    is_impossible_travel?: boolean;
+    is_malicious_ip?: boolean;
+    is_proxy_datacenter?: boolean;
+    is_compromised_device?: boolean;
+    origin_city?: string;
+    origin_country?: string;
+    risk_score?: number;
+  };
+  graph_intelligence?: {
+    connected_account_count?: number;
+    degree_centrality?: number;
+    fraud_nodes_count?: number;
+    fraud_ring_detected?: boolean;
+    graph_risk_contribution?: number;
+    shared_device_count?: number;
+    start_node_id?: string;
+    traversed_edges_count?: number;
+    visited_nodes_count?: number;
+  };
+  component_latencies?: Record<string, number>;
   evaluated_at: string;
+  is_degraded?: boolean;
 }
 
 export const evaluateRisk = async (payload: {
   transaction_id: string;
-  customer_id: string;
+  customer_id?: string;
+  account_id?: string;
   amount: number;
-  currency: string;
+  currency?: string;
+  payment_method?: {
+    type: string;
+    token: string;
+  };
   ip_address?: string;
   device_id?: string;
+  device_fingerprint?: string;
 }): Promise<LiveEvaluationResponse> => {
   const res = await fetch(`${BASE}/v1/risk-evaluations`, {
     method: "POST",
     headers: DEFAULT_HEADERS,
     body: JSON.stringify({
       transaction_id: payload.transaction_id,
-      customer_id: payload.customer_id,
+      account_id: payload.customer_id || payload.account_id || "cus_4471029",
       amount: Math.round(payload.amount),
       currency: payload.currency || "INR",
+      payment_method: payload.payment_method || {
+        type: "upi",
+        token: "vpa_token_88419",
+      },
       ip_address: payload.ip_address || "198.51.100.44",
-      device_fingerprint: payload.device_id || "9f8a84b12c",
+      device_fingerprint: payload.device_fingerprint || payload.device_id || "9f8a84b12c",
     }),
   });
 
