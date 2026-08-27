@@ -74,6 +74,10 @@ function DemoPage() {
   const [customIp, setCustomIp] = useState<string>("198.51.100.44");
   const [customDevice, setCustomDevice] = useState<string>("dev_emulator_linux_9f8a");
   const [showPayloadEditor, setShowPayloadEditor] = useState<boolean>(false);
+  const [showChaosConsole, setShowChaosConsole] = useState<boolean>(false);
+  const [chaosRedisLatency, setChaosRedisLatency] = useState<boolean>(false);
+  const [chaosMlOutage, setChaosMlOutage] = useState<boolean>(false);
+  const [chaosLedgerTamper, setChaosLedgerTamper] = useState<boolean>(false);
   const [failureScenario, setFailureScenario] = useState<
     "NONE" | "ML_TIMEOUT" | "REDIS_DOWN" | "KAFKA_DOWN"
   >("NONE");
@@ -526,6 +530,18 @@ function DemoPage() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
+                  onClick={() => setShowChaosConsole(!showChaosConsole)}
+                  className={cn(
+                    "font-mono text-[10.5px] cursor-pointer flex items-center gap-1 border px-2 py-0.5",
+                    showChaosConsole
+                      ? "border-blocked bg-blocked text-white font-bold"
+                      : "border-border bg-surface text-blocked hover:bg-secondary",
+                  )}
+                >
+                  💥 {showChaosConsole ? "Hide Chaos" : "Chaos Console"}
+                </button>
+                <button
+                  type="button"
                   onClick={() => setShowPayloadEditor(!showPayloadEditor)}
                   className="font-mono text-[10.5px] text-navy hover:underline cursor-pointer flex items-center gap-1"
                 >
@@ -533,6 +549,104 @@ function DemoPage() {
                 </button>
               </div>
             </div>
+
+            {/* Expandable Chaos Engineering Fault-Injection Drawer */}
+            {showChaosConsole && (
+              <div className="mt-3 border border-blocked/50 bg-blocked-surface p-3.5 font-mono text-[11px] space-y-3 animate-in fade-in">
+                <div className="flex items-center justify-between font-bold text-blocked">
+                  <span className="flex items-center gap-1.5">
+                    <span>💥</span> Chaos Engineering &amp; Fault-Injection Console
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">Interactive Resilience Simulator</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  {/* Chaos Toggle 1: Redis Latency */}
+                  <div className="border border-border bg-card p-2.5 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-foreground text-[10.5px]">500ms Redis Latency</span>
+                      <input
+                        type="checkbox"
+                        checked={chaosRedisLatency}
+                        onChange={(e) => {
+                          setChaosRedisLatency(e.target.checked);
+                          if (e.target.checked) {
+                            toast.warning("Injected 500ms Redis Latency Fault", {
+                              description: "Risk Engine gracefully switched to in-memory fallback features.",
+                            });
+                          }
+                        }}
+                        className="accent-blocked cursor-pointer"
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground font-sans">
+                      Simulates slow cache response; tests sub-100ms circuit breaker tripping.
+                    </p>
+                    {chaosRedisLatency && (
+                      <span className="inline-block border border-amber-intel bg-shadow-intel-surface px-1.5 py-0.2 text-[9.5px] font-bold text-shadow-intel">
+                        CIRCUIT OPEN (FALLBACK ACTIVE)
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Chaos Toggle 2: ML 503 Outage */}
+                  <div className="border border-border bg-card p-2.5 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-foreground text-[10.5px]">ML Sidecar 503 Outage</span>
+                      <input
+                        type="checkbox"
+                        checked={chaosMlOutage}
+                        onChange={(e) => {
+                          setChaosMlOutage(e.target.checked);
+                          if (e.target.checked) {
+                            toast.error("Simulating Python ML Sidecar Outage (503)", {
+                              description: "Engine flag is_degraded: true active. Evaluated via Heuristic AST rules.",
+                            });
+                          }
+                        }}
+                        className="accent-blocked cursor-pointer"
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground font-sans">
+                      Simulates ONNX crash; validates pipeline degrades gracefully without dropping transactions.
+                    </p>
+                    {chaosMlOutage && (
+                      <span className="inline-block border border-blocked bg-blocked text-white px-1.5 py-0.2 text-[9.5px] font-bold">
+                        IS_DEGRADED: TRUE
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Chaos Toggle 3: Audit Ledger Tamper */}
+                  <div className="border border-border bg-card p-2.5 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-foreground text-[10.5px]">Audit Chain Bit-Flip</span>
+                      <input
+                        type="checkbox"
+                        checked={chaosLedgerTamper}
+                        onChange={(e) => {
+                          setChaosLedgerTamper(e.target.checked);
+                          if (e.target.checked) {
+                            toast.error("🚨 INTEGRITY BREACH: Audit Chain Tamper Detected", {
+                              description: "SHA-256 Merkle root mismatch at Block #4281.",
+                            });
+                          }
+                        }}
+                        className="accent-blocked cursor-pointer"
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground font-sans">
+                      Injects payload byte mutation into past block; triggers real-time Merkle integrity alarm.
+                    </p>
+                    {chaosLedgerTamper && (
+                      <span className="inline-block border border-blocked bg-blocked text-white px-1.5 py-0.2 text-[9.5px] font-bold animate-pulse">
+                        MERKLE MISMATCH
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Sub-tab Stage Context Banner when in non-telemetry view */}
             {activeTab !== "telemetry" && (

@@ -1,8 +1,10 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { useSession } from "@/lib/rbac";
 import { isLiveBackend } from "@/lib/ropus/api";
+import { CommandPalette } from "./command-palette";
+import { Search, Command as CommandIcon, Keyboard } from "lucide-react";
 
 const controlPlaneNav = [
   { label: "Overview", to: "/" },
@@ -24,7 +26,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
-      {/* Application Wordmark: 18px, Weight 800, Letter spacing .18em */}
+      {/* Application Wordmark */}
       <div className="flex items-center gap-3 border-b border-sidebar-border px-4 py-3.5">
         <span
           aria-hidden
@@ -155,7 +157,68 @@ function UtcClock() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
   const session = useSession();
+  const navigate = useNavigate();
+
+  // Vim-style key chord listeners: g then h/d/c/m/r/g/s
+  useEffect(() => {
+    let lastKey = "";
+    let lastKeyTime = 0;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        (e.target as HTMLElement).isContentEditable
+      ) {
+        return;
+      }
+
+      const now = Date.now();
+      if (e.key === "?" && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        setShortcutsModalOpen((prev) => !prev);
+        return;
+      }
+
+      if (e.key === "g") {
+        lastKey = "g";
+        lastKeyTime = now;
+        return;
+      }
+
+      if (lastKey === "g" && now - lastKeyTime < 1000) {
+        if (e.key === "h") {
+          e.preventDefault();
+          navigate({ to: "/" });
+        } else if (e.key === "d") {
+          e.preventDefault();
+          navigate({ to: "/decisions" });
+        } else if (e.key === "c") {
+          e.preventDefault();
+          navigate({ to: "/cases" });
+        } else if (e.key === "m") {
+          e.preventDefault();
+          navigate({ to: "/models" });
+        } else if (e.key === "r") {
+          e.preventDefault();
+          navigate({ to: "/rules" });
+        } else if (e.key === "g") {
+          e.preventDefault();
+          navigate({ to: "/graph" });
+        } else if (e.key === "s") {
+          e.preventDefault();
+          navigate({ to: "/security" });
+        }
+        lastKey = "";
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen w-full bg-background lg:grid lg:grid-cols-[212px_1fr]">
@@ -187,9 +250,20 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <span aria-hidden>≡</span>
             </button>
-            <span className="hidden font-mono text-[11px] tracking-[0.06em] text-muted-foreground sm:inline">
-              {session.organization} / {session.tenantId}
-            </span>
+
+            {/* Global Omnibar Search Trigger */}
+            <button
+              type="button"
+              onClick={() => setPaletteOpen(true)}
+              className="flex items-center gap-2 border border-border bg-secondary/40 hover:bg-secondary px-3 py-1 text-left text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              <Search className="size-3.5 text-muted-foreground" />
+              <span className="font-mono text-[11px] hidden sm:inline">Search control deck...</span>
+              <kbd className="hidden sm:inline-flex items-center gap-0.5 border border-border bg-surface px-1 py-0.2 font-mono text-[9.5px] text-muted-foreground">
+                <CommandIcon className="size-2.5" /> K
+              </kbd>
+            </button>
+
             {isLiveBackend ? (
               <span
                 title="Connected to authoritative Go API at localhost:8080"
@@ -209,9 +283,15 @@ export function AppShell({ children }: { children: ReactNode }) {
             )}
           </div>
           <div className="flex items-center gap-4">
-            <span className="hidden items-center gap-1.5 font-mono text-[10px] tracking-[0.06em] text-shadow-intel md:inline-flex">
-              <span aria-hidden className="size-1.5 rounded-full bg-amber-intel animate-pulse" /> 2 SERVICES DEGRADED
-            </span>
+            <button
+              type="button"
+              onClick={() => setShortcutsModalOpen(true)}
+              title="Keyboard Shortcuts (?)"
+              className="text-muted-foreground hover:text-foreground text-[11px] font-mono flex items-center gap-1 cursor-pointer hidden md:flex"
+            >
+              <Keyboard className="size-3.5" />
+              <span>Shortcuts (?)</span>
+            </button>
             <UtcClock />
             <span className="hidden font-mono text-[11px] text-muted-foreground sm:inline">
               {session.user}
@@ -220,6 +300,60 @@ export function AppShell({ children }: { children: ReactNode }) {
         </header>
         <main className="min-w-0 flex-1 paper-deck-grid">{children}</main>
       </div>
+
+      {/* Global Command Palette Component */}
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+
+      {/* Shortcuts Cheat Sheet Modal */}
+      {shortcutsModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in"
+          onClick={() => setShortcutsModalOpen(false)}
+        >
+          <div
+            className="w-full max-w-lg border border-border bg-card p-5 shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-border pb-2">
+              <span className="font-bold text-navy font-mono text-[12px] uppercase tracking-wider flex items-center gap-2">
+                <Keyboard className="size-4" /> Operator Keyboard Shortcuts
+              </span>
+              <kbd className="border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                ESC
+              </kbd>
+            </div>
+            <div className="grid grid-cols-2 gap-3 font-mono text-[11.5px]">
+              <div className="border border-border/60 bg-secondary/30 p-2.5 space-y-1.5">
+                <div className="text-[10px] text-muted-foreground uppercase font-bold">Navigation (G then Key)</div>
+                <div className="flex justify-between"><span>Overview</span><kbd className="text-navy font-bold">G H</kbd></div>
+                <div className="flex justify-between"><span>Decisions</span><kbd className="text-navy font-bold">G D</kbd></div>
+                <div className="flex justify-between"><span>Cases Queue</span><kbd className="text-navy font-bold">G C</kbd></div>
+                <div className="flex justify-between"><span>Models</span><kbd className="text-navy font-bold">G M</kbd></div>
+                <div className="flex justify-between"><span>Rules AST</span><kbd className="text-navy font-bold">G R</kbd></div>
+                <div className="flex justify-between"><span>Fraud Graph</span><kbd className="text-navy font-bold">G G</kbd></div>
+                <div className="flex justify-between"><span>Security KMS</span><kbd className="text-navy font-bold">G S</kbd></div>
+              </div>
+              <div className="border border-border/60 bg-secondary/30 p-2.5 space-y-1.5">
+                <div className="text-[10px] text-muted-foreground uppercase font-bold">Global Omnibar &amp; Actions</div>
+                <div className="flex justify-between"><span>Open Omnibar</span><kbd className="text-navy font-bold">⌘ K / /</kbd></div>
+                <div className="flex justify-between"><span>Shortcuts Help</span><kbd className="text-navy font-bold">?</kbd></div>
+                <div className="flex justify-between"><span>Close Modal</span><kbd className="text-navy font-bold">ESC</kbd></div>
+                <div className="flex justify-between"><span>Run Action</span><kbd className="text-navy font-bold">↵</kbd></div>
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShortcutsModalOpen(false)}
+                className="border border-navy bg-navy px-3 py-1 font-bold text-white text-[11px] hover:bg-navy/90 cursor-pointer font-mono"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
