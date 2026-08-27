@@ -1,8 +1,8 @@
 # IEEE-CIS Fraud Detection Dataset Guide
 
-**Dataset Name:** IEEE-CIS Fraud Detection Benchmark (Kaggle / Vesta Corporation)  
-**Primary Target Column:** `isFraud` (Binary: `0` = Legitimate, `1` = Fraud)  
-**Time Ordering Column:** `TransactionDT` (Seconds from a given reference datetime)  
+**Dataset Name:** IEEE-CIS Fraud Detection Benchmark (Kaggle / Vesta Corporation)
+**Primary Target Column:** `isFraud` (Binary: `0` = Legitimate, `1` = Fraud)
+**Time Ordering Column:** `TransactionDT` (Seconds from a given reference datetime)
 
 ---
 

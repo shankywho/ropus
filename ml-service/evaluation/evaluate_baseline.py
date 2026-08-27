@@ -33,61 +33,61 @@ def run_evaluation(
     output_dir="evaluation"
 ):
     os.makedirs(output_dir, exist_ok=True)
-    
+
     print("==================================================")
     print("PHASE -1: BASELINE ML REPRODUCIBILITY & EVALUATION")
     print("==================================================")
-    
+
     # 1. Dataset Generation (Exact parameters from train.py)
     start_data_time = time.perf_counter()
     df = generate_synthetic_data(n_samples=30000, random_seed=42)
     feature_cols = ['amount', 'ip_velocity_1h', 'token_velocity_24h', 'is_new_device', 'hour_of_day']
     X = df[feature_cols].values
     y = df['is_fraud'].values
-    
+
     total_samples = len(df)
     total_fraud = int(y.sum())
     total_legit = int(total_samples - total_fraud)
     fraud_rate = float(total_fraud / total_samples)
-    
+
     print(f"Dataset Size: {total_samples} samples")
     print(f"Features ({len(feature_cols)}): {feature_cols}")
     print(f"Class Distribution: {total_legit} Legitimate, {total_fraud} Fraud ({fraud_rate*100:.2f}%)")
-    
+
     # Train / Test split (80/20 stratified, seed 42)
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.20, random_state=42, stratify=y
     )
     test_fraud = int(y_test.sum())
     test_legit = int(len(y_test) - test_fraud)
-    
+
     # 2. Load ONNX Runtime Session
     if not os.path.exists(onnx_path):
         raise FileNotFoundError(f"ONNX model not found at {onnx_path}")
-        
+
     model_size_bytes = os.path.getsize(onnx_path)
     session = rt.InferenceSession(onnx_path, providers=['CPUExecutionProvider'])
     input_name = session.get_inputs()[0].name
-    
+
     # 3. Batch & Single-Sample Inference Benchmarking
     latencies = []
     # Warmup
     for _ in range(50):
         _ = session.run(None, {input_name: X_test[:1].astype(np.float32)})
-        
+
     # Measure 1,000 single-item inferences
     for i in range(min(1000, len(X_test))):
         t0 = time.perf_counter()
         _ = session.run(None, {input_name: X_test[i:i+1].astype(np.float32)})
         latencies.append((time.perf_counter() - t0) * 1000.0) # ms
-        
+
     p50_ms = float(np.percentile(latencies, 50))
     p95_ms = float(np.percentile(latencies, 95))
     p99_ms = float(np.percentile(latencies, 99))
     mean_ms = float(np.mean(latencies))
-    
+
     print(f"Inference Latency: p50={p50_ms:.3f}ms, p95={p95_ms:.3f}ms, p99={p99_ms:.3f}ms, mean={mean_ms:.3f}ms")
-    
+
     # Full Test Set Predictions
     raw_preds = session.run(None, {input_name: X_test.astype(np.float32)})
     prob_output = raw_preds[1]
@@ -97,24 +97,24 @@ def run_evaluation(
         y_prob = prob_output[:, 1]
     else:
         y_prob = raw_preds[0].flatten()
-        
+
     y_pred = (y_prob >= 0.50).astype(int)
-    
+
     # 4. Metrics Calculation
     roc_auc = float(roc_auc_score(y_test, y_prob))
     pr_auc = float(average_precision_score(y_test, y_prob))
     prec = float(precision_score(y_test, y_pred, zero_division=0))
     rec = float(recall_score(y_test, y_pred, zero_division=0))
     f1 = float(f1_score(y_test, y_pred, zero_division=0))
-    
+
     cm = confusion_matrix(y_test, y_pred)
     tn, fp, fn, tp = [int(v) for v in cm.ravel()]
-    
+
     print(f"ROC-AUC: {roc_auc:.4f}")
     print(f"PR-AUC:  {pr_auc:.4f}")
     print(f"Precision: {prec:.4f}, Recall: {rec:.4f}, F1: {f1:.4f}")
     print(f"Confusion Matrix: TN={tn}, FP={fp}, FN={fn}, TP={tp}")
-    
+
     metrics_data = {
         "evaluation_timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "model_artifact": {
@@ -159,13 +159,13 @@ def run_evaluation(
             "sample_size": len(latencies)
         }
     }
-    
+
     # Save baseline_metrics.json
     metrics_path = os.path.join(output_dir, "baseline_metrics.json")
     with open(metrics_path, "w") as f:
         json.dump(metrics_data, f, indent=2)
     print(f"Saved baseline metrics to: {metrics_path}")
-    
+
     # 5. Visualizations with Matplotlib
     # A. Confusion Matrix Plot
     plt.figure(figsize=(6, 5))
@@ -175,7 +175,7 @@ def run_evaluation(
     tick_marks = np.arange(2)
     plt.xticks(tick_marks, ['Legitimate (0)', 'Fraud (1)'])
     plt.yticks(tick_marks, ['Legitimate (0)', 'Fraud (1)'])
-    
+
     thresh = cm.max() / 2.
     for i in range(cm.shape[0]):
         for j in range(cm.shape[1]):
@@ -189,7 +189,7 @@ def run_evaluation(
     plt.savefig(cm_path, dpi=150)
     plt.close()
     print(f"Saved confusion matrix plot: {cm_path}")
-    
+
     # B. ROC Curve Plot
     fpr, tpr, _ = roc_curve(y_test, y_prob)
     plt.figure(figsize=(6, 5))
@@ -207,7 +207,7 @@ def run_evaluation(
     plt.savefig(roc_path, dpi=150)
     plt.close()
     print(f"Saved ROC curve plot: {roc_path}")
-    
+
     # C. Precision-Recall Curve Plot
     precisions, recalls, _ = precision_recall_curve(y_test, y_prob)
     plt.figure(figsize=(6, 5))
@@ -225,7 +225,7 @@ def run_evaluation(
     plt.savefig(pr_path, dpi=150)
     plt.close()
     print(f"Saved Precision-Recall curve plot: {pr_path}")
-    
+
     return metrics_data
 
 if __name__ == "__main__":

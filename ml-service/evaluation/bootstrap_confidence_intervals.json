@@ -1,0 +1,189 @@
+{
+  "bootstrap_summary_1000_iterations": {
+    "logistic_regression": {
+      "roc_auc_mean": 0.5841,
+      "roc_auc_95_ci": [
+        0.5049,
+        0.6621
+      ],
+      "pr_auc_mean": 0.069,
+      "pr_auc_95_ci": [
+        0.0445,
+        0.1012
+      ],
+      "f1_mean": 0.1053,
+      "f1_95_ci": [
+        0.0716,
+        0.1426
+      ],
+      "delta_pr_auc_vs_champion_mean": -0.0076,
+      "delta_pr_auc_95_ci": [
+        -0.0366,
+        0.0178
+      ],
+      "p_value_superiority": 0.726,
+      "statistically_significant_improvement": false
+    },
+    "random_forest": {
+      "roc_auc_mean": 0.6087,
+      "roc_auc_95_ci": [
+        0.5286,
+        0.6925
+      ],
+      "pr_auc_mean": 0.1029,
+      "pr_auc_95_ci": [
+        0.0589,
+        0.1735
+      ],
+      "f1_mean": 0.1359,
+      "f1_95_ci": [
+        0.086,
+        0.1887
+      ],
+      "delta_pr_auc_vs_champion_mean": 0.0264,
+      "delta_pr_auc_95_ci": [
+        0.002,
+        0.0701
+      ],
+      "p_value_superiority": 0.018,
+      "statistically_significant_improvement": true
+    },
+    "hist_gradient_boosting": {
+      "roc_auc_mean": 0.5703,
+      "roc_auc_95_ci": [
+        0.4928,
+        0.6511
+      ],
+      "pr_auc_mean": 0.0819,
+      "pr_auc_95_ci": [
+        0.046,
+        0.134
+      ],
+      "f1_mean": 0.1161,
+      "f1_95_ci": [
+        0.0702,
+        0.1661
+      ],
+      "delta_pr_auc_vs_champion_mean": 0.0053,
+      "delta_pr_auc_95_ci": [
+        -0.0223,
+        0.0466
+      ],
+      "p_value_superiority": 0.422,
+      "statistically_significant_improvement": false
+    },
+    "lightgbm": {
+      "roc_auc_mean": 0.6361,
+      "roc_auc_95_ci": [
+        0.5628,
+        0.714
+      ],
+      "pr_auc_mean": 0.0915,
+      "pr_auc_95_ci": [
+        0.0541,
+        0.1453
+      ],
+      "f1_mean": 0.0,
+      "f1_95_ci": [
+        0.0,
+        0.0
+      ],
+      "delta_pr_auc_vs_champion_mean": 0.0149,
+      "delta_pr_auc_95_ci": [
+        -0.0168,
+        0.0613
+      ],
+      "p_value_superiority": 0.201,
+      "statistically_significant_improvement": false
+    },
+    "catboost": {
+      "roc_auc_mean": 0.6481,
+      "roc_auc_95_ci": [
+        0.5759,
+        0.7223
+      ],
+      "pr_auc_mean": 0.0909,
+      "pr_auc_95_ci": [
+        0.0587,
+        0.1384
+      ],
+      "f1_mean": 0.137,
+      "f1_95_ci": [
+        0.088,
+        0.1814
+      ],
+      "delta_pr_auc_vs_champion_mean": 0.0143,
+      "delta_pr_auc_95_ci": [
+        -0.0079,
+        0.042
+      ],
+      "p_value_superiority": 0.124,
+      "statistically_significant_improvement": false
+    },
+    "current_xgboost_25f": {
+      "roc_auc_mean": 0.5989,
+      "roc_auc_95_ci": [
+        0.521,
+        0.6759
+      ],
+      "pr_auc_mean": 0.0766,
+      "pr_auc_95_ci": [
+        0.0477,
+        0.1177
+      ],
+      "f1_mean": 0.1347,
+      "f1_95_ci": [
+        0.0725,
+        0.202
+      ]
+    },
+    "regularized_xgboost": {
+      "roc_auc_mean": 0.6156,
+      "roc_auc_95_ci": [
+        0.5411,
+        0.6941
+      ],
+      "pr_auc_mean": 0.0814,
+      "pr_auc_95_ci": [
+        0.051,
+        0.1258
+      ],
+      "f1_mean": 0.1367,
+      "f1_95_ci": [
+        0.0901,
+        0.1809
+      ],
+      "delta_pr_auc_vs_champion_mean": 0.0049,
+      "delta_pr_auc_95_ci": [
+        -0.0158,
+        0.0255
+      ],
+      "p_value_superiority": 0.297,
+      "statistically_significant_improvement": false
+    },
+    "enhanced_temporal_xgboost_41f": {
+      "roc_auc_mean": 0.5781,
+      "roc_auc_95_ci": [
+        0.4985,
+        0.6605
+      ],
+      "pr_auc_mean": 0.0757,
+      "pr_auc_95_ci": [
+        0.0451,
+        0.1212
+      ],
+      "f1_mean": 0.114,
+      "f1_95_ci": [
+        0.0677,
+        0.1654
+      ],
+      "delta_pr_auc_vs_champion_mean": -0.0009,
+      "delta_pr_auc_95_ci": [
+        -0.0211,
+        0.0231
+      ],
+      "p_value_superiority": 0.561,
+      "statistically_significant_improvement": false
+    }
+  }
+}

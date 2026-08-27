@@ -1,0 +1,508 @@
+{
+  "experiment_timestamp": "2026-08-26T21:00:46.401670+00:00",
+  "dataset_metadata": {
+    "source_path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/data/sample_ieee_fixture.csv",
+    "sha256_checksum": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+    "total_records": 8000,
+    "train_samples": 5600,
+    "val_samples": 1200,
+    "test_samples": 1200,
+    "feature_count": 25
+  },
+  "models": {
+    "random_baseline": {
+      "roc_auc": 0.4868,
+      "pr_auc": 0.0432,
+      "precision": 0.0343,
+      "recall": 0.4038,
+      "f1": 0.0633,
+      "brier_score": 0.3371,
+      "expected_calibration_error": 0.4558,
+      "fpr": 0.5148,
+      "fnr": 0.5962,
+      "fraud_capture_rate": 0.4038,
+      "confusion_matrix": {
+        "tp": 21,
+        "fp": 591,
+        "tn": 557,
+        "fn": 31
+      },
+      "monetary_loss": {
+        "fraud_loss_dollars": 6889.89,
+        "false_positive_loss_dollars": 14775.0,
+        "total_monetary_loss_dollars": 21664.89
+      },
+      "decision_threshold": 0.5
+    },
+    "logistic_regression": {
+      "roc_auc": 0.5832,
+      "pr_auc": 0.0635,
+      "precision": 0.0577,
+      "recall": 0.5385,
+      "f1": 0.1043,
+      "brier_score": 0.2445,
+      "expected_calibration_error": 0.4272,
+      "fpr": 0.3981,
+      "fnr": 0.4615,
+      "fraud_capture_rate": 0.5385,
+      "confusion_matrix": {
+        "tp": 28,
+        "fp": 457,
+        "tn": 691,
+        "fn": 24
+      },
+      "monetary_loss": {
+        "fraud_loss_dollars": 6487.0,
+        "false_positive_loss_dollars": 11425.0,
+        "total_monetary_loss_dollars": 17912.0
+      },
+      "decision_threshold": 0.5,
+      "training_duration_sec": 0.24,
+      "inference_latency_ms_per_tx": 0.0008
+    },
+    "random_forest": {
+      "roc_auc": 0.6089,
+      "pr_auc": 0.0923,
+      "precision": 0.0826,
+      "recall": 0.3654,
+      "f1": 0.1348,
+      "brier_score": 0.1715,
+      "expected_calibration_error": 0.3472,
+      "fpr": 0.1838,
+      "fnr": 0.6346,
+      "fraud_capture_rate": 0.3654,
+      "confusion_matrix": {
+        "tp": 19,
+        "fp": 211,
+        "tn": 937,
+        "fn": 33
+      },
+      "monetary_loss": {
+        "fraud_loss_dollars": 5974.74,
+        "false_positive_loss_dollars": 5275.0,
+        "total_monetary_loss_dollars": 11249.74
+      },
+      "decision_threshold": 0.5,
+      "training_duration_sec": 0.147,
+      "inference_latency_ms_per_tx": 0.0117
+    },
+    "current_xgboost_25f": {
+      "roc_auc": 0.5977,
+      "pr_auc": 0.07,
+      "precision": 0.0945,
+      "recall": 0.2308,
+      "f1": 0.1341,
+      "brier_score": 0.108,
+      "expected_calibration_error": 0.1958,
+      "fpr": 0.1002,
+      "fnr": 0.7692,
+      "fraud_capture_rate": 0.2308,
+      "confusion_matrix": {
+        "tp": 12,
+        "fp": 115,
+        "tn": 1033,
+        "fn": 40
+      },
+      "monetary_loss": {
+        "fraud_loss_dollars": 9464.08,
+        "false_positive_loss_dollars": 2875.0,
+        "total_monetary_loss_dollars": 12339.08
+      },
+      "decision_threshold": 0.5,
+      "training_duration_sec": 0.27,
+      "inference_latency_ms_per_tx": 0.0026
+    },
+    "tuned_xgboost_candidate": {
+      "roc_auc": 0.593,
+      "pr_auc": 0.0757,
+      "precision": 0.1111,
+      "recall": 0.1538,
+      "f1": 0.129,
+      "brier_score": 0.1354,
+      "expected_calibration_error": 0.259,
+      "fpr": 0.0557,
+      "fnr": 0.8462,
+      "fraud_capture_rate": 0.1538,
+      "confusion_matrix": {
+        "tp": 8,
+        "fp": 64,
+        "tn": 1084,
+        "fn": 44
+      },
+      "monetary_loss": {
+        "fraud_loss_dollars": 9776.54,
+        "false_positive_loss_dollars": 1600.0,
+        "total_monetary_loss_dollars": 11376.54
+      },
+      "decision_threshold": 0.65,
+      "training_duration_sec": 0.254,
+      "inference_latency_ms_per_tx": 0.0021,
+      "optimal_val_threshold": 0.65
+    },
+    "regularized_xgboost": {
+      "roc_auc": 0.6158,
+      "pr_auc": 0.0746,
+      "precision": 0.0795,
+      "recall": 0.4615,
+      "f1": 0.1356,
+      "brier_score": 0.1819,
+      "expected_calibration_error": 0.3497,
+      "fpr": 0.2422,
+      "fnr": 0.5385,
+      "fraud_capture_rate": 0.4615,
+      "confusion_matrix": {
+        "tp": 24,
+        "fp": 278,
+        "tn": 870,
+        "fn": 28
+      },
+      "monetary_loss": {
+        "fraud_loss_dollars": 5098.3,
+        "false_positive_loss_dollars": 6950.0,
+        "total_monetary_loss_dollars": 12048.3
+      },
+      "decision_threshold": 0.5,
+      "training_duration_sec": 0.221,
+      "inference_latency_ms_per_tx": 0.0026
+    }
+  },
+  "bmr_economic_policy_scenarios": [
+    {
+      "transaction_amount_usd": 10.0,
+      "effective_false_positive_cost": 25.0,
+      "action_distribution": {
+        "ALLOW_RECOMMENDATION": 1191,
+        "STEP_UP_RECOMMENDATION": 9,
+        "MANUAL_REVIEW": 0,
+        "DECLINE_RECOMMENDATION": 0
+      },
+      "total_expected_business_loss": 520.75,
+      "mean_loss_per_transaction": 0.43
+    },
+    {
+      "transaction_amount_usd": 100.0,
+      "effective_false_positive_cost": 200.0,
+      "action_distribution": {
+        "ALLOW_RECOMMENDATION": 1171,
+        "STEP_UP_RECOMMENDATION": 29,
+        "MANUAL_REVIEW": 0,
+        "DECLINE_RECOMMENDATION": 0
+      },
+      "total_expected_business_loss": 4770.04,
+      "mean_loss_per_transaction": 3.98
+    },
+    {
+      "transaction_amount_usd": 1000.0,
+      "effective_false_positive_cost": 500.0,
+      "action_distribution": {
+        "ALLOW_RECOMMENDATION": 1171,
+        "STEP_UP_RECOMMENDATION": 29,
+        "MANUAL_REVIEW": 0,
+        "DECLINE_RECOMMENDATION": 0
+      },
+      "total_expected_business_loss": 47178.36,
+      "mean_loss_per_transaction": 39.32
+    },
+    {
+      "transaction_amount_usd": 10000.0,
+      "effective_false_positive_cost": 500.0,
+      "action_distribution": {
+        "ALLOW_RECOMMENDATION": 910,
+        "STEP_UP_RECOMMENDATION": 29,
+        "MANUAL_REVIEW": 0,
+        "DECLINE_RECOMMENDATION": 261
+      },
+      "total_expected_business_loss": 392321.33,
+      "mean_loss_per_transaction": 326.93
+    },
+    {
+      "transaction_amount_usd": 100000.0,
+      "effective_false_positive_cost": 5000.0,
+      "action_distribution": {
+        "ALLOW_RECOMMENDATION": 303,
+        "STEP_UP_RECOMMENDATION": 633,
+        "MANUAL_REVIEW": 264,
+        "DECLINE_RECOMMENDATION": 0
+      },
+      "total_expected_business_loss": 1991316.76,
+      "mean_loss_per_transaction": 1659.43
+    }
+  ],
+  "feature_audit": [
+    {
+      "feature": "amount",
+      "train_mean": 120.9157,
+      "train_std": 178.7642,
+      "test_mean": 134.0342,
+      "test_std": 216.8265,
+      "linear_fraud_correlation": 0.0047,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "ip_velocity_1h",
+      "train_mean": 1.287,
+      "train_std": 0.5342,
+      "test_mean": 1.2892,
+      "test_std": 0.5375,
+      "linear_fraud_correlation": -0.0046,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "ip_velocity_24h",
+      "train_mean": 7.9104,
+      "train_std": 3.3165,
+      "test_mean": 7.9092,
+      "test_std": 3.1879,
+      "linear_fraud_correlation": 0.0087,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "token_velocity_24h",
+      "train_mean": 1.0907,
+      "train_std": 0.2988,
+      "test_mean": 1.09,
+      "test_std": 0.3032,
+      "linear_fraud_correlation": 0.0114,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_seen_before",
+      "train_mean": 0.3091,
+      "train_std": 0.4621,
+      "test_mean": 0.1033,
+      "test_std": 0.3044,
+      "linear_fraud_correlation": -0.014,
+      "distribution_drift": "MODERATE",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "transaction_hour",
+      "train_mean": 11.5861,
+      "train_std": 6.8362,
+      "test_mean": 11.4333,
+      "test_std": 7.0432,
+      "linear_fraud_correlation": -0.0321,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "transaction_day",
+      "train_mean": 2.9348,
+      "train_std": 1.9874,
+      "test_mean": 3.0183,
+      "test_std": 2.0848,
+      "linear_fraud_correlation": 0.0184,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "product_cd_encoded",
+      "train_mean": 3.0791,
+      "train_std": 1.4838,
+      "test_mean": 3.1658,
+      "test_std": 1.4329,
+      "linear_fraud_correlation": -0.0856,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "card_type_encoded",
+      "train_mean": 2.5795,
+      "train_std": 0.6536,
+      "test_mean": 2.5683,
+      "test_std": 0.6919,
+      "linear_fraud_correlation": -0.0029,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "card_category_encoded",
+      "train_mean": 0.7582,
+      "train_std": 0.4282,
+      "test_mean": 0.7625,
+      "test_std": 0.4256,
+      "linear_fraud_correlation": -0.0032,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "email_domain_risk",
+      "train_mean": 0.0451,
+      "train_std": 0.0342,
+      "test_mean": 0.0449,
+      "test_std": 0.0339,
+      "linear_fraud_correlation": 0.1718,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "dist1_missing",
+      "train_mean": 0.3932,
+      "train_std": 0.4885,
+      "test_mean": 0.3917,
+      "test_std": 0.4881,
+      "linear_fraud_correlation": 0.0002,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_type_mobile",
+      "train_mean": 0.2498,
+      "train_std": 0.4329,
+      "test_mean": 0.2458,
+      "test_std": 0.4306,
+      "linear_fraud_correlation": 0.0169,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_info_missing",
+      "train_mean": 0.4029,
+      "train_std": 0.4905,
+      "test_mean": 0.4058,
+      "test_std": 0.4911,
+      "linear_fraud_correlation": 0.0117,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "amount_to_mean_ratio",
+      "train_mean": 1.4649,
+      "train_std": 2.4563,
+      "test_mean": 1.7546,
+      "test_std": 2.9091,
+      "linear_fraud_correlation": 0.0232,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_tx_count_5m",
+      "train_mean": 0.0141,
+      "train_std": 0.1179,
+      "test_mean": 0.0133,
+      "test_std": 0.1147,
+      "linear_fraud_correlation": 0.003,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_tx_count_1h",
+      "train_mean": 0.183,
+      "train_std": 0.4685,
+      "test_mean": 0.2042,
+      "test_std": 0.4907,
+      "linear_fraud_correlation": 0.0009,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_amount_sum_24h",
+      "train_mean": 536.446,
+      "train_std": 716.6873,
+      "test_mean": 678.0853,
+      "test_std": 986.342,
+      "linear_fraud_correlation": -0.006,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "tx_acceleration_5m_1h",
+      "train_mean": 0.0343,
+      "train_std": 0.289,
+      "test_mean": 0.0321,
+      "test_std": 0.2771,
+      "linear_fraud_correlation": 0.0037,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_amount_concentration_5m_1h",
+      "train_mean": 0.0114,
+      "train_std": 0.1031,
+      "test_mean": 0.0106,
+      "test_std": 0.0967,
+      "linear_fraud_correlation": 0.0018,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_unique_tokens_1h",
+      "train_mean": 0.183,
+      "train_std": 0.4685,
+      "test_mean": 0.2042,
+      "test_std": 0.4907,
+      "linear_fraud_correlation": 0.0009,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "token_unique_devices_1h",
+      "train_mean": 0.0045,
+      "train_std": 0.0667,
+      "test_mean": 0.0025,
+      "test_std": 0.0499,
+      "linear_fraud_correlation": -0.0017,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_reputation_score",
+      "train_mean": 0.7709,
+      "train_std": 0.261,
+      "test_mean": 0.7346,
+      "test_std": 0.274,
+      "linear_fraud_correlation": -0.0033,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_fraud_rate",
+      "train_mean": 0.0237,
+      "train_std": 0.0238,
+      "test_mean": 0.0283,
+      "test_std": 0.0499,
+      "linear_fraud_correlation": -0.0039,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    },
+    {
+      "feature": "device_dispute_rate",
+      "train_mean": 0.0237,
+      "train_std": 0.0238,
+      "test_mean": 0.0283,
+      "test_std": 0.0499,
+      "linear_fraud_correlation": -0.0039,
+      "distribution_drift": "LOW",
+      "temporal_safe": true,
+      "go_parity": true
+    }
+  ]
+}

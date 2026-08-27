@@ -1,0 +1,105 @@
+{
+  "report_type": "live_shadow_evaluation_evidence_report",
+  "generated_at": "2026-08-27T04:49:48.052481+00:00",
+  "models": {
+    "production_champion": {
+      "name": "fraud-xgb-25f-v3.0",
+      "customer_decision_authority_pct": 100.0,
+      "feature_contract": "MLFeatureContractV15",
+      "status": "ACTIVE_PRODUCTION"
+    },
+    "shadow_candidate": {
+      "name": "extended_catboost_58f",
+      "customer_decision_authority_pct": 0.0,
+      "feature_contract": "MLFeatureContractV25",
+      "status": "SHADOW_MODE_NON_ENFORCING"
+    }
+  },
+  "dataset_availability": "FULL_DATASET_UNAVAILABLE",
+  "frozen_holdout_sha256": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+  "live_telemetry_summary": {
+    "total_live_transactions": 0,
+    "total_matured_chargebacks": 0,
+    "maturation_window_days": 60
+  },
+  "promotion_governance": {
+    "evaluated_at": "2026-08-27T04:49:48.052387+00:00",
+    "evaluation_mode": "LIVE_PRODUCTION",
+    "overall_promotion_decision": "REMAIN_IN_SHADOW_MODE",
+    "all_promotion_gates_passed": false,
+    "promotion_gates": {
+      "gate_1_live_volume": {
+        "description": "Total live production transactions evaluated >= 10,000",
+        "target": 10000,
+        "actual": 0,
+        "evidence_basis": "NOT_POPULATED",
+        "status": "NOT_POPULATED",
+        "passed": false
+      },
+      "gate_2_confirmed_frauds": {
+        "description": "Total confirmed matured fraud chargebacks >= 50",
+        "target": 50,
+        "actual": 0,
+        "evidence_basis": "NOT_POPULATED",
+        "status": "NOT_POPULATED",
+        "passed": false
+      },
+      "gate_3_economic_advantage": {
+        "description": "Statistically significant BMR monetary loss reduction (p < 0.05)",
+        "champion_loss_usd": 0.0,
+        "candidate_loss_usd": 0.0,
+        "delta_loss_usd": 0.0,
+        "bootstrap_95_ci_usd": [
+          0.0,
+          0.0
+        ],
+        "p_value": 1.0,
+        "evidence_basis": "OFFLINE_HOLDOUT",
+        "status": "NOT_POPULATED",
+        "passed": false
+      },
+      "gate_4_calibration_quality": {
+        "description": "Expected Calibration Error (ECE) <= 0.010 on live outcomes",
+        "target": 0.01,
+        "actual_ece": 1.0,
+        "actual_brier": 1.0,
+        "evidence_basis": "OFFLINE_HOLDOUT",
+        "status": "NOT_POPULATED",
+        "passed": false
+      },
+      "gate_5_inference_latency": {
+        "description": "P99 inference latency <= 5.0 ms",
+        "target_ms": 5.0,
+        "p50_ms": 0.0,
+        "p95_ms": 0.0,
+        "p99_ms": 0.0,
+        "evidence_basis": "OFFLINE_HOLDOUT",
+        "status": "NOT_POPULATED",
+        "passed": false
+      },
+      "gate_6_action_disagreement": {
+        "description": "Action disagreement rate <= 15.0%",
+        "target": 0.15,
+        "actual": 0.0,
+        "action_pair_distribution": {},
+        "evidence_basis": "OFFLINE_HOLDOUT",
+        "status": "NOT_POPULATED",
+        "passed": false
+      }
+    },
+    "performance_metrics_labeled": {
+      "champion_roc_auc": 0.5,
+      "champion_pr_auc": 0.0,
+      "candidate_roc_auc": 0.5,
+      "candidate_pr_auc": 0.0,
+      "candidate_precision": 0.0,
+      "candidate_recall": 0.0,
+      "candidate_f1": 0.0
+    }
+  },
+  "dual_control_signatures": {
+    "risk_director_approval": "PENDING_LIVE_EVIDENCE",
+    "mlops_lead_approval": "PENDING_LIVE_EVIDENCE"
+  },
+  "final_verdict": "REMAIN_IN_SHADOW_MODE"
+}

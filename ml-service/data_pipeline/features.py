@@ -19,21 +19,21 @@ def compute_point_in_time_velocities(
     Guarantees point-in-time correctness: future records (> T) cannot influence transaction at T.
     """
     velocities = np.zeros(len(df), dtype=np.float32)
-    
+
     # Group timestamps by entity in chronological order
     entity_times: Dict[Any, List[int]] = {}
-    
+
     entities = df[entity_col].values
     timestamps = df[time_col].values
-    
+
     for i in range(len(df)):
         entity = entities[i]
         t = timestamps[i]
-        
+
         if pd.isna(entity):
             velocities[i] = 1.0
             continue
-            
+
         if entity not in entity_times:
             entity_times[entity] = [t]
             velocities[i] = 1.0
@@ -48,10 +48,10 @@ def compute_point_in_time_velocities(
             if idx > 0:
                 entity_times[entity] = t_list[idx:]
                 t_list = entity_times[entity]
-                
+
             t_list.append(t)
             velocities[i] = float(len(t_list))
-            
+
     return velocities
 
 def compute_point_in_time_device_novelty(
@@ -65,25 +65,25 @@ def compute_point_in_time_device_novelty(
     """
     device_seen = np.zeros(len(df), dtype=np.int32)
     known_pairs = set()
-    
+
     accounts = df[account_col].values
     devices = df[device_col].values
-    
+
     for i in range(len(df)):
         acc = accounts[i]
         dev = devices[i]
-        
+
         if pd.isna(acc) or pd.isna(dev):
             device_seen[i] = 0
             continue
-            
+
         pair = (acc, str(dev))
         if pair in known_pairs:
             device_seen[i] = 1
         else:
             device_seen[i] = 0
             known_pairs.add(pair)
-            
+
     return device_seen
 
 def compute_point_in_time_amount_ratio(
@@ -96,18 +96,18 @@ def compute_point_in_time_amount_ratio(
     """
     ratios = np.ones(len(df), dtype=np.float32)
     acc_stats: Dict[Any, List[float]] = {} # [running_sum, running_count]
-    
+
     accounts = df[account_col].values
     amounts = df[amount_col].values
-    
+
     for i in range(len(df)):
         acc = accounts[i]
         amt = float(amounts[i]) if not pd.isna(amounts[i]) else 0.0
-        
+
         if pd.isna(acc):
             ratios[i] = 1.0
             continue
-            
+
         if acc not in acc_stats:
             acc_stats[acc] = [amt, 1.0]
             ratios[i] = 1.0
@@ -120,7 +120,7 @@ def compute_point_in_time_amount_ratio(
                 ratios[i] = 1.0
             acc_stats[acc][0] += amt
             acc_stats[acc][1] += 1.0
-            
+
     return ratios
 
 def compute_point_in_time_device_velocity_signals(
@@ -377,38 +377,38 @@ def extract_canonical_features(df: pd.DataFrame) -> pd.DataFrame:
     """
     df_sorted = df.sort_values(by="TransactionDT", ascending=True).reset_index(drop=True)
     n = len(df_sorted)
-    
+
     # 1. Amount
     amount = df_sorted["TransactionAmt"].fillna(0.0).values.astype(np.float32)
-    
+
     # 2. IP & Card/Token Proxies
     dev_col = "DeviceInfo" if "DeviceInfo" in df_sorted.columns else "DeviceType"
     card_proxy = df_sorted["card1"].astype(str) + "_" + df_sorted["card2"].fillna(0).astype(str)
-    
+
     # 3. Rolling Velocities
     ip_vel_1h = compute_point_in_time_velocities(df_sorted, "addr1", "TransactionDT", window_seconds=3600)
     ip_vel_24h = compute_point_in_time_velocities(df_sorted, "addr1", "TransactionDT", window_seconds=86400)
     token_vel_24h = compute_point_in_time_velocities(df_sorted, "card1", "TransactionDT", window_seconds=86400)
-    
+
     # 4. Device Novelty
     device_seen = compute_point_in_time_device_novelty(df_sorted, "card1", dev_col)
-    
+
     # 5. Temporal Features
     dts = df_sorted["TransactionDT"].values
     tx_hour = ((dts % 86400) // 3600).astype(np.int32)
     tx_day = ((dts // 86400) % 7).astype(np.int32)
-    
+
     # 6. Categoricals Raw
     prod_cd = df_sorted["ProductCD"].fillna("W").values
     card_type = df_sorted["card4"].fillna("visa").values
     card_cat = df_sorted["card6"].fillna("debit").values
     p_email = df_sorted["P_emaildomain"].fillna("missing").values
-    
+
     # 7. Missing Value Indicators
     dist1_missing = df_sorted["dist1"].isna().astype(np.int32).values
     device_mobile = (df_sorted["DeviceType"] == "mobile").astype(np.int32).values if "DeviceType" in df_sorted.columns else np.zeros(n, dtype=np.int32)
     dev_missing = df_sorted[dev_col].isna().astype(np.int32).values if dev_col in df_sorted.columns else np.zeros(n, dtype=np.int32)
-    
+
     # 8. Amount to Mean Ratio
     amt_ratio = compute_point_in_time_amount_ratio(df_sorted, "card1", "TransactionAmt")
 
@@ -416,7 +416,7 @@ def extract_canonical_features(df: pd.DataFrame) -> pd.DataFrame:
     dev_vel_signals = compute_point_in_time_device_velocity_signals(df_sorted, dev_col, "TransactionDT", "TransactionAmt")
     tok_dev_signals = compute_point_in_time_token_device_linkage(df_sorted, dev_col, "card1", "TransactionDT")
     rep_signals = compute_point_in_time_reputation_signals(df_sorted, dev_col, "TransactionDT", "isFraud")
-    
+
     feat_df = pd.DataFrame({
         "TransactionID": df_sorted["TransactionID"],
         "TransactionDT": df_sorted["TransactionDT"],
@@ -448,11 +448,10 @@ def extract_canonical_features(df: pd.DataFrame) -> pd.DataFrame:
         "device_fraud_rate": rep_signals["device_fraud_rate"],
         "device_dispute_rate": rep_signals["device_dispute_rate"],
     })
-    
+
     if "isFraud" in df_sorted.columns:
         feat_df["isFraud"] = df_sorted["isFraud"].values
-        
+
     return feat_df
 
 extract_canonical_25_features = extract_canonical_features
-

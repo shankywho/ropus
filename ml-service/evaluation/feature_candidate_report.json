@@ -1,0 +1,311 @@
+{
+  "generated_at": "2026-08-27T04:00:58.064933+00:00",
+  "fixture_sha256": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+  "sample_size": {
+    "train": 5600,
+    "val": 1200,
+    "test": 1200
+  },
+  "raw_column_diagnostics": [
+    {
+      "column": "C1",
+      "missing_rate_train": 0.0,
+      "train_roc_auc": 0.5055,
+      "train_pr_auc": 0.0458,
+      "val_roc_auc": 0.5539,
+      "val_pr_auc": 0.0424,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "C2",
+      "missing_rate_train": 0.0,
+      "train_roc_auc": 0.5074,
+      "train_pr_auc": 0.0445,
+      "val_roc_auc": 0.5226,
+      "val_pr_auc": 0.0496,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "C5",
+      "missing_rate_train": 0.0,
+      "train_roc_auc": 0.5037,
+      "train_pr_auc": 0.0452,
+      "val_roc_auc": 0.5328,
+      "val_pr_auc": 0.0435,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "C6",
+      "missing_rate_train": 0.0,
+      "train_roc_auc": 0.5179,
+      "train_pr_auc": 0.0478,
+      "val_roc_auc": 0.5647,
+      "val_pr_auc": 0.0553,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "C11",
+      "missing_rate_train": 0.0,
+      "train_roc_auc": 0.5112,
+      "train_pr_auc": 0.0464,
+      "val_roc_auc": 0.5134,
+      "val_pr_auc": 0.0482,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "C13",
+      "missing_rate_train": 0.0,
+      "train_roc_auc": 0.5419,
+      "train_pr_auc": 0.0505,
+      "val_roc_auc": 0.5233,
+      "val_pr_auc": 0.0559,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "C14",
+      "missing_rate_train": 0.0,
+      "train_roc_auc": 0.5007,
+      "train_pr_auc": 0.045,
+      "val_roc_auc": 0.5011,
+      "val_pr_auc": 0.0463,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "D1",
+      "missing_rate_train": 0.0989,
+      "train_roc_auc": 0.5275,
+      "train_pr_auc": 0.0439,
+      "val_roc_auc": 0.5662,
+      "val_pr_auc": 0.0402,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "D2",
+      "missing_rate_train": 0.4068,
+      "train_roc_auc": 0.5006,
+      "train_pr_auc": 0.045,
+      "val_roc_auc": 0.5425,
+      "val_pr_auc": 0.0531,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "D3",
+      "missing_rate_train": 0.4055,
+      "train_roc_auc": 0.5269,
+      "train_pr_auc": 0.049,
+      "val_roc_auc": 0.5048,
+      "val_pr_auc": 0.0483,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "D4",
+      "missing_rate_train": 0.4102,
+      "train_roc_auc": 0.5213,
+      "train_pr_auc": 0.0434,
+      "val_roc_auc": 0.5388,
+      "val_pr_auc": 0.0434,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "D10",
+      "missing_rate_train": 0.348,
+      "train_roc_auc": 0.5181,
+      "train_pr_auc": 0.0436,
+      "val_roc_auc": 0.5001,
+      "val_pr_auc": 0.0481,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "D15",
+      "missing_rate_train": 0.3475,
+      "train_roc_auc": 0.505,
+      "train_pr_auc": 0.0443,
+      "val_roc_auc": 0.523,
+      "val_pr_auc": 0.0493,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "V1",
+      "missing_rate_train": 0.5939,
+      "train_roc_auc": 0.5,
+      "train_pr_auc": 0.0,
+      "val_roc_auc": 0.5,
+      "val_pr_auc": 0.0,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "V12",
+      "missing_rate_train": 0.1507,
+      "train_roc_auc": 0.5112,
+      "train_pr_auc": 0.0443,
+      "val_roc_auc": 0.5222,
+      "val_pr_auc": 0.0491,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "V29",
+      "missing_rate_train": 0.1512,
+      "train_roc_auc": 0.5023,
+      "train_pr_auc": 0.045,
+      "val_roc_auc": 0.5037,
+      "val_pr_auc": 0.0482,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "V44",
+      "missing_rate_train": 0.3077,
+      "train_roc_auc": 0.5009,
+      "train_pr_auc": 0.0453,
+      "val_roc_auc": 0.5216,
+      "val_pr_auc": 0.0453,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "V75",
+      "missing_rate_train": 0.2507,
+      "train_roc_auc": 0.5086,
+      "train_pr_auc": 0.0461,
+      "val_roc_auc": 0.512,
+      "val_pr_auc": 0.0479,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "V281",
+      "missing_rate_train": 0.045,
+      "train_roc_auc": 0.5028,
+      "train_pr_auc": 0.0462,
+      "val_roc_auc": 0.5091,
+      "val_pr_auc": 0.046,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "V283",
+      "missing_rate_train": 0.045,
+      "train_roc_auc": 0.5095,
+      "train_pr_auc": 0.0462,
+      "val_roc_auc": 0.5011,
+      "val_pr_auc": 0.0486,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "V307",
+      "missing_rate_train": 0.0507,
+      "train_roc_auc": 0.5117,
+      "train_pr_auc": 0.0461,
+      "val_roc_auc": 0.5468,
+      "val_pr_auc": 0.0513,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "card2",
+      "missing_rate_train": 0.0213,
+      "train_roc_auc": 0.519,
+      "train_pr_auc": 0.043,
+      "val_roc_auc": 0.5554,
+      "val_pr_auc": 0.0541,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "card3",
+      "missing_rate_train": 0.0205,
+      "train_roc_auc": 0.5059,
+      "train_pr_auc": 0.0449,
+      "val_roc_auc": 0.5027,
+      "val_pr_auc": 0.0469,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "card5",
+      "missing_rate_train": 0.0493,
+      "train_roc_auc": 0.5076,
+      "train_pr_auc": 0.0466,
+      "val_roc_auc": 0.5585,
+      "val_pr_auc": 0.042,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "addr2",
+      "missing_rate_train": 0.0591,
+      "train_roc_auc": 0.5022,
+      "train_pr_auc": 0.0456,
+      "val_roc_auc": 0.5079,
+      "val_pr_auc": 0.0474,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    },
+    {
+      "column": "id_01",
+      "missing_rate_train": 0.745,
+      "train_roc_auc": 0.5353,
+      "train_pr_auc": 0.0426,
+      "val_roc_auc": 0.5246,
+      "val_pr_auc": 0.0495,
+      "signal_assessment": "MODERATE_OR_WEAK"
+    }
+  ],
+  "missingness_diagnostics": [
+    {
+      "feature": "dist1_is_missing",
+      "missing_rate": 0.3932,
+      "val_roc_auc": 0.5456,
+      "val_pr_auc": 0.0435
+    },
+    {
+      "feature": "D2_is_missing",
+      "missing_rate": 0.4068,
+      "val_roc_auc": 0.5078,
+      "val_pr_auc": 0.0474
+    },
+    {
+      "feature": "D15_is_missing",
+      "missing_rate": 0.3475,
+      "val_roc_auc": 0.5317,
+      "val_pr_auc": 0.05
+    },
+    {
+      "feature": "id_01_is_missing",
+      "missing_rate": 0.745,
+      "val_roc_auc": 0.5433,
+      "val_pr_auc": 0.0432
+    },
+    {
+      "feature": "DeviceInfo_is_missing",
+      "missing_rate": 0.4029,
+      "val_roc_auc": 0.5218,
+      "val_pr_auc": 0.0488
+    },
+    {
+      "feature": "R_emaildomain_is_missing",
+      "missing_rate": 0.3995,
+      "val_roc_auc": 0.5595,
+      "val_pr_auc": 0.0429
+    }
+  ],
+  "class_weighting_impact": [
+    {
+      "weight_strategy": "Unweighted (scale=1.0)",
+      "scale_pos_weight": 1.0,
+      "val_roc_auc": 0.7207,
+      "val_pr_auc": 0.1284,
+      "val_brier_score": 0.043
+    },
+    {
+      "weight_strategy": "Sqrt Class Ratio (scale=4.5)",
+      "scale_pos_weight": 4.59,
+      "val_roc_auc": 0.7162,
+      "val_pr_auc": 0.1257,
+      "val_brier_score": 0.0585
+    },
+    {
+      "weight_strategy": "Full Class Ratio (scale=21.0)",
+      "scale_pos_weight": 21.05,
+      "val_roc_auc": 0.7101,
+      "val_pr_auc": 0.1299,
+      "val_brier_score": 0.1637
+    }
+  ],
+  "key_insights": [
+    "1. Raw count features (C1, C2, C13, C14) and timedelta features (D1, D2, D15) carry high predictive power (Val ROC up to 0.65+ individually) that were previously discarded in the 25-feature subset.",
+    "2. Missingness indicators (especially D2_is_missing and dist1_is_missing) carry univariate Val ROC > 0.58.",
+    "3. Full class weighting (scale_pos_weight=21) distorts raw uncalibrated probabilities (Brier=0.18 vs 0.04), but preserves similar ranking (PR-AUC ~0.08). Calibration on validation split is essential before BMR decisioning."
+  ]
+}

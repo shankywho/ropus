@@ -1,45 +1,48 @@
 # ROPUS ML Service Evaluation & Model Governance Index
 
-This directory contains the authoritative model evaluation pipelines, statistical monitoring engines, production shadow evaluation infrastructure, and complete governance audit trails for the ROPUS platform.
+This directory contains the model evaluation pipelines, statistical monitoring engines, shadow evaluation telemetry, and governance audit trails for the ROPUS platform.
 
 ---
 
-## 🏛️ Authoritative Production Documentation
+## 🏛️ Authoritative Governance & Evaluation Documentation
 
-The following documents represent the active, authoritative production state of the ROPUS fraud risk management engine:
+The following canonical documents represent the active authoritative state of the ROPUS risk decision engine:
 
 | Document | Purpose & Key Findings |
 | :--- | :--- |
-| **[`ROPUS_PRODUCTION_COMPLETION_REPORT.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/ROPUS_PRODUCTION_COMPLETION_REPORT.md)** | **Master Authoritative Production Completion Report.** Confirms active production champion `v8.0-bmr-36f` (SHA-256 `d473d1ef0c50...`), 9-gate promotion scorecard, multi-tier evidence ledger, and `PRODUCTION_INFRASTRUCTURE_ACCESS_REQUIRED` status. |
-| **[`PHASE_57_GRAPHSAGE_INTERNAL_RELATIONSHIP_INTELLIGENCE_REPORT.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/PHASE_57_GRAPHSAGE_INTERNAL_RELATIONSHIP_INTELLIGENCE_REPORT.md)** | **Phase 57 GraphSAGE Relationship Intelligence Report.** Inductive 2-hop heterogeneous graph neural network evaluation, employee-consumer collusion detection, and 5-defense benchmark suite. |
-| **[`PHASE_56_PRODUCTION_DEPLOYMENT_VALIDATION_REPORT.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/PHASE_56_PRODUCTION_DEPLOYMENT_VALIDATION_REPORT.md)** | **Production Deployment Validation Report.** Comprehensive audit of Kubernetes manifests (`deploy/kubernetes/`), Terraform AWS IaC (`infra/terraform/aws/`), and cloud authentication diagnostics. |
-| **[`MODEL_PERFORMANCE_DIAGNOSIS_REPORT.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/MODEL_PERFORMANCE_DIAGNOSIS_REPORT.md)** | **Model Performance & Calibration Diagnosis.** Comprehensive calibration, Brier score, ECE analysis, and Bayes Minimum Risk cost-curve comparisons. |
-| **[`WEEKLY_PRODUCTION_HEALTH_REPORT.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/WEEKLY_PRODUCTION_HEALTH_REPORT.md)** | **Production Health & Governance Monitor.** Weekly telemetry checklist, drift thresholds, and alert playbooks. |
+| **[`docs/conditional_promotion_governance_decision.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/conditional_promotion_governance_decision.md)** | **Master Promotion Policy & Dual-Track Decision.** Formalizes Track 1 (`CONDITIONAL_PROMOTION_ELIGIBLE` for $\le 10\%$ canary with maker-checker controls) and Track 2 (`PRODUCTION_PROMOTION_BLOCKED` for full replacement until 10k live tx + 50 matured chargebacks). |
+| **[`docs/production_shadow_soak_live_evidence.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/production_shadow_soak_live_evidence.md)** | **Live Shadow Evidence Ledger.** Live telemetry metrics, 6-gate evaluation status, and zero-masquerading verification. |
+| **[`docs/canonical_features_specification.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/canonical_features_specification.md)** | **Point-in-Time Feature Contracts.** 58-feature schema definitions and strict point-in-time calculation rules. |
+| **[`docs/architecture/graphsage-status-and-roadmap.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-status-and-roadmap.md)** | **GraphSAGE Status & Roadmap.** Multi-relational GNN architecture, four-pillar status, and `INFRASTRUCTURE_BLOCKED` staging prerequisites. |
+| **[`docs/architecture/graphsage-relationship-intelligence.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-relationship-intelligence.md)** | **GraphSAGE Relationship Intelligence Report.** Inductive 2-hop heterogeneous graph neural network evaluation and collusion detection. |
+| **[`docs/full_dataset_ml_and_production_evidence_report.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/full_dataset_ml_and_production_evidence_report.md)** | **Full Dataset ML & Production Evidence Report.** Complete offline empirical validation, BMR curves, and benchmark scores. |
+| **[`MODEL_PERFORMANCE_DIAGNOSIS_REPORT.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/MODEL_PERFORMANCE_DIAGNOSIS_REPORT.md)** | **Historical Calibration Diagnosis.** Brier score, ECE analysis, and Bayes Minimum Risk cost-curve comparisons. |
+| **[`WEEKLY_PRODUCTION_HEALTH_REPORT.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/WEEKLY_PRODUCTION_HEALTH_REPORT.md)** | **Production Health & Governance Monitor.** Operational telemetry checklist, drift thresholds, and alert playbooks. |
 
 ---
 
-## 🔒 Production Governance & Safety Invariants
+## 🔒 Current Model Governance State
 
 1. **Active Production Champion**:
-   - Version: `v8.0-bmr-36f` (`CatBoostClassifier`, depth 4, 160 iterations, 36 Causal Features)
-   - SHA-256 Checksum: `d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7`
-   - Artifact Path: [`ml-service/model/candidates/production_model_v8_bmr.joblib`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/model/candidates/production_model_v8_bmr.joblib)
-2. **Authoritative Customer Decision Policy**:
-   - Baseline Dynamic Bayes Minimum Risk (BMR) with $C_{\text{FP}} = \$25.00$ and Surcharge $= 1.05$:
-     $$\text{DECLINE} \iff P > P^*(A) = \frac{25.00}{1.05 \cdot \text{Amount} + 25.00}$$
-3. **Shadow Challenger & GraphSAGE Intelligence**:
-   - `LightGBM L20 D4` with continuous `BetaCalibrator` ($\tau_{\text{floor}} = 0.040$)
-   - `GraphSAGE Heterogeneous Collusion Engine` (64-dim inductive embeddings)
-   - Status: **Strictly Non-Enforcing Shadow** (100% fail-open isolation; cannot affect customer decisions)
-4. **Promotion Mandate**:
-   - Promotion strictly requires $\ge 5,000$ genuine mature live transactions, $\ge 86$ mature live frauds, paired bootstrap 95% CI $> 0$, and $\text{FPR} \le 6.0\%$.
+   - Model: `fraud-xgb-25f-v3.0` (25 Canonical Features)
+   - Decision Authority: **100% Customer Decision Authority**
+2. **Shadow Candidate**:
+   - Model: `extended_catboost_58f` (58 Point-in-Time Features)
+   - Authority: **0% Customer Decision Authority** (Asynchronous non-blocking shadow evaluation)
+3. **Dual-Track Governance Status**:
+   - `MODEL_VALIDATED`: **`true`**
+   - `PRODUCTION_SHADOW_READY`: **`true`**
+   - `LIVE_EVIDENCE_UNAVAILABLE`: **`true`**
+   - `CONDITIONAL_PROMOTION_ELIGIBLE`: **`true`** (Canary $\le 10\%$ with maker-checker signoff)
+   - `PRODUCTION_PROMOTION_BLOCKED`: **`true`** (Unconditional 100% replacement locked until 10,000 live tx and 50 matured chargebacks)
+4. **Frozen Holdout Fixture**:
+   - Checksum SHA-256: `a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44`
 
 ---
 
-## ⚙️ Active Evaluation & Verification Runners
+## ⚙️ Active Evaluation Scripts
 
-- [`phase_57_graphsage_internal_relationship_intelligence.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/phase_57_graphsage_internal_relationship_intelligence.py) — GraphSAGE heterogeneous relationship evaluation, temporal point-in-time neighbor sampling, and 5-defense benchmark suite.
-- [`ropus_production_completion.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/ropus_production_completion.py) — Master end-to-end audit, scorecard evaluation, and report generator.
-- [`phase_56_production_deployment_validation.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/phase_56_production_deployment_validation.py) — Production infrastructure and cloud reachability diagnostics.
-- [`phase_55_production_infrastructure_handoff.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/phase_55_production_infrastructure_handoff.py) — Infrastructure handoff and architecture mapping.
-- [`validate_steady_state_monitoring.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/validate_steady_state_monitoring.py) — Continuous monitoring and drift verification.
+- [`evaluate_models.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/evaluate_models.py) — Baseline and candidate model evaluation harness.
+- [`shadow_evaluator.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/shadow_evaluator.py) — Authoritative 6-gate promotion evaluator with explainable governance flags.
+- [`live_shadow_soak_monitor.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/live_shadow_soak_monitor.py) — Real-time telemetry monitor and promotion gate manifest generator.
+- [`run_reproducible_experiment.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/data_pipeline/run_reproducible_experiment.py) — Deterministic offline validation pipeline.

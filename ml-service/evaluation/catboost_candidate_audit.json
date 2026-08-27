@@ -1,0 +1,461 @@
+{
+  "generated_at": "2026-08-27T04:07:59.350220+00:00",
+  "fixture_sha256": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+  "total_features_audited": 58,
+  "zero_leakage_invariants_verified": true,
+  "multiple_testing_adjustments": [
+    {
+      "candidate_model": "extended_catboost_58f",
+      "raw_p_value": 0.028,
+      "holm_bonferroni_adjusted_p": 0.112,
+      "holm_bonferroni_threshold": 0.0125,
+      "benjamini_hochberg_adjusted_p": 0.112,
+      "benjamini_hochberg_threshold": 0.0125,
+      "significant_under_holm_bonferroni": false,
+      "significant_under_benjamini_hochberg": false
+    },
+    {
+      "candidate_model": "extended_xgboost_58f",
+      "raw_p_value": 0.093,
+      "holm_bonferroni_adjusted_p": 0.279,
+      "holm_bonferroni_threshold": 0.0167,
+      "benjamini_hochberg_adjusted_p": 0.186,
+      "benjamini_hochberg_threshold": 0.025,
+      "significant_under_holm_bonferroni": false,
+      "significant_under_benjamini_hochberg": false
+    },
+    {
+      "candidate_model": "tuned_catboost_25f",
+      "raw_p_value": 0.101,
+      "holm_bonferroni_adjusted_p": 0.202,
+      "holm_bonferroni_threshold": 0.025,
+      "benjamini_hochberg_adjusted_p": 0.1347,
+      "benjamini_hochberg_threshold": 0.0375,
+      "significant_under_holm_bonferroni": false,
+      "significant_under_benjamini_hochberg": false
+    },
+    {
+      "candidate_model": "regularized_xgboost_25f",
+      "raw_p_value": 0.297,
+      "holm_bonferroni_adjusted_p": 0.297,
+      "holm_bonferroni_threshold": 0.05,
+      "benjamini_hochberg_adjusted_p": 0.297,
+      "benjamini_hochberg_threshold": 0.05,
+      "significant_under_holm_bonferroni": false,
+      "significant_under_benjamini_hochberg": false
+    }
+  ],
+  "features": [
+    {
+      "feature_name": "amount",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "ip_velocity_1h",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "ip_velocity_24h",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "token_velocity_24h",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_seen_before",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "transaction_hour",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "transaction_day",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "product_cd_encoded",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "card_type_encoded",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "card_category_encoded",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "email_domain_risk",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "dist1_missing",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_type_mobile",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_info_missing",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "amount_to_mean_ratio",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_tx_count_5m",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_tx_count_1h",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_amount_sum_24h",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "tx_acceleration_5m_1h",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_amount_concentration_5m_1h",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_unique_tokens_1h",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "token_unique_devices_1h",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_reputation_score",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_fraud_rate",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "device_dispute_rate",
+      "family": "Canonical 25 Baseline",
+      "point_in_time_guarantee": "Extracted strictly using historical event logs prior to timestamp T",
+      "leakage_risk_assessment": "NONE (Verified in test_temporal_leakage.py)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "C1",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "C2",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "C5",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "C6",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "C11",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "C13",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "C14",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "D1",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "D2",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "D3",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "D4",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "D10",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "D15",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "V12",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "V29",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "V44",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "V75",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "V281",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "V283",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "V307",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "card2",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "card3",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "card5",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "addr2",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "id_01",
+      "family": "Raw IEEE-CIS Signal",
+      "point_in_time_guarantee": "Raw transaction attribute or historical timedelta elapsed prior to checkout",
+      "leakage_risk_assessment": "NONE (Median imputed strictly on Train partition)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "dist1_is_missing",
+      "family": "Missingness Indicator",
+      "point_in_time_guarantee": "Row-level boolean evaluated at request arrival time",
+      "leakage_risk_assessment": "NONE (Row-independent indicator)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "D2_is_missing",
+      "family": "Missingness Indicator",
+      "point_in_time_guarantee": "Row-level boolean evaluated at request arrival time",
+      "leakage_risk_assessment": "NONE (Row-independent indicator)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "D15_is_missing",
+      "family": "Missingness Indicator",
+      "point_in_time_guarantee": "Row-level boolean evaluated at request arrival time",
+      "leakage_risk_assessment": "NONE (Row-independent indicator)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "id_01_is_missing",
+      "family": "Missingness Indicator",
+      "point_in_time_guarantee": "Row-level boolean evaluated at request arrival time",
+      "leakage_risk_assessment": "NONE (Row-independent indicator)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "DeviceInfo_is_missing",
+      "family": "Missingness Indicator",
+      "point_in_time_guarantee": "Row-level boolean evaluated at request arrival time",
+      "leakage_risk_assessment": "NONE (Row-independent indicator)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "R_emaildomain_is_missing",
+      "family": "Missingness Indicator",
+      "point_in_time_guarantee": "Row-level boolean evaluated at request arrival time",
+      "leakage_risk_assessment": "NONE (Row-independent indicator)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "card1_freq_encoding",
+      "family": "Frequency Encoding",
+      "point_in_time_guarantee": "Frequency table fit strictly on Train partition (N=5,600)",
+      "leakage_risk_assessment": "NONE (Unseen test cards map to 0.0 frequency)",
+      "audit_status": "VERIFIED_SAFE"
+    },
+    {
+      "feature_name": "is_email_domain_match",
+      "family": "Domain Interaction",
+      "point_in_time_guarantee": "Row-level comparison between P_emaildomain and R_emaildomain",
+      "leakage_risk_assessment": "NONE (Intra-transaction match flag)",
+      "audit_status": "VERIFIED_SAFE"
+    }
+  ],
+  "methodological_conclusions": [
+    "1. Zero Feature Leakage: All 58 features derive strictly from historical event logs (< T) or intra-transaction row attributes. Train frequency tables and median imputers are frozen prior to validation/test transformation.",
+    "2. Paired Bootstrap Integrity: Resampling uses identical row index permutations across all models simultaneously, preserving joint covariance on the 52 fraud events.",
+    "3. Multiple Comparison Impact: Under standard alpha=0.05, Extended CatBoost achieves p=0.0280. Under conservative Holm-Bonferroni FWER control (alpha_1 = 0.0125), the adjusted p-value is 0.1120. This indicates that while the empirical improvement is substantial (+0.0339 PR-AUC, +0.0764 ROC-AUC), statistical confirmation on higher traffic volume in shadow mode is mandatory before active customer enforcement."
+  ]
+}

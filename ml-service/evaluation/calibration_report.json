@@ -1,0 +1,109 @@
+{
+  "model_version": "fraud-xgb-25f-candidate-v1",
+  "calibration_method": "Beta / Isotonic Calibration (Phase 3.10)",
+  "evaluated_at": "2026-08-26T18:31:45.594368+00:00",
+  "test_samples": 1200,
+  "brier_score": 0.1087,
+  "expected_calibration_error": 0.2035,
+  "reliability_curve_bins": [
+    {
+      "bin_index": 0,
+      "bin_range": [
+        0.0,
+        0.1
+      ],
+      "count": 267,
+      "empirical_fraud_rate": 0.03,
+      "predicted_probability": 0.062199998646974564,
+      "calibration_gap": 0.0322
+    },
+    {
+      "bin_index": 1,
+      "bin_range": [
+        0.1,
+        0.2
+      ],
+      "count": 321,
+      "empirical_fraud_rate": 0.0436,
+      "predicted_probability": 0.14820000529289246,
+      "calibration_gap": 0.1046
+    },
+    {
+      "bin_index": 2,
+      "bin_range": [
+        0.2,
+        0.3
+      ],
+      "count": 239,
+      "empirical_fraud_rate": 0.0418,
+      "predicted_probability": 0.241799995303154,
+      "calibration_gap": 0.1999
+    },
+    {
+      "bin_index": 3,
+      "bin_range": [
+        0.3,
+        0.4
+      ],
+      "count": 162,
+      "empirical_fraud_rate": 0.037,
+      "predicted_probability": 0.34689998626708984,
+      "calibration_gap": 0.3098
+    },
+    {
+      "bin_index": 4,
+      "bin_range": [
+        0.4,
+        0.5
+      ],
+      "count": 76,
+      "empirical_fraud_rate": 0.0,
+      "predicted_probability": 0.44690001010894775,
+      "calibration_gap": 0.4469
+    },
+    {
+      "bin_index": 5,
+      "bin_range": [
+        0.5,
+        0.6
+      ],
+      "count": 60,
+      "empirical_fraud_rate": 0.0833,
+      "predicted_probability": 0.5429999828338623,
+      "calibration_gap": 0.4597
+    },
+    {
+      "bin_index": 6,
+      "bin_range": [
+        0.6,
+        0.7
+      ],
+      "count": 48,
+      "empirical_fraud_rate": 0.125,
+      "predicted_probability": 0.6413000226020813,
+      "calibration_gap": 0.5163
+    },
+    {
+      "bin_index": 7,
+      "bin_range": [
+        0.7,
+        0.8
+      ],
+      "count": 19,
+      "empirical_fraud_rate": 0.1053,
+      "predicted_probability": 0.7365000247955322,
+      "calibration_gap": 0.6312
+    },
+    {
+      "bin_index": 8,
+      "bin_range": [
+        0.8,
+        0.9
+      ],
+      "count": 8,
+      "empirical_fraud_rate": 0.125,
+      "predicted_probability": 0.8348000049591064,
+      "calibration_gap": 0.7098
+    }
+  ]
+}

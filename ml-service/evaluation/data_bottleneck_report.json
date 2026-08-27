@@ -1,0 +1,125 @@
+{
+  "dataset_metadata": {
+    "total_transactions": 8000,
+    "total_fraud": 362,
+    "fraud_prevalence_pct": 4.52,
+    "train_transactions": 5600,
+    "val_transactions": 1200,
+    "test_transactions": 1200
+  },
+  "entity_statistics": {
+    "card1": {
+      "description": "Card Primary Account Number (PAN)",
+      "unique_count": 493,
+      "single_visit_count": 0,
+      "single_visit_percentage": 0.0,
+      "max_tx_per_entity": 41,
+      "median_tx_per_entity": 16.0,
+      "mean_tx_per_entity": 16.23,
+      "test_entities_seen_in_train_count": 449,
+      "test_entities_seen_in_train_pct": 100.0
+    },
+    "card_compound_id": {
+      "description": "Compound Card Entity (Card1+Card2+Card4+Addr1)",
+      "unique_count": 7185,
+      "single_visit_count": 6448,
+      "single_visit_percentage": 89.74,
+      "max_tx_per_entity": 4,
+      "median_tx_per_entity": 1.0,
+      "mean_tx_per_entity": 1.11,
+      "test_entities_seen_in_train_count": 160,
+      "test_entities_seen_in_train_pct": 13.43
+    },
+    "P_emaildomain": {
+      "description": "Purchaser Email Domain",
+      "unique_count": 7,
+      "single_visit_count": 0,
+      "single_visit_percentage": 0.0,
+      "max_tx_per_entity": 3219,
+      "median_tx_per_entity": 595.0,
+      "mean_tx_per_entity": 1065.29,
+      "test_entities_seen_in_train_count": 7,
+      "test_entities_seen_in_train_pct": 100.0
+    },
+    "R_emaildomain": {
+      "description": "Recipient Email Domain",
+      "unique_count": 7,
+      "single_visit_count": 0,
+      "single_visit_percentage": 0.0,
+      "max_tx_per_entity": 2013,
+      "median_tx_per_entity": 327.0,
+      "mean_tx_per_entity": 683.71,
+      "test_entities_seen_in_train_count": 7,
+      "test_entities_seen_in_train_pct": 100.0
+    },
+    "addr1": {
+      "description": "Billing Zip/Region (Addr1)",
+      "unique_count": 6,
+      "single_visit_count": 0,
+      "single_visit_percentage": 0.0,
+      "max_tx_per_entity": 1473,
+      "median_tx_per_entity": 1326.0,
+      "mean_tx_per_entity": 1261.0,
+      "test_entities_seen_in_train_count": 6,
+      "test_entities_seen_in_train_pct": 100.0
+    },
+    "device_compound_id": {
+      "description": "Device Hardware Fingerprint",
+      "unique_count": 18,
+      "single_visit_count": 0,
+      "single_visit_percentage": 0.0,
+      "max_tx_per_entity": 1278,
+      "median_tx_per_entity": 312.0,
+      "mean_tx_per_entity": 444.44,
+      "test_entities_seen_in_train_count": 18,
+      "test_entities_seen_in_train_pct": 100.0
+    }
+  },
+  "graph_topology": {
+    "bipartite_nodes_card": 7185,
+    "bipartite_nodes_addr": 6,
+    "total_edges": 6768,
+    "graph_density": 0.000262,
+    "isolated_components_pct": 89.74
+  },
+  "missingness_by_family": {
+    "Transaction_Core": {
+      "columns_evaluated": 2,
+      "average_missingness_pct": 0.0
+    },
+    "Card_Identity": {
+      "columns_evaluated": 7,
+      "average_missingness_pct": 1.56
+    },
+    "Address_Distance": {
+      "columns_evaluated": 3,
+      "average_missingness_pct": 16.99
+    },
+    "Email_Domains": {
+      "columns_evaluated": 2,
+      "average_missingness_pct": 23.48
+    },
+    "C_Counting": {
+      "columns_evaluated": 7,
+      "average_missingness_pct": 0.0
+    },
+    "D_Timedeltas": {
+      "columns_evaluated": 6,
+      "average_missingness_pct": 33.6
+    },
+    "V_Behavioral": {
+      "columns_evaluated": 8,
+      "average_missingness_pct": 20.01
+    },
+    "Identity_Device": {
+      "columns_evaluated": 6,
+      "average_missingness_pct": 59.43
+    }
+  },
+  "root_cause_bottleneck_assessment": {
+    "primary_bottleneck_type": "DATASET_SAMPLE_SPARSITY",
+    "compound_card_test_overlap_pct": 13.43,
+    "single_visit_card_percentage": 89.74,
+    "explanation": "In the 8,000-transaction sample fixture, 89.7% of compound card entities appear only once, and only 13.4% of entities in the test partition were previously observed during training. Consequently, historical velocity features, entity aggregations, and graph BFS traversals encounter cold-start sparsity on >80% of test transactions. The ~0.67 ROC-AUC / ~0.10 PR-AUC ceiling is governed primarily by entity sample sparsity in the small fixture, not tree-boosting algorithm capacity."
+  }
+}

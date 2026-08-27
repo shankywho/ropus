@@ -47,12 +47,12 @@ class TestCanonicalDataPipeline(unittest.TestCase):
         self.assertGreater(len(df_train), 0)
         self.assertGreater(len(df_val), 0)
         self.assertGreater(len(df_test), 0)
-        
+
         max_train = df_train["TransactionDT"].max()
         min_val = df_val["TransactionDT"].min()
         max_val = df_val["TransactionDT"].max()
         min_test = df_test["TransactionDT"].min()
-        
+
         self.assertLessEqual(max_train, min_val, "Train max time must be <= Val min time")
         self.assertLessEqual(max_val, min_test, "Val max time must be <= Test min time")
 
@@ -77,7 +77,7 @@ class TestCanonicalDataPipeline(unittest.TestCase):
             "DeviceInfo": ["iOS Device"],
             "DeviceType": ["mobile"]
         })
-        
+
         df_multiple = pd.DataFrame({
             "TransactionID": [101, 102, 103],
             "TransactionDT": [36000, 36600, 37200], # T1, T2, T3
@@ -93,19 +93,19 @@ class TestCanonicalDataPipeline(unittest.TestCase):
             "DeviceInfo": ["iOS Device", "iOS Device", "iOS Device"],
             "DeviceType": ["mobile", "mobile", "mobile"]
         })
-        
+
         feat_single = extract_canonical_features(df_single)
         feat_multiple = extract_canonical_features(df_multiple)
-        
+
         # Check T1 features in both evaluations
         t1_from_single = feat_single.iloc[0]
         t1_from_multiple = feat_multiple.iloc[0]
-        
+
         self.assertEqual(t1_from_single["ip_velocity_1h"], t1_from_multiple["ip_velocity_1h"])
         self.assertEqual(t1_from_single["token_velocity_24h"], t1_from_multiple["token_velocity_24h"])
         self.assertEqual(t1_from_single["device_seen_before"], t1_from_multiple["device_seen_before"])
         self.assertEqual(t1_from_single["amount_to_mean_ratio"], t1_from_multiple["amount_to_mean_ratio"])
-        
+
         # In multiple, T2 should have token_velocity_24h = 2 and device_seen_before = 1
         self.assertEqual(feat_multiple.iloc[1]["token_velocity_24h"], 2.0)
         self.assertEqual(feat_multiple.iloc[1]["device_seen_before"], 1)
@@ -119,7 +119,7 @@ class TestCanonicalDataPipeline(unittest.TestCase):
         prep = CanonicalPreprocessor()
         prep.fit(df_feats)
         X = prep.transform(df_feats)
-        
+
         self.assertEqual(X.isna().sum().sum(), 0, "Transformed feature matrix must contain 0 NaNs")
         self.assertIn("dist1_missing", X.columns)
         self.assertIn("device_info_missing", X.columns)
@@ -130,10 +130,10 @@ class TestCanonicalDataPipeline(unittest.TestCase):
         df_train, df_val, df_test, _ = temporal_train_val_test_split(self.sample_df)
         train_feats = extract_canonical_features(df_train)
         test_feats = extract_canonical_features(df_test)
-        
+
         prep = CanonicalPreprocessor()
         prep.fit(train_feats)
-        
+
         # Test transformation produces valid numeric risk scores
         X_test = prep.transform(test_feats)
         self.assertTrue(all(X_test["email_domain_risk"] >= 0.0))
@@ -145,14 +145,14 @@ class TestCanonicalDataPipeline(unittest.TestCase):
         train_feats = extract_canonical_features(df_train)
         val_feats = extract_canonical_features(df_val)
         test_feats = extract_canonical_features(df_test)
-        
+
         prep = CanonicalPreprocessor()
         prep.fit(train_feats)
-        
+
         X_train = prep.transform(train_feats)
         X_val = prep.transform(val_feats)
         X_test = prep.transform(test_feats)
-        
+
         is_valid, errors = validate_pipeline_integrity(
             X_train, X_val, X_test,
             df_train["TransactionDT"].values,

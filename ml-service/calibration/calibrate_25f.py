@@ -183,7 +183,7 @@ def run_phase_3_10_calibration_pipeline(
     def evaluate_full_system(y_true, y_prob):
         y_true = np.asarray(y_true, dtype=np.int32)
         y_prob = np.clip(np.asarray(y_prob, dtype=np.float64), 0.0001, 0.9999)
-        
+
         roc = float(roc_auc_score(y_true, y_prob))
         pr = float(average_precision_score(y_true, y_prob))
         brier = float(brier_score_loss(y_true, y_prob))

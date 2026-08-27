@@ -23,27 +23,27 @@ def export_canonical_model_to_onnx(
     Converts trained XGBoost model to ONNX format (opset 15) and verifies inference.
     """
     print(f"Converting trained {n_features}-feature model to ONNX format...")
-    
+
     # Normalize booster feature names to positional format f0, f1, ... fN
     if hasattr(model, "get_booster"):
         model.get_booster().feature_names = [f"f{i}" for i in range(n_features)]
-        
+
     initial_type = [('float_input', FloatTensorType([None, n_features]))]
-    
+
     onnx_model = convert_xgboost(model, initial_types=initial_type, target_opset=15)
-    
+
     os.makedirs(os.path.dirname(os.path.abspath(onnx_path)), exist_ok=True)
     onnx.save_model(onnx_model, onnx_path)
     print(f"Successfully saved canonical ONNX model to: {onnx_path} (Size: {os.path.getsize(onnx_path)} bytes)")
-    
+
     # Verify with ONNX Runtime
     print("Verifying ONNX Runtime inference on 15-feature tensor...")
     sess = rt.InferenceSession(onnx_path, providers=['CPUExecutionProvider'])
     input_name = sess.get_inputs()[0].name
-    
+
     sample_input = np.ones((1, n_features), dtype=np.float32)
     raw_preds = sess.run(None, {input_name: sample_input})
-    
+
     print(f"ONNX Verification passed. Output shapes: {[type(o) for o in raw_preds]}")
     return onnx_path
 
@@ -70,5 +70,5 @@ if __name__ == "__main__":
     j_path = os.path.join(model_dir, "fraud_model.joblib")
     o_path = os.path.join(model_dir, "fraud_model.onnx")
     m_path = os.path.join(model_dir, "model_metadata.json")
-    
+
     export_model_to_onnx(joblib_path=j_path, onnx_path=o_path, metadata_path=m_path)

@@ -1,0 +1,868 @@
+{
+  "generated_at": "2026-08-26T21:04:59.976271+00:00",
+  "dataset_metadata": {
+    "file": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/data/sample_ieee_fixture.csv",
+    "sha256": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+    "total_records": 8000,
+    "train_samples": 5600,
+    "val_samples": 1200,
+    "test_samples": 1200,
+    "fraud_rate_train": 4.54,
+    "fraud_rate_test": 4.33
+  },
+  "feature_diagnostics": [
+    {
+      "feature_name": "amount",
+      "feature_category": "Transaction",
+      "cardinality": 4835,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 124.7322006225586,
+        "std": 170.38870239257812,
+        "median": 73.41000366210938,
+        "iqr": 101.75,
+        "min": 1.2699999809265137,
+        "max": 1162.93994140625
+      },
+      "nonfraud_distribution": {
+        "mean": 120.7343978881836,
+        "std": 179.15040588378906,
+        "median": 65.20500183105469,
+        "iqr": 107.7074966430664,
+        "min": 1.0,
+        "max": 3235.570068359375
+      },
+      "psi_train_to_test": 0.0072,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.0047,
+      "univariate_roc_auc": 0.5162,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    },
+    {
+      "feature_name": "ip_velocity_1h",
+      "feature_category": "Velocity & Amount",
+      "cardinality": 5,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 1.2755999565124512,
+        "std": 0.5350000262260437,
+        "median": 1.0,
+        "iqr": 0.0,
+        "min": 1.0,
+        "max": 3.0
+      },
+      "nonfraud_distribution": {
+        "mean": 1.287500023841858,
+        "std": 0.5340999960899353,
+        "median": 1.0,
+        "iqr": 1.0,
+        "min": 1.0,
+        "max": 5.0
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": -0.0046,
+      "univariate_roc_auc": 0.5077,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    },
+    {
+      "feature_name": "ip_velocity_24h",
+      "feature_category": "Velocity & Amount",
+      "cardinality": 19,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 8.043299674987793,
+        "std": 3.4416000843048096,
+        "median": 8.0,
+        "iqr": 4.75,
+        "min": 1.0,
+        "max": 18.0
+      },
+      "nonfraud_distribution": {
+        "mean": 7.9039998054504395,
+        "std": 3.3104000091552734,
+        "median": 8.0,
+        "iqr": 4.0,
+        "min": 1.0,
+        "max": 19.0
+      },
+      "psi_train_to_test": 0.0123,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.0087,
+      "univariate_roc_auc": 0.5105,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    },
+    {
+      "feature_name": "token_velocity_24h",
+      "feature_category": "Velocity & Amount",
+      "cardinality": 3,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 1.1062999963760376,
+        "std": 0.30820000171661377,
+        "median": 1.0,
+        "iqr": 0.0,
+        "min": 1.0,
+        "max": 2.0
+      },
+      "nonfraud_distribution": {
+        "mean": 1.090000033378601,
+        "std": 0.29829999804496765,
+        "median": 1.0,
+        "iqr": 0.0,
+        "min": 1.0,
+        "max": 3.0
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.0114,
+      "univariate_roc_auc": 0.5098,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "device_seen_before",
+      "feature_category": "Device Hardware & Novelty",
+      "cardinality": 2,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.2795,
+        "std": 0.4488,
+        "median": 0.0,
+        "iqr": 1.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.3105,
+        "std": 0.4627,
+        "median": 0.0,
+        "iqr": 1.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0008,
+      "correlation_with_fraud": -0.014,
+      "univariate_roc_auc": 0.5155,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "transaction_hour",
+      "feature_category": "Transaction",
+      "cardinality": 24,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 10.5787,
+        "std": 7.3006,
+        "median": 10.0,
+        "iqr": 13.75,
+        "min": 0.0,
+        "max": 23.0
+      },
+      "nonfraud_distribution": {
+        "mean": 11.6339,
+        "std": 6.8096,
+        "median": 12.0,
+        "iqr": 11.0,
+        "min": 0.0,
+        "max": 23.0
+      },
+      "psi_train_to_test": 0.014,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0049,
+      "correlation_with_fraud": -0.0321,
+      "univariate_roc_auc": 0.5439,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "transaction_day",
+      "feature_category": "Transaction",
+      "cardinality": 7,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 3.1024,
+        "std": 1.9636,
+        "median": 3.0,
+        "iqr": 3.75,
+        "min": 0.0,
+        "max": 6.0
+      },
+      "nonfraud_distribution": {
+        "mean": 2.9269,
+        "std": 1.9882,
+        "median": 3.0,
+        "iqr": 4.0,
+        "min": 0.0,
+        "max": 6.0
+      },
+      "psi_train_to_test": 0.02,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.0184,
+      "univariate_roc_auc": 0.5253,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "product_cd_encoded",
+      "feature_category": "Transaction",
+      "cardinality": 5,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 2.4961,
+        "std": 1.8006,
+        "median": 4.0,
+        "iqr": 4.0,
+        "min": 0.0,
+        "max": 4.0
+      },
+      "nonfraud_distribution": {
+        "mean": 3.1068,
+        "std": 1.4613,
+        "median": 4.0,
+        "iqr": 2.0,
+        "min": 0.0,
+        "max": 4.0
+      },
+      "psi_train_to_test": 0.0027,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0044,
+      "correlation_with_fraud": -0.0856,
+      "univariate_roc_auc": 0.5889,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "card_type_encoded",
+      "feature_category": "Transaction",
+      "cardinality": 4,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 2.5709,
+        "std": 0.6588,
+        "median": 3.0,
+        "iqr": 1.0,
+        "min": 0.0,
+        "max": 3.0
+      },
+      "nonfraud_distribution": {
+        "mean": 2.5799,
+        "std": 0.6534,
+        "median": 3.0,
+        "iqr": 1.0,
+        "min": 0.0,
+        "max": 3.0
+      },
+      "psi_train_to_test": 0.0009,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": -0.0029,
+      "univariate_roc_auc": 0.5039,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    },
+    {
+      "feature_name": "card_category_encoded",
+      "feature_category": "Transaction",
+      "cardinality": 2,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.752,
+        "std": 0.4319,
+        "median": 1.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.7585,
+        "std": 0.428,
+        "median": 1.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.002,
+      "correlation_with_fraud": -0.0032,
+      "univariate_roc_auc": 0.5033,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "email_domain_risk",
+      "feature_category": "Threat Intelligence",
+      "cardinality": 8,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.07209999859333038,
+        "std": 0.05719999969005585,
+        "median": 0.039900001138448715,
+        "iqr": 0.13359999656677246,
+        "min": 0.02979999966919422,
+        "max": 0.16339999437332153
+      },
+      "nonfraud_distribution": {
+        "mean": 0.043800000101327896,
+        "std": 0.03220000118017197,
+        "median": 0.03779999911785126,
+        "iqr": 0.010700000450015068,
+        "min": 0.02979999966919422,
+        "max": 0.16339999437332153
+      },
+      "psi_train_to_test": 0.0026,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0033,
+      "correlation_with_fraud": 0.1718,
+      "univariate_roc_auc": 0.6386,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "dist1_missing",
+      "feature_category": "Transaction",
+      "cardinality": 2,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.3937,
+        "std": 0.4886,
+        "median": 0.0,
+        "iqr": 1.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.3932,
+        "std": 0.4885,
+        "median": 0.0,
+        "iqr": 1.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0012,
+      "correlation_with_fraud": 0.0002,
+      "univariate_roc_auc": 0.5003,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "device_type_mobile",
+      "feature_category": "Device Hardware & Novelty",
+      "cardinality": 2,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.2835,
+        "std": 0.4507,
+        "median": 0.0,
+        "iqr": 1.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.2482,
+        "std": 0.432,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.0169,
+      "univariate_roc_auc": 0.5176,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "device_info_missing",
+      "feature_category": "Device Hardware & Novelty",
+      "cardinality": 2,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.4291,
+        "std": 0.495,
+        "median": 0.0,
+        "iqr": 1.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.4016,
+        "std": 0.4902,
+        "median": 0.0,
+        "iqr": 1.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.0117,
+      "univariate_roc_auc": 0.5138,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "amount_to_mean_ratio",
+      "feature_category": "Velocity & Amount",
+      "cardinality": 4969,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 1.7263000011444092,
+        "std": 2.8143999576568604,
+        "median": 0.8682000041007996,
+        "iqr": 1.2116999626159668,
+        "min": 0.05000000074505806,
+        "max": 20.0
+      },
+      "nonfraud_distribution": {
+        "mean": 1.4524999856948853,
+        "std": 2.4372000694274902,
+        "median": 0.7717000246047974,
+        "iqr": 1.121899962425232,
+        "min": 0.05000000074505806,
+        "max": 20.0
+      },
+      "psi_train_to_test": 0.4435,
+      "stability_rating": "HIGH_DRIFT",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.0232,
+      "univariate_roc_auc": 0.5271,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "DRIFT_VULNERABLE"
+    },
+    {
+      "feature_name": "device_tx_count_5m",
+      "feature_category": "Velocity & Amount",
+      "cardinality": 2,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.015699999406933784,
+        "std": 0.12449999898672104,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.014000000432133675,
+        "std": 0.11760000139474869,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.003,
+      "univariate_roc_auc": 0.5009,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    },
+    {
+      "feature_name": "device_tx_count_1h",
+      "feature_category": "Velocity & Amount",
+      "cardinality": 5,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.1850000023841858,
+        "std": 0.5031999945640564,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 3.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.18289999663829803,
+        "std": 0.4668000042438507,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 4.0
+      },
+      "psi_train_to_test": 0.0017,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.0009,
+      "univariate_roc_auc": 0.5051,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    },
+    {
+      "feature_name": "device_amount_sum_24h",
+      "feature_category": "Velocity & Amount",
+      "cardinality": 3235,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 516.702392578125,
+        "std": 658.2570190429688,
+        "median": 253.36500549316406,
+        "iqr": 870.3875122070312,
+        "min": 0.0,
+        "max": 3350.659912109375
+      },
+      "nonfraud_distribution": {
+        "mean": 537.3839721679688,
+        "std": 719.331787109375,
+        "median": 230.80499267578125,
+        "iqr": 892.08251953125,
+        "min": 0.0,
+        "max": 4670.52001953125
+      },
+      "psi_train_to_test": 0.0603,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0046,
+      "correlation_with_fraud": -0.006,
+      "univariate_roc_auc": 0.506,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "tx_acceleration_5m_1h",
+      "feature_category": "Velocity & Amount",
+      "cardinality": 4,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.03920000046491623,
+        "std": 0.31130000948905945,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 2.6087000370025635
+      },
+      "nonfraud_distribution": {
+        "mean": 0.0340999998152256,
+        "std": 0.28790000081062317,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 2.6087000370025635
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.0037,
+      "univariate_roc_auc": 0.5009,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    },
+    {
+      "feature_name": "device_amount_concentration_5m_1h",
+      "feature_category": "Velocity & Amount",
+      "cardinality": 79,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.012299999594688416,
+        "std": 0.10819999873638153,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.01140000019222498,
+        "std": 0.10279999673366547,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0015,
+      "correlation_with_fraud": 0.0018,
+      "univariate_roc_auc": 0.5009,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "device_unique_tokens_1h",
+      "feature_category": "Graph & Reputation",
+      "cardinality": 5,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.1850000023841858,
+        "std": 0.5031999945640564,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 3.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.18289999663829803,
+        "std": 0.4668000042438507,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 4.0
+      },
+      "psi_train_to_test": 0.0017,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": 0.0009,
+      "univariate_roc_auc": 0.5051,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    },
+    {
+      "feature_name": "token_unique_devices_1h",
+      "feature_category": "Graph & Reputation",
+      "cardinality": 2,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.0038999998942017555,
+        "std": 0.06260000169277191,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.0044999998062849045,
+        "std": 0.06689999997615814,
+        "median": 0.0,
+        "iqr": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "psi_train_to_test": 0.0,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0024,
+      "correlation_with_fraud": -0.0017,
+      "univariate_roc_auc": 0.5003,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "HIGH_INTEGRITY_INFORMATIVE"
+    },
+    {
+      "feature_name": "device_reputation_score",
+      "feature_category": "Graph & Reputation",
+      "cardinality": 323,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.7670000195503235,
+        "std": 0.25769999623298645,
+        "median": 1.0,
+        "iqr": 0.5,
+        "min": 0.10660000145435333,
+        "max": 1.0
+      },
+      "nonfraud_distribution": {
+        "mean": 0.7710999846458435,
+        "std": 0.2612000107765198,
+        "median": 1.0,
+        "iqr": 0.5,
+        "min": 0.1071000024676323,
+        "max": 1.0
+      },
+      "psi_train_to_test": 0.0369,
+      "stability_rating": "STABLE (PSI < 0.10)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": -0.0033,
+      "univariate_roc_auc": 0.5031,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    },
+    {
+      "feature_name": "device_fraud_rate",
+      "feature_category": "Graph & Reputation",
+      "cardinality": 2221,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.02329999953508377,
+        "std": 0.02329999953508377,
+        "median": 0.021400000900030136,
+        "iqr": 0.04450000077486038,
+        "min": 0.0,
+        "max": 0.0763000026345253
+      },
+      "nonfraud_distribution": {
+        "mean": 0.02370000071823597,
+        "std": 0.023800000548362732,
+        "median": 0.017799999564886093,
+        "iqr": 0.04540000110864639,
+        "min": 0.0,
+        "max": 0.1429000049829483
+      },
+      "psi_train_to_test": 0.2357,
+      "stability_rating": "MODERATE_DRIFT (PSI < 0.25)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": -0.0039,
+      "univariate_roc_auc": 0.5102,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    },
+    {
+      "feature_name": "device_dispute_rate",
+      "feature_category": "Graph & Reputation",
+      "cardinality": 2221,
+      "train_missing_pct": 0.0,
+      "test_missing_pct": 0.0,
+      "fraud_distribution": {
+        "mean": 0.02329999953508377,
+        "std": 0.02329999953508377,
+        "median": 0.021400000900030136,
+        "iqr": 0.04450000077486038,
+        "min": 0.0,
+        "max": 0.0763000026345253
+      },
+      "nonfraud_distribution": {
+        "mean": 0.02370000071823597,
+        "std": 0.023800000548362732,
+        "median": 0.017799999564886093,
+        "iqr": 0.04540000110864639,
+        "min": 0.0,
+        "max": 0.1429000049829483
+      },
+      "psi_train_to_test": 0.2357,
+      "stability_rating": "MODERATE_DRIFT (PSI < 0.25)",
+      "mutual_information": 0.0,
+      "correlation_with_fraud": -0.0039,
+      "univariate_roc_auc": 0.5102,
+      "leakage_risk": "ZERO_LEAKAGE (Strictly < T)",
+      "go_parity_verified": true,
+      "diagnostic_status": "WEAKLY_INFORMATIVE"
+    }
+  ],
+  "realism_inventory": {
+    "transaction_count_5m": {
+      "status": "SUPPORTED",
+      "underlying_source": "TransactionDT + DeviceInfo / card1-6"
+    },
+    "transaction_count_10m": {
+      "status": "SUPPORTED",
+      "underlying_source": "TransactionDT + DeviceInfo / card1-6"
+    },
+    "transaction_count_1h": {
+      "status": "SUPPORTED",
+      "underlying_source": "TransactionDT + DeviceInfo / card1-6"
+    },
+    "transaction_count_6h": {
+      "status": "SUPPORTED",
+      "underlying_source": "TransactionDT + DeviceInfo / card1-6"
+    },
+    "transaction_count_24h": {
+      "status": "SUPPORTED",
+      "underlying_source": "TransactionDT + DeviceInfo / card1-6"
+    },
+    "amount_velocity_1h": {
+      "status": "SUPPORTED",
+      "underlying_source": "TransactionAmt + TransactionDT + DeviceInfo / card1-6"
+    },
+    "amount_velocity_24h": {
+      "status": "SUPPORTED",
+      "underlying_source": "TransactionAmt + TransactionDT + DeviceInfo / card1-6"
+    },
+    "amount_relative_to_historical_mean": {
+      "status": "SUPPORTED",
+      "underlying_source": "TransactionAmt running mean per card/account (< T)"
+    },
+    "amount_zscore_historical": {
+      "status": "SUPPORTED",
+      "underlying_source": "Running mean & std of TransactionAmt per card (< T)"
+    },
+    "time_since_previous_transaction": {
+      "status": "SUPPORTED",
+      "underlying_source": "TransactionDT - previous TransactionDT per card (< T)"
+    },
+    "unique_devices_24h": {
+      "status": "SUPPORTED",
+      "underlying_source": "DeviceInfo distinct set in 24h per card (< T)"
+    },
+    "unique_ips_24h": {
+      "status": "SUPPORTED",
+      "underlying_source": "addr1/addr2 distinct set in 24h per card (< T)"
+    },
+    "beneficiary_novelty": {
+      "status": "UNAVAILABLE_FROM_DATASET",
+      "underlying_source": "Beneficiary ID not present in IEEE-CIS schema"
+    },
+    "device_novelty": {
+      "status": "SUPPORTED",
+      "underlying_source": "DeviceInfo first seen vs seen before per card (< T)"
+    },
+    "ip_novelty": {
+      "status": "SUPPORTED",
+      "underlying_source": "addr1/addr2 first seen vs seen before per card (< T)"
+    },
+    "merchant_novelty": {
+      "status": "UNAVAILABLE_FROM_DATASET",
+      "underlying_source": "Explicit merchant entity ID not present in IEEE-CIS (ProductCD is proxy)"
+    },
+    "account_age_days": {
+      "status": "SUPPORTED",
+      "underlying_source": "(TransactionDT - first_seen_TransactionDT) / 86400 per card (< T)"
+    },
+    "historical_tx_count": {
+      "status": "SUPPORTED",
+      "underlying_source": "Cumulative count of transactions per card (< T)"
+    },
+    "historical_fraud_chargeback_rate": {
+      "status": "UNAVAILABLE_FROM_DATASET",
+      "underlying_source": "Post-transaction chargeback feedback is delayed; unavailable at inference time without future label leakage"
+    }
+  }
+}

@@ -44,11 +44,11 @@ class CostSensitivePolicyEngine:
         """
         p = float(np.clip(p_calibrated, 0.0, 1.0))
         amt = float(max(amount, 1.0))
-        
+
         cost_allow = p * amt * self.fraud_multiplier
         cost_decline = (1.0 - p) * self.fp_cost
         cost_review = self.review_cost + (self.residual_rate * p * amt * self.fraud_multiplier)
-        
+
         return {
             "ALLOW": round(cost_allow, 2),
             "MANUAL_REVIEW": round(cost_review, 2),
@@ -81,28 +81,28 @@ def run_cost_threshold_analysis(
     thresholds = np.linspace(0.01, 0.99, 99)
     rows = []
     n = len(y_true)
-    
+
     for t in thresholds:
         # Binary threshold simulation: decline if p >= t, allow if p < t
         preds = (p_calibrated >= t).astype(int)
-        
+
         # Fraud outcomes
         tp = int(np.sum((preds == 1) & (y_true == 1)))
         fp = int(np.sum((preds == 1) & (y_true == 0)))
         fn = int(np.sum((preds == 0) & (y_true == 1)))
         tn = int(np.sum((preds == 0) & (y_true == 0)))
-        
+
         prec = float(tp / (tp + fp)) if (tp + fp) > 0 else 0.0
         rec = float(tp / (tp + fn)) if (tp + fn) > 0 else 0.0
         f1 = float(2 * prec * rec / (prec + rec)) if (prec + rec) > 0 else 0.0
-        
+
         # Total Realized Cost
         # False Positives cost fp_cost; False Negatives cost actual amount * multiplier
         fn_loss = float(np.sum(amounts[(preds == 0) & (y_true == 1)] * policy.fraud_multiplier))
         fp_loss = float(fp * policy.fp_cost)
         total_cost = fn_loss + fp_loss
         avg_cost_per_txn = total_cost / n
-        
+
         rows.append({
             "threshold": round(float(t), 2),
             "precision": round(prec, 4),
@@ -117,12 +117,12 @@ def run_cost_threshold_analysis(
             "total_realized_cost": round(total_cost, 2),
             "expected_cost_per_txn": round(avg_cost_per_txn, 2)
         })
-        
+
     df_cost = pd.DataFrame(rows)
     os.makedirs(os.path.dirname(os.path.abspath(output_csv)), exist_ok=True)
     df_cost.to_csv(output_csv, index=False)
     print(f"Saved cost threshold analysis CSV: {output_csv}")
-    
+
     # Plot Cost vs Threshold Curve
     if plt is not None:
         plt.figure(figsize=(9, 5))
@@ -141,7 +141,7 @@ def run_cost_threshold_analysis(
         plt.savefig(output_png, dpi=150)
         plt.close()
         print(f"Saved cost threshold plot: {output_png}")
-    
+
     return df_cost
 
 def run_review_capacity_analysis(
@@ -158,25 +158,25 @@ def run_review_capacity_analysis(
     n = len(y_true)
     total_fraud = int(np.sum(y_true))
     total_fraud_loss = float(np.sum(amounts[y_true == 1] * policy.fraud_multiplier))
-    
+
     rows = []
     # Rank descending by calibrated probability
     rank_idx = np.argsort(-p_calibrated)
-    
+
     for cap in capacities:
         k = max(1, int(n * cap))
         review_indices = rank_idx[:k]
-        
+
         # Fraud caught in review
         reviewed_true = y_true[review_indices]
         reviewed_amt = amounts[review_indices]
-        
+
         fraud_caught = int(np.sum(reviewed_true == 1))
         fraud_missed = int(total_fraud - fraud_caught)
-        
+
         prec_at_k = float(fraud_caught / k) if k > 0 else 0.0
         rec_at_k = float(fraud_caught / total_fraud) if total_fraud > 0 else 0.0
-        
+
         # Review operations cost
         review_ops_cost = float(k * policy.review_cost)
         # Residual fraud in reviewed items (5% analyst slip)
@@ -184,9 +184,9 @@ def run_review_capacity_analysis(
         # Unreviewed fraud loss
         unreviewed_indices = rank_idx[k:]
         unreviewed_fraud_loss = float(np.sum(amounts[unreviewed_indices][y_true[unreviewed_indices] == 1] * policy.fraud_multiplier))
-        
+
         total_expected_cost = review_ops_cost + residual_fraud_loss + unreviewed_fraud_loss
-        
+
         rows.append({
             "review_capacity_pct": f"{int(cap*100)}%",
             "review_queue_volume": k,
@@ -198,7 +198,7 @@ def run_review_capacity_analysis(
             "total_expected_loss": round(total_expected_cost, 2),
             "loss_reduction_pct": round((1.0 - (total_expected_cost / total_fraud_loss)) * 100, 2) if total_fraud_loss > 0 else 0.0
         })
-        
+
     df_cap = pd.DataFrame(rows)
     os.makedirs(os.path.dirname(os.path.abspath(output_csv)), exist_ok=True)
     df_cap.to_csv(output_csv, index=False)
@@ -216,30 +216,30 @@ def run_cost_sensitivity_scenarios(
     """
     with open(config_path, "r") as f:
         policy_cfg = json.load(f)
-        
+
     scenarios = policy_cfg.get("scenarios", {})
     scenario_results = {}
-    
+
     thresholds = np.linspace(0.01, 0.99, 99)
-    
+
     for s_name, s_params in scenarios.items():
         fp_cost = float(s_params.get("false_positive_cost", 500.0))
         mult = float(s_params.get("fraud_loss_multiplier", 1.0))
-        
+
         best_t = 0.50
         min_cost = float("inf")
-        
+
         for t in thresholds:
             preds = (p_calibrated >= t).astype(int)
             fp = int(np.sum((preds == 1) & (y_true == 0)))
             fn_loss = float(np.sum(amounts[(preds == 0) & (y_true == 1)] * mult))
             fp_loss = float(fp * fp_cost)
             tot_cost = fn_loss + fp_loss
-            
+
             if tot_cost < min_cost:
                 min_cost = tot_cost
                 best_t = float(t)
-                
+
         scenario_results[s_name] = {
             "description": s_params.get("description"),
             "false_positive_cost": fp_cost,
@@ -248,5 +248,5 @@ def run_cost_sensitivity_scenarios(
             "min_expected_loss": round(min_cost, 2),
             "loss_per_transaction": round(min_cost / len(y_true), 2)
         }
-        
+
     return scenario_results

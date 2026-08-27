@@ -57,18 +57,18 @@ class ModelCalibrator:
         y_true = np.asarray(y_true, dtype=np.int32)
         y_prob = np.clip(np.asarray(y_prob, dtype=np.float64), 0.0, 1.0)
         n = len(y_true)
-        
+
         bins = np.linspace(0.0, 1.0, n_bins + 1)
         bin_indices = np.digitize(y_prob, bins) - 1
         bin_indices = np.clip(bin_indices, 0, n_bins - 1)
-        
+
         ece = 0.0
         bin_records = []
-        
+
         for b in range(n_bins):
             mask = (bin_indices == b)
             bin_size = int(np.sum(mask))
-            
+
             if bin_size > 0:
                 mean_conf = float(np.mean(y_prob[mask]))
                 actual_acc = float(np.mean(y_true[mask])) # actual fraud rate in bin
@@ -78,7 +78,7 @@ class ModelCalibrator:
                 mean_conf = float((bins[b] + bins[b+1]) / 2.0)
                 actual_acc = 0.0
                 abs_err = 0.0
-                
+
             bin_records.append({
                 "bin_idx": b,
                 "bin_range": [round(float(bins[b]), 2), round(float(bins[b+1]), 2)],
@@ -87,7 +87,7 @@ class ModelCalibrator:
                 "actual_fraud_frequency": round(actual_acc, 4),
                 "absolute_calibration_error": round(abs_err, 4)
             })
-            
+
         return float(ece), bin_records
 
     @staticmethod
@@ -111,11 +111,11 @@ class ModelCalibrator:
         y_prob_val_arr = np.asarray(y_prob_val, dtype=np.float64)
         y_prob_val_2d = y_prob_val_arr.reshape(-1, 1)
         y_val = np.asarray(y_val, dtype=np.int32)
-        
+
         # 1. Fit Platt Scaling (Logistic Regression on probabilities)
         self.platt_model = LogisticRegression(solver="lbfgs", max_iter=1000, random_state=42)
         self.platt_model.fit(y_prob_val_2d, y_val)
-        
+
         # 2. Fit Isotonic Regression (Piecewise non-decreasing constant function)
         self.isotonic_model = IsotonicRegression(out_of_bounds="clip")
         self.isotonic_model.fit(y_prob_val_arr.flatten(), y_val)
@@ -125,7 +125,7 @@ class ModelCalibrator:
         X_beta = np.column_stack([np.log(p_clip), -np.log(1.0 - p_clip)])
         self.beta_model = LogisticRegression(solver="lbfgs", max_iter=1000, random_state=42)
         self.beta_model.fit(X_beta, y_val)
-        
+
         self.is_fitted = True
         self.fitting_metadata = {
             "validation_samples": len(y_val),
@@ -142,28 +142,28 @@ class ModelCalibrator:
         """
         if method is None:
             method = self.method
-            
+
         y_prob_raw = np.asarray(y_prob_raw, dtype=np.float64)
-        
+
         # Mathematical sanitation (handle NaN, Inf, negatives, and >1 values)
         y_prob_raw = np.nan_to_num(y_prob_raw, nan=0.05, posinf=0.9999, neginf=0.0001)
         y_prob_raw = np.clip(y_prob_raw, 0.0, 1.0)
-        
+
         if method == "raw":
             return np.clip(y_prob_raw, 0.0001, 0.9999)
-            
+
         if not self.is_fitted:
             raise RuntimeError("ModelCalibrator must be fitted before predict_proba()")
-            
+
         if method == "beta":
             # Bounded transform: x1 = ln(p), x2 = -ln(1 - p) with epsilon guard
             p_clip = np.clip(y_prob_raw.flatten(), EPSILON, 1.0 - EPSILON)
             X_beta = np.column_stack([np.log(p_clip), -np.log(1.0 - p_clip)])
             calibrated = self.beta_model.predict_proba(X_beta)[:, 1]
-            
+
         elif method == "platt":
             calibrated = self.platt_model.predict_proba(y_prob_raw.reshape(-1, 1))[:, 1]
-            
+
         elif method == "isotonic":
             if hasattr(self.isotonic_model, "X_thresholds_") and hasattr(self.isotonic_model, "y_thresholds_"):
                 calibrated = np.interp(
@@ -175,14 +175,14 @@ class ModelCalibrator:
                 calibrated = self.isotonic_model.predict(y_prob_raw.flatten())
         else:
             raise ValueError(f"Unknown calibration method: {method}")
-            
+
         # Guarantee strict probability bounds [0.0001, 0.9999]
         return np.clip(calibrated, 0.0001, 0.9999)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serializes calibrator parameters to versioned JSON artifact with SHA-256 checksum."""
         params: Dict[str, Any] = {}
-        
+
         if self.beta_model is not None:
             params["beta_params"] = {
                 "coef": self.beta_model.coef_.tolist(),
@@ -200,10 +200,10 @@ class ModelCalibrator:
                 "x_thresholds": self.isotonic_model.X_thresholds_.tolist(),
                 "y_thresholds": self.isotonic_model.y_thresholds_.tolist()
             }
-            
+
         param_str = json.dumps(params, sort_keys=True)
         checksum = hashlib.sha256(param_str.encode("utf-8")).hexdigest()
-        
+
         return {
             "type": self.method,
             "version": self.version,
@@ -222,9 +222,9 @@ class ModelCalibrator:
         instance.version = state.get("version", "cal-v2.0-beta")
         instance.is_fitted = state.get("is_fitted", False)
         instance.fitting_metadata = state.get("fitting_metadata", {})
-        
+
         params = state.get("parameters", state)
-        
+
         # Load Beta parameters
         if "beta_params" in params and instance.is_fitted:
             b_params = params["beta_params"]
@@ -232,7 +232,7 @@ class ModelCalibrator:
             instance.beta_model.coef_ = np.array(b_params["coef"])
             instance.beta_model.intercept_ = np.array(b_params["intercept"])
             instance.beta_model.classes_ = np.array([0, 1])
-            
+
         # Load Platt parameters
         if "platt_params" in params and instance.is_fitted:
             p_params = params["platt_params"]
@@ -240,14 +240,14 @@ class ModelCalibrator:
             instance.platt_model.coef_ = np.array(p_params["coef"])
             instance.platt_model.intercept_ = np.array(p_params["intercept"])
             instance.platt_model.classes_ = np.array([0, 1])
-            
+
         # Load Isotonic parameters (for rollback compatibility)
         if "isotonic_params" in params and instance.is_fitted:
             iso_params = params["isotonic_params"]
             instance.isotonic_model = IsotonicRegression(out_of_bounds="clip")
             instance.isotonic_model.X_thresholds_ = np.array(iso_params["x_thresholds"])
             instance.isotonic_model.y_thresholds_ = np.array(iso_params["y_thresholds"])
-            
+
         return instance
 
 def evaluate_calibration_methods(
@@ -264,11 +264,11 @@ def evaluate_calibration_methods(
     os.makedirs(output_dir, exist_ok=True)
     calibrator = ModelCalibrator(method="beta")
     calibrator.fit(y_prob_raw_val, y_true_val)
-    
+
     methods = ["raw", "platt", "isotonic", "beta"]
     val_results = {}
     test_results = {}
-    
+
     for m in methods:
         p_val = calibrator.predict_proba(y_prob_raw_val, method=m)
         ece_val, bins_val = calibrator.compute_expected_calibration_error(y_true_val, p_val)
@@ -276,7 +276,7 @@ def evaluate_calibration_methods(
         ll_val = float(log_loss(y_true_val, p_val))
         roc_val = float(roc_auc_score(y_true_val, p_val))
         pr_val = float(average_precision_score(y_true_val, p_val))
-        
+
         val_results[m] = {
             "brier_score": round(brier_val, 4),
             "ece": round(ece_val, 4),
@@ -285,7 +285,7 @@ def evaluate_calibration_methods(
             "pr_auc": round(pr_val, 4),
             "reliability_bins": bins_val
         }
-        
+
     for m in methods:
         p_test = calibrator.predict_proba(y_prob_raw_test, method=m)
         ece_test, bins_test = calibrator.compute_expected_calibration_error(y_true_test, p_test)
@@ -293,7 +293,7 @@ def evaluate_calibration_methods(
         ll_test = float(log_loss(y_true_test, p_test))
         roc_test = float(roc_auc_score(y_true_test, p_test))
         pr_test = float(average_precision_score(y_true_test, p_test))
-        
+
         test_results[m] = {
             "brier_score": round(brier_test, 4),
             "ece": round(ece_test, 4),
@@ -302,7 +302,7 @@ def evaluate_calibration_methods(
             "pr_auc": round(pr_test, 4),
             "reliability_bins": bins_test
         }
-        
+
     csv_rows = []
     for m in methods:
         csv_rows.append({
@@ -326,7 +326,7 @@ def evaluate_calibration_methods(
     df_comp = pd.DataFrame(csv_rows)
     csv_path = os.path.join(output_dir, "calibration_comparison.csv")
     df_comp.to_csv(csv_path, index=False)
-    
+
     metrics_json_path = os.path.join(output_dir, "calibration_metrics.json")
     full_metrics = {
         "evaluation_timestamp": pd.Timestamp.utcnow().isoformat(),
@@ -338,13 +338,13 @@ def evaluate_calibration_methods(
     }
     with open(metrics_json_path, "w") as f:
         json.dump(full_metrics, f, indent=2)
-        
+
     # Plot Reliability Diagrams
     plt.figure(figsize=(8, 6))
     plt.plot([0, 1], [0, 1], "k:", label="Perfect Calibration (y = x)")
     colors = {"raw": "gray", "platt": "blue", "isotonic": "orange", "beta": "green"}
     styles = {"raw": "--", "platt": "-.", "isotonic": ":", "beta": "-"}
-    
+
     for m in methods:
         bins = test_results[m]["reliability_bins"]
         confs = [b["mean_predicted_prob"] for b in bins if b["sample_count"] > 0]
@@ -352,7 +352,7 @@ def evaluate_calibration_methods(
         ece_val = test_results[m]["ece"]
         plt.plot(confs, accs, marker="o", lw=2, linestyle=styles[m], color=colors[m],
                  label=f"{m.capitalize()} (ECE={ece_val:.4f}, Brier={test_results[m]['brier_score']:.4f})")
-                 
+
     plt.xlabel("Mean Predicted Probability")
     plt.ylabel("Observed Fraction of Fraud (Empirical Posterior)")
     plt.title("Reliability Diagrams / Calibration Curves on Untouched Test Set")
@@ -362,5 +362,5 @@ def evaluate_calibration_methods(
     curve_png = os.path.join(output_dir, "calibration_curves.png")
     plt.savefig(curve_png, dpi=150)
     plt.close()
-    
+
     return calibrator, full_metrics

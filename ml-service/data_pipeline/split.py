@@ -18,7 +18,7 @@ def temporal_train_val_test_split(
     The test set strictly represents future unseen transactions.
     """
     assert abs((train_ratio + val_ratio + test_ratio) - 1.0) < 1e-5, "Ratios must sum to 1.0"
-    
+
     if time_col not in df.columns:
         raise ValueError(f"Time ordering column '{time_col}' not found in dataframe.")
 

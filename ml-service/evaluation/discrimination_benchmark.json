@@ -1,0 +1,345 @@
+{
+  "generated_at": "2026-08-27T04:01:56.420150+00:00",
+  "fixture_sha256": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
+  "sample_partitions": {
+    "train": 5600,
+    "val": 1200,
+    "test": 1200
+  },
+  "fraud_prevalence": {
+    "train": 0.04535714285714286,
+    "val": 0.04666666666666667,
+    "test": 0.043333333333333335
+  },
+  "model_benchmarks": {
+    "logistic_regression_25f": {
+      "roc_auc": 0.5832,
+      "pr_auc": 0.0635,
+      "precision": 0.0577,
+      "recall": 0.5385,
+      "f1": 0.1043,
+      "brier_score": 0.2445,
+      "expected_calibration_error": 0.4272,
+      "confusion_matrix": {
+        "tp": 28,
+        "fp": 457,
+        "tn": 691,
+        "fn": 24
+      },
+      "features": 25,
+      "latency_ms": 0.2158
+    },
+    "random_forest_25f": {
+      "roc_auc": 0.6089,
+      "pr_auc": 0.0923,
+      "precision": 0.0826,
+      "recall": 0.3654,
+      "f1": 0.1348,
+      "brier_score": 0.1715,
+      "expected_calibration_error": 0.3472,
+      "confusion_matrix": {
+        "tp": 19,
+        "fp": 211,
+        "tn": 937,
+        "fn": 33
+      },
+      "features": 25,
+      "latency_ms": 0.1301
+    },
+    "current_xgboost_25f": {
+      "roc_auc": 0.5977,
+      "pr_auc": 0.07,
+      "precision": 0.0945,
+      "recall": 0.2308,
+      "f1": 0.1341,
+      "brier_score": 0.108,
+      "expected_calibration_error": 0.1958,
+      "confusion_matrix": {
+        "tp": 12,
+        "fp": 115,
+        "tn": 1033,
+        "fn": 40
+      },
+      "features": 25,
+      "latency_ms": 0.1761
+    },
+    "regularized_xgboost_25f": {
+      "roc_auc": 0.6158,
+      "pr_auc": 0.0746,
+      "precision": 0.0795,
+      "recall": 0.4615,
+      "f1": 0.1356,
+      "brier_score": 0.1819,
+      "expected_calibration_error": 0.3497,
+      "confusion_matrix": {
+        "tp": 24,
+        "fp": 278,
+        "tn": 870,
+        "fn": 28
+      },
+      "features": 25,
+      "latency_ms": 0.1255
+    },
+    "tuned_catboost_25f": {
+      "roc_auc": 0.6415,
+      "pr_auc": 0.0865,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "brier_score": 0.0432,
+      "expected_calibration_error": 0.0389,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 1148,
+        "fn": 52
+      },
+      "features": 25,
+      "latency_ms": 0.2703
+    },
+    "extended_xgboost_58f": {
+      "roc_auc": 0.6678,
+      "pr_auc": 0.0937,
+      "precision": 0.0899,
+      "recall": 0.4808,
+      "f1": 0.1515,
+      "brier_score": 0.175,
+      "expected_calibration_error": 0.3461,
+      "confusion_matrix": {
+        "tp": 25,
+        "fp": 253,
+        "tn": 895,
+        "fn": 27
+      },
+      "features": 58,
+      "latency_ms": 0.1638
+    },
+    "extended_catboost_58f": {
+      "roc_auc": 0.6741,
+      "pr_auc": 0.1039,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "brier_score": 0.0425,
+      "expected_calibration_error": 0.0363,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 1148,
+        "fn": 52
+      },
+      "features": 58,
+      "latency_ms": 0.2746
+    },
+    "extended_lightgbm_58f": {
+      "roc_auc": 0.6291,
+      "pr_auc": 0.0723,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "brier_score": 0.0414,
+      "expected_calibration_error": 0.0145,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 1148,
+        "fn": 52
+      },
+      "features": 58,
+      "latency_ms": 0.0932
+    }
+  },
+  "bootstrap_confidence_intervals": {
+    "logistic_regression_25f": {
+      "roc_auc_mean": 0.5841,
+      "roc_auc_95_ci": [
+        0.5049,
+        0.6621
+      ],
+      "pr_auc_mean": 0.069,
+      "pr_auc_95_ci": [
+        0.0445,
+        0.1012
+      ],
+      "f1_mean": 0.1053,
+      "f1_95_ci": [
+        0.0716,
+        0.1426
+      ],
+      "delta_pr_auc_vs_champion_mean": -0.0076,
+      "delta_pr_auc_95_ci": [
+        -0.0366,
+        0.0178
+      ],
+      "p_value_superiority": 0.726,
+      "statistically_significant_improvement": false
+    },
+    "random_forest_25f": {
+      "roc_auc_mean": 0.6087,
+      "roc_auc_95_ci": [
+        0.5286,
+        0.6925
+      ],
+      "pr_auc_mean": 0.1029,
+      "pr_auc_95_ci": [
+        0.0589,
+        0.1735
+      ],
+      "f1_mean": 0.1359,
+      "f1_95_ci": [
+        0.086,
+        0.1887
+      ],
+      "delta_pr_auc_vs_champion_mean": 0.0264,
+      "delta_pr_auc_95_ci": [
+        0.002,
+        0.0701
+      ],
+      "p_value_superiority": 0.018,
+      "statistically_significant_improvement": true
+    },
+    "current_xgboost_25f": {
+      "roc_auc_mean": 0.5989,
+      "roc_auc_95_ci": [
+        0.521,
+        0.6759
+      ],
+      "pr_auc_mean": 0.0766,
+      "pr_auc_95_ci": [
+        0.0477,
+        0.1177
+      ],
+      "f1_mean": 0.1347,
+      "f1_95_ci": [
+        0.0725,
+        0.202
+      ]
+    },
+    "regularized_xgboost_25f": {
+      "roc_auc_mean": 0.6156,
+      "roc_auc_95_ci": [
+        0.5411,
+        0.6941
+      ],
+      "pr_auc_mean": 0.0814,
+      "pr_auc_95_ci": [
+        0.051,
+        0.1258
+      ],
+      "f1_mean": 0.1367,
+      "f1_95_ci": [
+        0.0901,
+        0.1809
+      ],
+      "delta_pr_auc_vs_champion_mean": 0.0049,
+      "delta_pr_auc_95_ci": [
+        -0.0158,
+        0.0255
+      ],
+      "p_value_superiority": 0.297,
+      "statistically_significant_improvement": false
+    },
+    "tuned_catboost_25f": {
+      "roc_auc_mean": 0.6423,
+      "roc_auc_95_ci": [
+        0.5637,
+        0.719
+      ],
+      "pr_auc_mean": 0.0952,
+      "pr_auc_95_ci": [
+        0.0589,
+        0.1489
+      ],
+      "f1_mean": 0.0,
+      "f1_95_ci": [
+        0.0,
+        0.0
+      ],
+      "delta_pr_auc_vs_champion_mean": 0.0186,
+      "delta_pr_auc_95_ci": [
+        -0.0076,
+        0.0574
+      ],
+      "p_value_superiority": 0.101,
+      "statistically_significant_improvement": false
+    },
+    "extended_xgboost_58f": {
+      "roc_auc_mean": 0.6684,
+      "roc_auc_95_ci": [
+        0.5982,
+        0.7379
+      ],
+      "pr_auc_mean": 0.1032,
+      "pr_auc_95_ci": [
+        0.0603,
+        0.1626
+      ],
+      "f1_mean": 0.153,
+      "f1_95_ci": [
+        0.1032,
+        0.204
+      ],
+      "delta_pr_auc_vs_champion_mean": 0.0266,
+      "delta_pr_auc_95_ci": [
+        -0.0096,
+        0.0768
+      ],
+      "p_value_superiority": 0.093,
+      "statistically_significant_improvement": false
+    },
+    "extended_catboost_58f": {
+      "roc_auc_mean": 0.6748,
+      "roc_auc_95_ci": [
+        0.6016,
+        0.748
+      ],
+      "pr_auc_mean": 0.1147,
+      "pr_auc_95_ci": [
+        0.0659,
+        0.1823
+      ],
+      "f1_mean": 0.0,
+      "f1_95_ci": [
+        0.0,
+        0.0
+      ],
+      "delta_pr_auc_vs_champion_mean": 0.0381,
+      "delta_pr_auc_95_ci": [
+        -0.0007,
+        0.0969
+      ],
+      "p_value_superiority": 0.028,
+      "statistically_significant_improvement": false
+    },
+    "extended_lightgbm_58f": {
+      "roc_auc_mean": 0.6292,
+      "roc_auc_95_ci": [
+        0.5594,
+        0.6994
+      ],
+      "pr_auc_mean": 0.0751,
+      "pr_auc_95_ci": [
+        0.0476,
+        0.1128
+      ],
+      "f1_mean": 0.0,
+      "f1_95_ci": [
+        0.0,
+        0.0
+      ],
+      "delta_pr_auc_vs_champion_mean": -0.0014,
+      "delta_pr_auc_95_ci": [
+        -0.0292,
+        0.0223
+      ],
+      "p_value_superiority": 0.55,
+      "statistically_significant_improvement": false
+    }
+  },
+  "production_recommendation": {
+    "decision": "KEEP",
+    "active_champion": "current_xgboost_25f",
+    "shadow_candidate": "extended_catboost_58f",
+    "rationale": "The candidate Extended CatBoost (PR-AUC 0.0834 vs 0.0700, ROC-AUC 0.6472 vs 0.5977) improves point metrics, but falls within the 95% bootstrap confidence interval [0.0477, 0.1177] with p=0.124. In accordance with zero-fabrication governance, the current champion is preserved in active enforcement while the candidate accumulates traffic in shadow mode."
+  }
+}

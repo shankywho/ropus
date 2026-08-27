@@ -107,7 +107,7 @@ class TestPhase310BetaCalibration(unittest.TestCase):
     def test_07_policy_thresholds_unchanged(self):
         """Verify production decision thresholds (<0.05 ALLOW, 0.05-0.35 REVIEW, >=0.35 DECLINE)."""
         policy = CostSensitivePolicyEngine()
-        
+
         # p = 0.02 (< 0.05) => ALLOW
         action_low, _ = policy.select_action(p_calibrated=0.02, amount=1000.0)
         # p = 0.15 (0.05-0.35) => MANUAL_REVIEW

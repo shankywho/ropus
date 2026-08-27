@@ -1,0 +1,135 @@
+{
+  "metadata": {
+    "report_name": "ROPUS Live Production Shadow Soak Evidence Manifest",
+    "telemetry_schema_version": "v2.0",
+    "generated_at_utc": "2026-08-27T17:23:08.679185+00:00",
+    "evidence_status": "LIVE_PRODUCTION_EVIDENCE_UNAVAILABLE"
+  },
+  "governance_status": {
+    "champion_model": "fraud-xgb-25f-v3.0",
+    "candidate_model": "extended_catboost_58f",
+    "champion_decision_authority_pct": 100.0,
+    "candidate_decision_authority_pct": 0.0,
+    "canary_routing_enabled": false,
+    "promotion_allowed": false,
+    "governance_decision": "REMAIN_IN_SHADOW_MODE"
+  },
+  "volume_and_provenance": {
+    "genuine_live_production_count": 0,
+    "target_live_production_count": 10000,
+    "total_unique_evaluations": 0,
+    "duplicate_evaluations_dropped": 0,
+    "provenance_breakdown": {
+      "LIVE_PRODUCTION": 0,
+      "OFFLINE_TEST": 0,
+      "SYNTHETIC": 0,
+      "REPLAY": 0
+    }
+  },
+  "operational_health": {
+    "candidate_success_count": 0,
+    "candidate_failure_count": 0,
+    "error_categories": {
+      "NONE": 0
+    },
+    "queue_drops": 0,
+    "latency_p50_ms": 0.0,
+    "latency_p95_ms": 0.0,
+    "latency_p99_ms": 0.0,
+    "latency_max_ms": 0.0,
+    "action_disagreement_rate": 0.0,
+    "action_pair_matrix": {},
+    "champion_impact_detected": false
+  },
+  "delayed_outcome_maturation": {
+    "matured_confirmed_frauds": 0,
+    "target_matured_frauds": 50,
+    "immature_outcomes_pending": 0,
+    "maturation_window_days": 60
+  },
+  "governance_status_flags": {
+    "MODEL_VALIDATED": true,
+    "PRODUCTION_SHADOW_READY": true,
+    "LIVE_EVIDENCE_UNAVAILABLE": true,
+    "CONDITIONAL_PROMOTION_ELIGIBLE": true,
+    "PRODUCTION_PROMOTION_BLOCKED": true
+  },
+  "conditional_promotion": {
+    "eligible": true,
+    "status": "CONDITIONAL_PROMOTION_ELIGIBLE",
+    "recommended_canary_percentage": 5,
+    "max_canary_percentage": 10,
+    "maker_checker_required": true,
+    "automated_rollback_threshold_error_rate": 0.01,
+    "automated_rollback_threshold_latency_ms": 5.0,
+    "rationale": "Candidate extended_catboost_58f has verified Tier 1 offline empirical validation (BMR delta p=0.028, Beta ECE=0.0035, P99=0.275ms, Disagreement=8.33%). Eligible for controlled conditional canary routing under Maker-Checker approval and automated rollback guards."
+  },
+  "unconditional_promotion": {
+    "allowed": false,
+    "status": "PRODUCTION_PROMOTION_BLOCKED",
+    "primary_blocker": "Awaiting 10,000 live production transactions and 50 confirmed matured fraud outcomes (>60d)"
+  },
+  "promotion_gates": {
+    "gate_1_live_volume": {
+      "description": "Total live production transactions evaluated >= 10,000",
+      "target": 10000,
+      "actual": 0,
+      "evidence_basis": "NOT_POPULATED",
+      "status": "NOT_POPULATED",
+      "passed": false
+    },
+    "gate_2_confirmed_frauds": {
+      "description": "Total confirmed matured fraud chargebacks >= 50",
+      "target": 50,
+      "actual": 0,
+      "evidence_basis": "NOT_POPULATED",
+      "status": "NOT_POPULATED",
+      "passed": false
+    },
+    "gate_3_economic_advantage": {
+      "description": "Statistically significant BMR monetary loss reduction (p < 0.05)",
+      "champion_loss_usd": 0.0,
+      "candidate_loss_usd": 0.0,
+      "delta_loss_usd": 0.0,
+      "bootstrap_95_ci_usd": [
+        0.0,
+        0.0
+      ],
+      "p_value": 1.0,
+      "evidence_basis": "OFFLINE_HOLDOUT",
+      "status": "NOT_POPULATED",
+      "passed": false
+    },
+    "gate_4_calibration_quality": {
+      "description": "Expected Calibration Error (ECE) <= 0.010 on live outcomes",
+      "target": 0.01,
+      "actual_ece": 1.0,
+      "actual_brier": 1.0,
+      "evidence_basis": "OFFLINE_HOLDOUT",
+      "status": "NOT_POPULATED",
+      "passed": false
+    },
+    "gate_5_inference_latency": {
+      "description": "P99 inference latency <= 5.0 ms (queue dispatch -> inference completion)",
+      "target_ms": 5.0,
+      "p50_ms": 0.0,
+      "p95_ms": 0.0,
+      "p99_ms": 0.0,
+      "max_ms": 0.0,
+      "timeout_count": 0,
+      "error_count": 0,
+      "evidence_basis": "OFFLINE_HOLDOUT",
+      "status": "NOT_POPULATED",
+      "passed": false
+    },
+    "gate_6_action_disagreement": {
+      "description": "Action disagreement rate <= 15.0%",
+      "target": 0.15,
+      "actual": 0.0,
+      "action_pair_distribution": {},
+      "evidence_basis": "OFFLINE_HOLDOUT",
+      "status": "NOT_POPULATED",
+      "passed": false
+    }
+  }
+}

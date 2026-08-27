@@ -148,7 +148,7 @@ class TestPhase39CandidateRetraining(unittest.TestCase):
 
         xgb_probs = xgb_model.predict_proba(sample)[:, 1]
         onnx_out = sess.run(None, {sess.get_inputs()[0].name: sample})
-        
+
         prob_output = onnx_out[1]
         if isinstance(prob_output, list) and len(prob_output) > 0 and isinstance(prob_output[0], dict):
             onnx_probs = np.array([float(d.get(1, 0.0)) for d in prob_output])
