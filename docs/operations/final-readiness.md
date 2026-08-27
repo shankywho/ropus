@@ -42,7 +42,7 @@ Business Readiness ...................................................... 9.5 / 
 - **Status**: Fully deterministic 7-stage demo runner (`backend/internal/demo/demo_mode.go`) with zero external API dependencies or flakiness.
 
 ### 7. Developer Experience: 9.6 / 10
-- **Status**: Clean OpenAPI/REST documentation, Python and Node.js SDK examples, and drop-in client code in [`docs/quickstart.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/quickstart.md).
+- **Status**: Clean OpenAPI/REST documentation, Python and Node.js SDK examples, and drop-in client code in [`docs/api/quickstart.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/api/quickstart.md).
 
 ### 8. Performance: 9.7 / 10
 - **Status**: Microbenchmarks (0.42ms), end-to-end integration benchmarks (1.42ms), and simulated 100k+ ops/sec load tests (P99: 6.80ms).

@@ -3,7 +3,7 @@
 ---
 
 ## 1. Why It Exists
-The **Product API Layer** is the single entry point for all external payment gateways, core banking rails, and merchant checkout systems into ROPUS. 
+The **Product API Layer** is the single entry point for all external payment gateways, core banking rails, and merchant checkout systems into ROPUS.
 
 In financial fraud prevention, milliseconds determine whether an authorization succeeds or fails. If risk evaluation takes $> 20\text{ms}$, payment networks trigger timeout fallbacks, leading to either dropped transactions or unchecked fraud exposure. The Product API Layer was designed to orchestrate authentication, input sanitization, multi-engine feature extraction, machine learning scoring, graph traversal, and deterministic factor attribution into a **single, synchronous $< 2\text{ms}$ execution loop** without distributed network hop overhead.
 
@@ -195,7 +195,7 @@ type RiskFactorContribution struct {
 ## 9. Source Code Map
 - [`backend/internal/product_api/unified_pipeline.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/product_api/unified_pipeline.go): Complete pipeline orchestration, feature extraction, factor attribution, and decision return.
 - [`backend/internal/product_api/unified_pipeline_test.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/product_api/unified_pipeline_test.go): Comprehensive integration tests, decision thresholding tests, and factor sum verification.
-- [`backend/internal/security/hardening/sanitization.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/security/hardening/sanitization.go): String parameter sanitization functions.
+- [`backend/internal/security/api_gateway_middleware.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/security/api_gateway_middleware.go): Edge input sanitization, token validation, and rate limiting middleware.
 
 ---
 

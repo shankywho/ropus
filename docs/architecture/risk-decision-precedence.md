@@ -1,7 +1,7 @@
 # Risk Decision Precedence & Rule-ML Interaction
 
-**Document Version:** 1.0 (Phase 2 Specification)  
-**Evaluated Code:** `backend/internal/riskengine/orchestrator.go`, `backend/internal/rules/ast.go`  
+**Document Version:** 1.0 (Phase 2 Specification)
+**Evaluated Code:** `backend/internal/riskengine/orchestrator.go`, `backend/internal/rules/ast.go`
 
 ---
 

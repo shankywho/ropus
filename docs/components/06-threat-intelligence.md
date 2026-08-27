@@ -3,7 +3,7 @@
 ---
 
 ## 1. Why It Exists
-Network-level and physical-layer anomalies provide critical early indicators of account takeover (ATO) and automated credential stuffing. 
+Network-level and physical-layer anomalies provide critical early indicators of account takeover (ATO) and automated credential stuffing.
 
 The **Threat Intelligence & Behavioral Engine** (`backend/internal/graph/threat_intelligence.go`) evaluates:
 1. Whether an egress IP belongs to a commercial bulletproof proxy, Tor exit node, or VPN hosting provider.

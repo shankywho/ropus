@@ -69,8 +69,8 @@ When the circuit breaker transitions back to `CLOSED`, a background worker drain
 ---
 
 ## 4. Source Code Map
-- [`backend/internal/resilience/circuit_breaker.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/resilience/circuit_breaker.go): Circuit breaker state machine and thresholds.
-- [`backend/internal/resilience/fallback_queue.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/resilience/fallback_queue.go): Thread-safe in-memory FIFO queue buffer.
+- [`backend/internal/resilience/circuit_breaker.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/resilience/circuit_breaker.go): Circuit breaker state machine, failure thresholds, and half-open probes.
+- [`backend/internal/resilience/health_manager.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/resilience/health_manager.go): Health state tracking and background degraded dependency probes.
 - [`backend/internal/resilience/failure_resilience_test.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/resilience/failure_resilience_test.go): Simulated fault injection tests.
 
 ---

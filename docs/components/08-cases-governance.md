@@ -81,7 +81,7 @@ type Case struct {
 ---
 
 ## 5. Source Code Map
-- [`backend/internal/cases/service.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/cases/service.go): Case creation, querying, state transitions, and assignment.
+- [`backend/internal/cases/case_service.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/cases/case_service.go): Case creation, querying, state transitions, and assignment.
 - [`backend/internal/governance/model_risk_management.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/governance/model_risk_management.go): Model risk governance and SR 11-7 validation.
 
 ---

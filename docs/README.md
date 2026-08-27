@@ -125,7 +125,15 @@ If you are a new engineer joining the team, follow this sequential reading path 
 
 ---
 
-### 7. Authoritative ML Evaluation Documents
+### 7. Authoritative ML Evaluation, Shadow Mode & Governance
+- [`conditional_promotion_governance_decision.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/conditional_promotion_governance_decision.md) — **Authoritative Model Promotion Policy & Dual-Track Governance Specification**
+- [`production_shadow_soak_live_evidence.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/production_shadow_soak_live_evidence.md) — Real-Time Production Shadow Soak Telemetry & Gate Status Ledger
+- [`production_shadow_soak_execution_runbook.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/production_shadow_soak_execution_runbook.md) — Production Shadow Soak Operator Runbook & Incident Protocols
+- [`production_ingress_operator_checklist.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/production_ingress_operator_checklist.md) — Merchant Ingress Preflight Checklist
+- [`shadow_mode_architecture.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/shadow_mode_architecture.md) — Non-Blocking Asynchronous Shadow Scoring Architecture
+- [`shadow_mode_operations_runbook.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/shadow_mode_operations_runbook.md) — Prometheus Alert Rules & SRE Operations Runbook
+- [`canonical_features_specification.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/canonical_features_specification.md) — Point-in-Time 58-Feature Contract Specification
+- [`full_dataset_ml_and_production_evidence_report.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/full_dataset_ml_and_production_evidence_report.md) — Full IEEE-CIS Dataset Validation Preflight
 - **ML Evaluation Index**: [`ml-service/evaluation/README.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/README.md)
   - **Master Production Completion Report**: [`ml-service/evaluation/ROPUS_PRODUCTION_COMPLETION_REPORT.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/ROPUS_PRODUCTION_COMPLETION_REPORT.md)
   - **Model Performance Diagnosis Report**: [`ml-service/evaluation/MODEL_PERFORMANCE_DIAGNOSIS_REPORT.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/MODEL_PERFORMANCE_DIAGNOSIS_REPORT.md)

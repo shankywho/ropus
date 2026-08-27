@@ -1,7 +1,7 @@
 # Risk Score & Probability Semantics Contract
 
-**Document Version:** 1.0 (Phase 2 Specification)  
-**Contract Author:** Antigravity Autonomous Pair Programmer  
+**Document Version:** 1.0 (Phase 2 Specification)
+**Contract Author:** Antigravity Autonomous Pair Programmer
 
 ---
 

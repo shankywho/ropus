@@ -9,7 +9,7 @@ In complex financial institutions, multiple decision engines run simultaneously:
 3. Graph syndicate cluster detectors.
 4. Statistical machine learning anomaly models.
 
-When these systems produce conflicting recommendations (e.g., a rule recommends `APPROVE` while the ML model scores `0.85` indicating high risk), the system must have a **mathematically deterministic and regulatory-compliant arbitration mechanism**. 
+When these systems produce conflicting recommendations (e.g., a rule recommends `APPROVE` while the ML model scores `0.85` indicating high risk), the system must have a **mathematically deterministic and regulatory-compliant arbitration mechanism**.
 
 The **Risk Evaluation Engine** (`backend/internal/riskengine/`) exists to resolve these conflicts via a formal **Decision Precedence Hierarchy**, enforce calibrated threshold bounds, run zero-risk shadow policies, and trigger closed-loop model retraining when concept drift occurs.
 
@@ -117,9 +117,11 @@ where $P_b$ is the current evaluation distribution and $Q_b$ is the baseline tra
 ---
 
 ## 8. Source Code Map
-- [`backend/internal/riskengine/engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/engine.go): Core risk engine logic and decision precedence arbitration.
-- [`backend/internal/riskengine/retraining_trigger.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/retraining_trigger.go): Drift threshold monitoring and retraining dispatch.
-- [`backend/internal/riskengine/shadow_evaluator.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/shadow_evaluator.go): Zero-risk shadow policy simulation.
+- [`backend/internal/riskengine/orchestrator.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/orchestrator.go): Core risk orchestrator, 7-step evaluation pipeline, and BMR decision arbitration.
+- [`backend/internal/riskengine/handler.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/handler.go): HTTP handler for `/v1/risk-evaluations` and `/v1/risk/evaluate`.
+- [`backend/internal/riskengine/shadow_scorer.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/shadow_scorer.go): Asynchronous non-blocking shadow scoring worker pool.
+- [`backend/internal/riskengine/canary_router.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/canary_router.go): Deterministic percentage-based canary routing and circuit breakers.
+- [`backend/internal/riskengine/model_registry.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/model_registry.go): In-memory model registry and lifecycle management.
 
 ---
 
@@ -127,3 +129,4 @@ where $P_b$ is the current evaluation distribution and $Q_b$ is the baseline tra
 - [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Upstream caller.
 - [Component 03: Rules Engine](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/03-rules-engine.md) — Declarative rule evaluation.
 - [Component 04: ML Inference](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/04-ml-inference.md) — Machine learning scoring.
+- [Conditional Promotion Governance Decision](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/conditional_promotion_governance_decision.md) — Dual-track model promotion policy.

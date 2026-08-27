@@ -47,7 +47,7 @@ def verify_ropus_webhook(payload_bytes: bytes, signature_header: str, secret: st
         payload_bytes,
         hashlib.sha256
     ).hexdigest()
-    
+
     expected_header = f"sha256={expected_hash}"
     return hmac.compare_digest(expected_header, signature_header)
 ```

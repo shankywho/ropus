@@ -3,7 +3,7 @@
 ---
 
 ## 1. Why It Exists
-Sophisticated financial fraud attacks (e.g. coordinated botnets, subtle card testing velocity increments, distributed money mule deposits) easily bypass simple threshold rules. 
+Sophisticated financial fraud attacks (e.g. coordinated botnets, subtle card testing velocity increments, distributed money mule deposits) easily bypass simple threshold rules.
 
 The **ML Inference Engine** (`backend/internal/ml/`) evaluates high-dimensional feature interactions using **Gradient Boosted Decision Trees (XGBoost/LightGBM)** to compute an exact, calibrated continuous probability of fraud ($p \in [0.0, 1.0]$) in sub-millisecond execution time.
 
@@ -80,25 +80,28 @@ type ModelPrediction struct {
 
 ## 5. Model Registry & Champion/Challenger Testing
 
-The **Model Registry** (`backend/internal/ml/model_registry.go`) supports zero-downtime hot-swapping of models:
-- **Champion Model**: Receives $100\%$ of authoritative decision scoring.
-- **Challenger Model**: Receives asynchronous shadow traffic to compute offline AUC-ROC and KS drift metrics before promotion.
+The **Model Registry** ([`backend/internal/riskengine/model_registry.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/model_registry.go)) supports zero-downtime hot-swapping and dual-track governance:
+- **Champion Model** (`fraud-xgb-25f-v3.0`): Receives $100\%$ of authoritative decision scoring.
+- **Candidate Model** (`extended_catboost_58f`): Receives asynchronous shadow traffic via [`backend/internal/riskengine/shadow_scorer.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/shadow_scorer.go) to compute continuous drift, BMR loss, and calibration metrics.
 
 ---
 
 ## 6. Performance & Concurrency
-- **Inference Speed**: $< 0.45\text{ms}$ per feature vector evaluation.
+- **Inference Speed**: $< 0.45\text{ms}$ per feature vector evaluation (sub-3 microsecond local evaluation).
 - **Memory Footprint**: Tree arrays are kept in read-only shared memory, enabling concurrent goroutine evaluation without mutex contention.
 
 ---
 
 ## 7. Source Code Map
 - [`backend/internal/ml/inference_engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/ml/inference_engine.go): In-memory gradient boosted decision tree scoring.
-- [`backend/internal/ml/model_registry.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/ml/model_registry.go): Model versioning and metadata management.
-- [`backend/internal/training/pipeline.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/training/pipeline.go): Offline training and validation pipeline.
+- [`backend/internal/riskengine/mlclient.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/mlclient.go): HTTP client for ML sidecar `/predict` evaluations.
+- [`backend/internal/riskengine/model_registry.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/model_registry.go): Model versioning, lifecycle transitions, and provenance management.
+- [`backend/internal/training/training_runner.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/training/training_runner.go): Offline training and model validation coordinator.
 
 ---
 
 ## 8. Cross-Component Links
 - [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Calls inference engine during feature weighting.
 - [Component 02: Risk Evaluation Engine](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/02-risk-engine.md) — Calibrates ML score into policy decisions.
+- [Canonical Features Specification](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/canonical_features_specification.md) — Point-in-Time 58-feature contract.
+- [Conditional Promotion Governance Decision](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/conditional_promotion_governance_decision.md) — Master model promotion policy.

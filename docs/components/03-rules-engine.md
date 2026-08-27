@@ -109,8 +109,9 @@ type RuleMatchRecord struct {
 ---
 
 ## 7. Source Code Map
-- [`backend/internal/rules/service.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/rules/service.go): Rule store, in-memory caching, and condition evaluation engine.
-- [`backend/internal/rules/rules_test.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/rules/rules_test.go): Comprehensive operator and priority ordering unit tests.
+- [`backend/internal/rules/service.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/rules/service.go): Rule service, in-memory caching, and condition evaluation engine.
+- [`backend/internal/rules/ast.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/rules/ast.go): Declarative JSON-AST parsing and variable symbol resolution.
+- [`backend/internal/rules/ast_test.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/rules/ast_test.go): Comprehensive operator and priority ordering unit tests.
 
 ---
 

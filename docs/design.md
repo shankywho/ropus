@@ -9,7 +9,7 @@ colors:
   card: "#ffffff"
   accent: "#012652"     # Prussian Blue
   success: "#04db7c"
-  
+
   dark:
     background: "#070e1c"
     foreground: "#f4f5f7"

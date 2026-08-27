@@ -49,8 +49,9 @@ type DeadLetterEvent struct {
 ---
 
 ## 4. Source Code Map
-- [`backend/internal/streaming/kafka_producer.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/streaming/kafka_producer.go): Partitioned Kafka producer with batching and backpressure.
-- [`backend/internal/events/event_bus.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/events/event_bus.go): In-memory pub/sub event bus with consumer group fanout.
+- [`backend/internal/streaming/event_bus_adapter.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/streaming/event_bus_adapter.go): Event bus adapter with partition batching and backpressure.
+- [`backend/internal/events/kafka_adapter.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/events/kafka_adapter.go): Kafka message broker adapter and consumer group fanout.
+- [`backend/internal/events/dead_letter_queue.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/events/dead_letter_queue.go): Dead letter queue handler and retry manager.
 
 ---
 

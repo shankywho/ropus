@@ -40,8 +40,8 @@ If the burn rate exceeds $2.0\times$ across a 1-hour window, high-priority Pager
 ---
 
 ## 4. Source Code Map
-- [`backend/internal/observability/metrics.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/observability/metrics.go): Prometheus metric registration and latency recording middleware.
-- [`backend/internal/observability/slo_tracker.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/observability/slo_tracker.go): Rolling error budget and SLO availability tracker.
+- [`backend/internal/observability/telemetry.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/observability/telemetry.go): Prometheus metric registration and latency recording middleware.
+- [`backend/internal/observability/slo_manager.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/observability/slo_manager.go): Rolling error budget and SLO availability tracker.
 
 ---
 

@@ -5,7 +5,7 @@
 ## 1. Why It Exists
 ROPUS operates as a multi-tenant enterprise SaaS platform. A single physical cluster serves multiple independent banks, payment processors, and marketplaces.
 
-Under no circumstances may Tenant A access, inspect, or mutate Tenant B's transactions, rules, cases, or machine learning models. 
+Under no circumstances may Tenant A access, inspect, or mutate Tenant B's transactions, rules, cases, or machine learning models.
 
 The **Auth & SaaS Subsystem** (`backend/internal/auth/api_keys/`, `backend/internal/saas/`) enforces:
 1. One-way cryptographic SHA-256 API key hashing.

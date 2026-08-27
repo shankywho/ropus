@@ -16,9 +16,9 @@ Demonstrated Unit Economics .......................... 18.5x ROI ($12.4M Saved)
 ## 1. The Investor Hook (0:00 - 1:30)
 
 > "Online fraud has evolved into organized, AI-assisted crime rings. Fraudsters use generative synthetic identities, residential proxy botnets, and decentralized money laundering.
-> 
+>
 > Legacy fraud tools rely on static rules or isolated black-box ML models that fail when attackers mutate their tactics.
-> 
+>
 > **ROPUS** is the world's first Autonomous Financial Crime Intelligence Operating System. We combine sub-10ms machine learning inference, real-time fraud knowledge graphs, and LLM-powered investigative agents to stop attacks before funds leave the building."
 
 ---

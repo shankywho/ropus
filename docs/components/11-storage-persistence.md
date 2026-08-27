@@ -65,8 +65,8 @@ $$\text{Ciphertext} \parallel \text{AuthTag} = \text{AES-256-GCM}_{\text{Key}}\l
 ---
 
 ## 5. Source Code Map
-- [`backend/internal/storage/postgres.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/storage/postgres.go): Connection pooling, query execution, and schema migrations.
-- [`backend/internal/features/store/redis_store.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/features/store/redis_store.go): Redis feature store sliding window aggregates.
+- [`backend/internal/storage/database.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/storage/database.go): PostgreSQL connection pooling, query execution, and transaction isolation.
+- [`backend/internal/features/store/feature_store.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/features/store/feature_store.go): Redis feature store sliding window aggregates and counters.
 - [`backend/internal/security/hardening/encryption_manager.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/security/hardening/encryption_manager.go): AES-256 GCM authenticated encryption.
 
 ---

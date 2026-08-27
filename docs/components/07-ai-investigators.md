@@ -69,9 +69,9 @@ type InvestigationDossier struct {
 ---
 
 ## 5. Source Code Map
-- [`backend/internal/agents/investigation_agent.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/agents/investigation_agent.go): Prompt templating and evidence synthesis.
-- [`backend/internal/agent_council/council_engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/agent_council/council_engine.go): Multi-persona consensus engine.
-- [`backend/internal/ai_gateway/gateway.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/ai_gateway/gateway.go): Multi-LLM provider routing (Claude 3.7 / GPT-4o / Local Fallback).
+- [`backend/internal/llm/investigation_agent.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/llm/investigation_agent.go): Prompt templating, reasoning framework, and evidence synthesis.
+- [`backend/internal/llm/llm_client.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/llm/llm_client.go): Real HTTP client targeting OpenAI/Anthropic `/chat/completions` with deterministic fallback.
+- [`backend/internal/agent_council/debate_engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/agent_council/debate_engine.go): Multi-persona consensus engine and debate orchestration.
 
 ---
 
