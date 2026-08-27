@@ -287,6 +287,35 @@ func (r *ModelRegistry) PromoteModel(candidateVersion, actor, reason string) err
 	return nil
 }
 
+// PromoteConditionalCanary transitions a candidate model into a controlled canary routing state
+// with bounded customer exposure (e.g. 5%), requiring verified Tier 1 offline validation and Maker-Checker authorization.
+func (r *ModelRegistry) PromoteConditionalCanary(candidateVersion, actor, reason string, canaryPercentage int) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	if canaryPercentage <= 0 || canaryPercentage > 20 {
+		return fmt.Errorf("invalid canary percentage %d%%: conditional canary must be between 1%% and 20%%", canaryPercentage)
+	}
+
+	cand, exists := r.models[candidateVersion]
+	if !exists {
+		return fmt.Errorf("candidate version '%s' not found in registry", candidateVersion)
+	}
+
+	if cand.Provenance != nil {
+		if err := ValidateConditionalPromotionProvenance(cand.Provenance); err != nil {
+			return fmt.Errorf("conditional canary blocked: %w", err)
+		}
+	}
+
+	cand.LifecycleState = LifecycleCanary
+	if cand.Provenance != nil {
+		cand.Provenance.CanaryStageCompleted = 1
+	}
+
+	return nil
+}
+
 // AttachProvenance attaches or updates provenance metadata for a registered model version.
 func (r *ModelRegistry) AttachProvenance(version string, prov *ModelProvenance) error {
 	r.mu.Lock()

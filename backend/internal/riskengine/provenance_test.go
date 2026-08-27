@@ -113,3 +113,56 @@ func TestProvenance_RegistryPromotionEnforcement(t *testing.T) {
 	assert.Equal(t, "fraud-xgb-25f-v3.0", baseProv.CandidateVersion)
 	assert.NotEmpty(t, baseProv.DatasetChecksum)
 }
+
+func TestProvenance_ConditionalCanaryPromotion(t *testing.T) {
+	reg := NewModelRegistry()
+	now := time.Now().UTC()
+
+	cand := ModelCandidate{
+		ModelID: "cand_cb_58f",
+		Version: "extended_catboost_58f",
+	}
+	err := reg.RegisterCandidate(cand, "file:///app/cb_58f.cbm", "sha256_cb_58f")
+	require.NoError(t, err)
+
+	prov := &ModelProvenance{
+		CandidateVersion:   "extended_catboost_58f",
+		DatasetChecksum:    "dataset_sha256_frozen",
+		TrainingConfigHash: "config_hash_cb_58f",
+		TrainingJobID:      "job_cb_58f_opt",
+		ArtifactURI:        "file:///app/cb_58f.cbm",
+		ArtifactChecksum:   "sha256_cb_58f",
+		ValidationPassed:   true,  // Tier 1 offline validation passed
+		ShadowPassed:       false, // Shadow soak still awaiting live production traffic
+		ApprovalActor:      "RISK_GOVERNANCE_COMMITTEE",
+		ApprovalReason:     "Approved for Tier 1 Conditional Canary (5% exposure, automated rollback)",
+		ApprovedAt:         &now,
+	}
+	_ = reg.AttachProvenance("extended_catboost_58f", prov)
+
+	// 1. Unconditional full production promotion MUST fail because ShadowPassed is false
+	errUnconditional := reg.PromoteModel("extended_catboost_58f", "RISK_GOVERNANCE_COMMITTEE", "Full production cutover")
+	require.Error(t, errUnconditional)
+	assert.Contains(t, errUnconditional.Error(), "did not pass shadow evaluation")
+
+	// 2. Conditional canary promotion SUCCEEDS under controlled exposure (5%)
+	errConditional := reg.PromoteConditionalCanary("extended_catboost_58f", "RISK_GOVERNANCE_COMMITTEE", "5% Controlled Canary", 5)
+	require.NoError(t, errConditional)
+
+	// Verify candidate lifecycle state is now CANARY
+	models := reg.ListModels()
+	var candModel *RegisteredModel
+	for _, m := range models {
+		if m.Version == "extended_catboost_58f" {
+			candModel = m
+			break
+		}
+	}
+	require.NotNil(t, candModel)
+	assert.Equal(t, LifecycleCanary, candModel.LifecycleState)
+
+	// Verify champion remains untouched as primary production decision authority
+	prod, err := reg.GetProductionModel()
+	require.NoError(t, err)
+	assert.Equal(t, "fraud-xgb-25f-v3.0", prod.Version)
+}

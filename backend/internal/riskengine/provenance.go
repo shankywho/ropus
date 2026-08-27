@@ -88,3 +88,40 @@ func ValidateProvenanceChain(p *ModelProvenance) error {
 	}
 	return nil
 }
+
+// ValidateConditionalPromotionProvenance validates that Tier 1 scientific/offline validation
+// is complete, the artifact is verified, and dual-control Maker-Checker authorization is present
+// for controlled conditional canary routing.
+func ValidateConditionalPromotionProvenance(p *ModelProvenance) error {
+	if p == nil {
+		return errors.New("provenance record is nil")
+	}
+	if p.CandidateVersion == "" {
+		return errors.New("provenance candidate version cannot be empty")
+	}
+	if p.DatasetChecksum == "" {
+		return errors.New("provenance dataset checksum cannot be empty")
+	}
+	if p.TrainingConfigHash == "" {
+		return errors.New("provenance training config hash cannot be empty")
+	}
+	if p.TrainingJobID == "" {
+		return errors.New("provenance training job ID cannot be empty")
+	}
+	if p.ArtifactURI == "" {
+		return errors.New("provenance artifact URI cannot be empty")
+	}
+	if p.ArtifactChecksum == "" {
+		return errors.New("provenance artifact checksum cannot be empty")
+	}
+	if !p.ValidationPassed {
+		return errors.New("candidate model did not pass offline validation")
+	}
+	if p.ApprovalActor == "" {
+		return errors.New("candidate model has not been approved by an authorized operator")
+	}
+	if p.ApprovedAt == nil {
+		return errors.New("approval timestamp is missing")
+	}
+	return nil
+}

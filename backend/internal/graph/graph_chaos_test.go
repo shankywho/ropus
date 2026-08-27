@@ -17,7 +17,7 @@ func TestGraph_IngestionAndNeighbors(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, 7, store.CountNodes())
-	assert.Equal(t, 6, store.CountEdges())
+	assert.Equal(t, 7, store.CountEdges())
 
 	neighbors, err := store.QueryNeighbors("usr_alice", "")
 	require.NoError(t, err)

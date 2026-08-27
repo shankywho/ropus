@@ -41,6 +41,9 @@ type RiskEvaluationResponse struct {
 	ExpectedFraudExposure  float64                `json:"expected_fraud_exposure,omitempty"`
 	ExpectedActionCosts    map[string]float64     `json:"expected_action_costs,omitempty"`
 	EconomicDecisionReason string                 `json:"economic_decision_reason,omitempty"`
+	ThreatIntelligence     map[string]interface{} `json:"threat_intelligence,omitempty"`
+	GraphIntelligence      map[string]interface{} `json:"graph_intelligence,omitempty"`
+	ComponentLatencies     map[string]float64     `json:"component_latencies,omitempty"`
 }
 
 // Handler handles risk evaluation HTTP requests.

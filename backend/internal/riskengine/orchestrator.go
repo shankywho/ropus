@@ -13,6 +13,7 @@ import (
 
 	"github.com/shankywho/ropus/backend/internal/audit"
 	"github.com/shankywho/ropus/backend/internal/features"
+	"github.com/shankywho/ropus/backend/internal/graph"
 	"github.com/shankywho/ropus/backend/internal/rules"
 	"github.com/shankywho/ropus/backend/internal/utils"
 )
@@ -34,7 +35,10 @@ type Orchestrator struct {
 	retrainingCoordinator *RetrainingCoordinator
 	metricsEngine         *MetricsEngine
 	sloEngine             *SLOEngine
+	threatEngine          *graph.ThreatIntelligenceEngine
+	graphEngine           *graph.GraphEngine
 	kms                   utils.KMS
+	environment           string
 }
 
 // NewOrchestrator constructs a new risk Orchestrator.
@@ -62,8 +66,47 @@ func NewOrchestrator(
 		canaryRouter:          nil,
 		driftDetector:         nil,
 		retrainingCoordinator: nil,
+		threatEngine:          graph.NewThreatIntelligenceEngine(),
+		graphEngine:           graph.NewGraphEngine(nil),
 		kms:                   kms,
+		environment:           "development",
 	}
+}
+
+// SetEnvironment sets the server execution environment (e.g. "production", "staging", "development").
+func (o *Orchestrator) SetEnvironment(env string) {
+	o.environment = env
+}
+
+// GetEnvironment returns the current execution environment.
+func (o *Orchestrator) GetEnvironment() string {
+	return o.environment
+}
+
+// SetThreatEngine attaches a ThreatIntelligenceEngine.
+func (o *Orchestrator) SetThreatEngine(te *graph.ThreatIntelligenceEngine) {
+	o.threatEngine = te
+}
+
+// SetGraphEngine attaches a GraphEngine.
+func (o *Orchestrator) SetGraphEngine(ge *graph.GraphEngine) {
+	o.graphEngine = ge
+}
+
+// GetThreatEngine returns the attached ThreatIntelligenceEngine.
+func (o *Orchestrator) GetThreatEngine() *graph.ThreatIntelligenceEngine {
+	if o.threatEngine == nil {
+		o.threatEngine = graph.NewThreatIntelligenceEngine()
+	}
+	return o.threatEngine
+}
+
+// GetGraphEngine returns the attached GraphEngine.
+func (o *Orchestrator) GetGraphEngine() *graph.GraphEngine {
+	if o.graphEngine == nil {
+		o.graphEngine = graph.NewGraphEngine(nil)
+	}
+	return o.graphEngine
 }
 
 // SetRetrainingCoordinator attaches the RetrainingCoordinator to the Orchestrator.
@@ -183,10 +226,12 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 	decisionUUID := uuid.New().String()
 	decisionID := fmt.Sprintf("dec_%s", decisionUUID)
 	snapshotRef := fmt.Sprintf("snap_%s", uuid.New().String()[:10])
+	componentLatencies := make(map[string]float64)
 
 	// -------------------------------------------------------------
 	// STEP 1: Context Aggregation & Velocity Queries
 	// -------------------------------------------------------------
+	featStart := time.Now()
 	ip := req.IPAddress
 	token := req.PaymentMethod.Token
 
@@ -312,6 +357,26 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 			IsDegraded:            false,
 		}
 	}
+	componentLatencies["feature_store"] = float64(time.Since(featStart).Microseconds()) / 1000.0
+
+	// -------------------------------------------------------------
+	// STEP 1A: Threat Intelligence & Geolocation Traversal
+	// -------------------------------------------------------------
+	threatStart := time.Now()
+	threatEngine := o.GetThreatEngine()
+	prevLocation := &graph.GeoPoint{Lat: 12.9716, Lon: 77.5946} // Baseline user anchor: Bengaluru
+	prevTime := startTime.Add(-12 * time.Minute)
+	threatReport := threatEngine.EvaluateThreatContext(ip, req.DeviceFingerprint, "", prevLocation, prevTime, startTime)
+	componentLatencies["threat_intelligence"] = float64(time.Since(threatStart).Microseconds()) / 1000.0
+
+	// -------------------------------------------------------------
+	// STEP 1B: Real 3-Hop BFS Graph Traversal & Topology Mapping
+	// -------------------------------------------------------------
+	graphStart := time.Now()
+	graphEngine := o.GetGraphEngine()
+	_ = graphEngine.IngestTransactionLinks(req.TransactionID, req.AccountID, req.AccountID, token, devIdentity.DeviceID, ip, "merch_default", float64(req.Amount), false)
+	graphEvidence := graphEngine.EvaluateEntityGraph(req.AccountID, devIdentity.DeviceID, token, ip)
+	componentLatencies["graph_engine"] = float64(time.Since(graphStart).Microseconds()) / 1000.0
 
 	// Point-in-Time Safe: Construct Canonical 25-Feature ML Vector & Legacy 15-Feature Adapter
 	canonical25Vector := BuildCanonical25FeatureVector(
@@ -339,6 +404,31 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 		"device_id":          devIdentity.DeviceID,
 		"device_status":      string(devIdentity.Status),
 		"ip_address":         ip,
+		"threat_intelligence": map[string]interface{}{
+			"risk_score":            threatReport.RiskScore,
+			"is_malicious_ip":       threatReport.IsMaliciousIP,
+			"is_compromised_device": threatReport.IsCompromisedDev,
+			"is_proxy_datacenter":   threatReport.IsProxyDatacenter,
+			"is_impossible_travel":  threatReport.IsImpossibleTrip,
+			"geo_distance_km":       threatReport.GeoDistanceKm,
+			"implied_speed_kmh":     threatReport.ImpliedSpeedKmh,
+			"origin_country":        threatReport.OriginCountry,
+			"origin_city":           threatReport.OriginCity,
+			"asn":                   threatReport.ASN,
+			"matches":               threatReport.Matches,
+		},
+		"graph_intelligence": map[string]interface{}{
+			"start_node_id":           graphEvidence.StartNodeID,
+			"visited_nodes_count":     graphEvidence.VisitedNodesCount,
+			"traversed_edges_count":   graphEvidence.TraversedEdgesCount,
+			"connected_account_count": graphEvidence.ConnectedAccountCount,
+			"shared_device_count":     graphEvidence.SharedDeviceCount,
+			"fraud_nodes_count":       graphEvidence.FraudNodesCount,
+			"fraud_ring_detected":     graphEvidence.FraudRingDetected,
+			"degree_centrality":       graphEvidence.DegreeCentrality,
+			"graph_risk_contribution": graphEvidence.GraphRiskContribution,
+			"matches":                 graphEvidence.Matches,
+		},
 		"ml_feature_contract": map[string]interface{}{
 			"canonical_version": MLFeatureContractV25,
 			"legacy_version":    MLFeatureContractV15,
@@ -457,6 +547,7 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 	// -------------------------------------------------------------
 	// STEP 2: Fetch Active Rules & Evaluate Pre-Rules (Hard Guardrails)
 	// -------------------------------------------------------------
+	rulesStart := time.Now()
 	var activeRules []rules.Rule
 	if o.rulesService != nil {
 		activeStatus := rules.StatusActive
@@ -475,6 +566,49 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 	// Record telemetry warnings if client provided malformed/oversized device data
 	if devIdentity.Status == features.DeviceStatusOversized || devIdentity.Status == features.DeviceStatusInvalid {
 		reasonCodes = append(reasonCodes, "INVALID_DEVICE_TELEMETRY")
+	}
+
+	// Threat Intelligence Signals Propagation
+	if threatReport.IsMaliciousIP {
+		reasonCodes = append(reasonCodes, "THREAT_INTEL:KNOWN_MALICIOUS_IP")
+		if riskScore < 85 {
+			riskScore = 85
+		}
+	}
+	if threatReport.IsCompromisedDev {
+		reasonCodes = append(reasonCodes, "THREAT_INTEL:COMPROMISED_EMULATOR_DEVICE")
+		if riskScore < 80 {
+			riskScore = 80
+		}
+	}
+	if threatReport.IsProxyDatacenter {
+		reasonCodes = append(reasonCodes, "THREAT_INTEL:DATACENTER_PROXY_ASN")
+	}
+	if threatReport.IsImpossibleTrip {
+		reasonCodes = append(reasonCodes, "THREAT_INTEL:IMPOSSIBLE_TRAVEL_VELOCITY")
+		if riskScore < 80 {
+			riskScore = 80
+		}
+	}
+
+	// Graph BFS Signals Propagation
+	if graphEvidence.FraudRingDetected {
+		reasonCodes = append(reasonCodes, "GRAPH_SIGNAL:FRAUD_RING_CLUSTER")
+		if riskScore < 90 {
+			riskScore = 90
+		}
+	}
+	if graphEvidence.ConnectedAccountCount >= 3 {
+		reasonCodes = append(reasonCodes, "GRAPH_SIGNAL:MULTI_ACCOUNT_DEVICE_CLUSTER")
+		if riskScore < 70 {
+			riskScore = 70
+		}
+	}
+	if graphEvidence.FraudNodesCount > 0 {
+		reasonCodes = append(reasonCodes, "GRAPH_SIGNAL:CONFIRMED_FRAUD_NEIGHBOR")
+		if riskScore < 85 {
+			riskScore = 85
+		}
 	}
 
 	// Evaluate pre-rules (hard blocks / allows)
@@ -512,6 +646,7 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 			break
 		}
 	}
+	componentLatencies["rules_engine"] = float64(time.Since(rulesStart).Microseconds()) / 1000.0
 
 	isDegraded := false
 	if devIdentity.Status == features.DeviceStatusOversized || devIdentity.Status == features.DeviceStatusInvalid {
@@ -651,6 +786,7 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 	// -------------------------------------------------------------
 	// STEP 3: ML Inference & Staged Canary Routing (if pre-rules did not halt pipeline)
 	// -------------------------------------------------------------
+	mlStart := time.Now()
 	modelRoute := RouteLegacy
 	if o.canaryRouter != nil {
 		modelRoute = o.canaryRouter.Route(tenantID, req.TransactionID)
@@ -698,10 +834,15 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 				if legErr != nil {
 					log.Printf("ML inference degraded (%v). Falling back to rules/heuristics.", legErr)
 					isDegraded = true
-					riskScore = o.calculateFallbackRiskScore(req.Amount, velocityMetrics)
+					fallbackScore := o.calculateFallbackRiskScore(req.Amount, velocityMetrics, threatReport, graphEvidence)
+					if fallbackScore > riskScore {
+						riskScore = fallbackScore
+					}
 					reasonCodes = append(reasonCodes, "ML_SERVICE_DEGRADED")
 				} else {
-					riskScore = legacyResp.RiskScore
+					if legacyResp.RiskScore > riskScore {
+						riskScore = legacyResp.RiskScore
+					}
 					if len(legacyResp.ReasonCodes) > 0 {
 						reasonCodes = append(reasonCodes, legacyResp.ReasonCodes...)
 					}
@@ -738,7 +879,7 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 			if err != nil {
 				log.Printf("ML inference degraded (%v). Falling back to rules/heuristics.", err)
 				isDegraded = true
-				riskScore = o.calculateFallbackRiskScore(req.Amount, velocityMetrics)
+				riskScore = o.calculateFallbackRiskScore(req.Amount, velocityMetrics, threatReport, graphEvidence)
 				reasonCodes = append(reasonCodes, "ML_SERVICE_DEGRADED")
 			} else {
 				riskScore = mlResp.RiskScore
@@ -748,46 +889,68 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 			}
 		}
 
-		// -------------------------------------------------------------
-		// STEP 4: Cost-Sensitive Decisioning & Post-Rules Precedence
-		// -------------------------------------------------------------
-		evalContext["risk_score"] = riskScore
-		calibratedProb := float64(riskScore) / 100.0
-		amountFloat := float64(req.Amount)
+		// Preserve elevated score if unambiguous hard threat signals are present
+		hardThreatScore := 0
+		if threatReport != nil {
+			if threatReport.IsImpossibleTrip {
+				hardThreatScore = 88
+			} else if threatReport.IsMaliciousIP {
+				hardThreatScore = 85
+			}
+		}
+		if graphEvidence != nil && graphEvidence.FraudNodesCount > 0 {
+			if hardThreatScore < 90 {
+				hardThreatScore = 90
+			}
+		}
+		if hardThreatScore > riskScore {
+			riskScore = hardThreatScore
+		}
+	}
+	componentLatencies["ml_inference"] = float64(time.Since(mlStart).Microseconds()) / 1000.0
 
-		economicDecision = EvaluateCostSensitiveDecision(calibratedProb, amountFloat, DefaultEconomicPolicyConfig())
+	// -------------------------------------------------------------
+	// STEP 4: Cost-Sensitive Decisioning & Post-Rules Precedence
+	// -------------------------------------------------------------
+	arbStart := time.Now()
+	evalContext["risk_score"] = riskScore
+	calibratedProb := float64(riskScore) / 100.0
+	amountFloat := float64(req.Amount)
 
-		evalContext["calibrated_probability"] = calibratedProb
-		evalContext["expected_fraud_exposure"] = economicDecision.ExpectedFraudExposure
-		evalContext["expected_action_costs"] = economicDecision.ActionCosts
-		evalContext["economic_decision_reason"] = economicDecision.DecisionReason
+	economicDecision = EvaluateCostSensitiveDecision(calibratedProb, amountFloat, DefaultEconomicPolicyConfig())
 
-		// Threshold & Cost-Sensitive Decision Precedence:
-		// If pre-rules did not force an action, determine optimal action:
-		if finalAction == "" {
-			switch {
-			case riskScore >= 85:
-				finalAction = "DECLINE_RECOMMENDATION"
-			case riskScore >= 65:
-				finalAction = "MANUAL_REVIEW"
-			case riskScore >= 45:
-				finalAction = "STEP_UP_RECOMMENDATION"
-			default:
-				// For lower scores, allow Bayes Minimum Risk to elevate action if expected fraud exposure is high
-				if economicDecision.OptimalAction == "DECLINE_RECOMMENDATION" ||
-					economicDecision.OptimalAction == "MANUAL_REVIEW" ||
-					economicDecision.OptimalAction == "STEP_UP_RECOMMENDATION" {
-					finalAction = economicDecision.OptimalAction
-				} else {
-					finalAction = "ALLOW_RECOMMENDATION"
-				}
+	evalContext["calibrated_probability"] = calibratedProb
+	evalContext["expected_fraud_exposure"] = economicDecision.ExpectedFraudExposure
+	evalContext["expected_action_costs"] = economicDecision.ActionCosts
+	evalContext["economic_decision_reason"] = economicDecision.DecisionReason
+
+	// Threshold & Cost-Sensitive Decision Precedence:
+	// If pre-rules did not force an action, determine optimal action:
+	if finalAction == "" {
+		switch {
+		case riskScore >= 85:
+			finalAction = "DECLINE_RECOMMENDATION"
+		case riskScore >= 65:
+			finalAction = "MANUAL_REVIEW"
+		case riskScore >= 45:
+			finalAction = "STEP_UP_RECOMMENDATION"
+		default:
+			// For lower scores, allow Bayes Minimum Risk to elevate action if expected fraud exposure is high
+			if economicDecision.OptimalAction == "DECLINE_RECOMMENDATION" ||
+				economicDecision.OptimalAction == "MANUAL_REVIEW" ||
+				economicDecision.OptimalAction == "STEP_UP_RECOMMENDATION" {
+				finalAction = economicDecision.OptimalAction
+			} else {
+				finalAction = "ALLOW_RECOMMENDATION"
 			}
 		}
 	}
+	componentLatencies["arbitration"] = float64(time.Since(arbStart).Microseconds()) / 1000.0
 
 	// -------------------------------------------------------------
 	// STEP 5: Envelope Encryption & Transactional Outbox Persistence
 	// -------------------------------------------------------------
+	persStart := time.Now()
 	latencyMs := int(time.Since(startTime).Milliseconds())
 	nowUTC := time.Now().UTC()
 
@@ -1006,16 +1169,26 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 			}
 		}
 	}
+	componentLatencies["persistence"] = float64(time.Since(persStart).Microseconds()) / 1000.0
 
 	// -------------------------------------------------------------
 	// STEP 5.5: Asynchronous Shadow Scoring (Candidate 25F Model)
 	// -------------------------------------------------------------
 	if o.shadowScorer != nil {
 		prodProb := float64(riskScore) / 100.0
+
+		// Server-side provenance derivation: Client fields/headers cannot forge LIVE_PRODUCTION.
+		taskProvenance := ProvenanceOfflineTest
+		if strings.EqualFold(o.environment, "production") {
+			taskProvenance = ProvenanceLiveProduction
+		}
+
 		o.shadowScorer.Enqueue(ShadowScoreTask{
 			EvaluationID:              decisionID,
 			TenantID:                  tenantID,
 			TransactionID:             req.TransactionID,
+			CorrelationID:             decisionID,
+			Provenance:                taskProvenance,
 			Timestamp:                 nowUTC,
 			Amount:                    float64(req.Amount),
 			Canonical25Vector:         canonical25Vector,
@@ -1101,20 +1274,52 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 		ExpectedFraudExposure:  economicDecision.ExpectedFraudExposure,
 		ExpectedActionCosts:    economicDecision.ActionCosts,
 		EconomicDecisionReason: economicDecision.DecisionReason,
+		ThreatIntelligence:     evalContext["threat_intelligence"].(map[string]interface{}),
+		GraphIntelligence:      evalContext["graph_intelligence"].(map[string]interface{}),
+		ComponentLatencies:     componentLatencies,
 	}, nil
 }
 
 // calculateFallbackRiskScore generates a heuristic score when ML service is degraded.
-func (o *Orchestrator) calculateFallbackRiskScore(amount int64, velocity *features.VelocityMetrics) int {
+func (o *Orchestrator) calculateFallbackRiskScore(amount int64, velocity *features.VelocityMetrics, threatReport *graph.ThreatReport, graphEvidence *graph.EntityGraphEvidence) int {
 	score := 15
 	if amount > 100000 {
 		score += 35
 	}
-	if velocity.TxnCountIP1h >= 4 {
-		score += 30
+	if velocity != nil {
+		if velocity.TxnCountIP1h >= 4 {
+			score += 30
+		}
+		if velocity.TxnCountToken24h >= 6 {
+			score += 25
+		}
 	}
-	if velocity.TxnCountToken24h >= 6 {
-		score += 25
+	if threatReport != nil {
+		if threatReport.IsImpossibleTrip {
+			score += 70
+		}
+		if threatReport.IsMaliciousIP {
+			score += 55
+		}
+		if threatReport.IsProxyDatacenter {
+			score += 35
+		}
+		if threatReport.IsCompromisedDev {
+			score += 40
+		}
+	}
+	if graphEvidence != nil {
+		if graphEvidence.FraudNodesCount > 0 {
+			score += 65
+		}
+		if graphEvidence.ConnectedAccountCount >= 3 {
+			score += 55
+		} else if graphEvidence.ConnectedAccountCount >= 2 {
+			score += 30
+		}
+		if graphEvidence.DegreeCentrality >= 6 {
+			score += 25
+		}
 	}
 	if score > 99 {
 		score = 99

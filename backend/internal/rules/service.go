@@ -170,8 +170,12 @@ func (s *Service) GetRule(ctx context.Context, tenantID, ruleID string) (*Rule, 
 	return &rule, nil
 }
 
-// ListRules lists rules for a tenant, optionally filtered by status.
+// ListRules returns all rules for a tenant, optionally filtered by status.
 func (s *Service) ListRules(ctx context.Context, tenantID string, status *RuleStatus) ([]Rule, error) {
+	if s.db == nil {
+		return make([]Rule, 0), nil
+	}
+
 	var query string
 	var args []interface{}
 

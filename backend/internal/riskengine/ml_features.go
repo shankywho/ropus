@@ -2,6 +2,7 @@ package riskengine
 
 import (
 	"math"
+	"strings"
 	"time"
 
 	"github.com/shankywho/ropus/backend/internal/features"
@@ -415,6 +416,16 @@ func BuildCanonical25FeatureVector(
 		devInfoMissing = 1.0
 	}
 
+	// Dynamic mobile hardware classification from canonical fingerprint
+	deviceMobile := 0.0
+	if devIdentity != nil && devIdentity.IsValid {
+		fpLower := strings.ToLower(devIdentity.CanonicalFingerprint)
+		if strings.Contains(fpLower, "ios") || strings.Contains(fpLower, "safari") ||
+			strings.Contains(fpLower, "android") || strings.Contains(fpLower, "mobile") {
+			deviceMobile = 1.0
+		}
+	}
+
 	utcTime := evalTime.UTC()
 	hourOfDay := float64(utcTime.Hour())
 	dayOfWeek := float64(utcTime.Weekday())
@@ -434,7 +445,7 @@ func BuildCanonical25FeatureVector(
 		"card_category_encoded": 0.0,
 		"email_domain_risk":     0.035,
 		"dist1_missing":         1.0,
-		"device_type_mobile":    0.0,
+		"device_type_mobile":    deviceMobile,
 		"device_info_missing":   devInfoMissing,
 		"amount_to_mean_ratio":  amtRatio,
 

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -27,6 +28,17 @@ type ShadowScorerConfig struct {
 }
 
 // DefaultShadowScorerConfig returns sensible production defaults.
+// ProvenanceType defines the operational origin of a transaction evaluation.
+type ProvenanceType string
+
+const (
+	ProvenanceLiveProduction ProvenanceType = "LIVE_PRODUCTION"
+	ProvenanceOfflineTest    ProvenanceType = "OFFLINE_TEST"
+	ProvenanceSynthetic      ProvenanceType = "SYNTHETIC"
+	ProvenanceReplay         ProvenanceType = "REPLAY"
+)
+
+// DefaultShadowScorerConfig returns sensible production defaults.
 func DefaultShadowScorerConfig() ShadowScorerConfig {
 	return ShadowScorerConfig{
 		Enabled:                  true,
@@ -34,7 +46,7 @@ func DefaultShadowScorerConfig() ShadowScorerConfig {
 		QueueCapacity:            1000,
 		SampleRate:               1.0,
 		ScoreDivergenceThreshold: 0.05,
-		CandidateModelVersion:    "fraud-xgb-25f-candidate-v1",
+		CandidateModelVersion:    "extended_catboost_58f",
 		CandidateFeatureContract: MLFeatureContractV25,
 	}
 }
@@ -44,6 +56,8 @@ type ShadowScoreTask struct {
 	EvaluationID              string
 	TenantID                  string
 	TransactionID             string
+	CorrelationID             string
+	Provenance                ProvenanceType
 	Timestamp                 time.Time
 	Amount                    float64
 	Canonical25Vector         *MLFeatureVector
@@ -58,46 +72,60 @@ type ShadowScoreTask struct {
 
 // ShadowScoreResult represents the complete comparison between production and candidate evaluation.
 type ShadowScoreResult struct {
-	EvaluationID              string    `json:"evaluation_id"`
-	TenantID                  string    `json:"tenant_id"`
-	TransactionID             string    `json:"transaction_id"`
-	Timestamp                 time.Time `json:"timestamp"`
-	ProductionModelVersion    string    `json:"production_model_version"`
-	ShadowModelVersion        string    `json:"shadow_model_version"`
-	ProductionFeatureContract string    `json:"production_feature_contract"`
-	ShadowFeatureContract     string    `json:"shadow_feature_contract"`
-	ProductionRawScore        float64   `json:"production_raw_score"`
-	ProductionCalibratedScore float64   `json:"production_calibrated_score"`
-	ShadowRawScore            float64   `json:"shadow_raw_score"`
-	ShadowCalibratedScore     float64   `json:"shadow_calibrated_score"`
-	ProductionDecision        string    `json:"production_decision"`
-	ShadowDecision            string    `json:"shadow_decision"`
-	ScoreDelta                float64   `json:"score_delta"`
-	AbsoluteScoreDelta        float64   `json:"absolute_score_delta"`
-	DecisionChanged           bool      `json:"decision_changed"`
-	DivergenceCategory        string    `json:"divergence_category"`
-	ProductionLatencyMs       float64   `json:"production_latency_ms"`
-	ShadowInferenceLatencyMs  float64   `json:"shadow_inference_latency_ms"`
-	ShadowTotalLatencyMs      float64   `json:"shadow_total_latency_ms"`
-	ShadowError               string    `json:"shadow_error,omitempty"`
+	EvaluationID              string         `json:"evaluation_id"`
+	TenantID                  string         `json:"tenant_id"`
+	TransactionID             string         `json:"transaction_id"`
+	CorrelationID             string         `json:"correlation_id,omitempty"`
+	Provenance                ProvenanceType `json:"provenance"`
+	Timestamp                 time.Time      `json:"timestamp"`
+	ProductionModelVersion    string         `json:"production_model_version"`
+	ShadowModelVersion        string         `json:"shadow_model_version"`
+	ChampionArtifactChecksum  string         `json:"champion_artifact_checksum,omitempty"`
+	CandidateArtifactChecksum string         `json:"candidate_artifact_checksum,omitempty"`
+	ProductionFeatureContract string         `json:"production_feature_contract"`
+	ShadowFeatureContract     string         `json:"shadow_feature_contract"`
+	TelemetrySchemaVersion    string         `json:"telemetry_schema_version"`
+	ProductionRawScore        float64        `json:"production_raw_score"`
+	ProductionCalibratedScore float64        `json:"production_calibrated_score"`
+	ShadowRawScore            float64        `json:"shadow_raw_score"`
+	ShadowCalibratedScore     float64        `json:"shadow_calibrated_score"`
+	ProductionDecision        string         `json:"production_decision"`
+	ShadowDecision            string         `json:"shadow_decision"`
+	ScoreDelta                float64        `json:"score_delta"`
+	AbsoluteScoreDelta        float64        `json:"absolute_score_delta"`
+	DecisionChanged           bool           `json:"decision_changed"`
+	DivergenceCategory        string         `json:"divergence_category"`
+	Amount                    float64        `json:"amount"`
+	QueueWaitMs               float64        `json:"queue_wait_ms"`
+	ProductionLatencyMs       float64        `json:"production_latency_ms"`
+	ShadowInferenceLatencyMs  float64        `json:"shadow_inference_latency_ms"`
+	ShadowTotalLatencyMs      float64        `json:"shadow_total_latency_ms"`
+	ShadowSuccess             bool           `json:"shadow_success"`
+	ErrorCategory             string         `json:"error_category,omitempty"`
+	ShadowError               string         `json:"shadow_error,omitempty"`
 }
 
 // ShadowMetrics tracks live shadow scoring operational counters atomically.
 type ShadowMetrics struct {
-	RequestsTotal           atomic.Int64
-	SuccessTotal            atomic.Int64
-	ErrorsTotal             atomic.Int64
-	QueueDroppedTotal       atomic.Int64
-	ScoreDivergenceTotal    atomic.Int64
-	DecisionDivergenceTotal atomic.Int64
-	ProductionAllowTotal    atomic.Int64
-	ProductionReviewTotal   atomic.Int64
-	ProductionDeclineTotal  atomic.Int64
-	CandidateAllowTotal     atomic.Int64
-	CandidateReviewTotal    atomic.Int64
-	CandidateDeclineTotal   atomic.Int64
-	TotalInferenceLatencyUs atomic.Int64
-	TotalPipelineLatencyUs  atomic.Int64
+	RequestsTotal              atomic.Int64
+	SuccessTotal               atomic.Int64
+	ErrorsTotal                atomic.Int64
+	QueueDroppedTotal          atomic.Int64
+	LiveProductionRequestsTotal atomic.Int64
+	LiveProductionSuccessTotal atomic.Int64
+	SyntheticRequestsTotal     atomic.Int64
+	ReplayRequestsTotal        atomic.Int64
+	OfflineTestRequestsTotal   atomic.Int64
+	ScoreDivergenceTotal       atomic.Int64
+	DecisionDivergenceTotal    atomic.Int64
+	ProductionAllowTotal       atomic.Int64
+	ProductionReviewTotal      atomic.Int64
+	ProductionDeclineTotal     atomic.Int64
+	CandidateAllowTotal        atomic.Int64
+	CandidateReviewTotal       atomic.Int64
+	CandidateDeclineTotal      atomic.Int64
+	TotalInferenceLatencyUs    atomic.Int64
+	TotalPipelineLatencyUs     atomic.Int64
 }
 
 // Snapshot returns a point-in-time dictionary of current shadow metrics.
@@ -111,21 +139,26 @@ func (m *ShadowMetrics) Snapshot(queueDepth int) map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"requests_total":            m.RequestsTotal.Load(),
-		"success_total":             success,
-		"errors_total":              m.ErrorsTotal.Load(),
-		"queue_depth":               queueDepth,
-		"queue_dropped_total":       m.QueueDroppedTotal.Load(),
-		"score_divergence_total":    m.ScoreDivergenceTotal.Load(),
-		"decision_divergence_total": m.DecisionDivergenceTotal.Load(),
-		"production_allow_total":    m.ProductionAllowTotal.Load(),
-		"production_review_total":   m.ProductionReviewTotal.Load(),
-		"production_decline_total":  m.ProductionDeclineTotal.Load(),
-		"candidate_allow_total":     m.CandidateAllowTotal.Load(),
-		"candidate_review_total":    m.CandidateReviewTotal.Load(),
-		"candidate_decline_total":   m.CandidateDeclineTotal.Load(),
-		"avg_inference_latency_ms":  math.Round(avgInfMs*100) / 100,
-		"avg_total_latency_ms":      math.Round(avgTotMs*100) / 100,
+		"requests_total":                 m.RequestsTotal.Load(),
+		"success_total":                  success,
+		"errors_total":                   m.ErrorsTotal.Load(),
+		"queue_depth":                    queueDepth,
+		"queue_dropped_total":            m.QueueDroppedTotal.Load(),
+		"live_production_requests_total": m.LiveProductionRequestsTotal.Load(),
+		"live_production_success_total":  m.LiveProductionSuccessTotal.Load(),
+		"synthetic_requests_total":        m.SyntheticRequestsTotal.Load(),
+		"replay_requests_total":           m.ReplayRequestsTotal.Load(),
+		"offline_test_requests_total":     m.OfflineTestRequestsTotal.Load(),
+		"score_divergence_total":         m.ScoreDivergenceTotal.Load(),
+		"decision_divergence_total":      m.DecisionDivergenceTotal.Load(),
+		"production_allow_total":         m.ProductionAllowTotal.Load(),
+		"production_review_total":        m.ProductionReviewTotal.Load(),
+		"production_decline_total":       m.ProductionDeclineTotal.Load(),
+		"candidate_allow_total":          m.CandidateAllowTotal.Load(),
+		"candidate_review_total":         m.CandidateReviewTotal.Load(),
+		"candidate_decline_total":        m.CandidateDeclineTotal.Load(),
+		"avg_inference_latency_ms":       math.Round(avgInfMs*100) / 100,
+		"avg_total_latency_ms":           math.Round(avgTotMs*100) / 100,
 	}
 }
 
@@ -217,6 +250,10 @@ func (s *ShadowScorer) Enqueue(task ShadowScoreTask) bool {
 		return false
 	}
 
+	if task.Provenance == "" {
+		task.Provenance = ProvenanceOfflineTest
+	}
+
 	task.EnqueuedAt = time.Now().UTC()
 	s.metrics.RequestsTotal.Add(1)
 
@@ -271,6 +308,22 @@ func (s *ShadowScorer) processTask(task ShadowScoreTask) {
 
 	startProcessTime := time.Now()
 
+	// Track provenance requests
+	prov := task.Provenance
+	if prov == "" {
+		prov = ProvenanceLiveProduction
+	}
+	switch prov {
+	case ProvenanceLiveProduction:
+		s.metrics.LiveProductionRequestsTotal.Add(1)
+	case ProvenanceSynthetic:
+		s.metrics.SyntheticRequestsTotal.Add(1)
+	case ProvenanceReplay:
+		s.metrics.ReplayRequestsTotal.Add(1)
+	case ProvenanceOfflineTest:
+		s.metrics.OfflineTestRequestsTotal.Add(1)
+	}
+
 	req25F := MLShadowPredictRequest{
 		Features:               ToCanonical25FloatSlice(task.Canonical25Vector),
 		EvaluationID:           task.EvaluationID,
@@ -285,6 +338,8 @@ func (s *ShadowScorer) processTask(task ShadowScoreTask) {
 	var shadowDecision string
 	var shadowInfLatencyMs float64
 	var shadowErrStr string
+	errorCategory := "NONE"
+	shadowSuccess := false
 
 	if s.mlClient != nil {
 		resp, err := s.mlClient.PredictShadow(s.ctx, req25F)
@@ -295,8 +350,26 @@ func (s *ShadowScorer) processTask(task ShadowScoreTask) {
 			shadowCalProb = 0.05
 			shadowDecision = "MANUAL_REVIEW"
 			shadowInfLatencyMs = float64(time.Since(inferenceStart).Milliseconds())
+
+			errLower := strings.ToLower(shadowErrStr)
+			switch {
+			case strings.Contains(errLower, "timeout") || strings.Contains(errLower, "deadline"):
+				errorCategory = "TIMEOUT"
+			case strings.Contains(errLower, "503") || strings.Contains(errLower, "unavailable"):
+				errorCategory = "HTTP_503"
+			case strings.Contains(errLower, "500"):
+				errorCategory = "HTTP_500"
+			case strings.Contains(errLower, "refused") || strings.Contains(errLower, "connect"):
+				errorCategory = "CONNECTION_REFUSED"
+			default:
+				errorCategory = "ML_CLIENT_ERROR"
+			}
 		} else {
 			s.metrics.SuccessTotal.Add(1)
+			if prov == ProvenanceLiveProduction {
+				s.metrics.LiveProductionSuccessTotal.Add(1)
+			}
+			shadowSuccess = true
 			shadowRawProb = resp.RawProbability
 			shadowCalProb = resp.CalibratedProbability
 			shadowDecision = resp.ShadowDecision
@@ -304,6 +377,7 @@ func (s *ShadowScorer) processTask(task ShadowScoreTask) {
 		}
 	} else {
 		shadowErrStr = "ml_client_uninitialized"
+		errorCategory = "UNINITIALIZED_CLIENT"
 		shadowRawProb = 0.05
 		shadowCalProb = 0.05
 		shadowDecision = "ALLOW_RECOMMENDATION"
@@ -350,11 +424,16 @@ func (s *ShadowScorer) processTask(task ShadowScoreTask) {
 		EvaluationID:              task.EvaluationID,
 		TenantID:                  task.TenantID,
 		TransactionID:             task.TransactionID,
+		CorrelationID:             task.CorrelationID,
+		Provenance:                prov,
 		Timestamp:                 task.Timestamp,
 		ProductionModelVersion:    task.ProductionModelVersion,
 		ShadowModelVersion:        s.config.CandidateModelVersion,
+		ChampionArtifactChecksum:  task.ProductionModelVersion,
+		CandidateArtifactChecksum: s.config.CandidateModelVersion,
 		ProductionFeatureContract: task.ProductionFeatureContract,
 		ShadowFeatureContract:     s.config.CandidateFeatureContract,
+		TelemetrySchemaVersion:    "v2.0",
 		ProductionRawScore:        task.ProductionRawScore,
 		ProductionCalibratedScore: task.ProductionCalibratedScore,
 		ShadowRawScore:            shadowRawProb,
@@ -365,9 +444,13 @@ func (s *ShadowScorer) processTask(task ShadowScoreTask) {
 		AbsoluteScoreDelta:        math.Round(absDelta*10000) / 10000,
 		DecisionChanged:           decisionChanged,
 		DivergenceCategory:        divergenceCategory,
+		Amount:                    task.Amount,
+		QueueWaitMs:               float64(startProcessTime.Sub(task.EnqueuedAt).Microseconds()) / 1000.0,
 		ProductionLatencyMs:       task.ProductionLatencyMs,
 		ShadowInferenceLatencyMs:  shadowInfLatencyMs,
 		ShadowTotalLatencyMs:      totalPipelineLatencyMs,
+		ShadowSuccess:             shadowSuccess,
+		ErrorCategory:             errorCategory,
 		ShadowError:               shadowErrStr,
 	}
 
@@ -376,6 +459,7 @@ func (s *ShadowScorer) processTask(task ShadowScoreTask) {
 		"event":                   "shadow_score_completed",
 		"evaluation_id":           result.EvaluationID,
 		"tenant_id":               result.TenantID,
+		"provenance":              result.Provenance,
 		"production_decision":     result.ProductionDecision,
 		"shadow_decision":         result.ShadowDecision,
 		"production_cal_score":    result.ProductionCalibratedScore,
@@ -385,6 +469,8 @@ func (s *ShadowScorer) processTask(task ShadowScoreTask) {
 		"divergence_category":     result.DivergenceCategory,
 		"shadow_inf_latency_ms":   result.ShadowInferenceLatencyMs,
 		"shadow_total_latency_ms": result.ShadowTotalLatencyMs,
+		"shadow_success":          result.ShadowSuccess,
+		"error_category":          result.ErrorCategory,
 		"duration_ms":             float64(time.Since(startProcessTime).Microseconds()) / 1000.0,
 	})
 	log.Println(string(logEntry))

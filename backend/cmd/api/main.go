@@ -28,6 +28,7 @@ import (
 )
 
 type Config struct {
+	Environment                          string
 	Port                                 string
 	DatabaseURL                          string
 	RedisURL                             string
@@ -40,6 +41,7 @@ type Config struct {
 	ClickHouseUser                       string
 	ClickHousePassword                   string
 	ShadowEnabled                        bool
+	ShadowCandidateModelVersion          string
 	ShadowWorkerCount                    int
 	ShadowQueueCapacity                  int
 	ShadowSampleRate                     float64
@@ -73,6 +75,7 @@ type Config struct {
 }
 
 func loadConfig() Config {
+	env := getEnvOrDefault("APP_ENV", getEnvOrDefault("ENVIRONMENT", "development"))
 	port := getEnvOrDefault("PORT", "8080")
 
 	dbURL := os.Getenv("DATABASE_URL")
@@ -118,6 +121,7 @@ func loadConfig() Config {
 	}
 
 	shadowEnabled := getEnvOrDefault("SHADOW_SCORING_ENABLED", "true") == "true"
+	shadowCandidateModel := getEnvOrDefault("SHADOW_CANDIDATE_MODEL_VERSION", "extended_catboost_58f")
 	shadowWorkers := 4
 	if val := os.Getenv("SHADOW_WORKER_COUNT"); val != "" {
 		var w int
@@ -287,6 +291,7 @@ func loadConfig() Config {
 	mlTrainingOutputDir := getEnvOrDefault("ML_TRAINING_OUTPUT_DIR", "ml-service/model/candidates")
 
 	return Config{
+		Environment:                          env,
 		Port:                                 port,
 		DatabaseURL:                          dbURL,
 		RedisURL:                             redisURL,
@@ -299,6 +304,7 @@ func loadConfig() Config {
 		ClickHouseUser:                       getEnvOrDefault("CLICKHOUSE_USER", "default"),
 		ClickHousePassword:                   os.Getenv("CLICKHOUSE_PASSWORD"),
 		ShadowEnabled:                        shadowEnabled,
+		ShadowCandidateModelVersion:          shadowCandidateModel,
 		ShadowWorkerCount:                    shadowWorkers,
 		ShadowQueueCapacity:                  shadowQueue,
 		ShadowSampleRate:                     shadowSample,
@@ -330,6 +336,17 @@ func loadConfig() Config {
 		MLTrainingDataset:                    mlTrainingDataset,
 		MLTrainingOutputDir:                  mlTrainingOutputDir,
 	}
+}
+
+// ValidateProductionSafetyConfig enforces strict safety invariants during startup.
+func ValidateProductionSafetyConfig(cfg Config) error {
+	if cfg.CanaryEnabled && cfg.CanaryPercentage > 0 {
+		return fmt.Errorf("CANARY_ROUTING_FORBIDDEN: canary percentage cannot be > 0 (%d%% configured) during shadow soak phase", cfg.CanaryPercentage)
+	}
+	if cfg.ShadowEnabled && cfg.ShadowCandidateModelVersion == "" {
+		return fmt.Errorf("SHADOW_CANDIDATE_MODEL_REQUIRED: candidate model version must be specified when shadow mode is enabled")
+	}
+	return nil
 }
 
 func getEnvOrDefault(key, fallback string) string {
@@ -364,6 +381,9 @@ func RequireAdminAuth(adminKey string, next http.HandlerFunc) http.HandlerFunc {
 
 func main() {
 	cfg := loadConfig()
+	if err := ValidateProductionSafetyConfig(cfg); err != nil {
+		log.Fatalf("Fatal: Production safety validation failed: %v", err)
+	}
 
 	log.Printf("Starting AI Risk Manager API on port %s...", cfg.Port)
 
@@ -443,6 +463,7 @@ func main() {
 	orchestrator.SetPaymentTokenStore(paymentTokenStore)
 	orchestrator.SetDeviceVelocityStore(deviceVelocityStore)
 	orchestrator.SetDeviceReputationStore(deviceReputationStore)
+	orchestrator.SetEnvironment(cfg.Environment)
 
 	shadowCfg := riskengine.ShadowScorerConfig{
 		Enabled:                  cfg.ShadowEnabled,
@@ -450,7 +471,7 @@ func main() {
 		QueueCapacity:            cfg.ShadowQueueCapacity,
 		SampleRate:               cfg.ShadowSampleRate,
 		ScoreDivergenceThreshold: 0.05,
-		CandidateModelVersion:    "fraud-xgb-25f-candidate-v1",
+		CandidateModelVersion:    cfg.ShadowCandidateModelVersion,
 		CandidateFeatureContract: riskengine.MLFeatureContractV25,
 	}
 	shadowScorer := riskengine.NewShadowScorer(shadowCfg, mlClient, chClient)
@@ -797,8 +818,9 @@ func main() {
 
 	// V1 API Routes
 	r.Route("/v1", func(r chi.Router) {
-		// Real-time risk evaluation orchestrator
+		// Real-time risk evaluation orchestrator (Canonical endpoints)
 		r.Post("/risk-evaluations", riskHandler.EvaluateRisk)
+		r.Post("/risk/evaluate", riskHandler.EvaluateRisk)
 
 		RegisterDriftHandlers(r, driftDetector)
 		RegisterRetrainingHandlers(r, retrainingCoordinator, cfg.AdminAPIKey)
