@@ -161,14 +161,16 @@ function DemoPage() {
 
   const currentPreset = stagePresets[stage] || stagePresets[0];
 
-  // Sync custom inputs with preset when stage changes
+  // Sync custom inputs with preset and reset tab to telemetry whenever stage changes
   useEffect(() => {
     setCustomAmount(currentPreset.amount);
     setCustomCurrency(currentPreset.currency);
     setCustomIp(currentPreset.ip);
     setCustomDevice(currentPreset.device);
     setLiveError(null);
-  }, [stage, currentPreset]);
+    setActiveTab("telemetry");
+    setLiveEvalResult(null);
+  }, [stage]);
 
   const handleLiveEvaluate = async (overrideParams?: Partial<typeof currentPreset>) => {
     setLiveLoading(true);
@@ -213,6 +215,7 @@ function DemoPage() {
   }, [stage]);
 
   const nextStage = () => {
+    setActiveTab("telemetry");
     if (stage < demoStages.length - 1) {
       demoControls.next();
     } else {
@@ -246,7 +249,10 @@ function DemoPage() {
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={() => (playing ? demoControls.pause() : demoControls.play())}
+            onClick={() => {
+              setActiveTab("telemetry");
+              playing ? demoControls.pause() : demoControls.play();
+            }}
             className={cn(
               "border px-3 py-1.5 font-mono text-[11px] font-medium transition-colors cursor-pointer",
               playing
@@ -258,7 +264,10 @@ function DemoPage() {
           </button>
           <button
             type="button"
-            onClick={() => demoControls.back()}
+            onClick={() => {
+              setActiveTab("telemetry");
+              demoControls.back();
+            }}
             disabled={stage === 0}
             className="border border-border bg-surface px-2.5 py-1.5 font-mono text-[11px] font-medium text-foreground hover:bg-secondary disabled:opacity-40 cursor-pointer"
           >
@@ -266,7 +275,10 @@ function DemoPage() {
           </button>
           <button
             type="button"
-            onClick={() => demoControls.next()}
+            onClick={() => {
+              setActiveTab("telemetry");
+              demoControls.next();
+            }}
             disabled={stage === demoStages.length - 1}
             className="border border-border bg-surface px-2.5 py-1.5 font-mono text-[11px] font-medium text-foreground hover:bg-secondary disabled:opacity-40 cursor-pointer"
           >
@@ -274,7 +286,10 @@ function DemoPage() {
           </button>
           <button
             type="button"
-            onClick={() => demoControls.reset()}
+            onClick={() => {
+              setActiveTab("telemetry");
+              demoControls.reset();
+            }}
             className="border border-border bg-surface px-2.5 py-1.5 font-mono text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
           >
             Reset
@@ -313,7 +328,10 @@ function DemoPage() {
             <button
               key={s.id}
               type="button"
-              onClick={() => demoControls.goTo(idx)}
+              onClick={() => {
+                setActiveTab("telemetry");
+                demoControls.goTo(idx);
+              }}
               className={cn(
                 "flex flex-col items-start border p-2 text-left transition-all cursor-pointer bg-card",
                 isActive
@@ -464,7 +482,7 @@ function DemoPage() {
                       : "border-transparent text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  📊 Stage Telemetry
+                  📊 Stage {current.stageNumber} Telemetry
                 </button>
                 <button
                   type="button"
@@ -515,6 +533,22 @@ function DemoPage() {
                 </button>
               </div>
             </div>
+
+            {/* Sub-tab Stage Context Banner when in non-telemetry view */}
+            {activeTab !== "telemetry" && (
+              <div className="mt-3 flex items-center justify-between border border-border bg-secondary/60 px-3 py-1.5 font-mono text-[10.5px]">
+                <span className="text-foreground">
+                  Viewing sub-tab for <strong>Stage {current.stageNumber}: {current.label}</strong>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("telemetry")}
+                  className="font-bold text-navy hover:underline cursor-pointer"
+                >
+                  ← Back to Stage {current.stageNumber} Telemetry Cards
+                </button>
+              </div>
+            )}
 
             {/* Expandable Live Payload Tuner */}
             {showPayloadEditor && (
