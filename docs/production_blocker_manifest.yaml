@@ -1,0 +1,26 @@
+# ROPUS — Production Integration Blocker Manifest
+# Generated for Production Shadow Soak Activation
+
+BLOCKER:
+  type: EXTERNAL_TRAFFIC_SOURCE
+  status: REQUIRED
+  repository_ready: true
+  local_runtime_ready: true
+  live_traffic_available: false
+  reason: "No commercial merchant checkout client is currently connected or routed to this local/staging environment."
+  required_action: "Deploy container bundle to cloud edge/Kubernetes cluster, set APP_ENV=production, and configure merchant checkout gateway to send authentic customer transactions."
+  required_endpoint: "POST /v1/risk-evaluations"
+  required_headers:
+    - "Content-Type: application/json"
+    - "X-Tenant-ID: <merchant_tenant_id>"
+    - "Authorization: Bearer <merchant_jwt_token>" # (Optional, for developer gateway)
+  required_credentials:
+    - "POSTGRES_PASSWORD"
+    - "CLICKHOUSE_PASSWORD"
+    - "ADMIN_API_KEY"
+    - "WEBHOOK_SECRET"
+  verification_command: "python3 ml-service/evaluation/live_shadow_soak_monitor.py"
+  promotion_gate_impact:
+    gate_1_live_volume: "BLOCKED (0 / 10,000 live transactions)"
+    gate_2_confirmed_frauds: "BLOCKED (0 / 50 matured chargebacks)"
+    promotion_allowed: false
