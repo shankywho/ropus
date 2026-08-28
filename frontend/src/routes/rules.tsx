@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   DataGrid,
   Page,
@@ -11,20 +11,10 @@ import { Mono, StatusPill } from "@/components/ropus/core";
 import { rules, ruleDetails, type RuleRecord } from "@/lib/ropus/platform-fixtures";
 import { cn } from "@/lib/utils";
 import {
-  FileCode2,
-  Play,
-  ShieldCheck,
-  AlertTriangle,
   Plus,
   Trash2,
-  CheckCircle,
-  Clock,
-  Lock,
-  Sparkles,
-  Layers,
-  Code,
-  Save,
-  CheckCircle2,
+  Play,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -50,10 +40,10 @@ export const Route = createFileRoute("/rules")({
 });
 
 const actionTone: Record<RuleRecord["action"], string> = {
-  BLOCK: "text-blocked font-semibold",
-  REVIEW: "text-amber-intel font-semibold",
-  CHALLENGE: "text-local font-semibold",
-  SCORE: "text-muted-foreground",
+  BLOCK: "text-blocked font-semibold font-mono text-[11px]",
+  REVIEW: "text-amber-intel font-semibold font-mono text-[11px]",
+  CHALLENGE: "text-local font-semibold font-mono text-[11px]",
+  SCORE: "text-muted-foreground font-mono text-[11px]",
 };
 
 const filters = ["ALL", "ENABLED", "SHADOW", "DISABLED"] as const;
@@ -203,7 +193,7 @@ export function RulesPage() {
 
       {/* Action Bar */}
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
-        <div className="flex items-center gap-1 font-mono text-[11px]">
+        <div className="flex items-center gap-1 font-mono text-[10.5px]">
           {filters.map((f) => (
             <button
               key={f}
@@ -224,7 +214,7 @@ export function RulesPage() {
         <button
           type="button"
           onClick={() => setComposerOpen(!composerOpen)}
-          className="border border-navy bg-navy px-3 py-1.5 font-mono text-[11px] font-bold text-white hover:bg-navy/90 transition-opacity flex items-center gap-1.5 cursor-pointer"
+          className="border border-navy bg-navy px-3 py-1.5 font-mono text-[11px] font-bold text-white hover:bg-navy/90 transition-opacity flex items-center gap-1.5 cursor-pointer shadow-xs"
         >
           <Plus className="size-3.5" />
           <span>{composerOpen ? "Close Composer" : "+ Compose New AST Rule"}</span>
@@ -236,19 +226,19 @@ export function RulesPage() {
         <section className="mt-4 border border-navy bg-card p-5 shadow-lg space-y-4 animate-in fade-in duration-150">
           <div className="flex flex-wrap items-center justify-between border-b border-border pb-3 gap-2">
             <div className="flex items-center gap-2">
-              <span className="border border-navy bg-navy/10 px-2 py-0.5 font-mono text-[10px] font-bold text-navy uppercase tracking-[0.06em]">
+              <span className="border border-navy bg-navy/10 px-2 py-0.5 font-mono text-[9.5px] font-bold text-navy uppercase tracking-[0.06em]">
                 RULE COMPOSER
               </span>
-              <h3 className="font-sans text-[16px] font-bold text-foreground">
+              <h3 className="font-sans text-[15px] font-bold text-foreground tracking-tight">
                 Dual-Mode JSON-AST Policy Builder
               </h3>
             </div>
-            <div className="flex items-center gap-1 border border-border bg-surface p-0.5 font-mono text-[10.5px]">
+            <div className="flex items-center gap-1 border border-border bg-surface p-0.5 font-mono text-[10px]">
               <button
                 type="button"
                 onClick={() => setComposerMode("visual")}
                 className={cn(
-                  "px-2.5 py-0.5 cursor-pointer",
+                  "px-2.5 py-0.5 cursor-pointer font-semibold",
                   composerMode === "visual" ? "bg-navy text-white font-bold" : "text-muted-foreground",
                 )}
               >
@@ -258,7 +248,7 @@ export function RulesPage() {
                 type="button"
                 onClick={() => setComposerMode("json")}
                 className={cn(
-                  "px-2.5 py-0.5 cursor-pointer",
+                  "px-2.5 py-0.5 cursor-pointer font-semibold",
                   composerMode === "json" ? "bg-navy text-white font-bold" : "text-muted-foreground",
                 )}
               >
@@ -272,20 +262,20 @@ export function RulesPage() {
             <div className="space-y-4 font-mono text-[11.5px]">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] text-muted-foreground uppercase block font-bold">Rule Identifier</label>
+                  <label className="text-[9.5px] text-muted-foreground uppercase block font-bold tracking-wider">Rule Identifier</label>
                   <input
                     type="text"
                     value={ruleName}
                     onChange={(e) => setRuleName(e.target.value)}
-                    className="mt-1 w-full border border-border bg-surface px-2.5 py-1 text-foreground font-mono text-[12px]"
+                    className="mt-1 w-full border border-border bg-surface px-2.5 py-1 text-foreground font-mono text-[11.5px]"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-muted-foreground uppercase block font-bold">Enforcement Action</label>
+                  <label className="text-[9.5px] text-muted-foreground uppercase block font-bold tracking-wider">Enforcement Action</label>
                   <select
                     value={ruleAction}
                     onChange={(e) => setRuleAction(e.target.value as any)}
-                    className="mt-1 w-full border border-border bg-surface px-2.5 py-1 text-foreground font-mono text-[12px]"
+                    className="mt-1 w-full border border-border bg-surface px-2.5 py-1 text-foreground font-mono text-[11.5px]"
                   >
                     <option value="BLOCK">BLOCK (Hard Decline)</option>
                     <option value="REVIEW">REVIEW (Manual Case Queue)</option>
@@ -296,14 +286,14 @@ export function RulesPage() {
 
               {composerMode === "visual" ? (
                 <div className="space-y-2 border border-border bg-surface/50 p-3.5">
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground uppercase font-bold">
+                  <div className="flex items-center justify-between text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">
                     <span>Boolean Conjunction: AND Logic Block</span>
                     <span>{conditions.length} Conditions</span>
                   </div>
 
                   <div className="space-y-2">
                     {conditions.map((cond, idx) => (
-                      <div key={idx} className="flex items-center gap-2 border border-border bg-card p-2">
+                      <div key={idx} className="flex items-center gap-2 border border-border bg-card p-2 shadow-2xs">
                         <select
                           value={cond.field}
                           onChange={(e) => {
@@ -311,7 +301,7 @@ export function RulesPage() {
                             newConds[idx].field = e.target.value;
                             setConditions(newConds);
                           }}
-                          className="border border-border bg-surface px-2 py-1 text-[11px] font-mono flex-1"
+                          className="border border-border bg-surface px-2 py-1 text-[11px] font-mono flex-1 text-foreground"
                         >
                           {CANONICAL_FEATURES.map((f) => (
                             <option key={f} value={f}>{f}</option>
@@ -325,7 +315,7 @@ export function RulesPage() {
                             newConds[idx].op = e.target.value;
                             setConditions(newConds);
                           }}
-                          className="border border-border bg-surface px-2 py-1 text-[11px] font-mono w-[140px]"
+                          className="border border-border bg-surface px-2 py-1 text-[11px] font-mono w-[140px] text-foreground"
                         >
                           {OPERATORS.map((op) => (
                             <option key={op.value} value={op.value}>{op.label}</option>
@@ -340,7 +330,7 @@ export function RulesPage() {
                             newConds[idx].value = e.target.value;
                             setConditions(newConds);
                           }}
-                          className="border border-border bg-surface px-2 py-1 text-[11px] font-mono w-[90px]"
+                          className="border border-border bg-surface px-2 py-1 text-[11px] font-mono w-[90px] text-foreground"
                         />
 
                         <button
@@ -367,7 +357,7 @@ export function RulesPage() {
                   value={jsonAst}
                   onChange={(e) => setJsonAst(e.target.value)}
                   rows={8}
-                  className="w-full border border-border bg-surface p-3 font-mono text-[11.5px] text-foreground"
+                  className="w-full border border-border bg-surface p-3 font-mono text-[11.5px] text-foreground leading-relaxed"
                 />
               )}
             </div>
@@ -375,19 +365,19 @@ export function RulesPage() {
             {/* Right: Dry-Run Backtest & Maker-Checker Governance */}
             <div className="space-y-4 border-l border-border/70 pl-5 font-mono text-[11px]">
               {/* Backtest Section */}
-              <div className="border border-border bg-surface p-3 space-y-2">
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground uppercase font-bold">
+              <div className="border border-border bg-surface p-3 space-y-2 shadow-2xs">
+                <div className="flex items-center justify-between text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">
                   <span>Dry-Run Backtester</span>
                   <span className="text-authoritative">IEEE-CIS Fixture</span>
                 </div>
-                <p className="text-[10.5px] text-muted-foreground font-sans">
+                <p className="text-[11px] text-muted-foreground font-sans leading-relaxed">
                   Evaluate projected block rate &amp; false-positive friction against 100,000 historical transactions.
                 </p>
                 <button
                   type="button"
                   onClick={handleRunBacktest}
                   disabled={backtestRunning}
-                  className="w-full border border-border bg-card hover:bg-secondary py-1.5 text-foreground font-bold flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="w-full border border-border bg-card hover:bg-secondary py-1.5 text-foreground font-bold flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 text-[11px]"
                 >
                   <Play className="size-3" />
                   <span>{backtestRunning ? "Simulating on 100k Events..." : "Run Dry-Run Simulation"}</span>
@@ -403,12 +393,12 @@ export function RulesPage() {
               </div>
 
               {/* Maker-Checker Governance Safeguard */}
-              <div className="border border-amber-intel/40 bg-shadow-intel-surface p-3 space-y-1.5">
+              <div className="border border-amber-intel/40 bg-shadow-intel-surface p-3 space-y-1.5 shadow-2xs">
                 <div className="flex items-center gap-1.5 text-shadow-intel font-bold text-[10.5px]">
                   <AlertTriangle className="size-3.5" />
                   <span>Maker-Checker Dual Control Policy</span>
                 </div>
-                <div className="text-[10px] text-muted-foreground font-sans leading-snug">
+                <div className="text-[10.5px] text-muted-foreground font-sans leading-snug">
                   Rules created by <strong>shankar.r</strong> cannot be activated without independent second-officer cryptographic sign-off.
                 </div>
                 <div className="border-t border-border/40 pt-1 text-[9.5px] text-muted-foreground">
@@ -419,7 +409,7 @@ export function RulesPage() {
               <button
                 type="button"
                 onClick={handleSubmitForApproval}
-                className="w-full border border-navy bg-navy py-2 text-white font-bold hover:bg-navy/90 cursor-pointer text-[11.5px]"
+                className="w-full border border-navy bg-navy py-2 text-white font-bold hover:bg-navy/90 cursor-pointer text-[11.5px] shadow-xs"
               >
                 Submit Rule for Multi-Party Approval →
               </button>
@@ -440,7 +430,7 @@ export function RulesPage() {
             title="REGISTERED POLICIES"
             meta={`${rows.length} of ${rules.length} rules visible`}
           />
-          <div className="overflow-x-auto border border-border bg-card">
+          <div className="overflow-x-auto border border-border bg-card shadow-xs">
             <DataGrid
               onSelect={(id) => setSelectedId((cur) => (cur === id ? null : id))}
               selectedId={selectedId}
@@ -458,12 +448,12 @@ export function RulesPage() {
                 id: r.id,
                 cells: [
                   <Mono key="id" className="font-bold text-navy text-[11.5px]">{r.id}</Mono>,
-                  <span key="name" className="text-[12px] font-sans">{r.name}</span>,
-                  <Mono key="pol" className="text-[11.5px]">{r.policy}</Mono>,
+                  <span key="name" className="text-[12px] font-sans font-medium text-foreground">{r.name}</span>,
+                  <Mono key="pol" className="text-[11px] text-muted-foreground">{r.policy}</Mono>,
                   <span key="act" className={actionTone[r.action]}>{r.action}</span>,
                   <StateText key="state" state={r.state} />,
-                  <span key="hits" className="font-mono text-[12px] tabular">{r.hits24h.toLocaleString()}</span>,
-                  <span key="prec" className="font-mono text-[12px] font-semibold tabular">
+                  <span key="hits" className="font-mono text-[11.5px] tabular">{r.hits24h.toLocaleString()}</span>,
+                  <span key="prec" className="font-mono text-[11.5px] font-bold tabular text-foreground">
                     {(r.precision * 100).toFixed(1)}%
                   </span>,
                 ],
@@ -476,7 +466,7 @@ export function RulesPage() {
         {selected && detail && (
           <aside className="border border-border bg-card p-5 shadow-xs space-y-4 font-mono text-[11.5px]">
             <div className="flex items-center justify-between border-b border-border pb-2">
-              <span className="font-bold text-navy text-[11px] uppercase tracking-wider">
+              <span className="font-bold text-navy text-[9.5px] uppercase tracking-[0.12em]">
                 RULE GOVERNANCE SPECIFICATION
               </span>
               <StateText state={selected.state} />
@@ -484,40 +474,40 @@ export function RulesPage() {
 
             <div className="space-y-1">
               <div className="font-bold text-foreground text-[13px]">{selected.id}</div>
-              <div className="font-sans text-[11.5px] text-muted-foreground">{selected.name}</div>
+              <div className="font-sans text-[12px] text-muted-foreground font-medium">{selected.name}</div>
             </div>
 
             <div className="border-t border-border pt-3 space-y-2 text-[11px]">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Action:</span>
+                <span className="text-muted-foreground uppercase text-[9.5px]">Action:</span>
                 <span className={actionTone[selected.action]}>{selected.action}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">24h Hit Volume:</span>
-                <span className="font-bold text-foreground">{selected.hits24h.toLocaleString()}</span>
+                <span className="text-muted-foreground uppercase text-[9.5px]">24h Hit Volume:</span>
+                <span className="font-bold text-foreground tabular">{selected.hits24h.toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Historical Precision:</span>
-                <span className="font-bold text-authoritative">{(selected.precision * 100).toFixed(1)}%</span>
+                <span className="text-muted-foreground uppercase text-[9.5px]">Historical Precision:</span>
+                <span className="font-bold text-authoritative tabular">{(selected.precision * 100).toFixed(1)}%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Author:</span>
-                <span className="text-foreground">{detail.author}</span>
+                <span className="text-muted-foreground uppercase text-[9.5px]">Author:</span>
+                <span className="text-foreground font-medium">{detail.author}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Approving Officer:</span>
+                <span className="text-muted-foreground uppercase text-[9.5px]">Approving Officer:</span>
                 <span className="text-foreground font-bold">{detail.approver}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">SHA-256 Digest:</span>
+                <span className="text-muted-foreground uppercase text-[9.5px]">SHA-256 Digest:</span>
                 <Mono className="text-[10px] text-muted-foreground truncate max-w-[160px]">{detail.sha256Hash}</Mono>
               </div>
             </div>
 
             {/* AST Logic Preview */}
             <div className="border-t border-border pt-3 space-y-1.5">
-              <span className="text-[10px] text-muted-foreground uppercase font-bold block">AST Expression</span>
-              <pre className="border border-border bg-surface p-2.5 text-[10.5px] text-foreground font-mono overflow-x-auto">
+              <span className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider block">AST Expression</span>
+              <pre className="border border-border bg-surface p-2.5 text-[11px] text-foreground font-mono overflow-x-auto leading-relaxed shadow-2xs">
                 {JSON.stringify(detail.ast, null, 2)}
               </pre>
             </div>

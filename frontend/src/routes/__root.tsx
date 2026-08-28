@@ -17,17 +17,17 @@ import { SessionProvider } from "@/lib/rbac";
 function NotFoundComponent() {
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-6">
-      <div className="max-w-md border border-border bg-card p-6">
-        <span className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">
+      <div className="max-w-md border border-border bg-card p-6 shadow-xs">
+        <span className="font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
           HTTP 404
         </span>
-        <h1 className="mt-2 text-lg font-bold">Route not found</h1>
-        <p className="mt-1 text-[13px] text-muted-foreground">
+        <h1 className="mt-2 font-sans text-lg font-bold tracking-tight">Route not found</h1>
+        <p className="mt-1 font-sans text-[12.5px] text-muted-foreground">
           No control-plane surface is registered at this path.
         </p>
         <Link
           to="/"
-          className="mt-4 inline-flex items-center border border-border-strong bg-surface px-3 py-1.5 text-[13px] font-medium hover:bg-accent"
+          className="mt-4 inline-flex items-center border border-border-strong bg-surface px-3 py-1.5 font-sans text-[12px] font-medium hover:bg-accent"
         >
           Return to Overview
         </Link>
@@ -45,12 +45,12 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-6">
-      <div className="max-w-md border border-block/40 border-l-2 border-l-block bg-card p-6">
-        <span className="font-mono text-[11px] tracking-[0.08em] text-block uppercase">
+      <div className="max-w-md border border-block/40 border-l-2 border-l-block bg-card p-6 shadow-xs">
+        <span className="font-mono text-[9.5px] font-semibold tracking-[0.12em] text-block uppercase">
           Render failure
         </span>
-        <h1 className="mt-2 text-lg font-bold">This surface did not load</h1>
-        <p className="mt-1 text-[13px] text-muted-foreground">
+        <h1 className="mt-2 font-sans text-lg font-bold tracking-tight">This surface did not load</h1>
+        <p className="mt-1 font-sans text-[12.5px] text-muted-foreground">
           The view failed before data could be rendered. Retry, or return to the Overview.
         </p>
         <div className="mt-4 flex gap-2">
@@ -59,13 +59,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="border border-primary bg-primary px-3 py-1.5 text-[13px] font-medium text-primary-foreground"
+            className="border border-primary bg-primary px-3 py-1.5 font-sans text-[12px] font-medium text-primary-foreground cursor-pointer"
           >
             Retry
           </button>
           <a
             href="/"
-            className="border border-border-strong bg-surface px-3 py-1.5 text-[13px] font-medium hover:bg-accent"
+            className="border border-border-strong bg-surface px-3 py-1.5 font-sans text-[12px] font-medium hover:bg-accent"
           >
             Overview
           </a>
@@ -101,7 +101,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400;1,500&family=Manrope:wght@400;500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],

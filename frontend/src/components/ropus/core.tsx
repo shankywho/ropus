@@ -12,7 +12,7 @@ export function Mono({
   children: ReactNode;
   className?: string | undefined;
 }) {
-  return <span className={cn("font-mono text-[12px] tabular", className)}>{children}</span>;
+  return <span className={cn("font-mono text-[11.5px] tabular", className)}>{children}</span>;
 }
 
 /* ---------------------------------------------------------------- demo flag */
@@ -22,7 +22,7 @@ export function DemoTag({ className }: { className?: string }) {
     <span
       title={DATA_SOURCE.note}
       className={cn(
-        "inline-flex items-center gap-1.5 border border-amber-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] text-shadow-intel uppercase",
+        "inline-flex items-center gap-1.5 border border-amber-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9.5px] font-semibold tracking-[0.06em] text-shadow-intel uppercase",
         className,
       )}
     >
@@ -62,14 +62,14 @@ export function RiskScore({
       <div>
         <div
           className={cn(
-            "font-mono text-[44px] leading-none font-medium tracking-[-0.06em] tabular transition-colors duration-200",
+            "font-mono text-[38px] lg:text-[42px] leading-none font-medium tracking-[-0.05em] tabular transition-colors duration-200",
             band.tone,
           )}
         >
           {value.toFixed(2)}
         </div>
         {showBand && (
-          <div className="mt-1.5 font-mono text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+          <div className="mt-1.5 font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
             {band.label} risk
           </div>
         )}
@@ -77,7 +77,7 @@ export function RiskScore({
     );
   }
   return (
-    <span className={cn("font-mono text-[12px] font-medium tabular", band.tone)}>
+    <span className={cn("font-mono text-[12px] font-semibold tabular", band.tone)}>
       {value.toFixed(2)}
     </span>
   );
@@ -96,9 +96,9 @@ export function VerdictBadge({ verdict, size = "sm" }: { verdict: Verdict; size?
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 border font-mono font-medium tracking-[0.06em] uppercase",
+        "inline-flex items-center gap-1.5 border font-mono font-semibold tracking-[0.06em] uppercase",
         verdictStyles[verdict],
-        size === "sm" ? "px-1.5 py-0.5 text-[9.5px]" : "px-2.5 py-1 text-[11px]",
+        size === "sm" ? "px-2 py-0.5 text-[9.5px]" : "px-2.5 py-1 text-[11px]",
       )}
     >
       <span
@@ -162,7 +162,7 @@ export function StatusPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 border px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] uppercase",
+        "inline-flex items-center gap-1.5 border px-2 py-0.5 font-mono text-[9.5px] font-semibold tracking-[0.06em] uppercase",
         tones[tone].box,
         className,
       )}
@@ -190,7 +190,7 @@ export function StatusIndicator({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 font-mono text-[10px] font-medium tracking-[0.06em]",
+        "inline-flex items-center gap-1.5 font-mono text-[9.5px] font-semibold tracking-[0.06em]",
         map[state].split(" ")[1],
       )}
     >
@@ -212,7 +212,7 @@ const sourceLabels: Record<FactorSource, string> = {
 
 export function SourceTag({ source }: { source: FactorSource }) {
   return (
-    <span className="shrink-0 font-mono text-[9.5px] tracking-[0.08em] text-muted-foreground uppercase">
+    <span className="shrink-0 font-mono text-[9.5px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
       {sourceLabels[source]}
     </span>
   );
@@ -225,14 +225,14 @@ export function RiskFactor({ factor, max }: { factor: RiskFactorRecord; max: num
   return (
     <div className="border-t border-border py-2.5 first:border-t-0">
       <div className="flex items-baseline justify-between gap-4">
-        <span className="font-sans text-[12.5px] font-medium">{factor.label}</span>
+        <span className="font-sans text-[12.5px] font-semibold">{factor.label}</span>
         <div className="flex shrink-0 items-baseline gap-3">
           <SourceTag source={factor.source} />
-          <Mono className="w-12 text-right font-medium">+{factor.weight.toFixed(2)}</Mono>
+          <Mono className="w-12 text-right font-bold text-[11.5px]">+{factor.weight.toFixed(2)}</Mono>
         </div>
       </div>
       {factor.detail && (
-        <p className="mt-0.5 font-mono text-[11px] text-muted-foreground tabular">
+        <p className="mt-0.5 font-mono text-[10.5px] text-muted-foreground tabular">
           {factor.detail}
         </p>
       )}
@@ -266,7 +266,7 @@ function RecommendedAction({ item }: { item: EvidenceItem }) {
 
   if (state === "authorized") {
     return (
-      <span className="font-mono text-[10px] tracking-[0.06em] text-authoritative uppercase">
+      <span className="font-mono text-[9.5px] font-semibold tracking-[0.06em] text-authoritative uppercase">
         Authorized by Analyst
       </span>
     );
@@ -278,7 +278,7 @@ function RecommendedAction({ item }: { item: EvidenceItem }) {
           type="button"
           onClick={() => setState("authorized")}
           className={cn(
-            "px-2 py-1 font-mono text-[11px] font-medium text-white transition-colors duration-150",
+            "px-2 py-1 font-mono text-[11px] font-medium text-white transition-colors duration-150 cursor-pointer",
             item.action.destructive ? "bg-destructive hover:bg-destructive/90" : "bg-primary hover:bg-primary/90",
           )}
         >
@@ -287,7 +287,7 @@ function RecommendedAction({ item }: { item: EvidenceItem }) {
         <button
           type="button"
           onClick={() => setState("idle")}
-          className="px-2 py-1 font-sans text-[11.5px] font-medium text-muted-foreground hover:text-foreground"
+          className="px-2 py-1 font-sans text-[11.5px] font-medium text-muted-foreground hover:text-foreground cursor-pointer"
         >
           Cancel
         </button>
@@ -298,7 +298,7 @@ function RecommendedAction({ item }: { item: EvidenceItem }) {
     <button
       type="button"
       onClick={() => setState("confirming")}
-      className="border border-border-strong bg-surface px-2 py-1 font-sans text-[11.5px] font-medium transition-colors duration-150 hover:bg-secondary"
+      className="border border-border-strong bg-surface px-2 py-1 font-sans text-[11.5px] font-medium transition-colors duration-150 hover:bg-secondary cursor-pointer"
     >
       {item.action.label}
     </button>
@@ -341,9 +341,9 @@ export function EvidenceList({
   return (
     <section className={cn("border-t-2 pt-3", meta.rule)}>
       <div className="flex items-baseline justify-between gap-3">
-        <h3 className="font-mono text-[10px] font-medium tracking-[0.12em] uppercase text-foreground">{meta.title}</h3>
+        <h3 className="font-mono text-[9.5px] font-bold tracking-[0.12em] uppercase text-foreground">{meta.title}</h3>
         {kind !== "OBSERVED" && (
-          <span className="font-mono text-[9px] tracking-[0.1em] text-muted-foreground uppercase">
+          <span className="font-mono text-[9px] font-semibold tracking-[0.10em] text-muted-foreground uppercase">
             AI GENERATED
           </span>
         )}
@@ -355,14 +355,14 @@ export function EvidenceList({
           <li key={item.id} className="border-t border-border py-2.5 first:border-t-0 first:pt-0">
             {kind === "OBSERVED" ? (
               <div className="flex items-baseline justify-between gap-3">
-                <span className="font-sans text-[12.5px] leading-relaxed">{item.text}</span>
+                <span className="font-sans text-[12.5px] leading-relaxed text-foreground/90">{item.text}</span>
                 {item.source && <SourceTag source={item.source} />}
               </div>
             ) : kind === "INFERRED" ? (
               <p className="font-sans text-[12.5px] leading-relaxed text-foreground/90">{item.text}</p>
             ) : (
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="font-sans text-[12.5px] leading-relaxed">{item.text}</span>
+                <span className="font-sans text-[12.5px] leading-relaxed text-foreground/90">{item.text}</span>
                 <RecommendedAction item={item} />
               </div>
             )}
@@ -383,8 +383,8 @@ export function EvidenceList({
 export function Metric({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div>
-      <div className="font-mono text-[28px] leading-none font-medium tracking-[-0.06em] tabular">{value}</div>
-      <div className="mt-2 font-mono text-[10px] tracking-[0.12em] text-muted-foreground uppercase">{label}</div>
+      <div className="font-mono text-[28px] leading-none font-medium tracking-[-0.05em] tabular">{value}</div>
+      <div className="mt-2 font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">{label}</div>
       {sub && (
         <div className="mt-0.5 font-mono text-[10.5px] text-muted-foreground tabular">{sub}</div>
       )}
@@ -407,12 +407,12 @@ export function DecisionSummary({
 }) {
   const rows: Array<[string, ReactNode]> = [
     ["Verdict", <VerdictBadge key="v" verdict={decision.verdict} />],
-    ["Risk Score", <Mono key="s">{decision.riskScore.toFixed(2)}</Mono>],
+    ["Risk Score", <Mono key="s" className="font-semibold text-foreground">{decision.riskScore.toFixed(2)}</Mono>],
     ["Confidence", <Mono key="c">{(decision.confidence * 100).toFixed(1)}%</Mono>],
     ["Model", <Mono key="m">{`${decision.model}-${decision.modelVersion}`}</Mono>],
     ["Policy", <Mono key="p">{decision.policy}</Mono>],
     ["Latency", <Mono key="l">{decision.latencyMs.toFixed(1)} ms</Mono>],
-    ["Amount", <Mono key="a">{`${amount} ${decision.currency}`}</Mono>],
+    ["Amount", <Mono key="a" className="font-semibold">{`${amount} ${decision.currency}`}</Mono>],
     [
       "Rules",
       decision.rules.length ? (
@@ -433,8 +433,8 @@ export function DecisionSummary({
     <dl className="divide-y divide-border border-y border-border">
       {rows.map(([k, v]) => (
         <div key={k} className="flex items-baseline justify-between gap-6 py-1.5">
-          <dt className="font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">{k}</dt>
-          <dd className="text-right font-sans">{v}</dd>
+          <dt className="font-mono text-[9.5px] font-semibold tracking-[0.10em] text-muted-foreground uppercase">{k}</dt>
+          <dd className="text-right font-sans text-[12px]">{v}</dd>
         </div>
       ))}
     </dl>
@@ -445,105 +445,16 @@ export function DecisionSummary({
 
 const entityRisk: Record<
   import("@/lib/ropus/contracts").EntityRisk,
-  { fill: string; text: string; label: string }
+  { fill: string; text: string; bg: string; border: string; label: string }
 > = {
-  CLEAN: { fill: "#647182", text: "text-muted-foreground", label: "Clean" },
-  WATCH: { fill: "#476C87", text: "text-local", label: "Watch" },
-  SUSPECT: { fill: "#F5A524", text: "text-shadow-intel", label: "Suspect" },
-  CONFIRMED_FRAUD: { fill: "#CE3227", text: "text-blocked", label: "Confirmed Fraud" },
+  CLEAN: { fill: "#647182", text: "text-muted-foreground", bg: "bg-muted-foreground", border: "border-muted-foreground", label: "Clean" },
+  WATCH: { fill: "#476C87", text: "text-local", bg: "bg-local", border: "border-local", label: "Watch" },
+  SUSPECT: { fill: "#F5A524", text: "text-shadow-intel", bg: "bg-amber-intel", border: "border-amber-intel", label: "Suspect" },
+  CONFIRMED_FRAUD: { fill: "#CE3227", text: "text-blocked", bg: "bg-destructive", border: "border-destructive", label: "Confirmed Fraud" },
 };
 
 export function entityRiskMeta(risk: import("@/lib/ropus/contracts").EntityRisk) {
   return entityRisk[risk];
-}
-
-/** One entity in the fraud graph. Rendered inside an SVG canvas. */
-export function EntityNode({
-  entity,
-  selected,
-  dimmed,
-  highlighted,
-  onSelect,
-  onHover,
-}: {
-  entity: import("@/lib/ropus/contracts").GraphEntity;
-  selected: boolean;
-  dimmed: boolean;
-  highlighted?: boolean;
-  onSelect: (id: string) => void;
-  onHover?: (id: string | null) => void;
-}) {
-  const meta = entityRisk[entity.risk];
-  const x = entity.x * 10;
-  const y = entity.y * 5.6;
-  const half = entity.hop === 0 ? 21 : entity.hop === 1 ? 17 : 14;
-  return (
-    <g
-      role="button"
-      tabIndex={0}
-      aria-label={`${entity.type} ${entity.id}`}
-      aria-pressed={selected}
-      onClick={() => onSelect(entity.id)}
-      onMouseEnter={() => onHover?.(entity.id)}
-      onMouseLeave={() => onHover?.(null)}
-      onFocus={() => onHover?.(entity.id)}
-      onBlur={() => onHover?.(null)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onSelect(entity.id);
-        }
-      }}
-      className="cursor-pointer transition-opacity duration-150"
-      opacity={dimmed ? 0.25 : 1}
-    >
-      {selected && (
-        <rect
-          x={x - (half + 4)}
-          y={y - (half + 4)}
-          width={(half + 4) * 2}
-          height={(half + 4) * 2}
-          fill="none"
-          stroke="#F5A524"
-          strokeWidth={1.5}
-        />
-      )}
-      <rect
-        x={x - half}
-        y={y - half}
-        width={half * 2}
-        height={half * 2}
-        fill={selected ? "#EAE5DC" : "#FCFBF8"}
-        stroke={
-          selected ? "#1D2839" : highlighted ? "#F5A524" : "#DCD5CB"
-        }
-        strokeWidth={selected || highlighted ? 1.5 : 1}
-      />
-      <rect x={x - half} y={y - half} width={4} height={half * 2} fill={meta.fill} />
-      <text
-        x={x}
-        y={y + half + 16}
-        textAnchor="middle"
-        fontSize="12"
-        fontWeight={selected ? 700 : 500}
-        fontFamily="var(--font-mono)"
-        fill="#1D2839"
-      >
-        {entity.id}
-      </text>
-      <text
-        x={x}
-        y={y + half + 30}
-        textAnchor="middle"
-        fontSize="10"
-        letterSpacing="0.08em"
-        fontFamily="var(--font-mono)"
-        fill="#647182"
-      >
-        {entity.type}
-      </text>
-    </g>
-  );
 }
 
 /** Metadata for one relationship, shown when an analyst clicks an edge. */
@@ -559,14 +470,14 @@ export function RelationshipInspector({
   return (
     <div>
       <div className="flex items-baseline justify-between gap-3">
-        <div className="font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">
+        <div className="font-mono text-[9.5px] font-bold tracking-[0.12em] text-muted-foreground uppercase">
           RELATIONSHIP
         </div>
-        <button onClick={onClear} className="font-sans text-[11px] text-primary hover:underline">
+        <button onClick={onClear} className="font-sans text-[11px] text-primary hover:underline cursor-pointer">
           Back to Entity
         </button>
       </div>
-      <div className="mt-1 font-sans text-[13.5px] font-bold">{relationship.label}</div>
+      <div className="mt-1 font-sans text-[13.5px] font-bold text-foreground">{relationship.label}</div>
       <dl className="mt-4 border-t border-border">
         {(
           [
@@ -579,11 +490,11 @@ export function RelationshipInspector({
             key={k}
             className="flex items-baseline justify-between gap-4 border-b border-border py-1.5"
           >
-            <dt className="font-sans text-[11.5px] text-muted-foreground">{k}</dt>
+            <dt className="font-mono text-[9.5px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">{k}</dt>
             <dd>
               <button
                 onClick={() => onSelect(v)}
-                className="font-mono text-[11.5px] text-primary hover:underline"
+                className="font-mono text-[11.5px] text-primary hover:underline cursor-pointer"
               >
                 {v}
               </button>
@@ -591,89 +502,6 @@ export function RelationshipInspector({
           </div>
         ))}
       </dl>
-    </div>
-  );
-}
-
-/** Right-hand detail surface for the selected entity. */
-export function GraphInspector({
-  entity,
-  relationships,
-  onSelect,
-}: {
-  entity: import("@/lib/ropus/contracts").GraphEntity;
-  relationships: Array<{ id: string; label: string; direction: "in" | "out" }>;
-  onSelect: (id: string) => void;
-}) {
-  const meta = entityRisk[entity.risk];
-  return (
-    <div>
-      <div className="font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">
-        ENTITY INSPECTOR
-      </div>
-      <div className="mt-1 flex items-baseline justify-between gap-3">
-        <Mono className="text-[13px] font-bold">{entity.id}</Mono>
-        <span className={cn("font-mono text-[9.5px] font-medium tracking-[0.06em] uppercase", meta.text)}>
-          {meta.label}
-        </span>
-      </div>
-      <p className="mt-0.5 font-sans text-[11.5px] text-muted-foreground">{entity.label}</p>
-
-      <dl className="mt-4 border-t border-border">
-        {[
-          ["Type", entity.type] as [string, string],
-          ["Hop from Root", String(entity.hop)],
-          ["First Seen", entity.firstSeen],
-          ["Last Seen", entity.lastSeen],
-          ...entity.attributes,
-        ].map(([k, v]) => (
-          <div
-            key={k}
-            className="flex items-baseline justify-between gap-4 border-b border-border py-1.5"
-          >
-            <dt className="font-sans text-[11.5px] text-muted-foreground">{k}</dt>
-            <dd className="text-right">
-              <Mono className="text-[11.5px]">{v}</Mono>
-            </dd>
-          </div>
-        ))}
-      </dl>
-
-      <div className="mt-5 font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">
-        RELATIONSHIPS
-      </div>
-      <ul className="mt-1.5">
-        {relationships.map((r) => (
-          <li
-            key={r.id + r.label}
-            className="flex items-baseline justify-between gap-3 border-b border-border py-1.5"
-          >
-            <span className="font-sans text-[11.5px] text-muted-foreground">
-              {r.direction === "out" ? "→" : "←"} {r.label}
-            </span>
-            <button
-              onClick={() => onSelect(r.id)}
-              className="font-mono text-[11.5px] text-primary hover:underline"
-            >
-              {r.id}
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-5 font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">
-        OBSERVED SIGNALS
-      </div>
-      <ul className="mt-1.5 space-y-2">
-        {entity.signals.map((s) => (
-          <li
-            key={s}
-            className="border-l-2 border-l-border-strong pl-3 font-sans text-[11.5px] leading-relaxed"
-          >
-            {s}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
@@ -701,9 +529,9 @@ export function PriorityTag({
   priority: import("@/lib/ropus/contracts").CasePriority;
 }) {
   const tone =
-    priority === "P1" ? "text-blocked font-bold" : priority === "P2" ? "text-amber-intel font-semibold" : "text-muted-foreground";
+    priority === "P1" ? "text-blocked font-bold" : priority === "P2" ? "text-amber-intel font-bold" : "text-muted-foreground";
   return (
-    <span className={cn("font-mono text-[11.5px] tabular", tone)}>{priority}</span>
+    <span className={cn("font-mono text-[11px] font-bold tabular", tone)}>{priority}</span>
   );
 }
 
@@ -714,7 +542,7 @@ export function SlaTag({ minutes }: { minutes: number }) {
   const text = `${Math.floor(abs / 60)}h ${abs % 60}m${breached ? " over" : ""}`;
   return (
     <Mono
-      className={breached ? "text-blocked font-semibold" : abs <= 60 ? "text-amber-intel" : "text-muted-foreground"}
+      className={breached ? "text-blocked font-bold" : abs <= 60 ? "text-amber-intel font-bold" : "text-muted-foreground"}
     >
       {text}
     </Mono>
@@ -748,17 +576,18 @@ export function CaseTimeline({ events }: { events: import("@/lib/ropus/contracts
             )}
           />
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <Mono className="text-[10.5px] text-muted-foreground">
+            <Mono className="text-[10px] text-muted-foreground font-medium">
               {e.at.replace("T", " ").replace("Z", "Z")}
             </Mono>
-            <span className="font-mono text-[9.5px] tracking-[0.1em] text-muted-foreground uppercase">
+            <span className="font-mono text-[9px] font-bold tracking-[0.10em] text-muted-foreground uppercase">
               {actorMeta[e.actorKind]}
             </span>
-            <Mono className="text-[10.5px] text-muted-foreground">{e.actor}</Mono>
+            <Mono className="text-[10px] text-muted-foreground">{e.actor}</Mono>
           </div>
-          <p className="mt-1 font-sans text-[12px] leading-relaxed">{e.text}</p>
+          <p className="mt-1 font-sans text-[12px] leading-relaxed text-foreground/90">{e.text}</p>
         </li>
       ))}
     </ol>
   );
 }
+

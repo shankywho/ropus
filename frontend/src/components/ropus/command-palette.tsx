@@ -16,8 +16,6 @@ import {
   Key,
   Zap,
   Flame,
-  Download,
-  AlertTriangle,
   Compass,
   CornerDownLeft,
 } from "lucide-react";
@@ -79,10 +77,10 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               value={search}
               onValueChange={setSearch}
               placeholder="Search surfaces, entities (txn_, cus_, CASE-), or run actions..."
-              className="w-full bg-transparent font-mono text-[13px] text-foreground placeholder:text-muted-foreground outline-hidden"
+              className="w-full bg-transparent font-mono text-[12.5px] text-foreground placeholder:text-muted-foreground outline-hidden"
               autoFocus
             />
-            <kbd className="hidden sm:inline-flex items-center gap-1 border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+            <kbd className="hidden sm:inline-flex items-center gap-1 border border-border bg-surface px-1.5 py-0.5 font-mono text-[9.5px] text-muted-foreground">
               ESC
             </kbd>
           </div>
@@ -96,7 +94,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             {/* QUICK NAVIGATION */}
             <Command.Group
               heading="CONTROL SURFACES"
-              className="px-2 py-1.5 text-[10px] font-bold tracking-wider text-muted-foreground uppercase"
+              className="px-2 py-1.5 font-mono text-[9.5px] font-bold tracking-[0.12em] text-muted-foreground uppercase"
             >
               <Command.Item
                 value="overview dashboard home"
@@ -105,9 +103,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <LayoutDashboard className="size-4 shrink-0 text-navy aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">Overview & Control Deck</span>
+                  <span className="font-sans text-[12.5px] font-medium">Overview & Control Deck</span>
                 </div>
-                <kbd className="text-[10px] opacity-70">G H</kbd>
+                <kbd className="font-mono text-[9.5px] opacity-70">G H</kbd>
               </Command.Item>
 
               <Command.Item
@@ -117,9 +115,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <PlayCircle className="size-4 shrink-0 text-shadow-intel aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">Interactive 7-Stage Demo Replay</span>
+                  <span className="font-sans text-[12.5px] font-medium">Interactive 7-Stage Demo Replay</span>
                 </div>
-                <span className="border border-shadow-intel/40 bg-shadow-intel-surface px-1.5 py-0.2 font-mono text-[9.5px] text-shadow-intel font-bold">
+                <span className="border border-shadow-intel/40 bg-shadow-intel-surface px-1.5 py-0.2 font-mono text-[9px] font-semibold text-shadow-intel uppercase tracking-[0.06em]">
                   REPLAY
                 </span>
               </Command.Item>
@@ -131,9 +129,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <Network className="size-4 shrink-0 text-amber-intel aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">Fraud Knowledge Graph (GraphSAGE)</span>
+                  <span className="font-sans text-[12.5px] font-medium">Fraud Knowledge Graph (GraphSAGE)</span>
                 </div>
-                <kbd className="text-[10px] opacity-70">G G</kbd>
+                <kbd className="font-mono text-[9.5px] opacity-70">G G</kbd>
               </Command.Item>
 
               <Command.Item
@@ -143,9 +141,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <FileCode2 className="size-4 shrink-0 text-navy aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">Rules Engine & AST Policy Builder</span>
+                  <span className="font-sans text-[12.5px] font-medium">Rules Engine & AST Policy Builder</span>
                 </div>
-                <kbd className="text-[10px] opacity-70">G R</kbd>
+                <kbd className="font-mono text-[9.5px] opacity-70">G R</kbd>
               </Command.Item>
 
               <Command.Item
@@ -155,9 +153,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <Cpu className="size-4 shrink-0 text-authoritative aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">Model Registry & BMR Cost Optimizer</span>
+                  <span className="font-sans text-[12.5px] font-medium">Model Registry & BMR Cost Optimizer</span>
                 </div>
-                <kbd className="text-[10px] opacity-70">G M</kbd>
+                <kbd className="font-mono text-[9.5px] opacity-70">G M</kbd>
               </Command.Item>
 
               <Command.Item
@@ -167,9 +165,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <FolderLock className="size-4 shrink-0 text-blocked aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">Case Management Queue & Forensic Dossiers</span>
+                  <span className="font-sans text-[12.5px] font-medium">Case Management Queue & Forensic Dossiers</span>
                 </div>
-                <kbd className="text-[10px] opacity-70">G C</kbd>
+                <kbd className="font-mono text-[9.5px] opacity-70">G C</kbd>
               </Command.Item>
 
               <Command.Item
@@ -179,9 +177,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <History className="size-4 shrink-0 text-navy aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">Decision Evaluation Logs & Telemetry</span>
+                  <span className="font-sans text-[12.5px] font-medium">Decision Evaluation Logs & Telemetry</span>
                 </div>
-                <kbd className="text-[10px] opacity-70">G D</kbd>
+                <kbd className="font-mono text-[9.5px] opacity-70">G D</kbd>
               </Command.Item>
 
               <Command.Item
@@ -191,7 +189,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <Activity className="size-4 shrink-0 text-authoritative aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">SRE Operations & SLO Monitor</span>
+                  <span className="font-sans text-[12.5px] font-medium">SRE Operations & SLO Monitor</span>
                 </div>
               </Command.Item>
 
@@ -202,7 +200,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <ShieldCheck className="size-4 shrink-0 text-authoritative aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">Security & Merkle Hash Chain Explorer</span>
+                  <span className="font-sans text-[12.5px] font-medium">Security & Merkle Hash Chain Explorer</span>
                 </div>
               </Command.Item>
 
@@ -213,7 +211,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <Globe2 className="size-4 shrink-0 text-amber-intel aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">Threat Intelligence & Geo Velocity</span>
+                  <span className="font-sans text-[12.5px] font-medium">Threat Intelligence & Geo Velocity</span>
                 </div>
               </Command.Item>
 
@@ -224,7 +222,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <Key className="size-4 shrink-0 text-muted-foreground aria-selected:text-white" />
-                  <span className="font-sans text-[13px] font-medium">API Keys & Authentication</span>
+                  <span className="font-sans text-[12.5px] font-medium">API Keys & Authentication</span>
                 </div>
               </Command.Item>
             </Command.Group>
@@ -232,7 +230,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             {/* ENTITY SEARCH */}
             <Command.Group
               heading="SAMPLE ENTITY PREVIEWS"
-              className="mt-2 px-2 py-1.5 text-[10px] font-bold tracking-wider text-muted-foreground uppercase border-t border-border pt-2"
+              className="mt-2 px-2 py-1.5 font-mono text-[9.5px] font-bold tracking-[0.12em] text-muted-foreground uppercase border-t border-border pt-2"
             >
               <Command.Item
                 value="txn_order_88419 attack transaction limassol wire inr"
@@ -242,7 +240,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <div className="flex items-center gap-2.5">
                   <Zap className="size-4 shrink-0 text-blocked" />
                   <div>
-                    <div className="font-bold text-[12px]">txn_order_88419 (₹14,50,000.00 IMPS Payout)</div>
+                    <div className="font-mono font-bold text-[12px]">txn_order_88419 (₹14,50,000.00 IMPS Payout)</div>
                     <div className="font-sans text-[11px] text-muted-foreground aria-selected:text-white/80">
                       Limassol Datacenter Proxy · Score: 96/100 · BLOCK
                     </div>
@@ -259,7 +257,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <div className="flex items-center gap-2.5">
                   <Zap className="size-4 shrink-0 text-authoritative" />
                   <div>
-                    <div className="font-bold text-[12px]">txn_baseline_99120 (₹385.00 INR)</div>
+                    <div className="font-mono font-bold text-[12px]">txn_baseline_99120 (₹385.00 INR)</div>
                     <div className="font-sans text-[11px] text-muted-foreground aria-selected:text-white/80">
                       Bengaluru Residential · Score: 02/100 · APPROVE
                     </div>
@@ -276,7 +274,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <div className="flex items-center gap-2.5">
                   <FolderLock className="size-4 shrink-0 text-blocked" />
                   <div>
-                    <div className="font-bold text-[12px]">CASE-88419 (P0 Critical: Multi-Mule Syndicate)</div>
+                    <div className="font-mono font-bold text-[12px]">CASE-88419 (P0 Critical: Multi-Mule Syndicate)</div>
                     <div className="font-sans text-[11px] text-muted-foreground aria-selected:text-white/80">
                       Assigned: a.sharma · SLA: 14m remaining
                     </div>
@@ -289,7 +287,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             {/* OPERATOR ACTIONS */}
             <Command.Group
               heading="OPERATOR ACTIONS & CHAOS"
-              className="mt-2 px-2 py-1.5 text-[10px] font-bold tracking-wider text-muted-foreground uppercase border-t border-border pt-2"
+              className="mt-2 px-2 py-1.5 font-mono text-[9.5px] font-bold tracking-[0.12em] text-muted-foreground uppercase border-t border-border pt-2"
             >
               <Command.Item
                 value="trigger live risk evaluation evaluate payload"
@@ -298,7 +296,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <Flame className="size-4 shrink-0 text-amber-intel" />
-                  <span className="font-sans text-[13px]">Trigger Live Go Backend Risk Evaluation</span>
+                  <span className="font-sans text-[12.5px]">Trigger Live Go Backend Risk Evaluation</span>
                 </div>
               </Command.Item>
 
@@ -309,7 +307,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <Compass className="size-4 shrink-0 text-shadow-intel" />
-                  <span className="font-sans text-[13px]">Simulate Spherical Haversine Travel Anomaly</span>
+                  <span className="font-sans text-[12.5px]">Simulate Spherical Haversine Travel Anomaly</span>
                 </div>
               </Command.Item>
 
@@ -320,14 +318,14 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               >
                 <div className="flex items-center gap-2.5">
                   <ShieldCheck className="size-4 shrink-0 text-authoritative" />
-                  <span className="font-sans text-[13px]">Verify SHA-256 Audit Ledger Merkle Root</span>
+                  <span className="font-sans text-[12.5px]">Verify SHA-256 Audit Ledger Merkle Root</span>
                 </div>
               </Command.Item>
             </Command.Group>
           </Command.List>
 
           {/* Footer Bar */}
-          <div className="flex items-center justify-between border-t border-border bg-secondary/50 px-4 py-2 text-[10.5px] font-mono text-muted-foreground">
+          <div className="flex items-center justify-between border-t border-border bg-secondary/50 px-4 py-2 text-[10px] font-mono text-muted-foreground">
             <div className="flex items-center gap-3">
               <span><kbd className="border border-border bg-surface px-1">↑</kbd> <kbd className="border border-border bg-surface px-1">↓</kbd> Navigate</span>
               <span><kbd className="border border-border bg-surface px-1">↵</kbd> Select</span>

@@ -10,11 +10,11 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/operations")({
   head: () => ({
     meta: [
-      { title: "Operations — ROPUS" },
+      { title: "Operations & SLO Monitor — ROPUS" },
       {
         name: "description",
         content:
-          "Service health, error budgets and the operational event log for the decision path.",
+          "Service health, error budgets and the operational event log for the synchronous risk decision path.",
       },
       { property: "og:title", content: "Operations — ROPUS" },
       {
@@ -30,26 +30,26 @@ export const Route = createFileRoute("/operations")({
 });
 
 const stateBadge: Record<ServiceState, string> = {
-  HEALTHY: "border-approve/40 bg-approve/10 text-approve",
-  DEGRADED: "border-warning/45 bg-warning/12 text-warning",
-  UNAVAILABLE: "border-block/45 bg-block/12 text-block",
+  HEALTHY: "border-authoritative/40 bg-approve-surface text-authoritative",
+  DEGRADED: "border-amber-intel/45 bg-shadow-intel-surface text-shadow-intel",
+  UNAVAILABLE: "border-blocked/45 bg-blocked-surface text-blocked",
 };
 
 const sevTone: Record<OpsEvent["severity"], { text: string; rail: string }> = {
   INFO: { text: "text-muted-foreground", rail: "bg-border-strong" },
-  WARN: { text: "text-warning", rail: "bg-warning" },
-  CRITICAL: { text: "text-block", rail: "bg-block" },
+  WARN: { text: "text-shadow-intel", rail: "bg-amber-intel" },
+  CRITICAL: { text: "text-blocked", rail: "bg-blocked" },
 };
 
 function StateBadge({ state }: { state: ServiceState }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-[3px] border px-1.5 py-[1px] text-[10px] font-bold tracking-[0.07em] uppercase",
+        "inline-flex items-center gap-1.5 rounded-[2px] border px-1.5 py-[1px] font-mono text-[9.5px] font-semibold tracking-[0.06em] uppercase",
         stateBadge[state],
       )}
     >
-      <span aria-hidden className="size-[5px] bg-current" />
+      <span aria-hidden className="size-[5px] bg-current rounded-full" />
       {state}
     </span>
   );
@@ -62,8 +62,8 @@ function OperationsPage() {
   return (
     <Page>
       <PageHead
-        title="Operations"
-        subtitle="Health of the synchronous decision path and everything behind it. Degradation in graph or streaming does not stop decisioning; it reduces context."
+        title="SRE Operations & SLO Monitor"
+        subtitle="Health of the synchronous decision path and background streaming infrastructure. Degradation in shadow graph or event streaming does not block live decisioning."
       />
 
       <TelemetryStrip
@@ -74,29 +74,29 @@ function OperationsPage() {
             label: "Degraded",
             value: String(degraded.length),
             sub: degraded.map((d) => d.name).join(", ") || "none",
-            tone: degraded.length ? "text-warning" : "",
+            tone: degraded.length ? "text-amber-intel font-bold" : "text-authoritative",
           },
           {
             label: "Decision p99",
             value: `${metrics.p99LatencyMs.toFixed(1)} ms`,
             sub: "objective < 80 ms",
           },
-          { label: "Availability", value: "99.995%", sub: "trailing 30 days" },
-          { label: "Open incidents", value: "1", sub: "graph traversal latency" },
+          { label: "Availability", value: "99.995%", sub: "trailing 30 days", tone: "text-authoritative" },
+          { label: "Open incidents", value: "1", sub: "graph traversal latency", tone: "text-shadow-intel" },
         ]}
       />
 
       {degraded.length > 0 && (
-        <div className="mt-4 border border-border border-l-2 border-l-warning bg-warning/[0.06] px-4 py-3">
+        <div className="mt-4 border border-border border-l-4 border-l-amber-intel bg-shadow-intel-surface px-4 py-3 shadow-xs font-mono text-[11.5px]">
           <div className="flex items-baseline gap-2">
-            <span className="text-[10.5px] font-bold tracking-[0.08em] text-warning uppercase">
+            <span className="text-[10px] font-bold tracking-[0.10em] text-shadow-intel uppercase">
               Current impact
             </span>
             <Mono className="text-[11px] text-muted-foreground">
               {degraded.length} components degraded
             </Mono>
           </div>
-          <p className="mt-1 max-w-[110ch] text-[12.5px] text-muted-foreground">
+          <p className="mt-1 max-w-[110ch] text-[12px] font-sans text-muted-foreground leading-relaxed">
             Synchronous decisioning remains healthy. Graph context is delayed and 3-hop traversals
             are queued. Decision stream consumer lag is isolated to partition 6.
           </p>
@@ -104,18 +104,18 @@ function OperationsPage() {
       )}
 
       <div className="mt-6 grid gap-8 xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-10">
-        <section className="min-w-0">
-          <SectionHead title="Components" meta={`${metrics.services.length} instrumented`} />
-          <div className="mt-1 overflow-x-auto">
-            <table className="w-full min-w-[720px] border-collapse text-[12.5px]">
+        <section className="min-w-0 space-y-4">
+          <SectionHead title="SYSTEM COMPONENTS" meta={`${metrics.services.length} instrumented`} />
+          <div className="border border-border bg-card overflow-x-auto shadow-xs">
+            <table className="w-full min-w-[720px] border-collapse font-sans text-[12px]">
               <thead>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border bg-secondary/40 font-mono text-[9px] uppercase font-bold text-muted-foreground tracking-wider">
                   {["Component", "State", "p99", "Detail"].map((h, i) => (
                     <th
                       key={h}
                       scope="col"
                       className={cn(
-                        "py-1.5 pr-4 text-[10.5px] font-semibold tracking-[0.08em] whitespace-nowrap text-muted-foreground uppercase last:pr-0",
+                        "py-2 px-3 whitespace-nowrap text-muted-foreground last:pr-3",
                         i === 2 ? "text-right" : "text-left",
                       )}
                     >
@@ -124,40 +124,40 @@ function OperationsPage() {
                   ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-border">
                 {metrics.services.map((s) => {
                   const bad = s.state !== "HEALTHY";
                   return (
                     <tr
                       key={s.name}
                       className={cn(
-                        "border-b border-border last:border-b-0 hover:bg-accent",
-                        bad && "bg-warning/[0.05]",
+                        "hover:bg-secondary/40 transition-colors",
+                        bad && "bg-shadow-intel-surface/40",
                       )}
                     >
-                      <td className="relative py-2.5 pr-4 align-middle">
+                      <td className="relative py-2.5 px-3 align-middle font-semibold text-foreground">
                         {bad && (
                           <span
                             aria-hidden
-                            className="absolute top-0 bottom-0 -left-2 w-[2px] bg-warning"
+                            className="absolute top-0 bottom-0 left-0 w-[2px] bg-amber-intel"
                           />
                         )}
-                        <span className="text-[13px] font-semibold">{s.name}</span>
+                        <span>{s.name}</span>
                       </td>
-                      <td className="py-2.5 pr-4 align-middle">
+                      <td className="py-2.5 px-3 align-middle">
                         <StateBadge state={s.state} />
                       </td>
-                      <td className="py-2.5 pr-4 text-right align-middle">
+                      <td className="py-2.5 px-3 text-right align-middle">
                         <Mono
                           className={cn(
-                            "font-semibold",
-                            bad ? "text-warning" : "text-muted-foreground",
+                            "font-semibold text-[11.5px] tabular",
+                            bad ? "text-shadow-intel" : "text-muted-foreground",
                           )}
                         >
                           {s.p99Ms ? `${s.p99Ms.toFixed(1)} ms` : "—"}
                         </Mono>
                       </td>
-                      <td className="py-2.5 align-middle text-[12px] text-muted-foreground">
+                      <td className="py-2.5 px-3 align-middle text-[11.5px] text-muted-foreground font-sans">
                         {s.detail}
                       </td>
                     </tr>
@@ -167,35 +167,35 @@ function OperationsPage() {
             </table>
           </div>
 
-          <div className="mt-8">
-            <SectionHead title="Event log" meta="last 24 hours" />
-            <ol className="mt-1">
+          <div className="mt-8 space-y-3">
+            <SectionHead title="OPERATIONAL EVENT LOG" meta="last 24 hours" />
+            <ol className="border border-border bg-card divide-y divide-border shadow-xs font-mono text-[11px]">
               {opsEvents.map((e) => {
                 const tone = sevTone[e.severity];
                 return (
                   <li
                     key={e.id}
-                    className="flex items-baseline gap-4 border-b border-border py-2.5 last:border-b-0 hover:bg-accent"
+                    className="flex items-baseline gap-3 px-3 py-2.5 hover:bg-secondary/40 transition-colors"
                   >
                     <span
                       aria-hidden
                       className={cn("h-3 w-[2px] shrink-0 self-center", tone.rail)}
                     />
-                    <Mono className="w-[150px] shrink-0 text-[11.5px] text-muted-foreground">
+                    <Mono className="w-[140px] shrink-0 text-[10.5px] text-muted-foreground tabular">
                       {e.at}
                     </Mono>
                     <span
                       className={cn(
-                        "w-[70px] shrink-0 text-[10px] font-bold tracking-[0.08em]",
+                        "w-[65px] shrink-0 text-[9.5px] font-bold tracking-[0.08em] uppercase",
                         tone.text,
                       )}
                     >
                       {e.severity}
                     </span>
-                    <span className="w-[140px] shrink-0 text-[12.5px] font-semibold">
+                    <span className="w-[140px] shrink-0 font-sans text-[12px] font-semibold text-foreground">
                       {e.component}
                     </span>
-                    <span className="min-w-0 text-[12.5px] text-muted-foreground">{e.text}</span>
+                    <span className="min-w-0 font-sans text-[12px] text-muted-foreground">{e.text}</span>
                   </li>
                 );
               })}
@@ -203,75 +203,77 @@ function OperationsPage() {
           </div>
         </section>
 
-        <aside className="min-w-0">
-          <SectionHead title="Error budgets" meta="30-day window" />
-          <div className="mt-1">
-            {slos.map((s) => {
-              const used = Math.min(1, s.budget);
-              const exhausted = used >= 1;
-              return (
-                <div key={s.name} className="border-b border-border py-2.5 last:border-b-0">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <span className="text-[12.5px] font-medium">{s.name}</span>
-                    <Mono className={cn("font-semibold", s.healthy ? undefined : "text-warning")}>
-                      {s.actual}
-                    </Mono>
-                  </div>
-                  <div className="mt-1.5 h-[6px] w-full bg-neutral-surface">
-                    <div
-                      className={cn(
-                        "h-full",
-                        exhausted ? "bg-block" : s.healthy ? "bg-approve" : "bg-warning",
-                      )}
-                      style={{ width: `${used * 100}%` }}
-                    />
-                  </div>
-                  <div className="mt-1 flex items-baseline justify-between gap-3 text-[11px] text-muted-foreground">
-                    <span>
-                      target <Mono className="text-[11px]">{s.target}</Mono>
-                    </span>
-                    <span>
-                      <Mono className="text-[11px]">{(used * 100).toFixed(0)}%</Mono> consumed ·{" "}
-                      <Mono className="text-[11px]">{((1 - used) * 100).toFixed(0)}%</Mono>{" "}
-                      remaining
-                    </span>
-                  </div>
-                  {exhausted && (
-                    <div className="mt-1.5 inline-flex items-center gap-1.5 border border-block/40 bg-block/10 px-1.5 py-[1px] text-[10px] font-bold tracking-[0.07em] text-block uppercase">
-                      <span aria-hidden className="size-[5px] bg-current" />
-                      Action needed
+        <aside className="min-w-0 space-y-6">
+          <div>
+            <SectionHead title="ERROR BUDGETS" meta="30-day window" />
+            <div className="border border-border bg-card p-4 shadow-xs space-y-3 font-mono text-[11.5px]">
+              {slos.map((s) => {
+                const used = Math.min(1, s.budget);
+                const exhausted = used >= 1;
+                return (
+                  <div key={s.name} className="border-b border-border/50 pb-3 last:border-b-0 last:pb-0">
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="font-sans text-[12px] font-medium text-foreground">{s.name}</span>
+                      <Mono className={cn("font-bold tabular text-[11.5px]", s.healthy ? "text-authoritative" : "text-amber-intel")}>
+                        {s.actual}
+                      </Mono>
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                    <div className="mt-1.5 h-[5px] w-full bg-secondary overflow-hidden rounded-xs">
+                      <div
+                        className={cn(
+                          "h-full",
+                          exhausted ? "bg-blocked" : s.healthy ? "bg-authoritative" : "bg-amber-intel",
+                        )}
+                        style={{ width: `${used * 100}%` }}
+                      />
+                    </div>
+                    <div className="mt-1 flex items-baseline justify-between gap-3 text-[10px] text-muted-foreground font-mono">
+                      <span>
+                        target <Mono className="text-[10px]">{s.target}</Mono>
+                      </span>
+                      <span>
+                        <Mono className="text-[10px]">{(used * 100).toFixed(0)}%</Mono> consumed ·{" "}
+                        <Mono className="text-[10px]">{((1 - used) * 100).toFixed(0)}%</Mono>{" "}
+                        remaining
+                      </span>
+                    </div>
+                    {exhausted && (
+                      <div className="mt-1.5 inline-flex items-center gap-1.5 border border-blocked/40 bg-blocked-surface px-1.5 py-[1px] font-mono text-[9px] font-bold tracking-[0.06em] text-blocked uppercase">
+                        <span aria-hidden className="size-[4px] bg-current rounded-full" />
+                        Action needed
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="mt-8">
-            <SectionHead title="Open incident" meta="1 active" />
-            <div className="mt-1 border-b border-border py-2.5">
-              <div className="flex items-baseline justify-between gap-3">
-                <span className="text-[12.5px] font-semibold">Graph traversal latency</span>
-                <Mono className="text-[11px] text-muted-foreground">INC-2261</Mono>
+          <div>
+            <SectionHead title="OPEN INCIDENT" meta="1 active" />
+            <div className="border border-border bg-card p-4 shadow-xs font-mono text-[11px] space-y-2">
+              <div className="flex items-baseline justify-between gap-3 border-b border-border pb-2">
+                <span className="font-sans text-[12.5px] font-bold text-foreground">Graph traversal latency</span>
+                <Mono className="text-[10.5px] text-shadow-intel font-bold">INC-2261</Mono>
               </div>
-              <dl className="mt-2">
+              <dl className="space-y-1">
                 {[
                   ["Severity", "SEV-3"],
                   ["Opened", "2026-08-22 17:38Z"],
                   ["Component", "Graph service"],
                   ["Owner", "r.duarte"],
                 ].map(([k, v]) => (
-                  <div key={k} className="flex items-baseline justify-between gap-4 py-[3px]">
-                    <dt className="text-[10.5px] font-semibold tracking-[0.07em] text-muted-foreground uppercase">
+                  <div key={k} className="flex items-baseline justify-between gap-4 py-[2px]">
+                    <dt className="text-[9.5px] font-semibold tracking-[0.07em] text-muted-foreground uppercase">
                       {k}
                     </dt>
                     <dd>
-                      <Mono className="text-[11.5px]">{v}</Mono>
+                      <Mono className="text-[11px] font-medium text-foreground">{v}</Mono>
                     </dd>
                   </div>
                 ))}
               </dl>
-              <p className="mt-2 text-[11.5px] text-muted-foreground">
+              <p className="mt-2 text-[11.5px] text-muted-foreground font-sans leading-relaxed border-t border-border pt-2">
                 Graph traversal has consumed its full budget for this window. 3-hop traversals are
                 queued behind 1- and 2-hop requests until the backlog clears.
               </p>

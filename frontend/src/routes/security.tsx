@@ -1,20 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Page, PageHead, SectionHead, TelemetryStrip } from "@/components/ropus/page";
-import { Mono, StatusPill } from "@/components/ropus/core";
+import { Mono } from "@/components/ropus/core";
 import { accessEvents, securityPosture, teamMembers } from "@/lib/ropus/platform-fixtures";
 import { cn } from "@/lib/utils";
 import {
-  ShieldCheck,
-  Lock,
-  KeyRound,
-  FileCheck2,
-  Layers,
   CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
   RefreshCw,
-  Hash,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -96,7 +88,7 @@ function ResultTag({ result }: { result: "ALLOWED" | "DENIED" }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-[3px] border px-1.5 py-[1px] font-mono text-[10px] font-bold tracking-[0.07em] uppercase",
+        "inline-flex items-center gap-1.5 rounded-[2px] border px-1.5 py-[1px] font-mono text-[9.5px] font-semibold tracking-[0.06em] uppercase",
         denied
           ? "border-blocked/60 bg-blocked-surface text-blocked"
           : "border-authoritative/40 bg-approve-surface text-authoritative",
@@ -153,10 +145,10 @@ export function SecurityPage() {
       <section className="mt-6 border border-border bg-card p-5 shadow-xs space-y-4 font-mono text-[11.5px]">
         <div className="flex flex-wrap items-center justify-between border-b border-border pb-3 gap-2">
           <div className="flex items-center gap-2">
-            <span className="border border-navy bg-navy/10 px-2 py-0.5 text-[10px] font-bold text-navy uppercase tracking-[0.06em]">
+            <span className="border border-navy bg-navy/10 px-2 py-0.5 text-[9.5px] font-bold text-navy uppercase tracking-[0.06em]">
               IMMUTABLE LEDGER
             </span>
-            <h2 className="font-sans text-[17px] font-bold text-foreground">
+            <h2 className="font-sans text-[16px] font-bold text-foreground tracking-tight">
               Cryptographic Merkle Hash-Chain Block Explorer
             </h2>
           </div>
@@ -164,14 +156,14 @@ export function SecurityPage() {
             type="button"
             onClick={handleVerifyChain}
             disabled={verifying}
-            className="border border-navy bg-navy px-3 py-1 font-bold text-white text-[10.5px] hover:bg-navy/90 cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+            className="border border-navy bg-navy px-3 py-1 font-bold text-white text-[10.5px] hover:bg-navy/90 cursor-pointer flex items-center gap-1.5 disabled:opacity-50 shadow-xs"
           >
             <RefreshCw className={cn("size-3", verifying && "animate-spin")} />
             <span>{verifying ? "Verifying SHA-256 Chain..." : "Verify Chain Integrity"}</span>
           </button>
         </div>
 
-        <p className="font-sans text-[12px] text-muted-foreground">
+        <p className="font-sans text-[12.5px] text-muted-foreground leading-relaxed">
           Every critical decision, rule activation, and model promotion generates a block chained via:
           <Mono className="text-navy font-bold ml-1">H_i = SHA-256(H_{`{i-1}`} || EntryID || Timestamp || PayloadHash)</Mono>.
         </p>
@@ -179,14 +171,14 @@ export function SecurityPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
           {/* Block Chain Visualizer */}
           <div className="space-y-2">
-            <div className="text-[10px] text-muted-foreground uppercase font-bold">Recent Ledger Blocks</div>
+            <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Recent Ledger Blocks</div>
             <div className="space-y-2">
               {LEDGER_BLOCKS.map((blk) => (
                 <div
                   key={blk.blockId}
                   onClick={() => setSelectedBlock(blk)}
                   className={cn(
-                    "border p-3 cursor-pointer transition-all bg-surface",
+                    "border p-3 cursor-pointer transition-all bg-surface shadow-2xs",
                     selectedBlock.blockId === blk.blockId
                       ? "border-navy bg-secondary/50 shadow-xs"
                       : "border-border hover:border-border-strong",
@@ -197,14 +189,14 @@ export function SecurityPage() {
                       <span className="font-bold text-navy">#{blk.index}</span>
                       <Mono className="font-bold text-foreground">{blk.blockId}</Mono>
                     </div>
-                    <span className="text-authoritative font-bold flex items-center gap-1 text-[10px]">
+                    <span className="text-authoritative font-bold flex items-center gap-1 text-[9.5px]">
                       <CheckCircle2 className="size-3" /> VERIFIED
                     </span>
                   </div>
-                  <div className="mt-1 text-[11px] text-foreground font-sans font-medium">
+                  <div className="mt-1 text-[12px] text-foreground font-sans font-medium">
                     {blk.action}
                   </div>
-                  <div className="mt-1 text-[10px] text-muted-foreground flex justify-between">
+                  <div className="mt-1 text-[10px] text-muted-foreground flex justify-between font-mono">
                     <span>Actor: {blk.actor}</span>
                     <span>{blk.timestamp}</span>
                   </div>
@@ -214,40 +206,40 @@ export function SecurityPage() {
           </div>
 
           {/* Block Cryptographic Inspector */}
-          <aside className="border border-border bg-surface p-4 space-y-3 font-mono text-[11px]">
+          <aside className="border border-border bg-surface p-4 space-y-3 font-mono text-[11px] shadow-2xs">
             <div className="flex items-center justify-between border-b border-border pb-2">
-              <span className="font-bold text-navy text-[10.5px] uppercase">
+              <span className="font-bold text-navy text-[10px] uppercase tracking-wider">
                 Block Cryptographic Proof #{selectedBlock.index}
               </span>
-              <span className="border border-authoritative/40 bg-approve-surface px-1.5 py-0.2 text-[9.5px] text-authoritative font-bold">
+              <span className="border border-authoritative/40 bg-approve-surface px-1.5 py-0.2 text-[9px] text-authoritative font-bold tracking-wider">
                 ES256 SIGNED
               </span>
             </div>
 
             <div className="space-y-2">
               <div>
-                <span className="text-muted-foreground block text-[9.5px] uppercase">Action:</span>
-                <span className="font-bold text-foreground text-[12px]">{selectedBlock.action}</span>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Action:</span>
+                <span className="font-bold text-foreground text-[12px] font-sans">{selectedBlock.action}</span>
               </div>
               <div>
-                <span className="text-muted-foreground block text-[9.5px] uppercase">Timestamp:</span>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Timestamp:</span>
                 <span className="text-foreground">{selectedBlock.timestamp}</span>
               </div>
               <div>
-                <span className="text-muted-foreground block text-[9.5px] uppercase">Previous Block Hash (H_{`{i-1}`}):</span>
-                <Mono className="text-[10px] text-muted-foreground break-all">{selectedBlock.prevHash}</Mono>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Previous Block Hash (H_{`{i-1}`}):</span>
+                <Mono className="text-[9.5px] text-muted-foreground break-all">{selectedBlock.prevHash}</Mono>
               </div>
               <div>
-                <span className="text-muted-foreground block text-[9.5px] uppercase">Payload Digest (SHA-256):</span>
-                <Mono className="text-[10px] text-foreground break-all">{selectedBlock.payloadHash}</Mono>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Payload Digest (SHA-256):</span>
+                <Mono className="text-[9.5px] text-foreground break-all">{selectedBlock.payloadHash}</Mono>
               </div>
               <div className="border-t border-border pt-2">
-                <span className="text-navy font-bold block text-[9.5px] uppercase">Final Block Hash (H_i):</span>
-                <Mono className="text-[10.5px] font-bold text-navy break-all">{selectedBlock.blockHash}</Mono>
+                <span className="text-navy font-bold block text-[9px] uppercase tracking-wider">Final Block Hash (H_i):</span>
+                <Mono className="text-[10px] font-bold text-navy break-all">{selectedBlock.blockHash}</Mono>
               </div>
               <div>
-                <span className="text-muted-foreground block text-[9.5px] uppercase">KMS Signature:</span>
-                <Mono className="text-[10px] text-authoritative">{selectedBlock.signature}</Mono>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">KMS Signature:</span>
+                <Mono className="text-[9.5px] text-authoritative">{selectedBlock.signature}</Mono>
               </div>
             </div>
           </aside>
@@ -258,10 +250,10 @@ export function SecurityPage() {
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-8">
         <section className="min-w-0 space-y-3">
           <SectionHead title="ACCESS AUDIT TRAIL" meta="most recent 24h events" />
-          <div className="border border-border bg-card overflow-x-auto">
+          <div className="border border-border bg-card overflow-x-auto shadow-xs">
             <table className="w-full text-left font-mono text-[11.5px] border-collapse">
               <thead>
-                <tr className="border-b border-border bg-secondary/50 text-[10px] uppercase text-muted-foreground">
+                <tr className="border-b border-border bg-secondary/40 text-[9px] uppercase font-bold text-muted-foreground tracking-wider">
                   <th className="py-2.5 px-3">Timestamp</th>
                   <th className="py-2.5 px-3">Actor</th>
                   <th className="py-2.5 px-3">Action</th>
@@ -269,12 +261,12 @@ export function SecurityPage() {
                   <th className="py-2.5 px-3">Result</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-border font-mono text-[11.5px]">
                 {accessEvents.map((e) => (
                   <tr key={e.id} className="hover:bg-secondary/40 transition-colors">
                     <td className="py-2.5 px-3 text-muted-foreground">{e.at}</td>
                     <td className="py-2.5 px-3 font-bold text-foreground">{e.actor}</td>
-                    <td className="py-2.5 px-3 font-sans text-foreground">{e.action}</td>
+                    <td className="py-2.5 px-3 font-sans text-foreground text-[12px]">{e.action}</td>
                     <td className="py-2.5 px-3"><Mono className="text-[11px]">{e.resource}</Mono></td>
                     <td className="py-2.5 px-3"><ResultTag result={e.result} /></td>
                   </tr>
@@ -286,13 +278,13 @@ export function SecurityPage() {
 
         {/* Security Posture */}
         <aside className="border border-border bg-card p-5 shadow-xs space-y-3 font-mono text-[11.5px]">
-          <span className="font-bold text-navy text-[11px] uppercase tracking-wider block border-b border-border pb-2">
+          <span className="font-bold text-navy text-[9.5px] uppercase tracking-[0.12em] block border-b border-border pb-2">
             TENANT SECURITY POSTURE
           </span>
           <div className="space-y-2 text-[11px]">
             {securityPosture.map((p) => (
               <div key={p.category} className="flex justify-between items-center py-1 border-b border-border/40 last:border-0">
-                <span className="text-muted-foreground">{p.category}:</span>
+                <span className="text-muted-foreground text-[10.5px]">{p.category}:</span>
                 <span className="font-bold text-authoritative">{p.status}</span>
               </div>
             ))}

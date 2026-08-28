@@ -4,32 +4,23 @@ import {
   CaseStatusTag,
   CaseTimeline,
   DemoTag,
-  EvidenceList,
   Mono,
   PriorityTag,
-  RiskFactorList,
   RiskScore,
   VerdictBadge,
 } from "@/components/ropus/core";
-import { Disclosure, CodeBlock, KeyValue } from "@/components/ropus/primitives";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { caseQuery, decisionQuery } from "@/lib/ropus/api";
 import type { CaseEvent, CaseRecord } from "@/lib/ropus/contracts";
-import { cn } from "@/lib/utils";
 import {
-  ShieldAlert,
   User,
   Smartphone,
   Globe2,
-  Building2,
-  FileCheck2,
-  Clock,
   Sparkles,
   Lock,
-  ArrowRight,
   AlertOctagon,
   CheckCircle2,
-  UserX,
+  ShieldAlert,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -65,11 +56,11 @@ function CaseDetail() {
   if (!record) {
     return (
       <div className="mx-auto w-full max-w-[1560px] px-5 py-12 lg:px-8">
-        <h1 className="text-[19px] font-semibold tracking-tight">Case not found</h1>
-        <p className="mt-2 text-[13px] text-muted-foreground">
+        <h1 className="text-[18px] font-bold tracking-tight font-sans">Case not found</h1>
+        <p className="mt-2 text-[12.5px] text-muted-foreground font-sans">
           No case matches <Mono>{caseId}</Mono> in this tenant.
         </p>
-        <Link to="/cases" className="mt-4 inline-block text-[13px] text-primary hover:underline">
+        <Link to="/cases" className="mt-4 inline-block text-[12px] text-primary hover:underline font-sans font-medium">
           Back to queue
         </Link>
       </div>
@@ -104,7 +95,7 @@ function CaseBody({ record }: { record: CaseRecord }) {
   return (
     <div className="mx-auto w-full max-w-[1560px] px-5 py-5 lg:px-8 space-y-5">
       {/* Breadcrumbs & Navigation */}
-      <div className="flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
+      <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground uppercase tracking-wider">
         <Link to="/cases" className="hover:text-foreground">
           ← Back to Investigation Queue
         </Link>
@@ -124,15 +115,15 @@ function CaseBody({ record }: { record: CaseRecord }) {
             <VerdictBadge verdict={record.verdict} />
             <DemoTag />
           </div>
-          <p className="font-sans text-[13px] text-muted-foreground">
+          <p className="font-sans text-[12.5px] text-muted-foreground">
             Forensic incident opened following automated BLOCK disposition on transaction <Mono className="text-navy font-bold">{decision.transactionId}</Mono>.
           </p>
         </div>
 
         <div className="flex items-center gap-6">
           <div className="text-right font-mono">
-            <div className="text-[10px] text-muted-foreground uppercase">Transaction Amount</div>
-            <div className="text-[20px] font-extrabold text-foreground">{money(record.amount, record.currency)}</div>
+            <div className="text-[9.5px] text-muted-foreground uppercase font-semibold tracking-wider">Transaction Amount</div>
+            <div className="text-[20px] font-extrabold text-foreground tabular">{money(record.amount, record.currency)}</div>
           </div>
           <RiskScore value={record.riskScore} size="hero" showBand />
         </div>
@@ -143,70 +134,70 @@ function CaseBody({ record }: { record: CaseRecord }) {
         {/* COLUMN 1: TRANSACTION & IDENTITY TELEMETRY */}
         <section className="border border-border bg-card p-4 space-y-4 shadow-xs font-mono text-[11.5px]">
           <div className="flex items-center justify-between border-b border-border pb-2">
-            <span className="font-bold text-navy text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+            <span className="font-bold text-navy text-[9.5px] uppercase tracking-[0.12em] flex items-center gap-1.5">
               <User className="size-3.5" /> 1. Identity &amp; Session Telemetry
             </span>
           </div>
 
           {/* Customer Profile Box */}
-          <div className="border border-border bg-surface p-3 space-y-2">
+          <div className="border border-border bg-surface p-3 space-y-2 shadow-2xs">
             <div className="flex justify-between">
-              <span className="text-muted-foreground uppercase text-[9.5px]">Customer ID:</span>
+              <span className="text-muted-foreground uppercase text-[9px] font-bold tracking-wider">Customer ID:</span>
               <span className="font-bold text-foreground">{record.customerId}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground uppercase text-[9.5px]">Tenure:</span>
+              <span className="text-muted-foreground uppercase text-[9px] font-bold tracking-wider">Tenure:</span>
               <span className="text-foreground">445 Days (14 Months)</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground uppercase text-[9.5px]">Historical Disputes:</span>
+              <span className="text-muted-foreground uppercase text-[9px] font-bold tracking-wider">Historical Disputes:</span>
               <span className="text-authoritative font-bold">0 Disputes</span>
             </div>
           </div>
 
           {/* Device & Hardware Canvas */}
-          <div className="border border-border bg-surface p-3 space-y-2">
-            <div className="flex items-center gap-1.5 font-bold text-foreground text-[12px]">
+          <div className="border border-border bg-surface p-3 space-y-2 shadow-2xs">
+            <div className="flex items-center gap-1.5 font-bold text-foreground text-[11.5px]">
               <Smartphone className="size-3.5 text-navy" />
               <span>Hardware Device Canvas</span>
             </div>
             <div className="space-y-1 text-[11px]">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Fingerprint:</span>
+                <span className="text-muted-foreground font-sans">Fingerprint:</span>
                 <Mono className="text-foreground">{String(decision.rawRequest?.["device_fingerprint"] ?? "dev_emulator_linux_9f8a")}</Mono>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Platform:</span>
+                <span className="text-muted-foreground font-sans">Platform:</span>
                 <span className="text-foreground">Linux x86_64 / Headless Chrome</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Canvas Entropy:</span>
+                <span className="text-muted-foreground font-sans">Canvas Entropy:</span>
                 <span className="text-blocked font-bold">0.96 (Headless Emulator)</span>
               </div>
             </div>
           </div>
 
           {/* Network & GeoIP */}
-          <div className="border border-border bg-surface p-3 space-y-2">
-            <div className="flex items-center gap-1.5 font-bold text-foreground text-[12px]">
+          <div className="border border-border bg-surface p-3 space-y-2 shadow-2xs">
+            <div className="flex items-center gap-1.5 font-bold text-foreground text-[11.5px]">
               <Globe2 className="size-3.5 text-navy" />
               <span>Network &amp; Geo Haversine</span>
             </div>
             <div className="space-y-1 text-[11px]">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Observed IP:</span>
+                <span className="text-muted-foreground font-sans">Observed IP:</span>
                 <Mono className="text-foreground">{decision.threatIntel?.ip ?? "198.51.100.44"}</Mono>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Origin:</span>
+                <span className="text-muted-foreground font-sans">Origin:</span>
                 <span className="text-foreground">Limassol, Cyprus (Datacenter Proxy)</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Network/ASN:</span>
+                <span className="text-muted-foreground font-sans">Network/ASN:</span>
                 <span className="text-foreground">{decision.threatIntel?.asn ?? "ASN 13335 (Cloudflare/Proxy)"}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Velocity Hop:</span>
+                <span className="text-muted-foreground font-sans">Velocity Hop:</span>
                 <span className="text-blocked font-bold">36,250 km/h (Impossible Travel)</span>
               </div>
             </div>
@@ -216,53 +207,53 @@ function CaseBody({ record }: { record: CaseRecord }) {
         {/* COLUMN 2: SIGNAL CONVERGENCE (RULES + ML + GRAPH) */}
         <section className="border border-border bg-card p-4 space-y-4 shadow-xs font-mono text-[11.5px]">
           <div className="flex items-center justify-between border-b border-border pb-2">
-            <span className="font-bold text-navy text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+            <span className="font-bold text-navy text-[9.5px] uppercase tracking-[0.12em] flex items-center gap-1.5">
               <Sparkles className="size-3.5" /> 2. Signal Convergence Dossier
             </span>
           </div>
 
           {/* Level 2: Triggered AST Rules */}
-          <div className="border border-border bg-surface p-3 space-y-2">
-            <div className="text-[10px] text-muted-foreground uppercase font-bold flex justify-between">
+          <div className="border border-border bg-surface p-3 space-y-2 shadow-2xs">
+            <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider flex justify-between">
               <span>Triggered AST Policies</span>
               <span className="text-blocked font-bold">{decision.rules.length} Rules Fired</span>
             </div>
             <div className="space-y-1.5">
               {decision.rules.map((r) => (
-                <div key={r.id} className="border border-border/60 bg-card p-2">
+                <div key={r.id} className="border border-border/60 bg-card p-2 shadow-2xs">
                   <div className="flex justify-between">
                     <span className="font-bold text-navy">{r.id}</span>
-                    <span className="text-blocked font-bold text-[10px]">BLOCK</span>
+                    <span className="text-blocked font-bold text-[9.5px]">BLOCK</span>
                   </div>
-                  <div className="text-muted-foreground text-[10.5px] font-sans mt-0.5">{r.name}</div>
+                  <div className="text-muted-foreground text-[11px] font-sans mt-0.5">{r.name}</div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Level 4: Calibrated ML Inference */}
-          <div className="border border-border bg-surface p-3 space-y-2">
-            <div className="text-[10px] text-muted-foreground uppercase font-bold flex justify-between">
+          <div className="border border-border bg-surface p-3 space-y-2 shadow-2xs">
+            <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider flex justify-between">
               <span>ONNX ML Model Inference</span>
               <span className="text-authoritative font-bold">Beta Calibrated</span>
             </div>
             <div className="flex items-baseline justify-between">
-              <span className="text-muted-foreground">Model:</span>
+              <span className="text-muted-foreground font-sans">Model:</span>
               <span className="font-bold text-foreground">{decision.inference.model}</span>
             </div>
             <div className="flex items-baseline justify-between">
-              <span className="text-muted-foreground">Calibrated P(fraud):</span>
-              <span className="text-[16px] font-extrabold text-blocked">{decision.inference.probability.toFixed(4)}</span>
+              <span className="text-muted-foreground font-sans">Calibrated P(fraud):</span>
+              <span className="text-[16px] font-extrabold text-blocked font-mono">{decision.inference.probability.toFixed(4)}</span>
             </div>
           </div>
 
           {/* Level 3: GraphSAGE Shadow Syndicate Cluster */}
-          <div className="border border-border bg-surface p-3 space-y-2">
-            <div className="text-[10px] text-muted-foreground uppercase font-bold flex justify-between">
+          <div className="border border-border bg-surface p-3 space-y-2 shadow-2xs">
+            <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider flex justify-between">
               <span>GraphSAGE Shadow BFS</span>
               <span className="text-shadow-intel font-bold">0% Authority</span>
             </div>
-            <div className="text-[11px] font-sans text-muted-foreground">
+            <div className="text-[11.5px] font-sans text-muted-foreground leading-relaxed">
               3-hop BFS identified device canvas shared across <strong>14 synthetic accounts</strong> routing funds to cashout mule <strong>PA-77120</strong>.
             </div>
             <Link
@@ -278,28 +269,28 @@ function CaseBody({ record }: { record: CaseRecord }) {
         <section className="border border-border bg-card p-4 space-y-4 shadow-xs font-mono text-[11.5px] flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b border-border pb-2">
-              <span className="font-bold text-navy text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+              <span className="font-bold text-navy text-[9.5px] uppercase tracking-[0.12em] flex items-center gap-1.5">
                 <Lock className="size-3.5" /> 3. Audit Ledger &amp; Console
               </span>
-              <span className="text-[10px] text-authoritative font-bold">ACID Append-Only</span>
+              <span className="text-[9.5px] text-authoritative font-bold uppercase tracking-wider">ACID Append-Only</span>
             </div>
 
             {/* Case Event Timeline */}
             <div className="space-y-2">
-              <div className="text-[10px] text-muted-foreground uppercase font-bold">Investigation History</div>
+              <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Investigation History</div>
               <CaseTimeline events={[...(record.timeline ?? []), ...extra]} />
             </div>
           </div>
 
           {/* Analyst Action Console */}
           <div className="border-t border-border pt-4 space-y-2">
-            <div className="text-[10px] text-muted-foreground uppercase font-bold">Operator Dispositions</div>
+            <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Operator Dispositions</div>
             {!resolution ? (
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => resolve("CONFIRM_FRAUD_BLOCK", "Confirmed syndicate mule attack; permanent account lock & beneficiary freeze applied.")}
-                  className="border border-blocked bg-blocked py-2 text-white font-bold hover:bg-blocked/90 cursor-pointer text-[11px] flex items-center justify-center gap-1"
+                  className="border border-blocked bg-blocked py-2 text-white font-bold hover:bg-blocked/90 cursor-pointer text-[10.5px] flex items-center justify-center gap-1 shadow-xs"
                 >
                   <AlertOctagon className="size-3" />
                   <span>Confirm Block</span>
@@ -307,7 +298,7 @@ function CaseBody({ record }: { record: CaseRecord }) {
                 <button
                   type="button"
                   onClick={() => resolve("ESCALATE_L2", "Escalated to Financial Intelligence Unit (FIU) / L2 Investigation team.")}
-                  className="border border-amber-intel bg-shadow-intel-surface py-2 text-shadow-intel font-bold hover:bg-secondary cursor-pointer text-[11px] flex items-center justify-center gap-1"
+                  className="border border-amber-intel bg-shadow-intel-surface py-2 text-shadow-intel font-bold hover:bg-secondary cursor-pointer text-[10.5px] flex items-center justify-center gap-1 shadow-xs"
                 >
                   <ShieldAlert className="size-3" />
                   <span>Escalate L2</span>
@@ -315,19 +306,19 @@ function CaseBody({ record }: { record: CaseRecord }) {
                 <button
                   type="button"
                   onClick={() => resolve("APPROVE_OVERRIDE", "Manual analyst override; customer verified via out-of-band video KYC.")}
-                  className="border border-border bg-surface py-2 text-foreground font-medium hover:bg-secondary cursor-pointer text-[11px] col-span-2 flex items-center justify-center gap-1"
+                  className="border border-border bg-surface py-2 text-foreground font-medium hover:bg-secondary cursor-pointer text-[11px] col-span-2 flex items-center justify-center gap-1 font-sans"
                 >
                   <CheckCircle2 className="size-3" />
                   <span>Approve with Out-of-Band KYC</span>
                 </button>
               </div>
             ) : (
-              <div className="border border-authoritative bg-approve-surface p-3 text-center space-y-1">
-                <div className="text-authoritative font-bold text-[12px] flex items-center justify-center gap-1">
+              <div className="border border-authoritative bg-approve-surface p-3 text-center space-y-1 shadow-2xs">
+                <div className="text-authoritative font-bold text-[11.5px] flex items-center justify-center gap-1">
                   <CheckCircle2 className="size-3.5" />
                   <span>Case Resolved: {resolution}</span>
                 </div>
-                <div className="text-[10px] text-muted-foreground">
+                <div className="text-[10px] text-muted-foreground font-mono">
                   SHA-256 Ledger Block committed to immutable storage.
                 </div>
               </div>

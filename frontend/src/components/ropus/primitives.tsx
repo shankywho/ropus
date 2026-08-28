@@ -51,9 +51,9 @@ export function PageHeader({
     <header className="border-b border-border bg-surface px-6 py-6 lg:px-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-3xl">
-          <h1 className="font-sans text-[25px] font-extrabold leading-[1.15] tracking-[-0.045em] text-foreground">{title}</h1>
+          <h1 className="font-sans text-[24px] lg:text-[26px] font-extrabold leading-[1.12] tracking-[-0.04em] text-foreground">{title}</h1>
           {description && (
-            <p className="mt-1.5 font-sans text-[12px] leading-relaxed text-muted-foreground">
+            <p className="mt-1.5 font-sans text-[12.5px] leading-relaxed text-muted-foreground">
               {description}
             </p>
           )}
@@ -66,7 +66,7 @@ export function PageHeader({
 }
 
 export function Mono({ children, className }: { children: ReactNode; className?: string }) {
-  return <span className={cn("font-mono text-[12px] tabular", className)}>{children}</span>;
+  return <span className={cn("font-mono text-[11.5px] tabular", className)}>{children}</span>;
 }
 
 export function DemoBadge({ className }: { className?: string }) {
@@ -74,7 +74,7 @@ export function DemoBadge({ className }: { className?: string }) {
     <span
       title="Connected to authoritative Go API at localhost:8080"
       className={cn(
-        "inline-flex items-center gap-1.5 border border-authoritative/35 bg-authoritative-surface px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] text-authoritative uppercase",
+        "inline-flex items-center gap-1.5 border border-authoritative/35 bg-authoritative-surface px-1.5 py-0.5 font-mono text-[9.5px] font-semibold tracking-[0.06em] text-authoritative uppercase",
         className,
       )}
     >
@@ -85,7 +85,7 @@ export function DemoBadge({ className }: { className?: string }) {
     <span
       title="Offline fixtures rendered locally"
       className={cn(
-        "inline-flex items-center gap-1.5 border border-amber-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] text-shadow-intel uppercase",
+        "inline-flex items-center gap-1.5 border border-amber-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9.5px] font-semibold tracking-[0.06em] text-shadow-intel uppercase",
         className,
       )}
     >
@@ -108,9 +108,9 @@ export function VerdictBadge({ verdict, size = "sm" }: { verdict: Verdict; size?
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 border font-mono font-medium tracking-[0.06em] uppercase",
+        "inline-flex items-center gap-1.5 border font-mono font-semibold tracking-[0.06em] uppercase",
         verdictStyles[verdict],
-        size === "sm" ? "px-1.5 py-0.5 text-[9.5px]" : "px-2.5 py-1 text-[11px]",
+        size === "sm" ? "px-2 py-0.5 text-[9.5px]" : "px-2.5 py-1 text-[11px]",
       )}
     >
       <span
@@ -149,7 +149,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 border px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] uppercase",
+        "inline-flex items-center gap-1.5 border px-2 py-0.5 font-mono text-[9.5px] font-semibold tracking-[0.06em] uppercase",
         tones[tone],
       )}
     >
@@ -185,7 +185,7 @@ export function HealthIndicator({ state }: { state: Health }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 font-mono text-[10px] font-medium tracking-[0.06em]",
+        "inline-flex items-center gap-1.5 font-mono text-[9.5px] font-semibold tracking-[0.06em]",
         s.text,
       )}
     >
@@ -209,17 +209,17 @@ export function RiskScore({ value, size = "sm" }: { value: number; size?: "sm" |
   if (size === "xl") {
     return (
       <div>
-        <div className={cn("font-mono text-[40px] leading-none font-medium tracking-[-0.06em] tabular", tone)}>
+        <div className={cn("font-mono text-[36px] lg:text-[40px] leading-none font-medium tracking-[-0.05em] tabular", tone)}>
           {value.toFixed(2)}
         </div>
-        <div className="mt-1 font-mono text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+        <div className="mt-1 font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
           {band} risk
         </div>
       </div>
     );
   }
   return (
-    <span className={cn("font-mono text-[12px] font-medium tabular", tone)}>
+    <span className={cn("font-mono text-[12px] font-semibold tabular", tone)}>
       {value.toFixed(2)}
     </span>
   );
@@ -242,11 +242,11 @@ export function MetricBlock({
 }) {
   return (
     <div className="border-r border-b border-border bg-card px-4 py-3.5 last:border-r-0">
-      <div className="font-mono text-[9.5px] font-medium tracking-[0.12em] text-muted-foreground uppercase">{label}</div>
-      <div className="mt-1.5 font-mono text-[28px] leading-none font-medium tracking-[-0.06em] tabular">{value}</div>
+      <div className="font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">{label}</div>
+      <div className="mt-1.5 font-mono text-[28px] leading-none font-medium tracking-[-0.05em] tabular">{value}</div>
       <div className="mt-1.5 flex items-center gap-1.5 font-mono text-[10.5px] text-muted-foreground">
         {delta && (
-          <span className={cn("tabular", dir === "up" ? "text-blocked" : "text-authoritative")}>
+          <span className={cn("tabular font-semibold", dir === "up" ? "text-blocked" : "text-authoritative")}>
             {dir === "up" ? "▲" : "▼"} {delta}
           </span>
         )}
@@ -269,16 +269,16 @@ export function DataTable({
 }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse font-sans text-[11.5px]">
+      <table className="w-full border-collapse font-sans text-[12px]">
         {caption && <caption className="sr-only">{caption}</caption>}
         <thead>
-          <tr className="border-b border-border bg-muted/40">
+          <tr className="border-b border-border bg-secondary/35">
             {columns.map((c) => (
               <th
                 key={c.key}
                 scope="col"
                 className={cn(
-                  "px-3 py-2 font-mono text-[9px] font-medium tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase first:pl-3 last:pr-3",
+                  "px-3 py-2 font-mono text-[9px] font-bold tracking-[0.10em] whitespace-nowrap text-muted-foreground uppercase first:pl-3 last:pr-3",
                   c.align === "right" ? "text-right" : "text-left",
                 )}
               >
@@ -318,7 +318,7 @@ export function Cell({
   return (
     <td
       className={cn(
-        "px-3 py-2 align-middle font-sans text-[11.5px] first:pl-3 last:pr-3",
+        "px-3 py-2 align-middle font-sans text-[12px] first:pl-3 last:pr-3",
         align === "right" && "text-right",
         className,
       )}
@@ -344,7 +344,7 @@ export function KeyValue({
           key={i}
           className="flex items-baseline justify-between gap-4 border-b border-border px-4 py-2 last:border-b-0"
         >
-          <dt className="font-mono text-[9.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">{k}</dt>
+          <dt className="font-mono text-[9.5px] font-semibold tracking-[0.10em] text-muted-foreground uppercase">{k}</dt>
           <dd className="text-right font-sans text-[12px] font-medium text-foreground">{v}</dd>
         </div>
       ))}
@@ -383,21 +383,21 @@ export function EvidenceGroup({
   }[kind];
 
   return (
-    <div className={cn("border border-border border-l-2 bg-card", meta.border)}>
+    <div className={cn("border border-border border-l-2 bg-card shadow-xs", meta.border)}>
       <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5">
         <div>
-          <h3 className="font-sans text-[12.5px] font-bold text-foreground">{meta.title}</h3>
-          <p className="font-sans text-[11px] text-muted-foreground">{meta.note}</p>
+          <h3 className="font-sans text-[13px] font-bold text-foreground">{meta.title}</h3>
+          <p className="font-sans text-[11.5px] text-muted-foreground">{meta.note}</p>
         </div>
         {meta.badge}
       </div>
       <ul className="divide-y divide-border">
         {items.map((it, i) => (
           <li key={i} className="flex gap-3 px-4 py-2 font-sans text-[12px]">
-            <span className="font-mono text-[10.5px] text-muted-foreground tabular">
+            <span className="font-mono text-[10.5px] text-muted-foreground tabular font-medium">
               {String(i + 1).padStart(2, "0")}
             </span>
-            <span>{it}</span>
+            <span className="text-foreground/90">{it}</span>
           </li>
         ))}
       </ul>
@@ -441,7 +441,7 @@ export function ErrorState({
     >
       <div className="flex items-center gap-2">
         <StatusBadge tone="danger">Error</StatusBadge>
-        {code && <Mono className="text-blocked">{code}</Mono>}
+        {code && <Mono className="text-blocked font-bold">{code}</Mono>}
       </div>
       <h3 className="mt-2 font-sans text-[13px] font-bold text-foreground">{title}</h3>
       <p className="mt-0.5 font-sans text-[12px] text-muted-foreground">{detail}</p>
@@ -495,12 +495,12 @@ export function CodeBlock({ code, language }: { code: string; language?: string 
   return (
     <div className="border border-sidebar-border bg-sidebar text-sidebar-foreground">
       <div className="flex items-center justify-between border-b border-sidebar-border px-3 py-1.5">
-        <span className="font-mono text-[10px] tracking-[0.08em] text-sidebar-muted uppercase">
+        <span className="font-mono text-[9.5px] font-semibold tracking-[0.08em] text-sidebar-muted uppercase">
           {language ?? "text"}
         </span>
         <CopyButton value={code} />
       </div>
-      <pre className="overflow-x-auto px-3 py-3 font-mono text-[12px] leading-[1.6] text-sidebar-foreground">
+      <pre className="overflow-x-auto px-3 py-3 font-mono text-[11.5px] leading-[1.6] text-sidebar-foreground">
         <code>{code}</code>
       </pre>
     </div>
@@ -512,7 +512,7 @@ export function CopyButton({ value, label = "Copy" }: { value: string; label?: s
     <button
       type="button"
       onClick={() => void navigator.clipboard?.writeText(value)}
-      className="border border-sidebar-border bg-sidebar-accent px-1.5 py-0.5 font-mono text-[10px] text-sidebar-muted transition-colors hover:text-white"
+      className="border border-sidebar-border bg-sidebar-accent px-1.5 py-0.5 font-mono text-[9.5px] font-medium text-sidebar-muted transition-colors hover:text-white cursor-pointer"
     >
       {label}
     </button>
@@ -538,7 +538,7 @@ export function Section({
     <section className={cn("min-w-0", className)}>
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-2">
         <div>
-          <h2 className="font-sans text-[13px] font-bold tracking-tight text-foreground">{title}</h2>
+          <h2 className="font-sans text-[13.5px] font-bold tracking-tight text-foreground">{title}</h2>
           {description && (
             <p className="mt-0.5 font-sans text-[11.5px] text-muted-foreground">{description}</p>
           )}
@@ -551,7 +551,7 @@ export function Section({
 }
 
 export function SectionLabel({ children }: { children: ReactNode }) {
-  return <div className="font-mono text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase">{children}</div>;
+  return <div className="font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">{children}</div>;
 }
 
 /** Progressive disclosure: summary line first, forensic detail on demand. */
@@ -610,14 +610,14 @@ export function FactorRow({
         <span className="font-sans text-[12.5px] font-semibold text-foreground">{name}</span>
         <span
           className={cn(
-            "font-mono text-[9.5px] font-medium tracking-[0.08em] uppercase",
+            "font-mono text-[9.5px] font-semibold tracking-[0.08em] uppercase",
             kind === "observed" ? "text-authoritative" : "text-local",
           )}
         >
           {kind}
         </span>
       </div>
-      <p className="mt-0.5 font-mono text-[11px] text-muted-foreground tabular">{detail}</p>
+      <p className="mt-0.5 font-mono text-[10.5px] text-muted-foreground tabular">{detail}</p>
       <div className="mt-2 flex items-center gap-3">
         <div className="h-[2px] flex-1 bg-secondary">
           <div
@@ -625,7 +625,7 @@ export function FactorRow({
             style={{ width: `${(weight / max) * 100}%` }}
           />
         </div>
-        <Mono className="w-12 shrink-0 text-right font-medium">+{weight.toFixed(2)}</Mono>
+        <Mono className="w-12 shrink-0 text-right font-bold">+{weight.toFixed(2)}</Mono>
       </div>
     </div>
   );
@@ -653,8 +653,8 @@ export function ExplanationStage({
   return (
     <div className={cn("border-t-2 pt-3.5", accent)}>
       <div className="flex items-baseline gap-2">
-        <Mono className="text-[10.5px] text-muted-foreground">{step}</Mono>
-        <h3 className="font-mono text-[10px] font-medium tracking-[0.12em] uppercase text-foreground">{title}</h3>
+        <Mono className="text-[10px] text-muted-foreground font-medium">{step}</Mono>
+        <h3 className="font-mono text-[9.5px] font-bold tracking-[0.12em] uppercase text-foreground">{title}</h3>
       </div>
       <ul className="mt-2.5 space-y-1.5">
         {items.map((i) => (

@@ -17,10 +17,20 @@ import { decisionList, overviewMetrics } from "./overview-fixtures";
 
 /**
  * Single data access layer for every ROPUS surface.
- * Connects directly to the Go Chi backend at /v1 via Vite proxy / Docker network.
+ * Connects directly to the Go Chi backend at http://localhost:8080.
  */
-const BASE =
-  (import.meta.env["VITE_ROPUS_API_URL"] as string | undefined)?.replace(/\/$/, "") ?? "";
+const getBaseUrl = () => {
+  const envUrl = import.meta.env["VITE_ROPUS_API_URL"] as string | undefined;
+  if (envUrl && envUrl.trim().length > 0) {
+    return envUrl.replace(/\/$/, "");
+  }
+  if (typeof window === "undefined") {
+    return "http://127.0.0.1:8080";
+  }
+  return "http://localhost:8080";
+};
+
+const BASE = getBaseUrl();
 
 export const isLiveBackend = true;
 

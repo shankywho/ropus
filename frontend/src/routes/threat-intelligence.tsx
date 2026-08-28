@@ -26,8 +26,8 @@ export const Route = createFileRoute("/threat-intelligence")({
 });
 
 const classTone: Record<IndicatorRecord["classification"], string> = {
-  MALICIOUS: "text-block",
-  SUSPICIOUS: "text-warning",
+  MALICIOUS: "text-blocked font-bold",
+  SUSPICIOUS: "text-shadow-intel font-bold",
   BENIGN: "text-muted-foreground",
 };
 
@@ -53,7 +53,7 @@ function ThreatIntelPage() {
   return (
     <Page>
       <PageHead
-        title="Threat intelligence"
+        title="Threat Intelligence &amp; Feeds"
         subtitle="Indicators contributed by internal graph analysis, consortium reporting and external registries. Indicators add score; they never issue a verdict on their own."
       />
 
@@ -64,24 +64,25 @@ function ThreatIntelPage() {
             label: "Malicious",
             value: String(indicators.filter((i) => i.classification === "MALICIOUS").length),
             sub: "matched in last 24h",
+            tone: "text-blocked",
           },
           {
             label: "Matches",
             value: indicators.reduce((s, i) => s + i.hits24h, 0).toLocaleString(),
             sub: "last 24 hours",
           },
-          { label: "Feeds healthy", value: "4 / 5", sub: "issuer-registry is stale" },
-          { label: "Score ceiling", value: "+0.14", sub: "max threat-intel contribution" },
+          { label: "Feeds Healthy", value: "4 / 5", sub: "issuer-registry is stale", tone: "text-shadow-intel" },
+          { label: "Score Ceiling", value: "+0.14", sub: "max threat-intel contribution", tone: "text-authoritative" },
         ]}
       />
 
       <div className="mt-6 grid gap-8 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-10">
-        <section className="min-w-0">
+        <section className="min-w-0 space-y-4">
           <SectionHead
-            title="Indicators matched in this window"
+            title="INDICATORS MATCHED IN THIS WINDOW"
             meta={`${indicators.length} records`}
           />
-          <div className="mt-1">
+          <div className="border border-border bg-card shadow-xs">
             <DataGrid
               columns={[
                 { key: "value", label: "Indicator" },
@@ -90,58 +91,61 @@ function ThreatIntelPage() {
                 { key: "feed", label: "Feed" },
                 { key: "conf", label: "Confidence", align: "right" },
                 { key: "hits", label: "Hits 24h", align: "right" },
-                { key: "first", label: "First seen" },
-                { key: "last", label: "Last seen" },
+                { key: "first", label: "First Seen" },
+                { key: "last", label: "Last Seen" },
               ]}
               rows={indicators.map((i) => ({
                 id: i.value,
                 cells: [
-                  <Mono className="font-semibold">{i.value}</Mono>,
-                  <span className="text-muted-foreground">{i.type}</span>,
+                  <Mono key="val" className="font-bold text-navy text-[11.5px]">{i.value}</Mono>,
+                  <span key="type" className="text-muted-foreground font-sans text-[11.5px]">{i.type}</span>,
                   <span
+                    key="class"
                     className={cn(
-                      "text-[11px] font-semibold tracking-[0.06em]",
+                      "font-mono text-[10px] uppercase font-bold tracking-wider",
                       classTone[i.classification],
                     )}
                   >
                     {i.classification}
                   </span>,
-                  <Mono className="text-muted-foreground">{i.feed}</Mono>,
-                  <Mono>{i.confidence.toFixed(2)}</Mono>,
-                  <Mono className="text-muted-foreground">{i.hits24h.toLocaleString()}</Mono>,
-                  <Mono className="text-muted-foreground">{i.firstSeen}</Mono>,
-                  <Mono className="text-muted-foreground">{i.lastSeen}</Mono>,
+                  <Mono key="feed" className="text-muted-foreground text-[11px]">{i.feed}</Mono>,
+                  <Mono key="conf" className="font-semibold">{i.confidence.toFixed(2)}</Mono>,
+                  <Mono key="hits" className="text-muted-foreground font-medium">{i.hits24h.toLocaleString()}</Mono>,
+                  <Mono key="first" className="text-muted-foreground text-[10.5px]">{i.firstSeen}</Mono>,
+                  <Mono key="last" className="text-muted-foreground text-[10.5px]">{i.lastSeen}</Mono>,
                 ],
               }))}
             />
           </div>
         </section>
 
-        <aside className="min-w-0">
-          <SectionHead title="Feeds" />
-          <table className="mt-1 w-full text-[12.5px]">
-            <tbody>
-              {feeds.map((f) => (
-                <tr key={f.name} className="border-b border-border last:border-b-0">
-                  <td className="py-2 pr-3">
-                    <Mono>{f.name}</Mono>
-                  </td>
-                  <td className="py-2 pr-3 text-right">
-                    <Mono className="text-muted-foreground">{f.records}</Mono>
-                  </td>
-                  <td
-                    className={cn(
-                      "py-2 text-right text-[11px] font-semibold tracking-[0.06em]",
-                      f.state === "STALE" ? "text-warning" : "text-muted-foreground",
-                    )}
-                  >
-                    {f.state}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <p className="mt-3 text-[11.5px] text-muted-foreground">
+        <aside className="min-w-0 space-y-3">
+          <SectionHead title="ACTIVE FEEDS" />
+          <div className="border border-border bg-card p-3 shadow-xs">
+            <table className="w-full text-[11.5px] font-mono">
+              <tbody>
+                {feeds.map((f) => (
+                  <tr key={f.name} className="border-b border-border/50 last:border-b-0">
+                    <td className="py-2 pr-3 font-semibold text-foreground">
+                      <Mono className="text-[11.5px]">{f.name}</Mono>
+                    </td>
+                    <td className="py-2 pr-3 text-right">
+                      <Mono className="text-muted-foreground">{f.records}</Mono>
+                    </td>
+                    <td
+                      className={cn(
+                        "py-2 text-right text-[10px] font-bold tracking-[0.06em] uppercase",
+                        f.state === "STALE" ? "text-amber-intel" : "text-authoritative",
+                      )}
+                    >
+                      {f.state}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-[11px] font-sans text-muted-foreground leading-relaxed">
             issuer-registry last refreshed 2026-08-18; BIN classifications older than 72 hours are
             ignored by the scoring path.
           </p>

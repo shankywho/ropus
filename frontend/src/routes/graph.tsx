@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState, useRef, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import {
   DemoTag,
@@ -15,11 +15,9 @@ import {
   ZoomIn,
   ZoomOut,
   Maximize2,
-  Minimize2,
   Compass,
   Layers,
   Sparkles,
-  ShieldAlert,
   User,
   Smartphone,
   Globe,
@@ -28,7 +26,6 @@ import {
   ArrowRight,
   PlusCircle,
   Share2,
-  Info,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -95,9 +92,6 @@ export function FraudGraphPage() {
     fraudGraph.entities.find((e) => e.id === selectedId && visible.ids.has(e.id)) ??
     fraudGraph.entities[0]!;
 
-  const selectedEdge =
-    visible.relationships.find((r) => `${r.source}-${r.target}` === edgeKey) ?? null;
-
   const focusId = hoverId ?? selected.id;
 
   const connectedRelationships = fraudGraph.relationships
@@ -130,7 +124,7 @@ export function FraudGraphPage() {
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
     if (draggedNodeId) return;
     setIsDragging(true);
-    setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    setDragStart({ x: e.clientX - pan.x, y: e.clientY - dragStart.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -195,33 +189,33 @@ export function FraudGraphPage() {
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="border border-navy bg-navy/10 px-2 py-0.5 font-mono text-[10px] font-bold text-navy uppercase tracking-[0.06em]">
+            <span className="border border-navy bg-navy/10 px-2 py-0.5 font-mono text-[9.5px] font-bold text-navy uppercase tracking-[0.06em]">
               GRAPH TOPOLOGY &amp; GNN SHADOW
             </span>
             <DemoTag />
-            <span className="border border-shadow-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9.5px] font-bold text-shadow-intel">
+            <span className="border border-shadow-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9px] font-semibold text-shadow-intel uppercase tracking-[0.06em]">
               GraphSAGE: NON-ENFORCING (0% AUTHORITY)
             </span>
           </div>
-          <h1 className="mt-1 font-sans text-[25px] font-extrabold leading-[1.15] tracking-[-0.045em] text-foreground">
+          <h1 className="mt-1 font-sans text-[24px] lg:text-[26px] font-extrabold leading-[1.12] tracking-[-0.04em] text-foreground">
             Syndicate Neighbourhood of <Mono className="text-[20px] font-bold text-foreground">{fraudGraph.rootId}</Mono>
           </h1>
-          <p className="mt-0.5 font-sans text-[12px] text-muted-foreground">
+          <p className="mt-0.5 font-sans text-[12.5px] text-muted-foreground">
             3-hop in-memory BFS &amp; inductive GraphSAGE embeddings linking customer, headless device emulator, proxy ASN 13335, and cashout mule accounts.
           </p>
         </div>
 
         {/* View Controls & Filters */}
-        <div className="flex flex-wrap items-center gap-2 font-mono text-[11px]">
+        <div className="flex flex-wrap items-center gap-2 font-mono text-[10.5px]">
           <div className="flex items-center border border-border bg-surface p-0.5">
-            <span className="px-2 text-[10px] text-muted-foreground uppercase">Hops:</span>
+            <span className="px-2 text-[9.5px] text-muted-foreground uppercase font-bold">Hops:</span>
             {[1, 2, 3].map((h) => (
               <button
                 key={h}
                 type="button"
                 onClick={() => setHops(h)}
                 className={cn(
-                  "px-2.5 py-1 transition-colors cursor-pointer",
+                  "px-2.5 py-1 transition-colors cursor-pointer font-semibold",
                   hops === h
                     ? "bg-navy text-white font-bold"
                     : "text-muted-foreground hover:text-foreground",
@@ -236,7 +230,7 @@ export function FraudGraphPage() {
             type="button"
             onClick={() => setPathOnly((p) => !p)}
             className={cn(
-              "flex items-center gap-1.5 border px-3 py-1 font-medium transition-colors cursor-pointer",
+              "flex items-center gap-1.5 border px-3 py-1 font-semibold transition-colors cursor-pointer",
               pathOnly
                 ? "border-blocked bg-blocked-surface text-blocked font-bold"
                 : "border-border bg-surface text-muted-foreground hover:text-foreground",
@@ -253,7 +247,7 @@ export function FraudGraphPage() {
         {/* Left Column: Interactive Graph Viewport */}
         <div className="relative flex flex-col border border-border bg-card shadow-xs overflow-hidden h-[640px]">
           {/* Viewport Floating Toolbar */}
-          <div className="absolute top-3 left-3 z-10 flex items-center gap-1 border border-border bg-surface/90 backdrop-blur-xs p-1 shadow-xs font-mono text-[11px]">
+          <div className="absolute top-3 left-3 z-10 flex items-center gap-1 border border-border bg-surface/90 backdrop-blur-xs p-1 shadow-xs font-mono text-[10.5px]">
             <button
               type="button"
               onClick={handleZoomIn}
@@ -282,25 +276,25 @@ export function FraudGraphPage() {
               type="button"
               onClick={() => handleCenterOnNode(selected.id)}
               title="Center on Selected Node"
-              className="p-1.5 text-navy hover:bg-secondary cursor-pointer font-bold flex items-center gap-1 text-[10.5px]"
+              className="p-1.5 text-navy hover:bg-secondary cursor-pointer font-bold flex items-center gap-1 text-[10px]"
             >
               <Compass className="size-3.5" />
               <span>Center</span>
             </button>
-            <span className="border-l border-border pl-2 pr-1 text-[10px] text-muted-foreground">
+            <span className="border-l border-border pl-2 pr-1 text-[9.5px] text-muted-foreground font-mono">
               {Math.round(zoom * 100)}%
             </span>
           </div>
 
           {/* Graph Legend Overlay */}
-          <div className="absolute top-3 right-3 z-10 border border-border bg-surface/90 backdrop-blur-xs p-2.5 shadow-xs font-mono text-[10px] space-y-1">
-            <div className="text-muted-foreground uppercase font-bold text-[9px] mb-1">Entity Risk Class</div>
+          <div className="absolute top-3 right-3 z-10 border border-border bg-surface/90 backdrop-blur-xs p-2.5 shadow-xs font-mono text-[9.5px] space-y-1">
+            <div className="text-muted-foreground uppercase font-bold text-[9px] mb-1 tracking-wider">Entity Risk Class</div>
             {risks.map((r) => {
               const meta = entityRiskMeta(r);
               return (
                 <div key={r} className="flex items-center gap-2">
                   <span className={cn("size-2 rounded-full", meta.bg)} />
-                  <span className="text-foreground">{r}</span>
+                  <span className="text-foreground font-medium">{r}</span>
                 </div>
               );
             })}
@@ -490,7 +484,7 @@ export function FraudGraphPage() {
           </svg>
 
           {/* Minimap Viewport Indicator in Bottom Left */}
-          <div className="absolute bottom-3 left-3 z-10 border border-border bg-surface/90 backdrop-blur-xs p-2 shadow-xs font-mono text-[10px] space-y-1 hidden sm:block">
+          <div className="absolute bottom-3 left-3 z-10 border border-border bg-surface/90 backdrop-blur-xs p-2 shadow-xs font-mono text-[9.5px] space-y-1 hidden sm:block">
             <div className="flex items-center gap-1.5 font-bold text-foreground">
               <Layers className="size-3 text-navy" />
               <span>Visible Topology: {visible.entities.length} Nodes · {visible.relationships.length} Edges</span>
@@ -507,7 +501,7 @@ export function FraudGraphPage() {
             {/* Header Title */}
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] font-bold text-navy uppercase tracking-wider">
+                <span className="font-mono text-[9.5px] font-bold text-navy uppercase tracking-[0.12em]">
                   ENTITY FORENSIC INSPECTOR
                 </span>
               </div>
@@ -517,7 +511,7 @@ export function FraudGraphPage() {
             </div>
 
             {/* Selected Node Details Card */}
-            <div className="border border-border bg-surface p-3.5 space-y-3 font-mono text-[11.5px]">
+            <div className="border border-border bg-surface p-3.5 space-y-3 font-mono text-[11.5px] shadow-2xs">
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <div className="font-bold text-foreground text-[13px] flex items-center gap-1.5">
@@ -528,25 +522,25 @@ export function FraudGraphPage() {
                     {selected.label}
                   </div>
                 </div>
-                <span className="border border-border bg-secondary/50 px-2 py-0.5 text-[10px] font-bold">
+                <span className="border border-border bg-secondary/50 px-2 py-0.5 text-[9.5px] font-bold">
                   HOP {selected.hop}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-[11px] border-t border-border pt-2.5">
                 <div>
-                  <span className="text-muted-foreground block text-[9.5px] uppercase">Entity Type:</span>
+                  <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Entity Type:</span>
                   <span className="font-bold text-foreground">{selected.type}</span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground block text-[9.5px] uppercase">First Observed:</span>
+                  <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">First Observed:</span>
                   <span className="text-foreground">{selected.firstSeen}</span>
                 </div>
               </div>
 
               {/* Attributes Key-Value Table */}
               <div className="border-t border-border pt-2.5 space-y-1">
-                <span className="text-muted-foreground block text-[9.5px] uppercase font-bold">Entity Attributes:</span>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Entity Attributes:</span>
                 {selected.attributes.map(([k, v]) => (
                   <div key={k} className="flex justify-between text-[11px]">
                     <span className="text-muted-foreground">{k}:</span>
@@ -558,7 +552,7 @@ export function FraudGraphPage() {
               {/* Signals and Flags */}
               {selected.signals && selected.signals.length > 0 && (
                 <div className="border-t border-border pt-2.5 space-y-1">
-                  <span className="text-muted-foreground block text-[9.5px] uppercase font-bold text-blocked">Forensic Signals:</span>
+                  <span className="text-muted-foreground block text-[9px] uppercase font-bold text-blocked tracking-wider">Forensic Signals:</span>
                   <ul className="space-y-1 font-sans text-[11px] text-muted-foreground list-disc list-inside">
                     {selected.signals.map((sig, idx) => (
                       <li key={idx} className="leading-snug">{sig}</li>
@@ -570,7 +564,7 @@ export function FraudGraphPage() {
 
             {/* Connected Relationships Edge List */}
             <div className="space-y-2 font-mono text-[11px]">
-              <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase">
+              <div className="flex items-center justify-between text-[9.5px] font-bold text-muted-foreground uppercase tracking-wider">
                 <span>Adjacent Edges ({connectedRelationships.length})</span>
                 <span>Hop Neighborhood</span>
               </div>
@@ -581,12 +575,12 @@ export function FraudGraphPage() {
                     onClick={() => {
                       setSelectedId(rel.id);
                     }}
-                    className="border border-border/70 bg-surface p-2 flex items-center justify-between cursor-pointer hover:bg-secondary/60 transition-colors"
+                    className="border border-border/70 bg-surface p-2 flex items-center justify-between cursor-pointer hover:bg-secondary/60 transition-colors shadow-2xs"
                   >
                     <div className="flex items-center gap-1.5 truncate">
                       <span className="text-muted-foreground font-normal">{rel.direction === "out" ? "→" : "←"}</span>
                       <span className="font-bold text-navy">{rel.label}:</span>
-                      <span className="truncate text-foreground">{rel.id}</span>
+                      <span className="truncate text-foreground font-medium">{rel.id}</span>
                     </div>
                     <ArrowRight className="size-3 text-muted-foreground shrink-0" />
                   </div>
@@ -600,14 +594,14 @@ export function FraudGraphPage() {
             <button
               type="button"
               onClick={() => handleCreateCase(selected.id)}
-              className="w-full border border-navy bg-navy py-2 text-white font-bold hover:bg-navy/90 transition-opacity flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full border border-navy bg-navy py-2 text-white font-bold hover:bg-navy/90 transition-opacity flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
             >
               <PlusCircle className="size-3.5" />
               <span>Open Forensic Case for {selected.id}</span>
             </button>
             <Link
               to="/cases/CASE-88419"
-              className="w-full border border-border bg-surface py-2 text-center text-foreground font-medium hover:bg-secondary transition-colors block"
+              className="w-full border border-border bg-surface py-2 text-center text-foreground font-semibold hover:bg-secondary transition-colors block"
             >
               View Linked Case Dossier (CASE-88419) →
             </Link>

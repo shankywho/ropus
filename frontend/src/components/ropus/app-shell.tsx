@@ -25,7 +25,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
+    <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground select-none">
       {/* Application Wordmark */}
       <div className="flex items-center gap-3 border-b border-sidebar-border px-4 py-3.5">
         <span
@@ -35,26 +35,26 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
           R
         </span>
         <div className="leading-tight">
-          <div className="text-[18px] font-extrabold tracking-[0.18em] text-white">ROPUS</div>
-          <div className="font-mono text-[9.5px] tracking-[0.13em] text-sidebar-muted uppercase">
+          <div className="font-sans text-[16px] font-extrabold tracking-[0.16em] text-white">ROPUS</div>
+          <div className="font-mono text-[9px] font-semibold tracking-[0.13em] text-sidebar-muted uppercase">
             Risk Control Plane
           </div>
         </div>
       </div>
 
       <div className="border-b border-sidebar-border px-4 py-2.5">
-        <div className="font-mono text-[10px] tracking-[0.13em] text-sidebar-muted uppercase">
+        <div className="font-mono text-[9px] font-bold tracking-[0.14em] text-sidebar-muted uppercase">
           WORKSPACE
         </div>
-        <div className="mt-0.5 truncate text-[12.5px] font-semibold text-white">{session.organization}</div>
-        <div className="mt-0.5 font-mono text-[10.5px] text-sidebar-muted">{session.tenantId}</div>
+        <div className="mt-0.5 truncate text-[12px] font-semibold text-white">{session.organization}</div>
+        <div className="mt-0.5 font-mono text-[10px] text-sidebar-muted">{session.tenantId}</div>
       </div>
 
       <nav aria-label="Primary" className="flex-1 overflow-y-auto py-2">
         {/* Control Plane Group */}
         <div className="mb-4">
           <div className="px-4 py-1.5">
-            <span className="font-mono text-[9.5px] tracking-[0.13em] text-sidebar-muted uppercase">
+            <span className="font-mono text-[9px] font-bold tracking-[0.14em] text-sidebar-muted uppercase">
               CONTROL PLANE
             </span>
           </div>
@@ -89,7 +89,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
         {/* Platform Services Group */}
         <div>
           <div className="px-4 py-1.5">
-            <span className="font-mono text-[9.5px] tracking-[0.13em] text-sidebar-muted uppercase">
+            <span className="font-mono text-[9px] font-bold tracking-[0.14em] text-sidebar-muted uppercase">
               PLATFORM SERVICES
             </span>
           </div>
@@ -121,12 +121,12 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
       <div className="border-t border-sidebar-border px-4 py-3">
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0">
-            <div className="truncate text-[12.5px] font-semibold text-white">{session.user}</div>
-            <div className="truncate font-mono text-[10.5px] text-sidebar-muted">{session.role}</div>
+            <div className="truncate text-[12px] font-semibold text-white">{session.user}</div>
+            <div className="truncate font-mono text-[10px] text-sidebar-muted">{session.role}</div>
           </div>
           <span
             className={cn(
-              "shrink-0 border px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em]",
+              "shrink-0 border px-1.5 py-0.5 font-mono text-[9px] font-semibold tracking-[0.06em] uppercase",
               session.environment === "PRODUCTION"
                 ? "border-destructive/60 bg-destructive/20 text-white"
                 : "border-sidebar-border bg-sidebar-accent text-sidebar-muted",
@@ -149,7 +149,7 @@ function UtcClock() {
     return () => clearInterval(id);
   }, []);
   return (
-    <span className="font-mono text-[11px] text-muted-foreground tabular" suppressHydrationWarning>
+    <span className="font-mono text-[11px] text-muted-foreground tabular font-medium" suppressHydrationWarning>
       UTC {now ?? "--:--:--"}
     </span>
   );
@@ -240,13 +240,13 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       <div className="flex min-w-0 flex-col">
-        <header className="sticky top-0 z-30 flex h-11 items-center justify-between gap-4 border-b border-border bg-surface px-4 lg:px-10">
+        <header className="sticky top-0 z-30 flex h-11 items-center justify-between gap-4 border-b border-border bg-surface px-4 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-label="Open navigation"
-              className="grid size-8 place-items-center border border-border bg-surface text-muted-foreground lg:hidden"
+              className="grid size-8 place-items-center border border-border bg-surface text-muted-foreground lg:hidden cursor-pointer"
             >
               <span aria-hidden>≡</span>
             </button>
@@ -259,7 +259,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <Search className="size-3.5 text-muted-foreground" />
               <span className="font-mono text-[11px] hidden sm:inline">Search control deck...</span>
-              <kbd className="hidden sm:inline-flex items-center gap-0.5 border border-border bg-surface px-1 py-0.2 font-mono text-[9.5px] text-muted-foreground">
+              <kbd className="hidden sm:inline-flex items-center gap-0.5 border border-border bg-surface px-1 py-0.2 font-mono text-[9px] text-muted-foreground">
                 <CommandIcon className="size-2.5" /> K
               </kbd>
             </button>
@@ -267,7 +267,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             {isLiveBackend ? (
               <span
                 title="Connected to authoritative Go API at localhost:8080"
-                className="inline-flex items-center gap-1 border border-approve/40 bg-approve-surface px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] text-approve uppercase"
+                className="inline-flex items-center gap-1 border border-approve/40 bg-approve-surface px-1.5 py-0.5 font-mono text-[9px] font-semibold tracking-[0.06em] text-approve uppercase"
               >
                 <span aria-hidden className="size-1 rounded-full bg-approve" />
                 LIVE BACKEND
@@ -275,7 +275,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             ) : (
               <span
                 title="Offline fixtures rendered locally"
-                className="inline-flex items-center gap-1 border border-amber-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-[0.06em] text-shadow-intel uppercase"
+                className="inline-flex items-center gap-1 border border-amber-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9.5px] font-semibold tracking-[0.06em] text-shadow-intel uppercase"
               >
                 <span aria-hidden className="size-1 rounded-full bg-amber-intel" />
                 DEMO DATA
@@ -293,7 +293,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <span>Shortcuts (?)</span>
             </button>
             <UtcClock />
-            <span className="hidden font-mono text-[11px] text-muted-foreground sm:inline">
+            <span className="hidden font-mono text-[10.5px] text-muted-foreground sm:inline">
               {session.user}
             </span>
           </div>
@@ -315,16 +315,16 @@ export function AppShell({ children }: { children: ReactNode }) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-border pb-2">
-              <span className="font-bold text-navy font-mono text-[12px] uppercase tracking-wider flex items-center gap-2">
+              <span className="font-bold text-navy font-mono text-[11.5px] uppercase tracking-wider flex items-center gap-2">
                 <Keyboard className="size-4" /> Operator Keyboard Shortcuts
               </span>
-              <kbd className="border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+              <kbd className="border border-border bg-surface px-1.5 py-0.5 font-mono text-[9.5px] text-muted-foreground">
                 ESC
               </kbd>
             </div>
             <div className="grid grid-cols-2 gap-3 font-mono text-[11.5px]">
               <div className="border border-border/60 bg-secondary/30 p-2.5 space-y-1.5">
-                <div className="text-[10px] text-muted-foreground uppercase font-bold">Navigation (G then Key)</div>
+                <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Navigation (G then Key)</div>
                 <div className="flex justify-between"><span>Overview</span><kbd className="text-navy font-bold">G H</kbd></div>
                 <div className="flex justify-between"><span>Decisions</span><kbd className="text-navy font-bold">G D</kbd></div>
                 <div className="flex justify-between"><span>Cases Queue</span><kbd className="text-navy font-bold">G C</kbd></div>
@@ -334,7 +334,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <div className="flex justify-between"><span>Security KMS</span><kbd className="text-navy font-bold">G S</kbd></div>
               </div>
               <div className="border border-border/60 bg-secondary/30 p-2.5 space-y-1.5">
-                <div className="text-[10px] text-muted-foreground uppercase font-bold">Global Omnibar &amp; Actions</div>
+                <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Global Omnibar &amp; Actions</div>
                 <div className="flex justify-between"><span>Open Omnibar</span><kbd className="text-navy font-bold">⌘ K / /</kbd></div>
                 <div className="flex justify-between"><span>Shortcuts Help</span><kbd className="text-navy font-bold">?</kbd></div>
                 <div className="flex justify-between"><span>Close Modal</span><kbd className="text-navy font-bold">ESC</kbd></div>
@@ -356,4 +356,3 @@ export function AppShell({ children }: { children: ReactNode }) {
     </div>
   );
 }
-

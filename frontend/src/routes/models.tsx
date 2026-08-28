@@ -9,18 +9,9 @@ import {
 } from "@/components/ropus/page";
 import { Mono, StatusPill } from "@/components/ropus/core";
 import { models, modelDetails, type ModelRecord } from "@/lib/ropus/platform-fixtures";
-import { blockedDecision } from "@/lib/ropus/fixtures";
 import { cn } from "@/lib/utils";
 import {
-  Cpu,
-  Sliders,
-  TrendingDown,
-  ShieldCheck,
-  AlertTriangle,
-  Flame,
-  CheckCircle2,
   Lock,
-  RefreshCw,
   GitBranch,
 } from "lucide-react";
 import {
@@ -70,7 +61,6 @@ function StageText({ stage }: { stage: ModelRecord["stage"] }) {
 
 export function ModelsPage() {
   const [selectedKey, setSelectedKey] = useState<string | null>("mdl_wire_risk@v4.2.1");
-  const [compareKey, setCompareKey] = useState<string | null>("mdl_wire_risk@v4.3.0-rc2");
 
   // BMR Simulator State
   const [costFp, setCostFp] = useState<number>(40000); // False positive friction (in INR, e.g. ₹40,000)
@@ -141,10 +131,10 @@ export function ModelsPage() {
       <section className="mt-6 border border-border bg-card p-5 shadow-xs space-y-5">
         <div className="flex flex-wrap items-center justify-between border-b border-border pb-3 gap-2">
           <div className="flex items-center gap-2">
-            <span className="border border-navy bg-navy/10 px-2 py-0.5 font-mono text-[10px] font-bold text-navy uppercase tracking-[0.06em]">
+            <span className="border border-navy bg-navy/10 px-2 py-0.5 font-mono text-[9.5px] font-bold text-navy uppercase tracking-[0.06em]">
               ECONOMIC DECISION SIMULATOR
             </span>
-            <h2 className="font-sans text-[17px] font-bold text-foreground">
+            <h2 className="font-sans text-[16px] font-bold text-foreground tracking-tight">
               Bayes Minimum Risk (BMR) Expected Monetary Loss Optimizer
             </h2>
           </div>
@@ -156,9 +146,9 @@ export function ModelsPage() {
         <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
           {/* Sliders & Parameters */}
           <div className="space-y-4 font-mono text-[11.5px] border-r border-border/60 pr-4">
-            <div className="border border-border bg-surface p-3 space-y-2">
+            <div className="border border-border bg-surface p-3 space-y-2 shadow-2xs">
               <div className="flex justify-between items-center text-[10.5px]">
-                <span className="text-muted-foreground uppercase font-bold">Cost of False Positive (C_FP)</span>
+                <span className="text-muted-foreground uppercase font-bold tracking-wider">Cost of False Positive (C_FP)</span>
                 <span className="font-bold text-navy">₹{costFp.toLocaleString("en-IN")} INR</span>
               </div>
               <input
@@ -170,14 +160,14 @@ export function ModelsPage() {
                 onChange={(e) => setCostFp(Number(e.target.value))}
                 className="w-full accent-navy cursor-pointer"
               />
-              <div className="text-[10px] text-muted-foreground font-sans">
+              <div className="text-[10.5px] text-muted-foreground font-sans leading-relaxed">
                 Customer friction, brand churn, manual support escalation ticket cost.
               </div>
             </div>
 
-            <div className="border border-border bg-surface p-3 space-y-2">
+            <div className="border border-border bg-surface p-3 space-y-2 shadow-2xs">
               <div className="flex justify-between items-center text-[10.5px]">
-                <span className="text-muted-foreground uppercase font-bold">Cost of False Negative (C_FN)</span>
+                <span className="text-muted-foreground uppercase font-bold tracking-wider">Cost of False Negative (C_FN)</span>
                 <span className="font-bold text-blocked">₹{costFn.toLocaleString("en-IN")} INR</span>
               </div>
               <input
@@ -189,21 +179,21 @@ export function ModelsPage() {
                 onChange={(e) => setCostFn(Number(e.target.value))}
                 className="w-full accent-blocked cursor-pointer"
               />
-              <div className="text-[10px] text-muted-foreground font-sans">
+              <div className="text-[10.5px] text-muted-foreground font-sans leading-relaxed">
                 Direct fraud chargeback loss, interchange scheme fine, recovery loss.
               </div>
             </div>
 
             {/* Computed Optimal Output */}
-            <div className="border border-navy/40 bg-navy/5 p-3 space-y-2">
-              <div className="text-[10px] text-navy font-bold uppercase tracking-wider">
+            <div className="border border-navy/40 bg-navy/5 p-3.5 space-y-2 shadow-2xs">
+              <div className="text-[9.5px] text-navy font-bold uppercase tracking-wider">
                 Analytically Optimal Cutoff Threshold (τ*)
               </div>
               <div className="flex items-baseline justify-between">
-                <span className="text-[24px] font-extrabold text-navy">{optimalTau.toFixed(4)}</span>
-                <span className="text-[11px] text-muted-foreground">P(fraud) ≥ {(optimalTau * 100).toFixed(2)}% → BLOCK</span>
+                <span className="text-[24px] font-extrabold text-navy font-mono">{optimalTau.toFixed(4)}</span>
+                <span className="text-[11px] font-mono text-muted-foreground">P(fraud) ≥ {(optimalTau * 100).toFixed(2)}% → BLOCK</span>
               </div>
-              <div className="text-[10.5px] font-sans text-muted-foreground leading-snug">
+              <div className="text-[11px] font-sans text-muted-foreground leading-snug">
                 Formula: <Mono className="text-navy font-bold">τ* = C_FP / (C_FP + C_FN)</Mono>. Minimizes expected rupee loss across entire transaction portfolio.
               </div>
             </div>
@@ -211,11 +201,11 @@ export function ModelsPage() {
 
           {/* Recharts Expected Rupee Loss Curve */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground">
-              <span>EXPECTED PORTFOLIO LOSS vs. DECISION CUTOFF THRESHOLD</span>
-              <span className="text-navy font-bold">Optimal Point marked at τ* = {optimalTau.toFixed(4)}</span>
+            <div className="flex items-center justify-between text-[10.5px] font-mono text-muted-foreground">
+              <span className="uppercase tracking-wider font-semibold">EXPECTED PORTFOLIO LOSS vs. DECISION CUTOFF THRESHOLD</span>
+              <span className="text-navy font-bold">Optimal Point: τ* = {optimalTau.toFixed(4)}</span>
             </div>
-            <div className="h-[220px] w-full border border-border/50 bg-surface/50 p-2">
+            <div className="h-[220px] w-full border border-border/50 bg-surface/50 p-2 shadow-2xs">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={costCurveData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2ded4" />
@@ -239,7 +229,7 @@ export function ModelsPage() {
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-8">
         <section className="min-w-0 space-y-4">
           <SectionHead title="MODEL REGISTRY" meta={`${models.length} registered models`} />
-          <div className="overflow-x-auto border border-border bg-card">
+          <div className="overflow-x-auto border border-border bg-card shadow-xs">
             <DataGrid
               onSelect={(id) => {
                 setSelectedKey((cur) => (cur === id ? null : id));
@@ -258,23 +248,23 @@ export function ModelsPage() {
               rows={models.map((m) => ({
                 id: key(m),
                 cells: [
-                  <span key="id" className="font-mono text-[12px] font-bold text-navy">{m.id}</span>,
-                  <span key="name" className="text-[12px] font-sans">{m.name}</span>,
-                  <Mono key="version" className="text-[11.5px]">{m.version}</Mono>,
+                  <span key="id" className="font-mono text-[11.5px] font-bold text-navy">{m.id}</span>,
+                  <span key="name" className="text-[12px] font-sans font-medium text-foreground">{m.name}</span>,
+                  <Mono key="version" className="text-[11px]">{m.version}</Mono>,
                   <StageText key="stage" stage={m.stage} />,
-                  <span key="auc" className="font-mono text-[12px] font-semibold tabular">
+                  <span key="auc" className="font-mono text-[11.5px] font-bold tabular">
                     {m.auc.toFixed(4)}
                   </span>,
                   <span
                     key="psi"
                     className={cn(
-                      "font-mono text-[12px] tabular",
+                      "font-mono text-[11.5px] tabular font-semibold",
                       m.driftPsi < 0.1 ? "text-authoritative font-bold" : "text-amber-intel",
                     )}
                   >
                     {m.driftPsi.toFixed(2)}
                   </span>,
-                  <span key="lat" className="font-mono text-[12px] tabular">
+                  <span key="lat" className="font-mono text-[11.5px] tabular">
                     {m.p99Ms.toFixed(1)} ms
                   </span>,
                 ],
@@ -283,18 +273,18 @@ export function ModelsPage() {
           </div>
 
           {/* Canary Routing Controls */}
-          <div className="border border-border bg-card p-4 space-y-3 font-mono text-[11.5px]">
+          <div className="border border-border bg-card p-4 space-y-3 font-mono text-[11.5px] shadow-xs">
             <div className="flex items-center justify-between border-b border-border pb-2">
               <div className="flex items-center gap-2">
                 <GitBranch className="size-4 text-navy" />
-                <span className="font-bold text-foreground text-[12px]">
+                <span className="font-bold text-foreground text-[12px] font-sans">
                   Canary Traffic Routing: Active Champion vs Shadow Candidate
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setCanaryLocked(!canaryLocked)}
-                className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground cursor-pointer"
+                className="flex items-center gap-1 text-[9.5px] text-muted-foreground hover:text-foreground cursor-pointer uppercase font-semibold tracking-wider"
               >
                 <Lock className="size-3" />
                 <span>{canaryLocked ? "Unlock Slider (Maker-Checker)" : "Lock Configuration"}</span>
@@ -302,15 +292,15 @@ export function ModelsPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-[11px]">
-              <div className="border border-authoritative/40 bg-approve-surface p-2.5">
-                <div className="text-[10px] text-authoritative uppercase font-bold">Active Champion (100% - {canaryPercent}%)</div>
+              <div className="border border-authoritative/40 bg-approve-surface p-2.5 shadow-2xs">
+                <div className="text-[9.5px] text-authoritative uppercase font-bold tracking-wider">Active Champion (100% - {canaryPercent}%)</div>
                 <div className="font-bold text-foreground text-[12px] mt-0.5">fraud-xgb-25f-v3.0</div>
-                <div className="text-muted-foreground text-[10.5px]">25 Canonical Features · Beta Calibrated</div>
+                <div className="text-muted-foreground text-[10.5px] font-sans">25 Canonical Features · Beta Calibrated</div>
               </div>
-              <div className="border border-shadow-intel/40 bg-shadow-intel-surface p-2.5">
-                <div className="text-[10px] text-shadow-intel uppercase font-bold">Shadow Candidate ({canaryPercent}%)</div>
+              <div className="border border-shadow-intel/40 bg-shadow-intel-surface p-2.5 shadow-2xs">
+                <div className="text-[9.5px] text-shadow-intel uppercase font-bold tracking-wider">Shadow Candidate ({canaryPercent}%)</div>
                 <div className="font-bold text-foreground text-[12px] mt-0.5">extended_catboost_58f</div>
-                <div className="text-muted-foreground text-[10.5px]">58 Features · 0% Customer Authority (Gated)</div>
+                <div className="text-muted-foreground text-[10.5px] font-sans">58 Features · 0% Customer Authority (Gated)</div>
               </div>
             </div>
 
@@ -336,7 +326,7 @@ export function ModelsPage() {
                 type="button"
                 disabled={canaryLocked || canaryPercent === 0}
                 onClick={handleApplyCanary}
-                className="border border-navy bg-navy px-3 py-1 font-bold text-white text-[10.5px] hover:bg-navy/90 cursor-pointer disabled:opacity-40 font-mono"
+                className="border border-navy bg-navy px-3 py-1 font-bold text-white text-[10.5px] hover:bg-navy/90 cursor-pointer disabled:opacity-40 font-mono shadow-2xs"
               >
                 Apply Canary Split
               </button>
@@ -347,49 +337,49 @@ export function ModelsPage() {
         {/* Right Sidebar: Selected Model Metadata */}
         <aside className="border border-border bg-card p-5 shadow-xs space-y-4 font-mono text-[11.5px]">
           <div className="flex items-center justify-between border-b border-border pb-2">
-            <span className="font-bold text-navy text-[11px] uppercase tracking-wider">
+            <span className="font-bold text-navy text-[9.5px] uppercase tracking-[0.12em]">
               MODEL GOVERNANCE DOSSIER
             </span>
             <StageText stage={selected.stage} />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1">
             <div className="text-[13px] font-bold text-foreground">{selected.id}</div>
-            <div className="text-[11px] text-muted-foreground font-sans">{selected.name}</div>
+            <div className="text-[11.5px] text-muted-foreground font-sans font-medium">{selected.name}</div>
           </div>
 
-          <div className="border-t border-border pt-3 space-y-2">
+          <div className="border-t border-border pt-3 space-y-2 text-[11px]">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Version:</span>
+              <span className="text-muted-foreground uppercase text-[9.5px]">Version:</span>
               <span className="font-bold text-foreground">{selected.version}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Validation PR-AUC:</span>
-              <span className="font-bold text-foreground">{selected.auc.toFixed(4)}</span>
+              <span className="text-muted-foreground uppercase text-[9.5px]">Validation PR-AUC:</span>
+              <span className="font-bold text-foreground tabular">{selected.auc.toFixed(4)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Serving Latency p99:</span>
-              <span className="font-bold text-foreground">{selected.p99Ms.toFixed(1)} ms</span>
+              <span className="text-muted-foreground uppercase text-[9.5px]">Serving Latency p99:</span>
+              <span className="font-bold text-foreground tabular">{selected.p99Ms.toFixed(1)} ms</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">PSI Feature Drift:</span>
-              <span className={cn("font-bold", selected.driftPsi < 0.1 ? "text-authoritative" : "text-amber-intel")}>
+              <span className="text-muted-foreground uppercase text-[9.5px]">PSI Feature Drift:</span>
+              <span className={cn("font-bold tabular", selected.driftPsi < 0.1 ? "text-authoritative" : "text-amber-intel")}>
                 {selected.driftPsi.toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Trained Date:</span>
+              <span className="text-muted-foreground uppercase text-[9.5px]">Trained Date:</span>
               <span className="text-foreground">{selected.trainedOn}</span>
             </div>
             {detail && (
               <>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Serving Alias:</span>
+                  <span className="text-muted-foreground uppercase text-[9.5px]">Serving Alias:</span>
                   <span className="font-bold text-navy">{detail.servingAlias}</span>
                 </div>
                 {detail.promotedOn && (
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Promoted On:</span>
+                    <span className="text-muted-foreground uppercase text-[9.5px]">Promoted On:</span>
                     <span className="text-foreground">{detail.promotedOn}</span>
                   </div>
                 )}
