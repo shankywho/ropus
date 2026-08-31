@@ -1,18 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { DataGrid, MetricStrip, Page, PageHead, SectionHead } from "@/components/ropus/page";
-import { Mono } from "@/components/ropus/core";
+import { Mono, StatusPill } from "@/components/ropus/core";
 import { investigations, type InvestigationRecord } from "@/lib/ropus/platform-fixtures";
 import { cn } from "@/lib/utils";
+import { FileSearch, Network, ShieldAlert, ArrowRight, CheckCircle2, Lock } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/investigations")({
   head: () => ({
     meta: [
-      { title: "Investigations — ROPUS" },
+      { title: "Evidentiary Dossiers & Investigations — ROPUS" },
       {
         name: "description",
         content:
-          "Multi-case investigations grouping related entities, exposure and analyst ownership.",
+          "Multi-case forensic investigations grouping related entities, mule clusters, and shared hardware canvas infrastructure.",
       },
       { property: "og:title", content: "Investigations — ROPUS" },
       {
@@ -27,124 +29,158 @@ export const Route = createFileRoute("/investigations")({
 });
 
 const stateTone: Record<InvestigationRecord["state"], string> = {
-  ACTIVE: "text-block",
-  MONITORING: "text-warning",
+  ACTIVE: "text-blocked font-bold",
+  MONITORING: "text-amber-intel font-bold",
   CLOSED: "text-muted-foreground",
 };
 
-const usd = (n: number) => n.toLocaleString("en-US", { minimumFractionDigits: 2 });
+const money = (n: number) =>
+  new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(n);
 
 function InvestigationsPage() {
   const open = investigations.filter((i) => i.state !== "CLOSED");
   const [selectedId, setSelectedId] = useState("inv_2026_0184");
   const activeInv = investigations.find((i) => i.id === selectedId) || investigations[0]!;
 
+  const handleFreezeCluster = () => {
+    toast.success(`Cluster frozen for ${activeInv.id}`, {
+      description: "14 connected synthetic accounts and payout destination PA-77120 locked.",
+    });
+  };
+
   return (
     <Page>
       <PageHead
-        title="Investigations"
-        subtitle="Evidentiary dossiers grouping multi-case fraud clusters, shared hardware infrastructure, and cross-border money mule networks."
+        title="Forensic Investigations &amp; Mule Dossiers"
+        subtitle="Evidentiary dossiers grouping multi-case fraud clusters, shared headless hardware infrastructure, and cross-border money mule networks."
       />
 
       <MetricStrip
         items={[
-          { label: "Open investigations", value: String(open.length), sub: "active or monitoring" },
+          { label: "Active Investigations", value: String(open.length), sub: "active syndicate clusters", tone: "text-navy" },
           {
-            label: "Entities under review",
+            label: "Entities Under Review",
             value: String(open.reduce((s, i) => s + i.entities, 0)),
-            sub: "across all clusters",
+            sub: "accounts, IPs & devices",
+            tone: "text-blocked",
           },
           {
-            label: "Linked cases",
+            label: "Linked Cases",
             value: String(investigations.flatMap((i) => i.linkedCases).length),
-            sub: "attached to investigations",
+            sub: "attached to open dossiers",
           },
           {
-            label: "Exposure",
-            value: `₹${usd(open.reduce((s, i) => s + i.exposure * 100, 0))}`,
-            sub: "INR at risk, open only",
+            label: "Syndicate Exposure",
+            value: money(open.reduce((s, i) => s + i.exposure * 100, 0)),
+            sub: "total capital at risk",
+            tone: "text-blocked",
           },
-          { label: "Oldest open", value: "18 days", sub: "inv_2026_0166" },
+          { label: "Oldest Open", value: "18 days", sub: "inv_2026_0166" },
         ]}
       />
 
       {/* ------------------------------------------------ Active Evidentiary Dossier View */}
-      <section className="mt-6 rounded border border-border bg-surface p-5">
+      <section className="mt-6 border border-border bg-card p-5 shadow-xs">
         <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[11px] font-bold text-primary">ACTIVE DOSSIER</span>
-              <Mono className="text-[12px] font-bold">{activeInv.id}</Mono>
+            <div className="flex items-center gap-2 font-mono text-[10.5px]">
+              <span className="border border-navy bg-navy/10 px-2 py-0.5 font-bold text-navy uppercase tracking-wider">
+                ACTIVE DOSSIER
+              </span>
+              <Mono className="text-[12px] font-bold text-foreground">{activeInv.id}</Mono>
               <span
                 className={cn(
-                  "text-[11px] font-semibold tracking-wider uppercase",
+                  "font-bold uppercase tracking-wider text-[10px]",
                   stateTone[activeInv.state],
                 )}
               >
                 ({activeInv.state})
               </span>
             </div>
-            <h2 className="mt-1 text-[16px] font-bold text-foreground">{activeInv.title}</h2>
-            <p className="mt-0.5 text-[12.5px] text-muted-foreground">
-              Lead Analyst: <Mono className="text-foreground font-bold">{activeInv.owner}</Mono> ·
+            <h2 className="mt-1 font-sans text-[18px] font-extrabold text-foreground tracking-tight">
+              {activeInv.title}
+            </h2>
+            <p className="mt-0.5 font-sans text-[12.5px] text-muted-foreground">
+              Lead Fraud Investigator: <Mono className="text-foreground font-bold">{activeInv.owner}</Mono> ·
               Total Syndicate Exposure:{" "}
-              <Mono className="text-foreground font-bold">
-                ₹{usd(activeInv.exposure * 100)} INR
+              <Mono className="text-blocked font-bold text-[13px]">
+                {money(activeInv.exposure * 100)}
               </Mono>
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 font-mono text-[11px]">
+            <button
+              type="button"
+              onClick={handleFreezeCluster}
+              className="border border-blocked bg-blocked px-3 py-1.5 font-bold text-white hover:bg-blocked/90 cursor-pointer shadow-xs flex items-center gap-1.5"
+            >
+              <Lock className="size-3" />
+              <span>Freeze Syndicate Cluster</span>
+            </button>
             <Link
               to="/graph"
-              className="rounded border border-border bg-surface px-3 py-1.5 font-mono text-[12px] font-bold text-primary hover:bg-accent"
+              className="border border-border bg-surface hover:bg-secondary px-3 py-1.5 font-bold text-navy flex items-center gap-1.5 transition-colors shadow-2xs"
             >
-              Open Cluster in Fraud Graph →
+              <Network className="size-3.5 text-navy" />
+              <span>Explore in Fraud Graph →</span>
             </Link>
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3 text-[12.5px]">
-          <div className="rounded border border-border bg-accent/20 p-3.5">
-            <div className="text-[11px] font-semibold text-muted-foreground uppercase">
-              1. Observed Facts
+        {/* 3-Column Dossier Decomposition */}
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3 font-mono text-[11.5px]">
+          <div className="border border-border bg-surface p-3.5 space-y-2 shadow-2xs">
+            <div className="text-[9.5px] font-bold text-navy uppercase tracking-wider border-b border-border pb-1.5">
+              1. Observed Forensic Facts
             </div>
-            <ul className="mt-2 space-y-1.5 text-muted-foreground list-disc list-inside">
+            <ul className="space-y-1.5 text-muted-foreground font-sans text-[11.5px] list-disc list-inside">
               <li>
-                • Session from datacenter proxy <Mono className="text-[11px]">198.51.100.44</Mono>.
+                Inbound session from Limassol datacenter proxy <Mono className="text-[11px] font-bold text-foreground">198.51.100.44</Mono> (ASN 13335).
               </li>
               <li>
-                • Headless Linux emulator canvas <Mono className="text-[11px]">9f8a84b12c</Mono>.
+                Headless Linux emulator canvas <Mono className="text-[11px] font-bold text-foreground">9f8a84b12c</Mono> with 0.96 entropy score.
               </li>
               <li>
-                • Beneficiary node <Mono className="text-[11px]">PA-77120</Mono> added 9m before
-                transfer.
+                Mule beneficiary node <Mono className="text-[11px] font-bold text-foreground">PA-77120</Mono> created 9 minutes before payout attempt.
               </li>
             </ul>
           </div>
 
-          <div className="rounded border border-border bg-accent/20 p-3.5">
-            <div className="text-[11px] font-semibold text-muted-foreground uppercase">
-              2. Inferred Graph Structure
+          <div className="border border-border bg-surface p-3.5 space-y-2 shadow-2xs">
+            <div className="text-[9.5px] font-bold text-shadow-intel uppercase tracking-wider border-b border-border pb-1.5">
+              2. GraphSAGE GNN Ring Topology
             </div>
-            <ul className="mt-2 space-y-1.5 text-muted-foreground list-disc list-inside">
-              <li>• 14 synthetic accounts share same hardware canvas hash.</li>
-              <li>• Degree centrality = 16 (high density syndicate ring).</li>
-              <li>• 3 linked accounts have confirmed prior chargebacks.</li>
+            <ul className="space-y-1.5 text-muted-foreground font-sans text-[11.5px] list-disc list-inside">
+              <li>
+                <strong>14 synthetic accounts</strong> share the identical hardware canvas fingerprint.
+              </li>
+              <li>
+                Degree centrality = <strong>16</strong> (High-density syndicate ring structure).
+              </li>
+              <li>
+                3 connected nodes have confirmed historical chargebacks on record.
+              </li>
             </ul>
           </div>
 
-          <div className="rounded border border-border bg-accent/20 p-3.5">
-            <div className="text-[11px] font-semibold text-muted-foreground uppercase">
-              3. Recommended Actions
+          <div className="border border-border bg-surface p-3.5 space-y-2 shadow-2xs">
+            <div className="text-[9.5px] font-bold text-blocked uppercase tracking-wider border-b border-border pb-1.5">
+              3. Recommended Legal Actions
             </div>
-            <ul className="mt-2 space-y-1.5 text-muted-foreground">
-              <li>• Execute immediate permanent block on payout request.</li>
-              <li>• Freeze 14 connected mule accounts in graph ring.</li>
+            <ul className="space-y-1.5 text-muted-foreground font-sans text-[11.5px] list-disc list-inside">
               <li>
-                • Add Beneficiary <Mono className="text-[11px]">PA-77120</Mono> to global blacklist.
+                Permanent payment refusal on transaction <Mono className="text-[11px]">txn_order_88419</Mono>.
               </li>
-              <li>• File mandatory FIU-IND STR/SAR narrative batch.</li>
+              <li>
+                Freeze 14 connected accounts in graph syndicate ring.
+              </li>
+              <li>
+                Add Beneficiary <Mono className="text-[11px]">PA-77120</Mono> to global blacklist.
+              </li>
+              <li>
+                Export cryptographic audit evidence bundle for FIU-IND STR submission.
+              </li>
             </ul>
           </div>
         </div>
@@ -152,19 +188,19 @@ function InvestigationsPage() {
 
       {/* ------------------------------------------------ All Investigations Table */}
       <div className="mt-8">
-        <SectionHead title="Investigation register" meta={`${investigations.length} records`} />
-        <div className="mt-1">
+        <SectionHead title="Investigation Register" meta={`${investigations.length} dossiers`} />
+        <div className="mt-2 border border-border bg-card shadow-xs overflow-x-auto">
           <DataGrid
             columns={[
-              { key: "id", label: "Investigation" },
+              { key: "id", label: "Investigation ID" },
               { key: "title", label: "Subject" },
               { key: "entities", label: "Entities", align: "right" },
-              { key: "cases", label: "Linked cases" },
-              { key: "exposure", label: "Exposure INR", align: "right" },
-              { key: "owner", label: "Owner" },
+              { key: "cases", label: "Linked Cases" },
+              { key: "exposure", label: "Exposure", align: "right" },
+              { key: "owner", label: "Lead Owner" },
               { key: "state", label: "State" },
               { key: "opened", label: "Opened" },
-              { key: "activity", label: "Last activity" },
+              { key: "activity", label: "Last Activity" },
             ]}
             rows={investigations.map((i) => ({
               id: i.id,
@@ -174,39 +210,40 @@ function InvestigationsPage() {
                   type="button"
                   onClick={() => setSelectedId(i.id)}
                   className={cn(
-                    "font-mono text-[12px] hover:underline",
-                    selectedId === i.id ? "font-bold text-primary" : "text-muted-foreground",
+                    "font-mono text-[11.5px] hover:underline cursor-pointer font-bold",
+                    selectedId === i.id ? "text-navy" : "text-muted-foreground",
                   )}
                 >
                   {i.id}
                 </button>,
-                <span className="font-medium">{i.title}</span>,
-                <Mono className="text-muted-foreground">{i.entities}</Mono>,
+                <span key="title" className="font-sans font-semibold text-foreground text-[12px]">{i.title}</span>,
+                <Mono key="ent" className="text-muted-foreground font-semibold">{i.entities}</Mono>,
                 i.linkedCases.length ? (
-                  <span className="flex flex-wrap gap-x-2">
+                  <span key="cs" className="flex flex-wrap gap-x-2 font-mono text-[11px]">
                     {i.linkedCases.map((c) => (
                       <Link
                         key={c}
                         to="/cases/$caseId"
                         params={{ caseId: c }}
-                        className="font-mono text-[12px] text-primary hover:underline"
+                        className="text-navy font-bold hover:underline"
                       >
                         {c}
                       </Link>
                     ))}
                   </span>
                 ) : (
-                  <span className="text-muted-foreground">—</span>
+                  <span key="cs" className="text-muted-foreground font-mono text-[11px]">—</span>
                 ),
-                <Mono>{usd(i.exposure)}</Mono>,
-                <span className="text-muted-foreground">{i.owner}</span>,
+                <Mono key="exp" className="font-bold text-foreground tabular">{money(i.exposure * 100)}</Mono>,
+                <span key="own" className="text-muted-foreground font-medium font-sans text-[11.5px]">{i.owner}</span>,
                 <span
-                  className={cn("text-[11px] font-semibold tracking-[0.06em]", stateTone[i.state])}
+                  key="st"
+                  className={cn("font-mono text-[10.5px] font-bold uppercase", stateTone[i.state])}
                 >
                   {i.state}
                 </span>,
-                <Mono className="text-muted-foreground">{i.opened}</Mono>,
-                <Mono className="text-muted-foreground">{i.lastActivity}</Mono>,
+                <Mono key="op" className="text-muted-foreground text-[10.5px]">{i.opened}</Mono>,
+                <Mono key="act" className="text-muted-foreground text-[10.5px]">{i.lastActivity}</Mono>,
               ],
             }))}
           />

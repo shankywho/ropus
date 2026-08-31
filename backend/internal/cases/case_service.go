@@ -78,6 +78,22 @@ func (s *Service) CreateCaseFromDecision(ctx context.Context, tenantID, decision
 		priority = "MEDIUM"
 	}
 
+	// Idempotency check: if case already exists for this transaction, return it directly
+	checkQuery := `
+		SELECT case_id, tenant_id, decision_id, transaction_id, status, priority, assigned_to, resolution_reason, resolved_at, sla_expires_at, created_at, updated_at
+		FROM cases
+		WHERE tenant_id = $1 AND transaction_id = $2
+		LIMIT 1
+	`
+	var existing Case
+	if err := s.db.QueryRow(ctx, checkQuery, tenantID, transactionID).Scan(
+		&existing.ID, &existing.TenantID, &existing.DecisionID, &existing.TransactionID,
+		&existing.Status, &existing.Priority, &existing.AssignedTo, &existing.ResolutionReason,
+		&existing.ResolvedAt, &existing.SLAExpiresAt, &existing.CreatedAt, &existing.UpdatedAt,
+	); err == nil && existing.ID != "" {
+		return &existing, nil
+	}
+
 	caseID := uuid.New().String()
 	now := time.Now().UTC()
 	slaExpiresAt := now.Add(24 * time.Hour) // 24-hour analyst SLA

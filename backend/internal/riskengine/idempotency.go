@@ -115,6 +115,12 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 			r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 		}
 
+		tenantID := r.Header.Get("X-Tenant-ID")
+		if tenantID == "" {
+			tenantID = "00000000-0000-0000-0000-000000000001"
+		}
+		storeKey := tenantID + ":" + key
+
 		reqHash := ComputeRequestHash(r.Method, r.URL.Path, bodyBytes)
 		now := time.Now().UTC()
 
@@ -124,9 +130,9 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 			s.evictExpiredLocked(now)
 		}
 
-		rec, exists := s.records[key]
+		rec, exists := s.records[storeKey]
 		if exists && now.After(rec.ExpiresAt) {
-			delete(s.records, key)
+			delete(s.records, storeKey)
 			exists = false
 		}
 
@@ -172,7 +178,7 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 			InFlight:    true,
 		}
 		rec.mu.Lock()
-		s.records[key] = rec
+		s.records[storeKey] = rec
 		s.mu.Unlock()
 
 		// Execute downstream handler with response capture

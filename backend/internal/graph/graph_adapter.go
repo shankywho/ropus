@@ -13,6 +13,8 @@ type GraphStore interface {
 	AddEdge(edge *Edge) error
 	GetNode(id string) (*Node, error)
 	GetEdge(id string) (*Edge, error)
+	GetAllNodes() []*Node
+	GetAllEdges() []*Edge
 	QueryNeighbors(nodeID string, edgeType EdgeType) ([]*Node, error)
 	QueryNeighborsTemporal(nodeID string, edgeType EdgeType, asOf time.Time, window time.Duration) ([]*Node, error)
 	Traverse3HopTemporal(startNodeID string, asOf time.Time, window time.Duration, maxNeighborsPerHop int) (*TemporalGraphEvidence, error)
@@ -413,6 +415,26 @@ func (s *LocalGraphStore) FindPaths(sourceID, targetID string, maxDepth int) ([]
 
 	dfs(sourceID, nil, nil, 0)
 	return results, nil
+}
+
+func (s *LocalGraphStore) GetAllNodes() []*Node {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	res := make([]*Node, 0, len(s.nodes))
+	for _, n := range s.nodes {
+		res = append(res, n)
+	}
+	return res
+}
+
+func (s *LocalGraphStore) GetAllEdges() []*Edge {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	res := make([]*Edge, 0, len(s.edges))
+	for _, e := range s.edges {
+		res = append(res, e)
+	}
+	return res
 }
 
 func (s *LocalGraphStore) CountNodes() int {

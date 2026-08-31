@@ -4,21 +4,128 @@ import { cn } from "@/lib/utils";
 import { useSession } from "@/lib/rbac";
 import { isLiveBackend } from "@/lib/ropus/api";
 import { CommandPalette } from "./command-palette";
-import { Search, Command as CommandIcon, Keyboard } from "lucide-react";
+import {
+  Search,
+  Command as CommandIcon,
+  Keyboard,
+  LayoutDashboard,
+  PlayCircle,
+  Network,
+  History,
+  FolderLock,
+  FileSearch,
+  FileCode2,
+  Cpu,
+  Globe2,
+  Activity,
+  ShieldCheck,
+  Terminal,
+  Key,
+  Webhook,
+  Settings2,
+  ShieldAlert,
+} from "lucide-react";
 
-const controlPlaneNav = [
-  { label: "Overview", to: "/" },
-  { label: "Fraud Graph", to: "/graph" },
-  { label: "Demo", to: "/demo" },
+interface NavItem {
+  label: string;
+  to: string;
+  icon: React.ElementType;
+  badge?: string;
+  badgeTone?: "authoritative" | "shadow" | "blocked" | "neutral";
+}
+
+const coreEngineNav: NavItem[] = [
+  { label: "Overview", to: "/", icon: LayoutDashboard },
+  { label: "7-Stage Replay", to: "/demo", icon: PlayCircle, badge: "DEMO", badgeTone: "shadow" },
+  { label: "Fraud Graph", to: "/graph", icon: Network, badge: "GNN", badgeTone: "shadow" },
+  { label: "Decisions Log", to: "/decisions", icon: History },
+  { label: "Case Queue", to: "/cases", icon: FolderLock, badge: "24h SLA", badgeTone: "blocked" },
+  { label: "Investigations", to: "/investigations", icon: FileSearch },
 ];
 
-const platformServicesNav = [
-  { label: "Rules", to: "/rules" },
-  { label: "Models", to: "/models" },
-  { label: "Cases", to: "/cases" },
-  { label: "Operations", to: "/operations" },
-  { label: "Security", to: "/security" },
+const governanceNav: NavItem[] = [
+  { label: "Rules Engine", to: "/rules", icon: FileCode2, badge: "AST", badgeTone: "authoritative" },
+  { label: "Model Registry", to: "/models", icon: Cpu, badge: "BMR", badgeTone: "authoritative" },
+  { label: "Threat Intel", to: "/threat-intelligence", icon: Globe2 },
+  { label: "SRE Operations", to: "/operations", icon: Activity, badge: "99.99%", badgeTone: "authoritative" },
+  { label: "Security & KMS", to: "/security", icon: ShieldCheck },
 ];
+
+const developerNav: NavItem[] = [
+  { label: "API Reference", to: "/api", icon: Terminal },
+  { label: "API Keys", to: "/api-keys", icon: Key },
+  { label: "Webhooks", to: "/webhooks", icon: Webhook },
+  { label: "Settings", to: "/settings", icon: Settings2 },
+];
+
+function NavGroup({
+  heading,
+  items,
+  pathname,
+  onNavigate,
+}: {
+  heading: string;
+  items: NavItem[];
+  pathname: string;
+  onNavigate?: () => void;
+}) {
+  return (
+    <div className="mb-4">
+      <div className="px-4 py-1">
+        <span className="font-mono text-[9px] font-bold tracking-[0.14em] text-sidebar-muted uppercase">
+          {heading}
+        </span>
+      </div>
+      <ul className="mt-1 space-y-0.5">
+        {items.map((item) => {
+          const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+          const Icon = item.icon;
+          return (
+            <li key={item.to}>
+              <Link
+                to={item.to}
+                onClick={onNavigate}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "flex items-center justify-between border-l-2 px-3.5 py-[5.5px] text-[12px] font-sans transition-all",
+                  active
+                    ? "border-l-sidebar-primary bg-sidebar-primary/12 font-semibold text-white"
+                    : "border-l-transparent text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-white",
+                )}
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <Icon
+                    className={cn(
+                      "size-3.5 shrink-0 transition-colors",
+                      active ? "text-sidebar-primary" : "text-sidebar-muted group-hover:text-white",
+                    )}
+                  />
+                  <span className="truncate">{item.label}</span>
+                </div>
+                {item.badge && (
+                  <span
+                    className={cn(
+                      "shrink-0 font-mono text-[8.5px] font-bold px-1.5 py-0.2 tracking-wider uppercase border",
+                      item.badgeTone === "shadow"
+                        ? "border-amber-intel/50 bg-amber-intel/15 text-sidebar-primary"
+                        : item.badgeTone === "blocked"
+                          ? "border-destructive/60 bg-destructive/20 text-rose-300"
+                          : item.badgeTone === "authoritative"
+                            ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-300"
+                            : "border-sidebar-border bg-sidebar-accent text-sidebar-muted",
+                    )}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
 
 function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   const session = useSession();
@@ -26,109 +133,82 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground select-none">
-      {/* Application Wordmark */}
-      <div className="flex items-center gap-3 border-b border-sidebar-border px-4 py-3.5">
-        <span
-          aria-hidden
-          className="grid size-6 place-items-center bg-sidebar-primary font-mono text-[11px] font-bold text-sidebar-primary-foreground"
-        >
-          R
-        </span>
-        <div className="leading-tight">
-          <div className="font-sans text-[16px] font-extrabold tracking-[0.16em] text-white">ROPUS</div>
-          <div className="font-mono text-[9px] font-semibold tracking-[0.13em] text-sidebar-muted uppercase">
-            Risk Control Plane
+      {/* Application Wordmark & YC Flagship Emblem */}
+      <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-3.5">
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <span
+            aria-hidden
+            className="grid size-6 place-items-center bg-sidebar-primary font-mono text-[11px] font-extrabold text-sidebar-primary-foreground shadow-xs"
+          >
+            R
+          </span>
+          <div className="leading-tight">
+            <div className="flex items-center gap-1.5">
+              <span className="font-sans text-[15px] font-extrabold tracking-[0.14em] text-white group-hover:text-sidebar-primary transition-colors">
+                ROPUS
+              </span>
+              <span className="border border-emerald-500/40 bg-emerald-500/10 px-1 py-0.2 font-mono text-[8px] font-bold text-emerald-400">
+                v8.2
+              </span>
+            </div>
+            <div className="font-mono text-[8.5px] font-semibold tracking-[0.13em] text-sidebar-muted uppercase">
+              AI Risk Intelligence
+            </div>
           </div>
+        </Link>
+      </div>
+
+      {/* Tenant / Workspace Selector */}
+      <div className="border-b border-sidebar-border px-4 py-2.5 bg-sidebar-accent/30">
+        <div className="flex items-center justify-between">
+          <span className="font-mono text-[8.5px] font-bold tracking-[0.14em] text-sidebar-muted uppercase">
+            TENANT ENVIRONMENT
+          </span>
+          <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        </div>
+        <div className="mt-0.5 truncate text-[11.5px] font-bold text-white flex items-center gap-1">
+          <span>{session.organization}</span>
+        </div>
+        <div className="mt-0.5 flex items-center justify-between font-mono text-[9.5px] text-sidebar-muted">
+          <span>{session.tenantId}</span>
+          <span className="text-emerald-400 font-semibold">&lt;100ms SLA</span>
         </div>
       </div>
 
-      <div className="border-b border-sidebar-border px-4 py-2.5">
-        <div className="font-mono text-[9px] font-bold tracking-[0.14em] text-sidebar-muted uppercase">
-          WORKSPACE
-        </div>
-        <div className="mt-0.5 truncate text-[12px] font-semibold text-white">{session.organization}</div>
-        <div className="mt-0.5 font-mono text-[10px] text-sidebar-muted">{session.tenantId}</div>
-      </div>
-
-      <nav aria-label="Primary" className="flex-1 overflow-y-auto py-2">
-        {/* Control Plane Group */}
-        <div className="mb-4">
-          <div className="px-4 py-1.5">
-            <span className="font-mono text-[9px] font-bold tracking-[0.14em] text-sidebar-muted uppercase">
-              CONTROL PLANE
-            </span>
-          </div>
-          <ul className="mt-1 space-y-0.5">
-            {controlPlaneNav.map((item) => {
-              const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-              return (
-                <li key={item.to}>
-                  <Link
-                    to={item.to}
-                    onClick={onNavigate}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "flex items-center justify-between border-l-2 px-4 py-[6px] text-[12px] font-sans transition-colors",
-                      active
-                        ? "border-l-sidebar-primary bg-sidebar-primary/12 font-semibold text-white"
-                        : "border-l-transparent text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-white",
-                      item.to === "/demo" && !active && "text-sidebar-foreground font-medium",
-                    )}
-                  >
-                    <span>{item.label}</span>
-                    {item.to === "/demo" && (
-                      <span className="font-mono text-[10px] text-sidebar-primary">●</span>
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        {/* Platform Services Group */}
-        <div>
-          <div className="px-4 py-1.5">
-            <span className="font-mono text-[9px] font-bold tracking-[0.14em] text-sidebar-muted uppercase">
-              PLATFORM SERVICES
-            </span>
-          </div>
-          <ul className="mt-1 space-y-0.5">
-            {platformServicesNav.map((item) => {
-              const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-              return (
-                <li key={item.to}>
-                  <Link
-                    to={item.to}
-                    onClick={onNavigate}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "flex items-center border-l-2 px-4 py-[5.5px] text-[12px] font-sans transition-colors",
-                      active
-                        ? "border-l-sidebar-primary bg-sidebar-primary/12 font-semibold text-white"
-                        : "border-l-transparent text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-white",
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      {/* Navigation Groups */}
+      <nav aria-label="Primary" className="flex-1 overflow-y-auto py-2.5 scrollbar-thin">
+        <NavGroup
+          heading="CORE RISK ENGINE"
+          items={coreEngineNav}
+          pathname={pathname}
+          onNavigate={onNavigate}
+        />
+        <NavGroup
+          heading="INTELLIGENCE & GOVERNANCE"
+          items={governanceNav}
+          pathname={pathname}
+          onNavigate={onNavigate}
+        />
+        <NavGroup
+          heading="DEVELOPER PLATFORM"
+          items={developerNav}
+          pathname={pathname}
+          onNavigate={onNavigate}
+        />
       </nav>
 
-      <div className="border-t border-sidebar-border px-4 py-3">
+      {/* User Session & Status */}
+      <div className="border-t border-sidebar-border px-4 py-2.5 bg-sidebar-accent/20">
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0">
-            <div className="truncate text-[12px] font-semibold text-white">{session.user}</div>
-            <div className="truncate font-mono text-[10px] text-sidebar-muted">{session.role}</div>
+            <div className="truncate text-[11.5px] font-semibold text-white">{session.user}</div>
+            <div className="truncate font-mono text-[9.5px] text-sidebar-muted">{session.role}</div>
           </div>
           <span
             className={cn(
-              "shrink-0 border px-1.5 py-0.5 font-mono text-[9px] font-semibold tracking-[0.06em] uppercase",
+              "shrink-0 border px-1.5 py-0.5 font-mono text-[8.5px] font-bold tracking-[0.06em] uppercase",
               session.environment === "PRODUCTION"
-                ? "border-destructive/60 bg-destructive/20 text-white"
+                ? "border-emerald-500/60 bg-emerald-500/20 text-emerald-300"
                 : "border-sidebar-border bg-sidebar-accent text-sidebar-muted",
             )}
           >
@@ -162,7 +242,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const session = useSession();
   const navigate = useNavigate();
 
-  // Vim-style key chord listeners: g then h/d/c/m/r/g/s
+  // Vim-style key chord listeners: g then h/d/c/m/r/g/s/t/o/a
   useEffect(() => {
     let lastKey = "";
     let lastKeyTime = 0;
@@ -211,6 +291,15 @@ export function AppShell({ children }: { children: ReactNode }) {
         } else if (e.key === "s") {
           e.preventDefault();
           navigate({ to: "/security" });
+        } else if (e.key === "t") {
+          e.preventDefault();
+          navigate({ to: "/threat-intelligence" });
+        } else if (e.key === "o") {
+          e.preventDefault();
+          navigate({ to: "/operations" });
+        } else if (e.key === "a") {
+          e.preventDefault();
+          navigate({ to: "/api" });
         }
         lastKey = "";
       }
@@ -221,7 +310,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen w-full bg-background lg:grid lg:grid-cols-[212px_1fr]">
+    <div className="min-h-screen w-full bg-background lg:grid lg:grid-cols-[220px_1fr]">
       <aside className="hidden border-r border-sidebar-border lg:sticky lg:top-0 lg:block lg:h-screen">
         <SidebarBody />
       </aside>
@@ -233,7 +322,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             className="absolute inset-0 bg-navy/60 backdrop-blur-xs"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute inset-y-0 left-0 w-[212px] shadow-xl">
+          <div className="absolute inset-y-0 left-0 w-[220px] shadow-xl">
             <SidebarBody onNavigate={() => setOpen(false)} />
           </div>
         </div>
@@ -267,22 +356,31 @@ export function AppShell({ children }: { children: ReactNode }) {
             {isLiveBackend ? (
               <span
                 title="Connected to authoritative Go API at localhost:8080"
-                className="inline-flex items-center gap-1 border border-approve/40 bg-approve-surface px-1.5 py-0.5 font-mono text-[9px] font-semibold tracking-[0.06em] text-approve uppercase"
+                className="inline-flex items-center gap-1.5 border border-approve/40 bg-approve-surface px-2 py-0.5 font-mono text-[9px] font-semibold tracking-[0.06em] text-approve uppercase"
               >
-                <span aria-hidden className="size-1 rounded-full bg-approve" />
-                LIVE BACKEND
+                <span aria-hidden className="size-1.5 rounded-full bg-approve animate-pulse" />
+                LIVE GO BACKEND (:8080)
               </span>
             ) : (
               <span
-                title="Offline fixtures rendered locally"
-                className="inline-flex items-center gap-1 border border-amber-intel/40 bg-shadow-intel-surface px-1.5 py-0.5 font-mono text-[9.5px] font-semibold tracking-[0.06em] text-shadow-intel uppercase"
+                title="Local high-fidelity offline telemetry fixtures"
+                className="inline-flex items-center gap-1.5 border border-amber-intel/40 bg-shadow-intel-surface px-2 py-0.5 font-mono text-[9.5px] font-semibold tracking-[0.06em] text-shadow-intel uppercase"
               >
-                <span aria-hidden className="size-1 rounded-full bg-amber-intel" />
-                DEMO DATA
+                <span aria-hidden className="size-1.5 rounded-full bg-amber-intel" />
+                OFFLINE FIXTURES
               </span>
             )}
+
+            <div className="hidden xl:flex items-center gap-2 border-l border-border pl-3 font-mono text-[10px] text-muted-foreground">
+              <span className="text-foreground font-semibold">&lt;100ms p95 SLA</span>
+              <span>·</span>
+              <span>AES-256-GCM KMS</span>
+              <span>·</span>
+              <span>SHA-256 Hash Chain</span>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
+
+          <div className="flex items-center gap-3 sm:gap-4">
             <button
               type="button"
               onClick={() => setShortcutsModalOpen(true)}
@@ -293,11 +391,12 @@ export function AppShell({ children }: { children: ReactNode }) {
               <span>Shortcuts (?)</span>
             </button>
             <UtcClock />
-            <span className="hidden font-mono text-[10.5px] text-muted-foreground sm:inline">
+            <span className="hidden font-mono text-[10.5px] text-muted-foreground sm:inline border-l border-border pl-3">
               {session.user}
             </span>
           </div>
         </header>
+
         <main className="min-w-0 flex-1 paper-deck-grid">{children}</main>
       </div>
 
@@ -328,10 +427,13 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <div className="flex justify-between"><span>Overview</span><kbd className="text-navy font-bold">G H</kbd></div>
                 <div className="flex justify-between"><span>Decisions</span><kbd className="text-navy font-bold">G D</kbd></div>
                 <div className="flex justify-between"><span>Cases Queue</span><kbd className="text-navy font-bold">G C</kbd></div>
-                <div className="flex justify-between"><span>Models</span><kbd className="text-navy font-bold">G M</kbd></div>
+                <div className="flex justify-between"><span>Models Registry</span><kbd className="text-navy font-bold">G M</kbd></div>
                 <div className="flex justify-between"><span>Rules AST</span><kbd className="text-navy font-bold">G R</kbd></div>
                 <div className="flex justify-between"><span>Fraud Graph</span><kbd className="text-navy font-bold">G G</kbd></div>
+                <div className="flex justify-between"><span>Threat Intel</span><kbd className="text-navy font-bold">G T</kbd></div>
+                <div className="flex justify-between"><span>Operations</span><kbd className="text-navy font-bold">G O</kbd></div>
                 <div className="flex justify-between"><span>Security KMS</span><kbd className="text-navy font-bold">G S</kbd></div>
+                <div className="flex justify-between"><span>API Reference</span><kbd className="text-navy font-bold">G A</kbd></div>
               </div>
               <div className="border border-border/60 bg-secondary/30 p-2.5 space-y-1.5">
                 <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Global Omnibar &amp; Actions</div>

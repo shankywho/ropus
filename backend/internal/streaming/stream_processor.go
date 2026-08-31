@@ -24,7 +24,7 @@ func NewStreamProcessor(bus EventBus) *StreamProcessor {
 	}
 }
 
-// ProcessEvent applies exactly-once deduplication and processes the streaming event.
+// ProcessEvent applies idempotent deduplication and processes the streaming event.
 func (p *StreamProcessor) ProcessEvent(ctx context.Context, event *StreamingEvent) (bool, error) {
 	if event.IdempotencyKey != "" {
 		p.mu.Lock()

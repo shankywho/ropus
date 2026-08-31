@@ -13,16 +13,16 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/security")({
   head: () => ({
     meta: [
-      { title: "Security & Merkle Hash Chain Explorer — ROPUS" },
+      { title: "Security & SHA-256 Audit Hash Chain Explorer — ROPUS" },
       {
         name: "description",
         content:
-          "Access controls, tenant security posture, WebAuthn MFA, and cryptographic Merkle Hash-Chain audit ledger verification.",
+          "Access controls, tenant security posture, WebAuthn MFA, and cryptographic SHA-256 audit hash-chain ledger verification.",
       },
-      { property: "og:title", content: "Security & Cryptographic Ledger — ROPUS" },
+      { property: "og:title", content: "Security & Cryptographic Audit Ledger — ROPUS" },
       {
         property: "og:description",
-        content: "Posture, operators and the cryptographic Merkle Hash-Chain audit trail for this tenant.",
+        content: "Posture, operators and the cryptographic SHA-256 audit trail for this tenant.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -109,8 +109,8 @@ export function SecurityPage() {
     setVerifying(true);
     setTimeout(() => {
       setVerifying(false);
-      toast.success("Cryptographic Merkle Hash-Chain Validated (4,284 Blocks)", {
-        description: "100% of SHA-256 block digests match KMS ES256 hardware signatures.",
+      toast.success("Cryptographic Audit Hash-Chain Validated (4,284 Blocks)", {
+        description: "100% of SHA-256 block digests verify against the cryptographic tamper-evident hash chain.",
       });
     }, 500);
   };
@@ -119,7 +119,7 @@ export function SecurityPage() {
     <Page>
       <PageHead
         title="Security & Cryptographic Audit Ledger"
-        subtitle="Authorization is enforced by the Go backend; all decision mutations and rule promotions are committed to an immutable SHA-256 Merkle hash-chain."
+        subtitle="Authorization is enforced by the Go backend; all decision mutations and rule promotions are committed to a tamper-evident SHA-256 cryptographic audit hash-chain."
       />
 
       <TelemetryStrip
@@ -137,7 +137,7 @@ export function SecurityPage() {
             tone: denied.length ? "text-blocked" : "",
           },
           { label: "MFA Coverage", value: "100%", sub: "WebAuthn / FIDO2 Enforced", tone: "text-authoritative" },
-          { label: "KMS Key State", value: "Active", sub: "AWS KMS / Vault ES256", tone: "text-authoritative" },
+          { label: "KMS Envelope DEK", value: "Active", sub: "AES-256-GCM Hardware Root", tone: "text-authoritative" },
         ]}
       />
 
@@ -209,10 +209,10 @@ export function SecurityPage() {
           <aside className="border border-border bg-surface p-4 space-y-3 font-mono text-[11px] shadow-2xs">
             <div className="flex items-center justify-between border-b border-border pb-2">
               <span className="font-bold text-navy text-[10px] uppercase tracking-wider">
-                Block Cryptographic Proof #{selectedBlock.index}
+                Block Hash Verification Record #{selectedBlock.index}
               </span>
               <span className="border border-authoritative/40 bg-approve-surface px-1.5 py-0.2 text-[9px] text-authoritative font-bold tracking-wider">
-                ES256 SIGNED
+                SHA-256 LINKED
               </span>
             </div>
 

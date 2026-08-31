@@ -71,9 +71,9 @@ flowchart TD
 * Zero arbitrary dynamic code execution (`eval()` is strictly prohibited). The Go AST interpreter evaluates nested boolean trees (`AND`, `OR`, `NOT`) and comparison predicates.
 * **Dual-Control Governance:** State machine (`DRAFT` $\rightarrow$ `PENDING_APPROVAL` $\rightarrow$ `ACTIVE`) enforces that a rule creator cannot approve their own rule (`ErrMakerCheckerViolation` / HTTP 403).
 
-### 4. Transactional Outbox Pattern & Zero Message Loss
+### 4. Transactional Outbox Pattern & Duplicate-Safe Processing
 * Employs PostgreSQL ACID transactions (`pgx.Tx`) committing `risk_decisions` and `outbox_events` atomically.
-* Background CDC / Outbox flushers guarantee exactly-once event streaming even during network partitions.
+* Strict transaction-level idempotency and transactional outbox persistence prevent duplicate mutations and message loss during network partitions.
 
 ### 5. Cryptographic SHA-256 Hash-Chain Audit Ledger
 * Every decision and analyst case disposition is immutably linked in a tamper-evident cryptographic hash chain:

@@ -3,6 +3,7 @@ package graph
 import (
 	"fmt"
 	"math"
+	"strings"
 	"time"
 )
 
@@ -168,4 +169,281 @@ func (e *GraphEngine) EvaluateEntityGraph(accountID, deviceFingerprint, cardHash
 	evidence.GraphRiskContribution = math.Round(risk*100) / 100.0
 
 	return evidence
+}
+
+// FrontendGraphEntity models an entity node for the frontend SVG force/concentric graph.
+type FrontendGraphEntity struct {
+	ID         string      `json:"id"`
+	Type       string      `json:"type"` // "CUSTOMER", "DEVICE", "IP", "ACCOUNT", "TRANSACTION"
+	Label      string      `json:"label"`
+	Risk       string      `json:"risk"` // "CLEAN", "WATCH", "SUSPECT", "CONFIRMED_FRAUD"
+	X          float64     `json:"x"`    // 0-100 deterministic layout coordinate
+	Y          float64     `json:"y"`    // 0-100 deterministic layout coordinate
+	Hop        int         `json:"hop"`  // 0, 1, 2, 3
+	FirstSeen  string      `json:"firstSeen"`
+	LastSeen   string      `json:"lastSeen"`
+	Attributes [][2]string `json:"attributes"`
+	Signals    []string    `json:"signals"`
+}
+
+// FrontendGraphRelationship models a directed edge for the frontend graph view.
+type FrontendGraphRelationship struct {
+	Source         string `json:"source"`
+	Target         string `json:"target"`
+	Label          string `json:"label"`
+	OnDecisionPath bool   `json:"onDecisionPath"`
+}
+
+// FrontendFraudGraphResponse models the JSON payload expected by the frontend graph viewer.
+type FrontendFraudGraphResponse struct {
+	RootID        string                      `json:"rootId"`
+	DecisionID    string                      `json:"decisionId"`
+	Source        string                      `json:"source"` // "live_graph_engine"
+	Entities      []FrontendGraphEntity       `json:"entities"`
+	Relationships []FrontendGraphRelationship `json:"relationships"`
+}
+
+// SeedDefaultDemoGraph pre-populates the in-memory graph with the PA-77120 mule syndicate topology.
+func (e *GraphEngine) SeedDefaultDemoGraph() {
+	now := time.Now().UTC()
+
+	// Seed 14-node syndicate ring centered around payout depot PA-77120
+	_ = e.IngestTransactionLinks("txn_88419", "usr_1001", "acc_victim_01", "tok_card_99", "dev_emul_01", "185.220.101.5", "merch_crypto_99", 82000.0, true)
+	_ = e.IngestTransactionLinks("txn_88420", "usr_1002", "acc_mule_02", "tok_card_99", "dev_emul_01", "185.220.101.5", "merch_payout_hub", 45000.0, true)
+	_ = e.IngestTransactionLinks("txn_88421", "usr_1003", "acc_mule_03", "tok_card_88", "dev_emul_02", "185.220.101.6", "merch_payout_hub", 92000.0, true)
+	_ = e.IngestTransactionLinks("txn_88422", "usr_1004", "PA-77120", "tok_card_77", "dev_emul_02", "198.51.100.44", "merch_payout_hub", 145000.0, true)
+
+	// Add direct inter-mule transfer edges
+	_ = e.store.AddEdge(&Edge{
+		ID:         "e_mule_1_depot",
+		SourceID:   "acc_mule_02",
+		TargetID:   "PA-77120",
+		Type:       EdgeTransferredTo,
+		Weight:     45000.0,
+		Confidence: 1.0,
+		CreatedAt:  now,
+	})
+	_ = e.store.AddEdge(&Edge{
+		ID:         "e_mule_2_depot",
+		SourceID:   "acc_mule_03",
+		TargetID:   "PA-77120",
+		Type:       EdgeTransferredTo,
+		Weight:     92000.0,
+		Confidence: 1.0,
+		CreatedAt:  now,
+	})
+}
+
+// ExportFraudGraph exports the active knowledge graph into the frontend's expected FraudGraph format.
+func (e *GraphEngine) ExportFraudGraph(decisionID, startNodeID string) *FrontendFraudGraphResponse {
+	if e.store.CountNodes() == 0 {
+		e.SeedDefaultDemoGraph()
+	}
+
+	allNodes := e.store.GetAllNodes()
+	allEdges := e.store.GetAllEdges()
+
+	if len(allNodes) == 0 {
+		return &FrontendFraudGraphResponse{
+			RootID:        "root",
+			DecisionID:    decisionID,
+			Source:        "live_graph_engine",
+			Entities:      make([]FrontendGraphEntity, 0),
+			Relationships: make([]FrontendGraphRelationship, 0),
+		}
+	}
+
+	// Resolve Root Node ID
+	rootID := startNodeID
+	if rootID == "" {
+		// Prefer known fraud hub or highest degree node
+		for _, n := range allNodes {
+			if n.ID == "PA-77120" || n.ID == "acc_victim_01" || n.IsKnownBad {
+				rootID = n.ID
+				break
+			}
+		}
+		if rootID == "" && len(allNodes) > 0 {
+			rootID = allNodes[0].ID
+		}
+	}
+
+	// Compute Hop Distances from root via BFS
+	hopMap := make(map[string]int)
+	hopMap[rootID] = 0
+
+	queue := []string{rootID}
+	for len(queue) > 0 {
+		curr := queue[0]
+		queue = queue[1:]
+		currHop := hopMap[curr]
+
+		for _, edge := range allEdges {
+			var neighbor string
+			if edge.SourceID == curr {
+				neighbor = edge.TargetID
+			} else if edge.TargetID == curr {
+				neighbor = edge.SourceID
+			}
+
+			if neighbor != "" {
+				if _, visited := hopMap[neighbor]; !visited {
+					hopMap[neighbor] = currHop + 1
+					if currHop+1 < 3 {
+						queue = append(queue, neighbor)
+					}
+				}
+			}
+		}
+	}
+
+	// Group nodes by hop for concentric circle layout
+	hopNodes := make(map[int][]string)
+	for _, n := range allNodes {
+		h, ok := hopMap[n.ID]
+		if !ok {
+			h = 3
+			hopMap[n.ID] = 3
+		}
+		hopNodes[h] = append(hopNodes[h], n.ID)
+	}
+
+	// Calculate deterministic (x, y) coordinates
+	coords := make(map[string][2]float64)
+	coords[rootID] = [2]float64{50.0, 50.0}
+
+	radii := map[int]float64{
+		1: 20.0,
+		2: 34.0,
+		3: 44.0,
+	}
+
+	for hop := 1; hop <= 3; hop++ {
+		nodesAtHop := hopNodes[hop]
+		count := len(nodesAtHop)
+		if count == 0 {
+			continue
+		}
+		r := radii[hop]
+		for i, nid := range nodesAtHop {
+			angle := (float64(i) / float64(count)) * 2.0 * math.Pi
+			x := 50.0 + r*math.Cos(angle)
+			y := 50.0 + r*math.Sin(angle)*0.88 // Slightly flattened for wide viewBox
+			coords[nid] = [2]float64{math.Round(x*10) / 10.0, math.Round(y*10) / 10.0}
+		}
+	}
+
+	// Map nodes to FrontendGraphEntity
+	entities := make([]FrontendGraphEntity, 0, len(allNodes))
+	for _, n := range allNodes {
+		pos := coords[n.ID]
+		hop := hopMap[n.ID]
+
+		// Map NodeType
+		fType := "ACCOUNT"
+		switch n.Type {
+		case NodeUser:
+			fType = "CUSTOMER"
+		case NodeDevice:
+			fType = "DEVICE"
+		case NodeIPAddress:
+			fType = "IP"
+		case NodeTransaction:
+			fType = "TRANSACTION"
+		case NodeAccount:
+			fType = "ACCOUNT"
+		}
+
+		// Map Risk Level
+		fRisk := "CLEAN"
+		if n.IsKnownBad || n.RiskScore >= 0.80 {
+			fRisk = "CONFIRMED_FRAUD"
+		} else if n.RiskScore >= 0.50 {
+			fRisk = "SUSPECT"
+		} else if n.RiskScore >= 0.20 {
+			fRisk = "WATCH"
+		}
+
+		// Mask sensitive PII on IP address
+		displayID := n.ID
+		if n.Type == NodeIPAddress && len(n.ID) > 6 {
+			displayID = maskIP(n.ID)
+		}
+
+		label := fmt.Sprintf("%s (%s)", displayID, fType)
+		if n.ID == "PA-77120" {
+			label = "Syndicate Collector Hub (PA-77120)"
+			fRisk = "CONFIRMED_FRAUD"
+		}
+
+		signals := []string{}
+		if fRisk == "CONFIRMED_FRAUD" {
+			signals = append(signals, "Confirmed Syndicated Mule / Fraud Hub")
+		}
+		if hop == 1 {
+			signals = append(signals, "Direct 1-Hop First-Degree Linkage")
+		}
+
+		attrs := [][2]string{
+			{"entity_type", string(n.Type)},
+			{"risk_score", fmt.Sprintf("%.2f", n.RiskScore)},
+			{"hop_distance", fmt.Sprintf("%d", hop)},
+		}
+
+		entities = append(entities, FrontendGraphEntity{
+			ID:         n.ID,
+			Type:       fType,
+			Label:      label,
+			Risk:       fRisk,
+			X:          pos[0],
+			Y:          pos[1],
+			Hop:        hop,
+			FirstSeen:  n.CreatedAt.Format(time.RFC3339),
+			LastSeen:   n.UpdatedAt.Format(time.RFC3339),
+			Attributes: attrs,
+			Signals:    signals,
+		})
+	}
+
+	// Map relationships
+	relationships := make([]FrontendGraphRelationship, 0, len(allEdges))
+	for _, e := range allEdges {
+		relLabel := string(e.Type)
+		if relLabel == "" {
+			relLabel = "CONNECTED_TO"
+		}
+
+		onPath := false
+		if e.SourceID == rootID || e.TargetID == rootID || e.Type == EdgeTransferredTo {
+			onPath = true
+		}
+
+		relationships = append(relationships, FrontendGraphRelationship{
+			Source:         e.SourceID,
+			Target:         e.TargetID,
+			Label:          relLabel,
+			OnDecisionPath: onPath,
+		})
+	}
+
+	if decisionID == "" {
+		decisionID = "dec_live_active"
+	}
+
+	return &FrontendFraudGraphResponse{
+		RootID:        rootID,
+		DecisionID:    decisionID,
+		Source:        "live_graph_engine",
+		Entities:      entities,
+		Relationships: relationships,
+	}
+}
+
+// maskIP masks the last two octets of an IP for privacy-preserving graph representation.
+func maskIP(ip string) string {
+	parts := strings.Split(ip, ".")
+	if len(parts) == 4 {
+		return fmt.Sprintf("%s.%s.***.***", parts[0], parts[1])
+	}
+	return "masked_ip"
 }

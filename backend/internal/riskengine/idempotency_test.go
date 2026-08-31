@@ -131,3 +131,110 @@ func TestIdempotency_TTLExpiration(t *testing.T) {
 	handler.ServeHTTP(rr2, req2)
 	assert.Equal(t, int64(2), atomic.LoadInt64(&executionCount), "Expired idempotency record should allow new execution")
 }
+
+func TestIdempotency_TenantIsolation(t *testing.T) {
+	store := NewIdempotencyStore(1*time.Minute, 1000)
+
+	var executionCount int64
+	handler := store.IdempotencyMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		atomic.AddInt64(&executionCount, 1)
+		tenant := r.Header.Get("X-Tenant-ID")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(fmt.Sprintf(`{"tenant":"%s"}`, tenant)))
+	}))
+
+	payload := []byte(`{"action":"evaluate"}`)
+	sharedKey := "shared_key_between_tenants"
+
+	// 1. Tenant Alpha Request
+	reqA := httptest.NewRequest(http.MethodPost, "/v1/risk/evaluate", bytes.NewReader(payload))
+	reqA.Header.Set("X-Tenant-ID", "tenant-alpha-001")
+	reqA.Header.Set("X-Idempotency-Key", sharedKey)
+	rrA := httptest.NewRecorder()
+	handler.ServeHTTP(rrA, reqA)
+	assert.Equal(t, http.StatusOK, rrA.Code)
+	assert.Contains(t, rrA.Body.String(), "tenant-alpha-001")
+	assert.Equal(t, int64(1), atomic.LoadInt64(&executionCount))
+
+	// 2. Tenant Beta Request with SAME idempotency key (MUST NOT collision or replay Tenant Alpha's data)
+	reqB := httptest.NewRequest(http.MethodPost, "/v1/risk/evaluate", bytes.NewReader(payload))
+	reqB.Header.Set("X-Tenant-ID", "tenant-beta-002")
+	reqB.Header.Set("X-Idempotency-Key", sharedKey)
+	rrB := httptest.NewRecorder()
+	handler.ServeHTTP(rrB, reqB)
+	assert.Equal(t, http.StatusOK, rrB.Code)
+	assert.Contains(t, rrB.Body.String(), "tenant-beta-002")
+	assert.Equal(t, int64(2), atomic.LoadInt64(&executionCount), "Different tenants MUST NOT share or collide idempotency cache")
+}
+
+func TestIdempotency_HighConcurrencyCoalescing(t *testing.T) {
+	store := NewIdempotencyStore(1*time.Minute, 1000)
+
+	var executionCount int64
+	handler := store.IdempotencyMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(15 * time.Millisecond) // Simulate DB transaction + ML call
+		atomic.AddInt64(&executionCount, 1)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"decision_id":"dec_concurrent_123","action":"ALLOW"}`))
+	}))
+
+	concurrency := 50
+	var wg sync.WaitGroup
+	statusCodes := make([]int, concurrency)
+	cacheLookups := make([]string, concurrency)
+
+	payload := []byte(`{"transaction_id":"txn_shared_50","amount":5000}`)
+
+	for i := 0; i < concurrency; i++ {
+		wg.Add(1)
+		go func(idx int) {
+			defer wg.Done()
+			req := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(payload))
+			req.Header.Set("X-Tenant-ID", "tenant_prod_1")
+			req.Header.Set("X-Idempotency-Key", "idemp_high_concurrency_key")
+			rr := httptest.NewRecorder()
+			handler.ServeHTTP(rr, req)
+			statusCodes[idx] = rr.Code
+			cacheLookups[idx] = rr.Header().Get("X-Cache-Lookup")
+		}(i)
+	}
+
+	wg.Wait()
+
+	for _, code := range statusCodes {
+		assert.Equal(t, http.StatusOK, code)
+	}
+	assert.Equal(t, int64(1), atomic.LoadInt64(&executionCount), "50 concurrent requests with identical key must execute downstream only once")
+
+	hits, misses, conflicts := store.Stats()
+	assert.Equal(t, int64(49), hits)
+	assert.Equal(t, int64(1), misses)
+	assert.Equal(t, int64(0), conflicts)
+}
+
+func TestIdempotency_GETBypass(t *testing.T) {
+	store := NewIdempotencyStore(1*time.Minute, 1000)
+
+	var executionCount int64
+	handler := store.IdempotencyMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		atomic.AddInt64(&executionCount, 1)
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"status":"healthy"}`))
+	}))
+
+	// GET requests should bypass idempotency middleware completely
+	req := httptest.NewRequest(http.MethodGet, "/v1/canary/status", nil)
+	req.Header.Set("X-Idempotency-Key", "get_key_ignored")
+	rr := httptest.NewRecorder()
+	handler.ServeHTTP(rr, req)
+
+	assert.Equal(t, http.StatusOK, rr.Code)
+	assert.Equal(t, int64(1), atomic.LoadInt64(&executionCount))
+	assert.Equal(t, "", rr.Header().Get("X-Cache-Lookup"))
+
+	hits, misses, conflicts := store.Stats()
+	assert.Equal(t, int64(0), hits)
+	assert.Equal(t, int64(0), misses)
+	assert.Equal(t, int64(0), conflicts)
+}

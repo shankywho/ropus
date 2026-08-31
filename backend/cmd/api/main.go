@@ -21,6 +21,7 @@ import (
 	"github.com/shankywho/ropus/backend/internal/audit"
 	"github.com/shankywho/ropus/backend/internal/cases"
 	"github.com/shankywho/ropus/backend/internal/features"
+	"github.com/shankywho/ropus/backend/internal/graph"
 	"github.com/shankywho/ropus/backend/internal/ingestion"
 	"github.com/shankywho/ropus/backend/internal/riskengine"
 	"github.com/shankywho/ropus/backend/internal/rules"
@@ -622,6 +623,8 @@ func main() {
 	})
 
 	riskHandler := riskengine.NewHandler(orchestrator)
+	graphHandler := graph.NewHandler(orchestrator.GetGraphEngine())
+	idempotencyStore := riskengine.NewIdempotencyStore(15*time.Minute, 50000)
 
 	webhookHandler := ingestion.NewWebhookHandler(dbPool)
 
@@ -818,9 +821,15 @@ func main() {
 
 	// V1 API Routes
 	r.Route("/v1", func(r chi.Router) {
+		// Enforce transaction-level idempotency and conflict detection on mutations
+		r.Use(idempotencyStore.IdempotencyMiddleware)
+
 		// Real-time risk evaluation orchestrator (Canonical endpoints)
 		r.Post("/risk-evaluations", riskHandler.EvaluateRisk)
 		r.Post("/risk/evaluate", riskHandler.EvaluateRisk)
+
+		// Live Knowledge Graph topology endpoint
+		r.Get("/graph", graphHandler.GetGraph)
 
 		RegisterDriftHandlers(r, driftDetector)
 		RegisterRetrainingHandlers(r, retrainingCoordinator, cfg.AdminAPIKey)

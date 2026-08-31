@@ -628,7 +628,7 @@ function DemoPage() {
                           setChaosLedgerTamper(e.target.checked);
                           if (e.target.checked) {
                             toast.error("🚨 INTEGRITY BREACH: Audit Chain Tamper Detected", {
-                              description: "SHA-256 Merkle root mismatch at Block #4281.",
+                              description: "SHA-256 block hash mismatch at Block #4281 (H_4281 != SHA256(H_4280 || Payload)).",
                             });
                           }
                         }}
@@ -636,11 +636,11 @@ function DemoPage() {
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground font-sans">
-                      Injects payload byte mutation into past block; triggers real-time Merkle integrity alarm.
+                      Injects payload byte mutation into past block; triggers real-time hash chain integrity alarm.
                     </p>
                     {chaosLedgerTamper && (
                       <span className="inline-block border border-blocked bg-blocked text-white px-1.5 py-0.2 text-[9.5px] font-bold animate-pulse">
-                        MERKLE MISMATCH
+                        HASH CHAIN MISMATCH
                       </span>
                     )}
                   </div>
@@ -1556,8 +1556,8 @@ function DemoPage() {
                   consumer flushes buffered events with exponential backoff once Kafka recovers.
                 </div>
                 <div>
-                  4. <span className="text-muted-foreground">Zero Loss:</span> Exactly-once delivery
-                  semantics preserved; synchronous risk decision path remains 100% unblocked.
+                  4. <span className="text-muted-foreground">At-Least-Once Delivery:</span> Duplicate-safe
+                  consumer idempotency guarantees zero event loss; synchronous risk decision path remains 100% unblocked.
                 </div>
               </div>
             </div>

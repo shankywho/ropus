@@ -8,7 +8,7 @@
     "validation_samples": 1200,
     "validation_fraud_count": 56,
     "validation_fraud_rate": 0.0467,
-    "fitted_at": "2026-08-27T18:04:06.602983+00:00"
+    "fitted_at": "2026-08-31T15:59:30.603273+00:00"
   },
   "parameters": {
     "beta_params": {
@@ -74,7 +74,7 @@
   },
   "source_model_version": "fraud-xgb-25f-candidate-v1",
   "source_model_path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/model/candidates/fraud_model_25f_candidate.onnx",
-  "source_model_checksum_sha256": "a2e71984c0d44d3f1445008526dedb6f2695483cb53f01373c8f81319249b7c6",
+  "source_model_checksum_sha256": "258b1b131a599b95eae5257f15242d7d3f7b2a2c7fe6fe38658b090c3e74ab8a",
   "validation_metrics": {
     "roc_auc": 0.6433,
     "pr_auc": 0.1103,
