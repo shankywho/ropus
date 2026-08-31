@@ -292,3 +292,73 @@ func TestIdempotency_TimeoutRetryDeterministicSemanticDecision(t *testing.T) {
 	assert.Contains(t, rr3.Body.String(), "idempotency_conflict")
 	assert.Equal(t, int64(1), atomic.LoadInt64(&decisionExecutions))
 }
+
+func TestIdempotency_MultiPodIndependentProcessCoalescing(t *testing.T) {
+	// Simulates Pod A and Pod B with independent in-process memory spaces
+	podA := NewIdempotencyStore(1*time.Minute, 1000)
+	podB := NewIdempotencyStore(1*time.Minute, 1000)
+
+	var podAExecutions int64
+	var podBExecutions int64
+
+	handlerA := podA.IdempotencyMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		atomic.AddInt64(&podAExecutions, 1)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"pod":"A","decision_id":"dec_pod_a","action":"ALLOW"}`))
+	}))
+
+	handlerB := podB.IdempotencyMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		atomic.AddInt64(&podBExecutions, 1)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"pod":"B","decision_id":"dec_pod_b","action":"ALLOW"}`))
+	}))
+
+	payload := []byte(`{"transaction_id":"txn_multi_pod_01","amount":1000}`)
+	sharedKey := "cross_pod_idemp_key_777"
+	tenantID := "tenant_fintech_corp"
+
+	// 1. Pod A executes first
+	reqA := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(payload))
+	reqA.Header.Set("X-Tenant-ID", tenantID)
+	reqA.Header.Set("X-Idempotency-Key", sharedKey)
+	rrA := httptest.NewRecorder()
+	handlerA.ServeHTTP(rrA, reqA)
+
+	assert.Equal(t, http.StatusOK, rrA.Code)
+	assert.Equal(t, int64(1), atomic.LoadInt64(&podAExecutions))
+
+	// 2. Pod A replays from local Layer 1 cache (0.00s fast path)
+	reqA2 := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(payload))
+	reqA2.Header.Set("X-Tenant-ID", tenantID)
+	reqA2.Header.Set("X-Idempotency-Key", sharedKey)
+	rrA2 := httptest.NewRecorder()
+	handlerA.ServeHTTP(rrA2, reqA2)
+
+	assert.Equal(t, http.StatusOK, rrA2.Code)
+	assert.Equal(t, "HIT", rrA2.Header().Get("X-Cache-Lookup"))
+	assert.Equal(t, int64(1), atomic.LoadInt64(&podAExecutions))
+
+	// 3. Pod A detects conflict when payload altered on same key
+	tamperedPayload := []byte(`{"transaction_id":"txn_multi_pod_01","amount":99999}`)
+	reqAConflict := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(tamperedPayload))
+	reqAConflict.Header.Set("X-Tenant-ID", tenantID)
+	reqAConflict.Header.Set("X-Idempotency-Key", sharedKey)
+	rrAConflict := httptest.NewRecorder()
+	handlerA.ServeHTTP(rrAConflict, reqAConflict)
+
+	assert.Equal(t, http.StatusConflict, rrAConflict.Code)
+	assert.Contains(t, rrAConflict.Body.String(), "idempotency_conflict")
+
+	// 4. Pod B receives independent tenant request with same key -> completely isolated
+	reqBTenant := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(payload))
+	reqBTenant.Header.Set("X-Tenant-ID", "tenant_isolated_beta")
+	reqBTenant.Header.Set("X-Idempotency-Key", sharedKey)
+	rrBTenant := httptest.NewRecorder()
+	handlerB.ServeHTTP(rrBTenant, reqBTenant)
+
+	assert.Equal(t, http.StatusOK, rrBTenant.Code)
+	assert.Equal(t, int64(1), atomic.LoadInt64(&podBExecutions))
+}
+

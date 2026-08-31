@@ -624,7 +624,7 @@ func main() {
 
 	riskHandler := riskengine.NewHandler(orchestrator)
 	graphHandler := graph.NewHandler(orchestrator.GetGraphEngine())
-	idempotencyStore := riskengine.NewIdempotencyStore(15*time.Minute, 50000)
+	idempotencyStore := riskengine.NewIdempotencyStoreWithDB(dbPool, 15*time.Minute, 50000)
 
 	webhookHandler := ingestion.NewWebhookHandler(dbPool)
 
