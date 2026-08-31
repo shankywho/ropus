@@ -238,3 +238,57 @@ func TestIdempotency_GETBypass(t *testing.T) {
 	assert.Equal(t, int64(0), misses)
 	assert.Equal(t, int64(0), conflicts)
 }
+
+func TestIdempotency_TimeoutRetryDeterministicSemanticDecision(t *testing.T) {
+	store := NewIdempotencyStore(1*time.Minute, 1000)
+
+	var decisionExecutions int64
+	handler := store.IdempotencyMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		atomic.AddInt64(&decisionExecutions, 1)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"decision_id":"dec_retry_999","recommended_action":"ALLOW_RECOMMENDATION","risk_score":12}`))
+	}))
+
+	payload := []byte(`{"transaction_id":"txn_timeout_retry_01","amount":2500,"currency":"INR"}`)
+	idempKey := "idemp_timeout_retry_key_01"
+	tenantID := "tenant_merchant_test"
+
+	// 1. Initial Request: Server computes and stores decision
+	req1 := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(payload))
+	req1.Header.Set("X-Tenant-ID", tenantID)
+	req1.Header.Set("X-Idempotency-Key", idempKey)
+	rr1 := httptest.NewRecorder()
+	handler.ServeHTTP(rr1, req1)
+
+	assert.Equal(t, http.StatusOK, rr1.Code)
+	assert.Contains(t, rr1.Body.String(), "dec_retry_999")
+	assert.Contains(t, rr1.Body.String(), "ALLOW_RECOMMENDATION")
+	assert.Equal(t, int64(1), atomic.LoadInt64(&decisionExecutions))
+
+	// 2. Client-side timeout occurs, client retries with SAME key, SAME tenant, SAME payload
+	req2 := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(payload))
+	req2.Header.Set("X-Tenant-ID", tenantID)
+	req2.Header.Set("X-Idempotency-Key", idempKey)
+	rr2 := httptest.NewRecorder()
+	handler.ServeHTTP(rr2, req2)
+
+	// Verifies exact semantic reproduction without re-executing pipeline
+	assert.Equal(t, http.StatusOK, rr2.Code)
+	assert.Equal(t, rr1.Body.String(), rr2.Body.String(), "Replayed response must match original semantic decision byte-for-byte")
+	assert.Equal(t, "HIT", rr2.Header().Get("X-Cache-Lookup"))
+	assert.Equal(t, "true", rr2.Header().Get("X-Idempotency-Replayed"))
+	assert.Equal(t, int64(1), atomic.LoadInt64(&decisionExecutions), "Underlying decision pipeline must NOT execute again")
+
+	// 3. Replaying SAME key with altered payload returns 409 Conflict
+	tamperedPayload := []byte(`{"transaction_id":"txn_timeout_retry_01","amount":999999,"currency":"INR"}`)
+	req3 := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(tamperedPayload))
+	req3.Header.Set("X-Tenant-ID", tenantID)
+	req3.Header.Set("X-Idempotency-Key", idempKey)
+	rr3 := httptest.NewRecorder()
+	handler.ServeHTTP(rr3, req3)
+
+	assert.Equal(t, http.StatusConflict, rr3.Code)
+	assert.Contains(t, rr3.Body.String(), "idempotency_conflict")
+	assert.Equal(t, int64(1), atomic.LoadInt64(&decisionExecutions))
+}
