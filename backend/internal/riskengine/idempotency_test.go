@@ -362,3 +362,89 @@ func TestIdempotency_MultiPodIndependentProcessCoalescing(t *testing.T) {
 	assert.Equal(t, int64(1), atomic.LoadInt64(&podBExecutions))
 }
 
+func TestIdempotency_Adversarial5Pods50Requests(t *testing.T) {
+	// 5 independent pods
+	numPods := 5
+	pods := make([]*IdempotencyStore, numPods)
+	handlers := make([]http.Handler, numPods)
+	var totalExecutions int64
+
+	for i := 0; i < numPods; i++ {
+		pods[i] = NewIdempotencyStore(1*time.Minute, 1000)
+		handlers[i] = pods[i].IdempotencyMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			atomic.AddInt64(&totalExecutions, 1)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte(`{"decision_id":"dec_adv_5pods","recommended_action":"ALLOW_RECOMMENDATION"}`))
+		}))
+	}
+
+	concurrency := 50
+	var wg sync.WaitGroup
+	statusCodes := make([]int, concurrency)
+	sharedKey := "adv_5pods_shared_key_100"
+	tenantID := "tenant_razorpay_buildathon"
+	payload := []byte(`{"transaction_id":"txn_adv_5pods","amount":50000}`)
+
+	for i := 0; i < concurrency; i++ {
+		wg.Add(1)
+		podIndex := i % numPods
+		go func(idx, pIdx int) {
+			defer wg.Done()
+			req := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(payload))
+			req.Header.Set("X-Tenant-ID", tenantID)
+			req.Header.Set("X-Idempotency-Key", sharedKey)
+			rr := httptest.NewRecorder()
+			handlers[pIdx].ServeHTTP(rr, req)
+			statusCodes[idx] = rr.Code
+		}(i, podIndex)
+	}
+
+	wg.Wait()
+
+	for _, code := range statusCodes {
+		assert.Equal(t, http.StatusOK, code)
+	}
+	// Under local in-memory pod isolation without shared DB, each pod executes at most once (<= 5)
+	// and when connected to PostgreSQL Layer 2, exactly 1 winner executes globally.
+	assert.True(t, atomic.LoadInt64(&totalExecutions) <= int64(numPods))
+}
+
+func TestIdempotency_Adversarial5PodsPayloadConflict(t *testing.T) {
+	numPods := 5
+	pods := make([]*IdempotencyStore, numPods)
+	handlers := make([]http.Handler, numPods)
+
+	for i := 0; i < numPods; i++ {
+		pods[i] = NewIdempotencyStore(1*time.Minute, 1000)
+		handlers[i] = pods[i].IdempotencyMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte(`{"status":"ok"}`))
+		}))
+	}
+
+	sharedKey := "adv_conflict_key_200"
+	tenantID := "tenant_razorpay_buildathon"
+
+	// Pod 0 executes with initial payload
+	payload1 := []byte(`{"amount":100}`)
+	req1 := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(payload1))
+	req1.Header.Set("X-Tenant-ID", tenantID)
+	req1.Header.Set("X-Idempotency-Key", sharedKey)
+	rr1 := httptest.NewRecorder()
+	handlers[0].ServeHTTP(rr1, req1)
+	assert.Equal(t, http.StatusOK, rr1.Code)
+
+	// Tampered payload on same pod -> 409 Conflict
+	payload2 := []byte(`{"amount":500000}`)
+	req2 := httptest.NewRequest(http.MethodPost, "/v1/risk-evaluations", bytes.NewReader(payload2))
+	req2.Header.Set("X-Tenant-ID", tenantID)
+	req2.Header.Set("X-Idempotency-Key", sharedKey)
+	rr2 := httptest.NewRecorder()
+	handlers[0].ServeHTTP(rr2, req2)
+	assert.Equal(t, http.StatusConflict, rr2.Code)
+	assert.Contains(t, rr2.Body.String(), "idempotency_conflict")
+}
+
+

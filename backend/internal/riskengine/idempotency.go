@@ -16,6 +16,9 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// StaleInFlightLeaseDuration is the duration after which an in-flight claim by a crashed pod is considered stale.
+const StaleInFlightLeaseDuration = 10 * time.Second
+
 // IdempotencyRecord stores cached execution outcomes for a specific idempotency key.
 type IdempotencyRecord struct {
 	RequestHash        string
@@ -34,10 +37,12 @@ type dbIdempotencyRecord struct {
 	ResponseBody       []byte
 	ResponseHeaders    http.Header
 	InFlight           bool
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
 	ExpiresAt          time.Time
 }
 
-// IdempotencyStore manages thread-safe idempotent request caching, cross-pod DB persistence, and collision detection.
+// IdempotencyStore manages thread-safe idempotent request caching, cross-pod DB persistence, crash recovery, and collision detection.
 type IdempotencyStore struct {
 	mu        sync.RWMutex
 	records   map[string]*IdempotencyRecord
@@ -87,6 +92,7 @@ func (s *IdempotencyStore) ensureSchema(ctx context.Context) error {
 			response_body BYTEA,
 			in_flight BOOLEAN NOT NULL DEFAULT TRUE,
 			created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+			updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 			expires_at TIMESTAMPTZ NOT NULL,
 			CONSTRAINT uq_tenant_idempotency_key UNIQUE (tenant_id, idempotency_key)
 		);
@@ -239,11 +245,12 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 		s.mu.Unlock()
 
 		// -------------------------------------------------------------
-		// LAYER 2: PostgreSQL Durable Cross-Pod Idempotency Boundary
+		// LAYER 2: PostgreSQL Durable Cross-Pod Idempotency & Crash Recovery
 		// -------------------------------------------------------------
 		if s.db != nil {
 			dbRec, found, err := s.fetchDBRecord(r.Context(), tenantID, key)
 			if err == nil && found && now.Before(dbRec.ExpiresAt) {
+				// Record exists in PostgreSQL across pods
 				if dbRec.RequestHash != reqHash {
 					rec.mu.Unlock()
 					s.mu.Lock()
@@ -253,7 +260,9 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 					writeConflictError(w)
 					return
 				}
+
 				if !dbRec.InFlight {
+					// Execution already completed: populate local cache and replay
 					rec.ResponseStatusCode = dbRec.ResponseStatusCode
 					rec.ResponseBody = dbRec.ResponseBody
 					rec.ResponseHeaders = dbRec.ResponseHeaders
@@ -270,12 +279,58 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 					_, _ = w.Write(dbRec.ResponseBody)
 					return
 				}
+
+				// If in-flight is stale (>10s since last update), previous pod crashed -> reclaim lease
+				if now.Sub(dbRec.UpdatedAt) >= StaleInFlightLeaseDuration {
+					reclaimed, err := s.reclaimStaleDBInFlight(r.Context(), tenantID, key, reqHash)
+					if err == nil && reclaimed {
+						// Successfully reclaimed stale crash lease -> proceed to execute
+						goto executeDownstream
+					}
+				}
+
+				// Another pod is currently executing in-flight: wait for DB completion
+				dbCompletedRec, ok := s.waitForDBCompletion(r.Context(), tenantID, key, reqHash)
+				if ok && dbCompletedRec != nil {
+					if dbCompletedRec.RequestHash != reqHash {
+						rec.mu.Unlock()
+						s.mu.Lock()
+						delete(s.records, storeKey)
+						s.mu.Unlock()
+						atomic.AddInt64(&s.conflicts, 1)
+						writeConflictError(w)
+						return
+					}
+					rec.ResponseStatusCode = dbCompletedRec.ResponseStatusCode
+					rec.ResponseBody = dbCompletedRec.ResponseBody
+					rec.ResponseHeaders = dbCompletedRec.ResponseHeaders
+					rec.InFlight = false
+					rec.mu.Unlock()
+
+					atomic.AddInt64(&s.hits, 1)
+					w.Header().Set("X-Cache-Lookup", "HIT")
+					w.Header().Set("X-Idempotency-Replayed", "true")
+					for k, v := range dbCompletedRec.ResponseHeaders {
+						w.Header()[k] = v
+					}
+					w.WriteHeader(dbCompletedRec.ResponseStatusCode)
+					_, _ = w.Write(dbCompletedRec.ResponseBody)
+					return
+				}
 			}
 
-			// Claim in DB
+			// Attempt atomic in-flight claim in DB (First pod wins)
 			claimed, err := s.claimDBInFlight(r.Context(), tenantID, key, reqHash, now.Add(s.ttl))
 			if err == nil && !claimed {
-				// Another pod is in-flight: wait for DB completion
+				// Lost race against another pod: check if stale or wait for completion
+				dbRec, found, err := s.fetchDBRecord(r.Context(), tenantID, key)
+				if err == nil && found && dbRec.InFlight && now.Sub(dbRec.UpdatedAt) >= StaleInFlightLeaseDuration {
+					reclaimed, _ := s.reclaimStaleDBInFlight(r.Context(), tenantID, key, reqHash)
+					if reclaimed {
+						goto executeDownstream
+					}
+				}
+
 				dbCompletedRec, ok := s.waitForDBCompletion(r.Context(), tenantID, key, reqHash)
 				if ok && dbCompletedRec != nil {
 					if dbCompletedRec.RequestHash != reqHash {
@@ -306,6 +361,7 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 			}
 		}
 
+	executeDownstream:
 		// Execute downstream handler with response capture
 		recWriter := &responseRecorder{
 			ResponseWriter: w,
@@ -330,7 +386,7 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 
 func (s *IdempotencyStore) fetchDBRecord(ctx context.Context, tenantID, key string) (*dbIdempotencyRecord, bool, error) {
 	query := `
-		SELECT request_hash, response_status, response_headers, response_body, in_flight, expires_at
+		SELECT request_hash, response_status, response_headers, response_body, in_flight, created_at, updated_at, expires_at
 		FROM idempotency_records
 		WHERE tenant_id = $1 AND idempotency_key = $2
 	`
@@ -339,9 +395,9 @@ func (s *IdempotencyStore) fetchDBRecord(ctx context.Context, tenantID, key stri
 	var headersBytes []byte
 	var body []byte
 	var inFlight bool
-	var expiresAt time.Time
+	var createdAt, updatedAt, expiresAt time.Time
 
-	err := s.db.QueryRow(ctx, query, tenantID, key).Scan(&reqHash, &status, &headersBytes, &body, &inFlight, &expiresAt)
+	err := s.db.QueryRow(ctx, query, tenantID, key).Scan(&reqHash, &status, &headersBytes, &body, &inFlight, &createdAt, &updatedAt, &expiresAt)
 	if err != nil {
 		return nil, false, err
 	}
@@ -362,14 +418,16 @@ func (s *IdempotencyStore) fetchDBRecord(ctx context.Context, tenantID, key stri
 		ResponseBody:       body,
 		ResponseHeaders:    headers,
 		InFlight:           inFlight,
+		CreatedAt:          createdAt,
+		UpdatedAt:          updatedAt,
 		ExpiresAt:          expiresAt,
 	}, true, nil
 }
 
 func (s *IdempotencyStore) claimDBInFlight(ctx context.Context, tenantID, key, reqHash string, expiresAt time.Time) (bool, error) {
 	query := `
-		INSERT INTO idempotency_records (tenant_id, idempotency_key, request_hash, in_flight, expires_at)
-		VALUES ($1, $2, $3, TRUE, $4)
+		INSERT INTO idempotency_records (tenant_id, idempotency_key, request_hash, in_flight, created_at, updated_at, expires_at)
+		VALUES ($1, $2, $3, TRUE, NOW(), NOW(), $4)
 		ON CONFLICT (tenant_id, idempotency_key) DO NOTHING
 		RETURNING id;
 	`
@@ -382,18 +440,39 @@ func (s *IdempotencyStore) claimDBInFlight(ctx context.Context, tenantID, key, r
 	return true, nil
 }
 
+func (s *IdempotencyStore) reclaimStaleDBInFlight(ctx context.Context, tenantID, key, reqHash string) (bool, error) {
+	query := `
+		UPDATE idempotency_records
+		SET in_flight = TRUE,
+		    request_hash = $3,
+		    updated_at = NOW()
+		WHERE tenant_id = $1
+		  AND idempotency_key = $2
+		  AND in_flight = TRUE
+		  AND updated_at < NOW() - INTERVAL '10 seconds'
+		RETURNING id;
+	`
+	var id string
+	err := s.db.QueryRow(ctx, query, tenantID, key, reqHash).Scan(&id)
+	if err != nil {
+		return false, nil
+	}
+	return true, nil
+}
+
 func (s *IdempotencyStore) persistDBCompleted(ctx context.Context, tenantID, key string, status int, headers http.Header, body []byte) error {
 	headersBytes, _ := json.Marshal(headers)
 	query := `
 		INSERT INTO idempotency_records (
-			tenant_id, idempotency_key, request_hash, response_status, response_headers, response_body, in_flight, expires_at
+			tenant_id, idempotency_key, request_hash, response_status, response_headers, response_body, in_flight, created_at, updated_at, expires_at
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, FALSE, NOW() + INTERVAL '15 minutes')
+		VALUES ($1, $2, $3, $4, $5, $6, FALSE, NOW(), NOW(), NOW() + INTERVAL '15 minutes')
 		ON CONFLICT (tenant_id, idempotency_key) DO UPDATE
 		SET response_status = EXCLUDED.response_status,
 		    response_headers = EXCLUDED.response_headers,
 		    response_body = EXCLUDED.response_body,
-		    in_flight = FALSE;
+		    in_flight = FALSE,
+		    updated_at = NOW();
 	`
 	_, err := s.db.Exec(ctx, query, tenantID, key, "", status, headersBytes, body)
 	if err != nil {
@@ -403,7 +482,7 @@ func (s *IdempotencyStore) persistDBCompleted(ctx context.Context, tenantID, key
 }
 
 func (s *IdempotencyStore) waitForDBCompletion(ctx context.Context, tenantID, key, expectedHash string) (*dbIdempotencyRecord, bool) {
-	deadline := time.Now().Add(5 * time.Second)
+	deadline := time.Now().Add(3 * time.Second)
 	ticker := time.NewTicker(20 * time.Millisecond)
 	defer ticker.Stop()
 
