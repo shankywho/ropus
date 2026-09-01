@@ -169,7 +169,8 @@ func TestCanonicalPipeline_All15Scenarios(t *testing.T) {
 		devIdentity := features.ParseDeviceIdentity("tenant_prod_test", sharedDevice)
 
 		for i := 1; i <= 4; i++ {
-			_ = graphEngine.IngestTransactionLinks(
+			_ = graphEngine.IngestTenantTransactionLinks(
+				"tenant_prod_test",
 				fmt.Sprintf("txn_mule_prev_%d", i),
 				fmt.Sprintf("usr_mule_%d", i),
 				fmt.Sprintf("acc_mule_%d", i),

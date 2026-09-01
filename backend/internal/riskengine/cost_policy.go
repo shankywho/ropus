@@ -49,6 +49,14 @@ type ActionCostBreakdown struct {
 // EvaluateCostSensitiveDecision computes expected monetary loss across candidate actions
 // using the Bayes Minimum Risk principle: E[Cost(Action)] and selects the optimal action.
 func EvaluateCostSensitiveDecision(p float64, amount float64, cfg EconomicPolicyConfig) ActionCostBreakdown {
+	// Guard against NaN or infinite inputs from upstream telemetry/anomaly
+	if math.IsNaN(p) || math.IsInf(p, 0) {
+		p = 0.5 // Default to cautious median probability on numerical error
+	}
+	if math.IsNaN(amount) || math.IsInf(amount, 0) {
+		amount = 0.0
+	}
+
 	// Clamp probability strictly to [0.0, 1.0]
 	p = math.Max(0.0, math.Min(1.0, p))
 	amt := math.Max(0.0, amount)

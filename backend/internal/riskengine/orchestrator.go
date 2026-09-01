@@ -374,8 +374,8 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 	// -------------------------------------------------------------
 	graphStart := time.Now()
 	graphEngine := o.GetGraphEngine()
-	_ = graphEngine.IngestTransactionLinks(req.TransactionID, req.AccountID, req.AccountID, token, devIdentity.DeviceID, ip, "merch_default", float64(req.Amount), false)
-	graphEvidence := graphEngine.EvaluateEntityGraph(req.AccountID, devIdentity.DeviceID, token, ip)
+	_ = graphEngine.IngestTenantTransactionLinks(tenantID, req.TransactionID, req.AccountID, req.AccountID, token, devIdentity.DeviceID, ip, "merch_default", float64(req.Amount), false)
+	graphEvidence := graphEngine.EvaluateTenantEntityGraph(tenantID, req.AccountID, devIdentity.DeviceID, token, ip)
 	componentLatencies["graph_engine"] = float64(time.Since(graphStart).Microseconds()) / 1000.0
 
 	// Point-in-Time Safe: Construct Canonical 25-Feature ML Vector & Legacy 15-Feature Adapter

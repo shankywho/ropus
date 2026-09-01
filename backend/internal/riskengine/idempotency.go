@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -13,7 +14,9 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/shankywho/ropus/backend/internal/tenant"
 )
 
 // StaleInFlightLeaseDuration is the duration after which an in-flight claim by a crashed pod is considered stale.
@@ -184,10 +187,8 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 			r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 		}
 
-		tenantID := r.Header.Get("X-Tenant-ID")
-		if tenantID == "" {
-			tenantID = "00000000-0000-0000-0000-000000000001"
-		}
+		tenantIdentity := tenant.ResolveTenantOrFallback(r)
+		tenantID := tenantIdentity.TenantID
 		storeKey := tenantID + ":" + key
 
 		reqHash := ComputeRequestHash(r.Method, r.URL.Path, bodyBytes)
@@ -362,6 +363,28 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 		}
 
 	executeDownstream:
+		// Start bounded lease renewal heartbeat (every 2s) while execution is active
+		heartbeatDone := make(chan struct{})
+		if s.db != nil {
+			go func(tID, k string) {
+				ticker := time.NewTicker(2 * time.Second)
+				defer ticker.Stop()
+				for {
+					select {
+					case <-heartbeatDone:
+						return
+					case <-ticker.C:
+						query := `
+							UPDATE idempotency_records
+							SET updated_at = NOW()
+							WHERE tenant_id = $1 AND idempotency_key = $2 AND in_flight = TRUE;
+						`
+						_, _ = s.db.Exec(context.Background(), query, tID, k)
+					}
+				}
+			}(tenantID, key)
+		}
+
 		// Execute downstream handler with response capture
 		recWriter := &responseRecorder{
 			ResponseWriter: w,
@@ -369,6 +392,9 @@ func (s *IdempotencyStore) IdempotencyMiddleware(next http.Handler) http.Handler
 		}
 
 		next.ServeHTTP(recWriter, r)
+
+		// Terminate heartbeat immediately when request finishes
+		close(heartbeatDone)
 
 		// Cache final response outcome in memory
 		rec.ResponseStatusCode = recWriter.statusCode
@@ -399,6 +425,9 @@ func (s *IdempotencyStore) fetchDBRecord(ctx context.Context, tenantID, key stri
 
 	err := s.db.QueryRow(ctx, query, tenantID, key).Scan(&reqHash, &status, &headersBytes, &body, &inFlight, &createdAt, &updatedAt, &expiresAt)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, false, nil
+		}
 		return nil, false, err
 	}
 

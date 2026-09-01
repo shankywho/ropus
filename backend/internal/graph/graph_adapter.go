@@ -3,6 +3,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 )
@@ -92,11 +93,25 @@ func (s *LocalGraphStore) AddEdge(edge *Edge) error {
 	return nil
 }
 
+func (s *LocalGraphStore) resolveInternalNodeIDLocked(id string) string {
+	if _, exists := s.nodes[id]; exists {
+		return id
+	}
+	// Fallback lookup for raw ID (e.g., "usr_alice" matching "default:user:usr_alice")
+	for nid := range s.nodes {
+		if strings.HasSuffix(nid, ":"+id) || nid == id {
+			return nid
+		}
+	}
+	return id
+}
+
 func (s *LocalGraphStore) GetNode(id string) (*Node, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	node, exists := s.nodes[id]
+	internalID := s.resolveInternalNodeIDLocked(id)
+	node, exists := s.nodes[internalID]
 	if !exists {
 		return nil, fmt.Errorf("node '%s' not found", id)
 	}
@@ -118,6 +133,7 @@ func (s *LocalGraphStore) GetOutgoingEdges(nodeID string) ([]*Edge, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
+	nodeID = s.resolveInternalNodeIDLocked(nodeID)
 	edgeIDs := s.outEdges[nodeID]
 	res := make([]*Edge, 0, len(edgeIDs))
 	for _, eid := range edgeIDs {
@@ -132,6 +148,7 @@ func (s *LocalGraphStore) QueryNeighbors(nodeID string, edgeType EdgeType) ([]*N
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
+	nodeID = s.resolveInternalNodeIDLocked(nodeID)
 	seen := make(map[string]bool)
 	var neighbors []*Node
 
@@ -175,6 +192,7 @@ func (s *LocalGraphStore) QueryNeighborsTemporal(nodeID string, edgeType EdgeTyp
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
+	nodeID = s.resolveInternalNodeIDLocked(nodeID)
 	if asOf.IsZero() {
 		asOf = time.Now().UTC()
 	}
@@ -236,6 +254,7 @@ func (s *LocalGraphStore) Traverse3HopTemporal(startNodeID string, asOf time.Tim
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
+	startNodeID = s.resolveInternalNodeIDLocked(startNodeID)
 	if asOf.IsZero() {
 		asOf = time.Now().UTC()
 	}
@@ -367,6 +386,9 @@ func (s *LocalGraphStore) Traverse3Hop(startNodeID string) (*TemporalGraphEviden
 func (s *LocalGraphStore) FindPaths(sourceID, targetID string, maxDepth int) ([]*Path, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
+
+	sourceID = s.resolveInternalNodeIDLocked(sourceID)
+	targetID = s.resolveInternalNodeIDLocked(targetID)
 
 	if maxDepth <= 0 {
 		maxDepth = 3

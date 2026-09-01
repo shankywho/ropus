@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/shankywho/ropus/backend/internal/tenant"
 	"github.com/shankywho/ropus/backend/internal/utils"
 )
 
@@ -75,17 +76,22 @@ func (h *Handler) EvaluateRisk(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-Correlation-ID", correlationID)
 	}
 
-	// 2. Resolve & Sanitize Tenant ID
-	rawTenantID := r.Header.Get("X-Tenant-ID")
-	if rawTenantID == "" {
-		rawTenantID = "00000000-0000-0000-0000-000000000001"
-	}
-	tenantID, err := utils.SanitizeIdentifier(rawTenantID)
+	// 2. Resolve & Sanitize Tenant ID via trusted tenant identity abstraction
+	tenantIdentity, err := tenant.ResolveTenant(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(map[string]string{
 			"error":   "invalid_tenant_id",
-			"message": fmt.Sprintf("Invalid tenant identifier '%s': %v", rawTenantID, err),
+			"message": fmt.Sprintf("Invalid tenant identifier '%s': %v", r.Header.Get("X-Tenant-ID"), err),
+		})
+		return
+	}
+	tenantID, err := utils.SanitizeIdentifier(tenantIdentity.TenantID)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		_ = json.NewEncoder(w).Encode(map[string]string{
+			"error":   "invalid_tenant_id",
+			"message": fmt.Sprintf("Invalid tenant identifier '%s': %v", tenantIdentity.TenantID, err),
 		})
 		return
 	}

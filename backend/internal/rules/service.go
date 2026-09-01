@@ -311,8 +311,11 @@ func (s *Service) TransitionStatus(ctx context.Context, tenantID, ruleID string,
 		if current.Status != StatusPendingApproval && current.Status != StatusShadow {
 			return nil, fmt.Errorf("%w: can only approve rules in PENDING_APPROVAL state (current: %s)", ErrInvalidStatusChange, current.Status)
 		}
-		// 2. The approver CANNOT be the rule creator
-		if actorID != "" && current.CreatedBy != "" && actorID == current.CreatedBy {
+		// 2. The approver must be an authenticated actor and CANNOT be the rule creator
+		if actorID == "" {
+			return nil, fmt.Errorf("%w: approver actor ID is required for rule approval", ErrMakerCheckerViolation)
+		}
+		if current.CreatedBy != "" && actorID == current.CreatedBy {
 			return nil, ErrMakerCheckerViolation
 		}
 		approvedBy = &actorID

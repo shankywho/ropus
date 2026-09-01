@@ -40,44 +40,75 @@ func (e *GraphEngine) Store() GraphStore {
 	return e.store
 }
 
-// IngestTransactionLinks ingests a transaction and creates/links its associated entities.
-func (e *GraphEngine) IngestTransactionLinks(
-	txnID, userID, accountID, cardHash, deviceFingerprint, ipAddress, merchantID string,
+// FormatNodeID creates an internal tenant-scoped node identifier: <tenant_id>:<entity_type>:<raw_id>
+func FormatNodeID(tenantID string, nodeType NodeType, rawID string) string {
+	if rawID == "" {
+		return ""
+	}
+	if tenantID == "" {
+		tenantID = "default"
+	}
+	return fmt.Sprintf("%s:%s:%s", tenantID, strings.ToLower(string(nodeType)), rawID)
+}
+
+// ParseNodeID extracts the tenantID, nodeType, and raw entity ID from an internal node identifier.
+func ParseNodeID(internalID string) (tenantID string, nodeType NodeType, rawID string) {
+	parts := strings.SplitN(internalID, ":", 3)
+	if len(parts) == 3 {
+		return parts[0], NodeType(strings.ToUpper(parts[1])), parts[2]
+	}
+	return "default", NodeAccount, internalID
+}
+
+// IngestTenantTransactionLinks ingests a transaction with explicit tenant namespacing.
+func (e *GraphEngine) IngestTenantTransactionLinks(
+	tenantID, txnID, userID, accountID, cardHash, deviceFingerprint, ipAddress, merchantID string,
 	amount float64,
 	isFraud bool,
 ) error {
+	if tenantID == "" {
+		tenantID = "default"
+	}
 	now := time.Now().UTC()
 
-	// 1. Create or update nodes
+	// 1. Create tenant-namespaced nodes
 	nodes := []*Node{
-		{ID: txnID, Type: NodeTransaction, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
-		{ID: userID, Type: NodeUser, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
-		{ID: accountID, Type: NodeAccount, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
-		{ID: cardHash, Type: NodeCard, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
-		{ID: deviceFingerprint, Type: NodeDevice, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
-		{ID: ipAddress, Type: NodeIPAddress, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
-		{ID: merchantID, Type: NodeMerchant, RiskScore: 0.0, IsKnownBad: false, CreatedAt: now},
+		{ID: FormatNodeID(tenantID, NodeTransaction, txnID), Type: NodeTransaction, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
+		{ID: FormatNodeID(tenantID, NodeUser, userID), Type: NodeUser, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
+		{ID: FormatNodeID(tenantID, NodeAccount, accountID), Type: NodeAccount, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
+		{ID: FormatNodeID(tenantID, NodeCard, cardHash), Type: NodeCard, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
+		{ID: FormatNodeID(tenantID, NodeDevice, deviceFingerprint), Type: NodeDevice, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
+		{ID: FormatNodeID(tenantID, NodeIPAddress, ipAddress), Type: NodeIPAddress, RiskScore: 0.0, IsKnownBad: isFraud, CreatedAt: now},
+		{ID: FormatNodeID(tenantID, NodeMerchant, merchantID), Type: NodeMerchant, RiskScore: 0.0, IsKnownBad: false, CreatedAt: now},
 	}
 
 	for _, n := range nodes {
-		if n.ID != "" {
+		if n.ID != "" && !strings.HasSuffix(n.ID, ":") {
 			_ = e.store.AddNode(n)
 		}
 	}
 
-	// 2. Create relationships
+	// 2. Create tenant-namespaced relationships
+	uNode := FormatNodeID(tenantID, NodeUser, userID)
+	accNode := FormatNodeID(tenantID, NodeAccount, accountID)
+	cardNode := FormatNodeID(tenantID, NodeCard, cardHash)
+	devNode := FormatNodeID(tenantID, NodeDevice, deviceFingerprint)
+	ipNode := FormatNodeID(tenantID, NodeIPAddress, ipAddress)
+	txnNode := FormatNodeID(tenantID, NodeTransaction, txnID)
+	merchNode := FormatNodeID(tenantID, NodeMerchant, merchantID)
+
 	edges := []*Edge{
-		{ID: fmt.Sprintf("e_%s_%s", userID, accountID), SourceID: userID, TargetID: accountID, Type: EdgeOwns, Weight: 1.0, Confidence: 1.0, CreatedAt: now},
-		{ID: fmt.Sprintf("e_%s_%s", accountID, cardHash), SourceID: accountID, TargetID: cardHash, Type: EdgeConnectedTo, Weight: 1.0, Confidence: 1.0, CreatedAt: now},
-		{ID: fmt.Sprintf("e_%s_%s", userID, deviceFingerprint), SourceID: userID, TargetID: deviceFingerprint, Type: EdgeUsedBy, Weight: 1.0, Confidence: 1.0, CreatedAt: now},
-		{ID: fmt.Sprintf("e_%s_%s", accountID, deviceFingerprint), SourceID: accountID, TargetID: deviceFingerprint, Type: EdgeUsedBy, Weight: 1.0, Confidence: 1.0, CreatedAt: now},
-		{ID: fmt.Sprintf("e_%s_%s", userID, ipAddress), SourceID: userID, TargetID: ipAddress, Type: EdgeLoggedInFrom, Weight: 1.0, Confidence: 1.0, CreatedAt: now},
-		{ID: fmt.Sprintf("e_%s_%s", txnID, merchantID), SourceID: txnID, TargetID: merchantID, Type: EdgeTransactedWith, Weight: amount, Confidence: 1.0, CreatedAt: now},
-		{ID: fmt.Sprintf("e_%s_%s", accountID, txnID), SourceID: accountID, TargetID: txnID, Type: EdgeTransactedWith, Weight: amount, Confidence: 1.0, CreatedAt: now},
+		{ID: fmt.Sprintf("e_%s_%s", uNode, accNode), SourceID: uNode, TargetID: accNode, Type: EdgeOwns, Weight: 1.0, Confidence: 1.0, CreatedAt: now},
+		{ID: fmt.Sprintf("e_%s_%s", accNode, cardNode), SourceID: accNode, TargetID: cardNode, Type: EdgeConnectedTo, Weight: 1.0, Confidence: 1.0, CreatedAt: now},
+		{ID: fmt.Sprintf("e_%s_%s", uNode, devNode), SourceID: uNode, TargetID: devNode, Type: EdgeUsedBy, Weight: 1.0, Confidence: 1.0, CreatedAt: now},
+		{ID: fmt.Sprintf("e_%s_%s", accNode, devNode), SourceID: accNode, TargetID: devNode, Type: EdgeUsedBy, Weight: 1.0, Confidence: 1.0, CreatedAt: now},
+		{ID: fmt.Sprintf("e_%s_%s", uNode, ipNode), SourceID: uNode, TargetID: ipNode, Type: EdgeLoggedInFrom, Weight: 1.0, Confidence: 1.0, CreatedAt: now},
+		{ID: fmt.Sprintf("e_%s_%s", txnNode, merchNode), SourceID: txnNode, TargetID: merchNode, Type: EdgeTransactedWith, Weight: amount, Confidence: 1.0, CreatedAt: now},
+		{ID: fmt.Sprintf("e_%s_%s", accNode, txnNode), SourceID: accNode, TargetID: txnNode, Type: EdgeTransactedWith, Weight: amount, Confidence: 1.0, CreatedAt: now},
 	}
 
 	for _, ed := range edges {
-		if ed.SourceID != "" && ed.TargetID != "" {
+		if !strings.HasSuffix(ed.SourceID, ":") && !strings.HasSuffix(ed.TargetID, ":") {
 			_ = e.store.AddEdge(ed)
 		}
 	}
@@ -85,21 +116,33 @@ func (e *GraphEngine) IngestTransactionLinks(
 	return nil
 }
 
-// EvaluateEntityGraph executes a real 3-hop BFS expansion starting from primary entity identifiers.
-func (e *GraphEngine) EvaluateEntityGraph(accountID, deviceFingerprint, cardHash, ipAddress string) *EntityGraphEvidence {
+// IngestTransactionLinks ingests a transaction with default tenant scope for backwards compatibility.
+func (e *GraphEngine) IngestTransactionLinks(
+	txnID, userID, accountID, cardHash, deviceFingerprint, ipAddress, merchantID string,
+	amount float64,
+	isFraud bool,
+) error {
+	return e.IngestTenantTransactionLinks("default", txnID, userID, accountID, cardHash, deviceFingerprint, ipAddress, merchantID, amount, isFraud)
+}
+
+// EvaluateTenantEntityGraph executes a real 3-hop BFS expansion starting from primary entity identifiers within a specific tenant scope.
+func (e *GraphEngine) EvaluateTenantEntityGraph(tenantID, accountID, deviceFingerprint, cardHash, ipAddress string) *EntityGraphEvidence {
+	if tenantID == "" {
+		tenantID = "default"
+	}
 	evidence := &EntityGraphEvidence{
 		Matches:      make([]string, 0),
 		PayoutDepots: make([]string, 0),
 	}
 
-	startNodeID := accountID
-	if startNodeID == "" {
-		startNodeID = deviceFingerprint
+	startNodeID := FormatNodeID(tenantID, NodeAccount, accountID)
+	if accountID == "" {
+		startNodeID = FormatNodeID(tenantID, NodeDevice, deviceFingerprint)
 	}
-	if startNodeID == "" {
-		startNodeID = ipAddress
+	if accountID == "" && deviceFingerprint == "" {
+		startNodeID = FormatNodeID(tenantID, NodeIPAddress, ipAddress)
 	}
-	if startNodeID == "" {
+	if startNodeID == "" || strings.HasSuffix(startNodeID, ":") {
 		return evidence
 	}
 	evidence.StartNodeID = startNodeID
@@ -121,12 +164,13 @@ func (e *GraphEngine) EvaluateEntityGraph(accountID, deviceFingerprint, cardHash
 
 	for _, nodeID := range temporalEvidence.ReachableNodeIDs {
 		if node, err := e.store.GetNode(nodeID); err == nil && node != nil {
+			_, _, rawNodeID := ParseNodeID(node.ID)
 			if node.Type == NodeAccount {
-				if node.ID != accountID {
+				if rawNodeID != accountID {
 					connectedAccounts++
 				}
 			} else if node.Type == NodeDevice {
-				if node.ID != deviceFingerprint {
+				if rawNodeID != deviceFingerprint {
 					sharedDevices++
 				}
 			}
@@ -171,6 +215,11 @@ func (e *GraphEngine) EvaluateEntityGraph(accountID, deviceFingerprint, cardHash
 	return evidence
 }
 
+// EvaluateEntityGraph evaluates graph evidence for the default tenant.
+func (e *GraphEngine) EvaluateEntityGraph(accountID, deviceFingerprint, cardHash, ipAddress string) *EntityGraphEvidence {
+	return e.EvaluateTenantEntityGraph("default", accountID, deviceFingerprint, cardHash, ipAddress)
+}
+
 // FrontendGraphEntity models an entity node for the frontend SVG force/concentric graph.
 type FrontendGraphEntity struct {
 	ID         string      `json:"id"`
@@ -208,16 +257,20 @@ func (e *GraphEngine) SeedDefaultDemoGraph() {
 	now := time.Now().UTC()
 
 	// Seed 14-node syndicate ring centered around payout depot PA-77120
-	_ = e.IngestTransactionLinks("txn_88419", "usr_1001", "acc_victim_01", "tok_card_99", "dev_emul_01", "185.220.101.5", "merch_crypto_99", 82000.0, true)
-	_ = e.IngestTransactionLinks("txn_88420", "usr_1002", "acc_mule_02", "tok_card_99", "dev_emul_01", "185.220.101.5", "merch_payout_hub", 45000.0, true)
-	_ = e.IngestTransactionLinks("txn_88421", "usr_1003", "acc_mule_03", "tok_card_88", "dev_emul_02", "185.220.101.6", "merch_payout_hub", 92000.0, true)
-	_ = e.IngestTransactionLinks("txn_88422", "usr_1004", "PA-77120", "tok_card_77", "dev_emul_02", "198.51.100.44", "merch_payout_hub", 145000.0, true)
+	_ = e.IngestTenantTransactionLinks("default", "txn_88419", "usr_1001", "acc_victim_01", "tok_card_99", "dev_emul_01", "185.220.101.5", "merch_crypto_99", 82000.0, true)
+	_ = e.IngestTenantTransactionLinks("default", "txn_88420", "usr_1002", "acc_mule_02", "tok_card_99", "dev_emul_01", "185.220.101.5", "merch_payout_hub", 45000.0, true)
+	_ = e.IngestTenantTransactionLinks("default", "txn_88421", "usr_1003", "acc_mule_03", "tok_card_88", "dev_emul_02", "185.220.101.6", "merch_payout_hub", 92000.0, true)
+	_ = e.IngestTenantTransactionLinks("default", "txn_88422", "usr_1004", "PA-77120", "tok_card_77", "dev_emul_02", "198.51.100.44", "merch_payout_hub", 145000.0, true)
 
 	// Add direct inter-mule transfer edges
+	acc2Node := FormatNodeID("default", NodeAccount, "acc_mule_02")
+	acc3Node := FormatNodeID("default", NodeAccount, "acc_mule_03")
+	depotNode := FormatNodeID("default", NodeAccount, "PA-77120")
+
 	_ = e.store.AddEdge(&Edge{
 		ID:         "e_mule_1_depot",
-		SourceID:   "acc_mule_02",
-		TargetID:   "PA-77120",
+		SourceID:   acc2Node,
+		TargetID:   depotNode,
 		Type:       EdgeTransferredTo,
 		Weight:     45000.0,
 		Confidence: 1.0,
@@ -225,8 +278,8 @@ func (e *GraphEngine) SeedDefaultDemoGraph() {
 	})
 	_ = e.store.AddEdge(&Edge{
 		ID:         "e_mule_2_depot",
-		SourceID:   "acc_mule_03",
-		TargetID:   "PA-77120",
+		SourceID:   acc3Node,
+		TargetID:   depotNode,
 		Type:       EdgeTransferredTo,
 		Weight:     92000.0,
 		Confidence: 1.0,
@@ -234,14 +287,35 @@ func (e *GraphEngine) SeedDefaultDemoGraph() {
 	})
 }
 
-// ExportFraudGraph exports the active knowledge graph into the frontend's expected FraudGraph format.
-func (e *GraphEngine) ExportFraudGraph(decisionID, startNodeID string) *FrontendFraudGraphResponse {
+// ExportTenantFraudGraph exports tenant-scoped nodes and edges into the frontend format.
+func (e *GraphEngine) ExportTenantFraudGraph(tenantID, decisionID, startNodeID string) *FrontendFraudGraphResponse {
 	if e.store.CountNodes() == 0 {
 		e.SeedDefaultDemoGraph()
 	}
+	if tenantID == "" {
+		tenantID = "default"
+	}
 
-	allNodes := e.store.GetAllNodes()
-	allEdges := e.store.GetAllEdges()
+	allNodesRaw := e.store.GetAllNodes()
+	allEdgesRaw := e.store.GetAllEdges()
+
+	// Filter nodes belonging to the requested tenant
+	allNodes := make([]*Node, 0)
+	for _, n := range allNodesRaw {
+		tID, _, _ := ParseNodeID(n.ID)
+		if tID == tenantID || tenantID == "all" {
+			allNodes = append(allNodes, n)
+		}
+	}
+
+	allEdges := make([]*Edge, 0)
+	for _, edge := range allEdgesRaw {
+		tID1, _, _ := ParseNodeID(edge.SourceID)
+		tID2, _, _ := ParseNodeID(edge.TargetID)
+		if (tID1 == tenantID && tID2 == tenantID) || tenantID == "all" {
+			allEdges = append(allEdges, edge)
+		}
+	}
 
 	if len(allNodes) == 0 {
 		return &FrontendFraudGraphResponse{
@@ -255,10 +329,14 @@ func (e *GraphEngine) ExportFraudGraph(decisionID, startNodeID string) *Frontend
 
 	// Resolve Root Node ID
 	rootID := startNodeID
+	if rootID != "" && !strings.Contains(rootID, ":") {
+		rootID = FormatNodeID(tenantID, NodeAccount, rootID)
+	}
+
 	if rootID == "" {
-		// Prefer known fraud hub or highest degree node
 		for _, n := range allNodes {
-			if n.ID == "PA-77120" || n.ID == "acc_victim_01" || n.IsKnownBad {
+			_, _, rawID := ParseNodeID(n.ID)
+			if rawID == "PA-77120" || rawID == "acc_victim_01" || n.IsKnownBad {
 				rootID = n.ID
 				break
 			}
@@ -328,7 +406,7 @@ func (e *GraphEngine) ExportFraudGraph(decisionID, startNodeID string) *Frontend
 		for i, nid := range nodesAtHop {
 			angle := (float64(i) / float64(count)) * 2.0 * math.Pi
 			x := 50.0 + r*math.Cos(angle)
-			y := 50.0 + r*math.Sin(angle)*0.88 // Slightly flattened for wide viewBox
+			y := 50.0 + r*math.Sin(angle)*0.88
 			coords[nid] = [2]float64{math.Round(x*10) / 10.0, math.Round(y*10) / 10.0}
 		}
 	}
@@ -338,8 +416,8 @@ func (e *GraphEngine) ExportFraudGraph(decisionID, startNodeID string) *Frontend
 	for _, n := range allNodes {
 		pos := coords[n.ID]
 		hop := hopMap[n.ID]
+		_, _, rawID := ParseNodeID(n.ID)
 
-		// Map NodeType
 		fType := "ACCOUNT"
 		switch n.Type {
 		case NodeUser:
@@ -350,88 +428,53 @@ func (e *GraphEngine) ExportFraudGraph(decisionID, startNodeID string) *Frontend
 			fType = "IP"
 		case NodeTransaction:
 			fType = "TRANSACTION"
-		case NodeAccount:
-			fType = "ACCOUNT"
 		}
 
-		// Map Risk Level
-		fRisk := "CLEAN"
+		risk := "CLEAN"
 		if n.IsKnownBad || n.RiskScore >= 0.80 {
-			fRisk = "CONFIRMED_FRAUD"
+			risk = "CONFIRMED_FRAUD"
 		} else if n.RiskScore >= 0.50 {
-			fRisk = "SUSPECT"
-		} else if n.RiskScore >= 0.20 {
-			fRisk = "WATCH"
+			risk = "SUSPECT"
+		} else if hop == 1 {
+			risk = "WATCH"
 		}
 
-		// Mask sensitive PII on IP address
-		displayID := n.ID
-		if n.Type == NodeIPAddress && len(n.ID) > 6 {
-			displayID = maskIP(n.ID)
-		}
-
-		label := fmt.Sprintf("%s (%s)", displayID, fType)
-		if n.ID == "PA-77120" {
-			label = "Syndicate Collector Hub (PA-77120)"
-			fRisk = "CONFIRMED_FRAUD"
-		}
-
-		signals := []string{}
-		if fRisk == "CONFIRMED_FRAUD" {
-			signals = append(signals, "Confirmed Syndicated Mule / Fraud Hub")
-		}
-		if hop == 1 {
-			signals = append(signals, "Direct 1-Hop First-Degree Linkage")
-		}
-
-		attrs := [][2]string{
-			{"entity_type", string(n.Type)},
-			{"risk_score", fmt.Sprintf("%.2f", n.RiskScore)},
-			{"hop_distance", fmt.Sprintf("%d", hop)},
+		label := rawID
+		if n.Type == NodeIPAddress {
+			label = maskIP(rawID)
 		}
 
 		entities = append(entities, FrontendGraphEntity{
-			ID:         n.ID,
+			ID:         rawID,
 			Type:       fType,
 			Label:      label,
-			Risk:       fRisk,
+			Risk:       risk,
 			X:          pos[0],
 			Y:          pos[1],
 			Hop:        hop,
 			FirstSeen:  n.CreatedAt.Format(time.RFC3339),
-			LastSeen:   n.UpdatedAt.Format(time.RFC3339),
-			Attributes: attrs,
-			Signals:    signals,
+			LastSeen:   time.Now().UTC().Format(time.RFC3339),
+			Attributes: [][2]string{{"Type", string(n.Type)}, {"Risk Score", fmt.Sprintf("%.2f", n.RiskScore)}},
+			Signals:    []string{"Live Graph BFS"},
 		})
 	}
 
 	// Map relationships
 	relationships := make([]FrontendGraphRelationship, 0, len(allEdges))
-	for _, e := range allEdges {
-		relLabel := string(e.Type)
-		if relLabel == "" {
-			relLabel = "CONNECTED_TO"
-		}
-
-		onPath := false
-		if e.SourceID == rootID || e.TargetID == rootID || e.Type == EdgeTransferredTo {
-			onPath = true
-		}
-
+	for _, edge := range allEdges {
+		_, _, rawSource := ParseNodeID(edge.SourceID)
+		_, _, rawTarget := ParseNodeID(edge.TargetID)
 		relationships = append(relationships, FrontendGraphRelationship{
-			Source:         e.SourceID,
-			Target:         e.TargetID,
-			Label:          relLabel,
-			OnDecisionPath: onPath,
+			Source:         rawSource,
+			Target:         rawTarget,
+			Label:          string(edge.Type),
+			OnDecisionPath: edge.Confidence >= 0.8,
 		})
 	}
 
-	if decisionID == "" {
-		decisionID = "dec_live_active"
-	}
-
+	_, _, rawRootID := ParseNodeID(rootID)
 	return &FrontendFraudGraphResponse{
-		RootID:        rootID,
+		RootID:        rawRootID,
 		DecisionID:    decisionID,
 		Source:        "live_graph_engine",
 		Entities:      entities,
@@ -439,11 +482,16 @@ func (e *GraphEngine) ExportFraudGraph(decisionID, startNodeID string) *Frontend
 	}
 }
 
-// maskIP masks the last two octets of an IP for privacy-preserving graph representation.
+// ExportFraudGraph exports the active knowledge graph into the frontend's expected FraudGraph format.
+func (e *GraphEngine) ExportFraudGraph(decisionID, startNodeID string) *FrontendFraudGraphResponse {
+	return e.ExportTenantFraudGraph("default", decisionID, startNodeID)
+}
+
+// maskIP redacts the last two octets of an IPv4 address for privacy.
 func maskIP(ip string) string {
 	parts := strings.Split(ip, ".")
 	if len(parts) == 4 {
 		return fmt.Sprintf("%s.%s.***.***", parts[0], parts[1])
 	}
-	return "masked_ip"
+	return ip
 }

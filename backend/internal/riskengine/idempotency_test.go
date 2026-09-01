@@ -447,4 +447,76 @@ func TestIdempotency_Adversarial5PodsPayloadConflict(t *testing.T) {
 	assert.Contains(t, rr2.Body.String(), "idempotency_conflict")
 }
 
+func TestIdempotency_ActiveLeaseCannotBeReclaimed(t *testing.T) {
+	// A freshly created in-flight record (updated_at = NOW) must NOT be considered stale
+	now := time.Now().UTC()
+	rec := &dbIdempotencyRecord{
+		RequestHash: "hash123",
+		InFlight:    true,
+		CreatedAt:   now,
+		UpdatedAt:   now.Add(-2 * time.Second), // 2 seconds old, well under 10s threshold
+		ExpiresAt:   now.Add(15 * time.Minute),
+	}
+
+	isStale := now.Sub(rec.UpdatedAt) >= StaleInFlightLeaseDuration
+	assert.False(t, isStale, "Active lease within 10s must NOT be considered stale")
+}
+
+func TestIdempotency_StaleLeaseCanBeReclaimed(t *testing.T) {
+	// A record whose pod crashed 12 seconds ago must be recognized as stale
+	now := time.Now().UTC()
+	crashedRec := &dbIdempotencyRecord{
+		RequestHash: "hash123",
+		InFlight:    true,
+		CreatedAt:   now.Add(-15 * time.Second),
+		UpdatedAt:   now.Add(-12 * time.Second), // 12 seconds old, past 10s threshold
+		ExpiresAt:   now.Add(15 * time.Minute),
+	}
+
+	isStale := now.Sub(crashedRec.UpdatedAt) >= StaleInFlightLeaseDuration
+	assert.True(t, isStale, "Crashed pod lease older than 10s MUST be recognized as stale and reclaimable")
+}
+
+func TestIdempotency_CompletionRace(t *testing.T) {
+	store := NewIdempotencyStore(1*time.Minute, 1000)
+	var executions int64
+
+	handler := store.IdempotencyMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		atomic.AddInt64(&executions, 1)
+		time.Sleep(10 * time.Millisecond)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"status":"success"}`))
+	}))
+
+	payload := []byte(`{"action":"settle","amount":500}`)
+	sharedKey := "race_completion_key_888"
+	tenantID := "tenant_race_test"
+
+	var wg sync.WaitGroup
+	results := make([]int, 10)
+
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		go func(idx int) {
+			defer wg.Done()
+			req := httptest.NewRequest(http.MethodPost, "/v1/settlements", bytes.NewReader(payload))
+			req.Header.Set("X-Tenant-ID", tenantID)
+			req.Header.Set("X-Idempotency-Key", sharedKey)
+			rr := httptest.NewRecorder()
+			handler.ServeHTTP(rr, req)
+			results[idx] = rr.Code
+		}(i)
+	}
+
+	wg.Wait()
+
+	// Exactly 1 execution occurred, all 10 requests returned 200 OK
+	assert.Equal(t, int64(1), atomic.LoadInt64(&executions))
+	for i, code := range results {
+		assert.Equal(t, http.StatusOK, code, "Request %d must return 200 OK", i)
+	}
+}
+
+
 

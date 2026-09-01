@@ -28,7 +28,12 @@ func (h *Handler) GetGraph(w http.ResponseWriter, r *http.Request) {
 		rootID = r.URL.Query().Get("deviceId")
 	}
 
-	graphData := h.engine.ExportFraudGraph(decisionID, rootID)
+	tenantID := r.Header.Get("X-Tenant-ID")
+	if tenantID == "" {
+		tenantID = "default"
+	}
+
+	graphData := h.engine.ExportTenantFraudGraph(tenantID, decisionID, rootID)
 
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(graphData)

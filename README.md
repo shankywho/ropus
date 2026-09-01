@@ -58,6 +58,7 @@ flowchart TD
 * **Pre-Rules (Hard Guardrails):** Evaluates deterministic JSON-AST rules in `<0.4ms`. If a hard `DECLINE` or `ALLOW` rule triggers, pipeline evaluation halts immediately to conserve compute.
 * **ONNX Runtime ML Serving (50ms Deadline):** Sub-millisecond fraud scoring sidecar running compiled XGBoost graphs with **local SHAP feature attributions**. If the ML sidecar times out or errors, Go gracefully degrades (`is_degraded: true`) to conservative heuristic rules without dropping customer transactions.
 * **Bayes Minimum Risk (BMR) Cost-Optimal Decisioning:** Calibrated posterior probabilities $P(\text{fraud} \mid x)$ are mapped to dollar-denominated loss matrices ($\text{Cost}(\text{False Positive}) = \text{₹40,000} / \$500$).
+* **Tenant-Namespaced Graph Topology:** The synchronous graph engine is process-local and tenant-namespaced (`<tenant_id>:<entity_type>:<raw_id>`) for deterministic sub-millisecond BFS traversal. Production multi-replica deployments asynchronously materialize graph topology across a distributed graph store.
 
 ### 2. GraphSAGE Inductive Relationship Intelligence (Shadow Mode — Governance Invariant)
 * **Inductive Heterogeneous GNN:** Computes 64-dimensional node representations across 6 entity types (Customer, Device, IP, Card, Merchant, Payout Account) to detect synthetic identity rings and employee collusion.
@@ -70,10 +71,11 @@ flowchart TD
 ### 3. Declarative JSON-AST Rules Engine & Maker-Checker Dual Control
 * Zero arbitrary dynamic code execution (`eval()` is strictly prohibited). The Go AST interpreter evaluates nested boolean trees (`AND`, `OR`, `NOT`) and comparison predicates.
 * **Dual-Control Governance:** State machine (`DRAFT` $\rightarrow$ `PENDING_APPROVAL` $\rightarrow$ `ACTIVE`) enforces that a rule creator cannot approve their own rule (`ErrMakerCheckerViolation` / HTTP 403).
+* **Tenant Identity Boundary:** Standalone demo accepts `X-Tenant-ID` for local reproducibility via a structured identity resolution abstraction (`tenant.ResolveTenant`). Production deployments derive tenant identity from authenticated gateway claims rather than trusting client headers.
 
-### 4. Transactional Outbox Pattern & Duplicate-Safe Processing
-* Employs PostgreSQL ACID transactions (`pgx.Tx`) committing `risk_decisions` and `outbox_events` atomically.
-* Strict transaction-level idempotency and transactional outbox persistence prevent duplicate mutations and message loss during network partitions.
+### 4. Transactional Outbox Pattern & Multi-Layer Durable Idempotency
+* **Multi-Layer Idempotency:** Layer-1 in-memory mutex coalescing (<0.02ms) backed by Layer-2 PostgreSQL uniqueness on `(tenant_id, idempotency_key)` with SHA-256 payload tampering detection. Active execution leases are renewed via periodic heartbeat, while stale leases (>10s) are safely reclaimed on pod failure.
+* **Transactional Outbox Persistence:** PostgreSQL ACID transactions (`pgx.Tx`) commit `risk_decisions` and `outbox_events` atomically, ensuring at-least-once streaming delivery with idempotent downstream consumer deduplication.
 
 ### 5. Cryptographic SHA-256 Hash-Chain Audit Ledger
 * Every decision and analyst case disposition is immutably linked in a tamper-evident cryptographic hash chain:

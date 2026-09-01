@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/shankywho/ropus/backend/internal/tenant"
 )
 
 type Handler struct {
@@ -18,10 +19,7 @@ func NewHandler(service *Service) *Handler {
 }
 
 func getTenantID(r *http.Request) string {
-	if tid := r.Header.Get("X-Tenant-ID"); tid != "" {
-		return tid
-	}
-	return "00000000-0000-0000-0000-000000000001"
+	return tenant.ResolveTenantOrFallback(r).TenantID
 }
 
 func getActorID(r *http.Request) string {
