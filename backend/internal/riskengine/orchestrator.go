@@ -2,6 +2,8 @@ package riskengine
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -13,6 +15,7 @@ import (
 
 	"github.com/shankywho/ropus/backend/internal/audit"
 	"github.com/shankywho/ropus/backend/internal/features"
+	"github.com/shankywho/ropus/backend/internal/governance"
 	"github.com/shankywho/ropus/backend/internal/graph"
 	"github.com/shankywho/ropus/backend/internal/rules"
 	"github.com/shankywho/ropus/backend/internal/utils"
@@ -37,6 +40,7 @@ type Orchestrator struct {
 	sloEngine             *SLOEngine
 	threatEngine          *graph.ThreatIntelligenceEngine
 	graphEngine           *graph.GraphEngine
+	auditTrail            *governance.DecisionAuditTrail
 	kms                   utils.KMS
 	environment           string
 }
@@ -107,6 +111,16 @@ func (o *Orchestrator) GetGraphEngine() *graph.GraphEngine {
 		o.graphEngine = graph.NewGraphEngine(nil)
 	}
 	return o.graphEngine
+}
+
+// SetAuditTrail attaches the cryptographic DecisionAuditTrail to the Orchestrator.
+func (o *Orchestrator) SetAuditTrail(at *governance.DecisionAuditTrail) {
+	o.auditTrail = at
+}
+
+// GetAuditTrail returns the attached DecisionAuditTrail.
+func (o *Orchestrator) GetAuditTrail() *governance.DecisionAuditTrail {
+	return o.auditTrail
 }
 
 // SetRetrainingCoordinator attaches the RetrainingCoordinator to the Orchestrator.
@@ -1258,6 +1272,23 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 	}
 	if logJSON, err := json.Marshal(structuredLog); err == nil {
 		log.Printf("[RISK_EVALUATION] %s", string(logJSON))
+	}
+
+	// Record immutable cryptographic audit chain entry
+	if o.auditTrail != nil {
+		reqBytes, _ := json.Marshal(req)
+		sum := sha256.Sum256(reqBytes)
+		reqHash := hex.EncodeToString(sum[:])
+		o.auditTrail.AppendDecision(
+			decisionID,
+			reqHash,
+			"fraud-xgb-25f-v3.0",
+			"v2.5-canonical",
+			finalAction,
+			decisionID,
+			"v1.0",
+			float64(riskScore),
+		)
 	}
 
 	return &RiskEvaluationResponse{

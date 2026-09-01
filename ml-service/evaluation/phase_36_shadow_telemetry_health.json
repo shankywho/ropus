@@ -1,9 +1,0 @@
-{
-  "telemetry_collector_attached": true,
-  "shadow_pipeline_attached": true,
-  "durable_store_path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/monitoring/telemetry_store/shadow_flips.jsonl",
-  "anonymization_algorithm": "HMAC-SHA256 (Salted, Zero PAN/CVV)",
-  "maturation_window_days": 60,
-  "shadow_floor": 0.04,
-  "enforcement_mode": "STRICTLY_NON_ENFORCING"
-}

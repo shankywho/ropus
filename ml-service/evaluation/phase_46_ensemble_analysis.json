@@ -1,9 +1,0 @@
-{
-  "optimal_oof_weights": {
-    "catboost": 0.5,
-    "lightgbm": 0.5
-  },
-  "oof_linear_pr_auc": 0.10354833052830853,
-  "oof_rank_pr_auc": 0.10735258378742804,
-  "oof_weighted_pr_auc": 0.10354833052830853
-}

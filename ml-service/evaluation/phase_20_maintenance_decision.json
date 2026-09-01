@@ -1,7 +1,0 @@
-{
-  "evidence_type": "LOCAL_OPERATIONAL_TEST",
-  "maintenance_decision": "CONTINUE_PRODUCTION",
-  "rationale": "All integrity, parity, operational SLOs, and rollback drills passed with zero defects.",
-  "active_model_version": "v8.0-bmr-36f",
-  "evaluated_at": "2026-08-25T15:41:09Z"
-}

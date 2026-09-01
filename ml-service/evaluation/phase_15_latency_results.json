@@ -1,9 +1,0 @@
-{
-  "iterations": 1000,
-  "mean_latency_ms": 1.688,
-  "p50_latency_ms": 1.655,
-  "p95_latency_ms": 1.93,
-  "p99_latency_ms": 2.121,
-  "throughput_req_per_sec": 592.4,
-  "status": "PASS (p95 < 15.0ms production target)"
-}

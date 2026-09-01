@@ -1,6 +1,0 @@
-{
-  "hostname": "risk-api.ropus.internal",
-  "domain_type": "Internal Cluster Domain / Private Route53 Zone",
-  "public_resolution_status": "PUBLIC_DNS_NOT_PROVISIONED",
-  "local_resolution_status": "UNRESOLVED_LOCAL"
-}

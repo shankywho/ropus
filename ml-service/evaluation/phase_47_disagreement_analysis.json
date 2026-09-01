@@ -1,7 +1,0 @@
-{
-  "disagreement_q90_threshold": 0.21381522897771926,
-  "high_disagreement_fraud_rate": 0.06862745098039216,
-  "low_disagreement_fraud_rate": 0.04493464052287582,
-  "fraud_enrichment_ratio": 1.526932915293033,
-  "operational_recommendation": "Use model divergence spread > 0.15 as an auxiliary review/escalation trigger in shadow telemetry."
-}

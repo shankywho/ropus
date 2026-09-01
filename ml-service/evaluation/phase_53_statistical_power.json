@@ -1,6 +1,0 @@
-{
-  "target_delta_pr_auc": 0.015,
-  "required_mature_frauds_80_power": 86,
-  "observed_mature_frauds": 0,
-  "power_status": "AWAITING_PRODUCTION_EVIDENCE"
-}

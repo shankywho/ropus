@@ -15,7 +15,7 @@
     "tree_method": "hist"
   },
   "random_seed": 42,
-  "trained_at": "2026-08-31T17:39:13.924589+00:00",
+  "trained_at": "2026-09-01T03:45:17.038178+00:00",
   "total_rows": 8000,
   "split": {
     "strategy": "strict_chronological_temporal_split",
@@ -278,7 +278,7 @@
   ],
   "onnx_artifact": {
     "path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/model/candidates/fraud_model_25f_candidate.onnx",
-    "checksum_sha256": "653b5b1a6b01ec100d2dca0e81d4b5c18b7c9acaa01679be86bdd5378281f0f8",
+    "checksum_sha256": "8c3dc9cbd1c21eea6df9e1ea02d38f334814df8ece42aea4d4bfde853e5050d5",
     "input_dimension": 25,
     "max_parity_diff": 1.7881393432617188e-07
   },

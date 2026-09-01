@@ -20,7 +20,9 @@ import (
 
 	"github.com/shankywho/ropus/backend/internal/audit"
 	"github.com/shankywho/ropus/backend/internal/cases"
+	"github.com/shankywho/ropus/backend/internal/chaos"
 	"github.com/shankywho/ropus/backend/internal/features"
+	"github.com/shankywho/ropus/backend/internal/governance"
 	"github.com/shankywho/ropus/backend/internal/graph"
 	"github.com/shankywho/ropus/backend/internal/ingestion"
 	"github.com/shankywho/ropus/backend/internal/riskengine"
@@ -457,6 +459,10 @@ func main() {
 	casesService := cases.NewService(dbPool)
 	casesHandler := cases.NewHandler(casesService)
 
+	auditTrail := governance.NewDecisionAuditTrail()
+	chaosEngine := chaos.NewChaosEngine()
+	chaosHandler := chaos.NewHandler(chaosEngine)
+
 	mlClient := riskengine.NewMLClient(cfg.MLServiceURL)
 	orchestrator := riskengine.NewOrchestrator(dbPool, velocityStore, rulesService, mlClient, kms)
 	orchestrator.SetDeviceFeatureStore(deviceFeatureStore)
@@ -464,6 +470,7 @@ func main() {
 	orchestrator.SetPaymentTokenStore(paymentTokenStore)
 	orchestrator.SetDeviceVelocityStore(deviceVelocityStore)
 	orchestrator.SetDeviceReputationStore(deviceReputationStore)
+	orchestrator.SetAuditTrail(auditTrail)
 	orchestrator.SetEnvironment(cfg.Environment)
 
 	shadowCfg := riskengine.ShadowScorerConfig{
@@ -819,6 +826,16 @@ func main() {
 	// Provider Webhooks Ingestion (HMAC protected)
 	r.Post("/webhooks/provider", webhookHandler.HandleProviderWebhook)
 
+	// Cryptographic SHA-256 Decision Audit Chain Verification endpoint
+	r.Get("/audit/verify", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(auditTrail.GetStatus())
+	})
+
+	// Admin-authenticated Chaos Engineering Drill endpoint
+	r.Post("/admin/chaos/drill", RequireAdminAuth(cfg.AdminAPIKey, chaosHandler.HandleExecuteDrill))
+
 	// V1 API Routes
 	r.Route("/v1", func(r chi.Router) {
 		// Enforce transaction-level idempotency and conflict detection on mutations
@@ -830,6 +847,16 @@ func main() {
 
 		// Live Knowledge Graph topology endpoint
 		r.Get("/graph", graphHandler.GetGraph)
+
+		// Cryptographic SHA-256 Decision Audit Chain Verification endpoint
+		r.Get("/audit/verify", func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			_ = json.NewEncoder(w).Encode(auditTrail.GetStatus())
+		})
+
+		// Live Chaos Engineering Resilience Drill endpoint
+		r.Post("/chaos/drill", chaosHandler.HandleExecuteDrill)
 
 		RegisterDriftHandlers(r, driftDetector)
 		RegisterRetrainingHandlers(r, retrainingCoordinator, cfg.AdminAPIKey)

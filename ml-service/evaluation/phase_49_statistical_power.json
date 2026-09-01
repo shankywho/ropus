@@ -1,6 +1,0 @@
-{
-  "target_delta_pr_auc": 0.015,
-  "required_mature_frauds_80_power": 86,
-  "current_holdout_frauds": 52,
-  "is_holdout_sufficient": false
-}

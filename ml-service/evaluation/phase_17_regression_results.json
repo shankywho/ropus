@@ -1,8 +1,0 @@
-{
-  "health_check": "PASS",
-  "golden_parity": "PASS",
-  "live_latency_ms": 1.801,
-  "rollback_parity": "PASS",
-  "zero_nan_inf": "PASS",
-  "overall_status": "PASS"
-}

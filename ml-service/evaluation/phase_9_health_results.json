@@ -1,7 +1,0 @@
-{
-  "startup_latency_ms": 1.3960409996798262,
-  "readiness_normal": true,
-  "missing_artifact_blocks_startup": true,
-  "checksum_mismatch_blocks_startup": true,
-  "overall_health_verdict": "PASS"
-}

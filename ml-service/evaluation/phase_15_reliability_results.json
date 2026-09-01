@@ -1,7 +1,0 @@
-{
-  "zero_nan_inf_propagation": true,
-  "uncontrolled_input_sanitization": true,
-  "missing_features_fallback": true,
-  "extreme_amount_overflow_protection": true,
-  "unhandled_exception_crash_protection": true
-}

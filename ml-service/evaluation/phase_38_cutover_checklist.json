@@ -1,7 +1,0 @@
-{
-  "dns_tls_ingress": "Configure external DNS for risk-api.ropus.internal with TLS cert",
-  "firewall_network_policies": "Allow merchant IPs and gateway egress to backend :8080",
-  "authentication_secrets": "Inject production WEBHOOK_SECRET and ROPUS_GATEWAY_PROVENANCE_SECRET",
-  "persistent_volumes": "Mount /telemetry_store to persistent cloud storage volume (EBS/GCSFuse)",
-  "rollback_plan": "Instant DNS/Ingress bypass to fallback rule-engine; Baseline BMR unchanged"
-}

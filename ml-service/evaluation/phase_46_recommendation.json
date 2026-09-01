@@ -1,9 +1,0 @@
-{
-  "verdict": "NO PRODUCTION MODEL CHANGE RECOMMENDED",
-  "primary_reasons": [
-    "Statistical Rigor: In accordance with Section 12 & 15, the paired 1,000-resample bootstrap 95% confidence interval for LightGBM vs v8 PR-AUC delta [-0.0287, +0.0765] and Recall@2% FPR delta spans zero (p = 0.2980), classifying the result strictly as INCONCLUSIVE.",
-    "Temporal Stacking Verification: While OOF-weighted ensembling and stacking layers confirmed that model disagreement provides a 2.4x enriched fraud signal on validation data, their holdout PR-AUC gains over v8 did not achieve statistical significance.",
-    "Production Safety & Governance: Production model v8.0-bmr-36f maintains superior continuous calibration (ECE = 0.690% < 1.000%) with proven zero customer-routing disruption. Live model replacement requires >= 5,000 genuine gateway transactions and >= 50 mature labeled shadow flips."
-  ],
-  "recommended_next_action": "Retain v8.0-bmr-36f as the immutable production enforcing model. Deploy LightGBM L20 and the OOF-Weighted Ensemble as non-enforcing shadow telemetry candidates."
-}

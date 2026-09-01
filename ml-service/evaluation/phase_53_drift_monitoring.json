@@ -1,5 +1,0 @@
-{
-  "psi_drift_status": "STABLE",
-  "feature_missingness_rate": 0.0,
-  "max_feature_drift_ratio": 0.35
-}

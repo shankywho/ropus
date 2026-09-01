@@ -1,7 +1,0 @@
-{
-  "chronological_order_check": true,
-  "causal_rolling_window_check": true,
-  "target_encoding_prior_leakage": false,
-  "test_isolation_guarantee": true,
-  "verdict": "PASS"
-}

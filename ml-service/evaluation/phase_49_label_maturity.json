@@ -1,6 +1,0 @@
-{
-  "maturation_window_days": 60,
-  "live_mature_observations": 0,
-  "live_mature_fraud_observations": 0,
-  "synthetic_replayed_mature_observations": 5
-}

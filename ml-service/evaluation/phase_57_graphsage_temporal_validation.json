@@ -1,8 +1,0 @@
-{
-  "temporal_leakage_prevented": true,
-  "sampling_guarantee": "Strictly filters edges where timestamp <= evaluation_time T",
-  "evaluation_time": "2026-08-20T10:00:00+00:00",
-  "hop1_neighbors_sampled": 2,
-  "hop2_neighbors_sampled": 2,
-  "timestamp": "2026-08-26T04:31:29.652692+00:00"
-}

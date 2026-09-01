@@ -1,9 +1,0 @@
-{
-  "feature_tiers": {
-    "28F_Baseline": 25,
-    "36F_Velocity_Enhanced": 39,
-    "42F_MultiEntity_Interactions": 45,
-    "48F_Full_Risk_Stack": 55
-  },
-  "selected_tier": "36F_Velocity_Enhanced"
-}

@@ -1,8 +1,0 @@
-{
-  "status": "NONE",
-  "change_request_warranted": false,
-  "escalation_state": "NORMAL",
-  "consecutive_critical_windows": 0,
-  "governance_rule": "A model change may ONLY enter CHANGE_REQUEST_REQUIRED after sustained production evidence demonstrates material degradation (>= 5 critical windows) or a formally documented business requirement.",
-  "model_action": "CONTINUE_PRODUCTION"
-}

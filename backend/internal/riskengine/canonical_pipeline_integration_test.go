@@ -10,27 +10,39 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/shankywho/ropus/backend/internal/chaos"
 	"github.com/shankywho/ropus/backend/internal/features"
+	"github.com/shankywho/ropus/backend/internal/governance"
 	"github.com/shankywho/ropus/backend/internal/graph"
 	"github.com/shankywho/ropus/backend/internal/rules"
 )
 
-func setupTestCanonicalServer(t *testing.T) (*httptest.Server, *Orchestrator) {
+func setupTestCanonicalServer(t *testing.T) (*httptest.Server, *Orchestrator, *governance.DecisionAuditTrail, *chaos.ChaosEngine) {
 	rulesService := rules.NewService(nil)
 	orchestrator := NewOrchestrator(nil, nil, rulesService, nil, nil)
+	auditTrail := governance.NewDecisionAuditTrail()
+	orchestrator.SetAuditTrail(auditTrail)
+
+	chaosEngine := chaos.NewChaosEngine()
+	chaosHandler := chaos.NewHandler(chaosEngine)
 
 	handler := NewHandler(orchestrator)
 
 	r := chi.NewRouter()
 	r.Post("/v1/risk-evaluations", handler.EvaluateRisk)
 	r.Post("/v1/risk/evaluate", handler.EvaluateRisk)
+	r.Get("/v1/audit/verify", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(auditTrail.GetStatus())
+	})
+	r.Post("/v1/chaos/drill", chaosHandler.HandleExecuteDrill)
 
 	srv := httptest.NewServer(r)
-	return srv, orchestrator
+	return srv, orchestrator, auditTrail, chaosEngine
 }
 
 func TestCanonicalPipeline_All15Scenarios(t *testing.T) {
-	srv, orchestrator := setupTestCanonicalServer(t)
+	srv, orchestrator, _, _ := setupTestCanonicalServer(t)
 	defer srv.Close()
 
 	client := srv.Client()
@@ -506,6 +518,83 @@ func TestCanonicalPipeline_All15Scenarios(t *testing.T) {
 
 		if resp1.StatusCode != resp2.StatusCode {
 			t.Errorf("Route alias mismatch: /risk-evaluations returned %d, /risk/evaluate returned %d", resp1.StatusCode, resp2.StatusCode)
+		}
+	})
+
+	// -------------------------------------------------------------
+	// SCENARIO 16: Cryptographic SHA-256 Decision Audit Chain Verification
+	// -------------------------------------------------------------
+	t.Run("Scenario 16: Decision Audit Chain Live Verification", func(t *testing.T) {
+		req, _ := http.NewRequest(http.MethodGet, srv.URL+"/v1/audit/verify", nil)
+		resp, err := client.Do(req)
+		if err != nil {
+			t.Fatalf("Failed to query /v1/audit/verify: %v", err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			t.Fatalf("Expected HTTP 200, got %d", resp.StatusCode)
+		}
+
+		var verifyResp struct {
+			Status                string `json:"status"`
+			IntegrityVerified     bool   `json:"integrity_verified"`
+			TotalDecisionsAudited int    `json:"total_decisions_audited"`
+			HeadHash              string `json:"head_hash"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&verifyResp); err != nil {
+			t.Fatalf("Failed to parse audit verify response: %v", err)
+		}
+
+		if !verifyResp.IntegrityVerified {
+			t.Errorf("Audit chain integrity check failed!")
+		}
+		if verifyResp.TotalDecisionsAudited <= 0 {
+			t.Errorf("Expected decisions to be audited in hash chain, got %d", verifyResp.TotalDecisionsAudited)
+		}
+		if verifyResp.HeadHash == "" || verifyResp.HeadHash == "0000000000000000000000000000000000000000000000000000000000000000" {
+			t.Errorf("Expected valid non-genesis head hash, got: %s", verifyResp.HeadHash)
+		}
+	})
+
+	// -------------------------------------------------------------
+	// SCENARIO 17: Live Circuit-Breaker Chaos Drill Execution
+	// -------------------------------------------------------------
+	t.Run("Scenario 17: Live Circuit-Breaker Chaos Drill", func(t *testing.T) {
+		drillBody := map[string]string{
+			"scenario": "REDIS_CACHE_FAILURE",
+		}
+		bodyBytes, _ := json.Marshal(drillBody)
+		req, _ := http.NewRequest(http.MethodPost, srv.URL+"/v1/chaos/drill", bytes.NewReader(bodyBytes))
+		req.Header.Set("Content-Type", "application/json")
+
+		resp, err := client.Do(req)
+		if err != nil {
+			t.Fatalf("Failed to execute chaos drill: %v", err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			t.Fatalf("Expected HTTP 200, got %d", resp.StatusCode)
+		}
+
+		var drillResp struct {
+			Scenario          string  `json:"scenario"`
+			DetectedBySystem  bool    `json:"detected_by_system"`
+			FallbackActivated bool    `json:"fallback_activated"`
+			BreakerStateAfter string  `json:"breaker_state_after"`
+			FastFailVerified  bool    `json:"fast_fail_verified"`
+			RecoveryTimeMs    float64 `json:"recovery_time_ms"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&drillResp); err != nil {
+			t.Fatalf("Failed to decode drill response: %v", err)
+		}
+
+		if !drillResp.DetectedBySystem || !drillResp.FallbackActivated {
+			t.Errorf("Chaos drill did not activate fast-fail: %+v", drillResp)
+		}
+		if drillResp.BreakerStateAfter != "OPEN" {
+			t.Errorf("Expected breaker to transition to OPEN, got %s", drillResp.BreakerStateAfter)
 		}
 	})
 }

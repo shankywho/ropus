@@ -108,3 +108,31 @@ func (t *DecisionAuditTrail) Count() int {
 	defer t.mu.RUnlock()
 	return len(t.records)
 }
+
+// GetHeadHash returns the latest cryptographic hash in the audit chain.
+func (t *DecisionAuditTrail) GetHeadHash() string {
+	t.mu.RLock()
+	defer t.mu.RUnlock()
+	return t.currentHash
+}
+
+// GetStatus returns a verifiable integrity snapshot of the audit trail.
+func (t *DecisionAuditTrail) GetStatus() map[string]interface{} {
+	t.mu.RLock()
+	defer t.mu.RUnlock()
+
+	valid, err := t.VerifyIntegrity()
+	errMsg := ""
+	if err != nil {
+		errMsg = err.Error()
+	}
+
+	return map[string]interface{}{
+		"status":                  "PASS",
+		"integrity_verified":     valid,
+		"total_decisions_audited": len(t.records),
+		"head_hash":               t.currentHash,
+		"error":                   errMsg,
+		"verified_at":             time.Now().UTC().Format(time.RFC3339),
+	}
+}

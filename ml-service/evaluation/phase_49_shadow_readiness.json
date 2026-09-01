@@ -1,7 +1,0 @@
-{
-  "shadow_engine_active": true,
-  "challenger": "LightGBM_L20_D4",
-  "fail_open_verified": true,
-  "live_gateway_traffic": false,
-  "status": "EXTERNAL_INFRASTRUCTURE_REQUIRED"
-}

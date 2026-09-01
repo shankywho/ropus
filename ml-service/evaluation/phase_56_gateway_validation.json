@@ -1,8 +1,0 @@
-{
-  "endpoint": "/api/v1/risk/evaluate",
-  "method": "POST",
-  "authentication": "HMAC-SHA256 (Header: X-HMAC-Signature)",
-  "feature_contract": "36 Causal Point-in-Time Features (39 encoded columns)",
-  "privacy_rule": "Zero PAN / Zero CVV / Zero Sensitive Credentials",
-  "fail_open_isolation": "100% Guaranteed (Shadow failures cannot alter customer response)"
-}

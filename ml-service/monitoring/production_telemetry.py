@@ -28,7 +28,42 @@ current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
-from evaluation.phase_17_production_observability import calculate_psi, calculate_ks_metric
+from scipy.stats import ks_2samp
+
+def calculate_psi(expected: np.ndarray, actual: np.ndarray, num_buckets: int = 10) -> float:
+    """Calculate Population Stability Index (PSI) with robust bucket generation."""
+    if len(expected) == 0 or len(actual) == 0:
+        return 0.0
+    percentiles = np.linspace(0, 100, num_buckets + 1)
+    bins = np.percentile(expected, percentiles)
+    bins = np.unique(bins)
+
+    if len(bins) < 4:
+        min_v = min(float(np.min(expected)), float(np.min(actual)))
+        max_v = max(float(np.max(expected)), float(np.max(actual)))
+        if min_v == max_v:
+            return 0.0
+        bins = np.linspace(min_v, max_v, num_buckets + 1)
+
+    bins[0] = -np.inf
+    bins[-1] = np.inf
+
+    expected_counts, _ = np.histogram(expected, bins=bins)
+    actual_counts, _ = np.histogram(actual, bins=bins)
+
+    eps = 1e-4
+    expected_pct = (expected_counts + eps) / (len(expected) + eps * len(expected_counts))
+    actual_pct = (actual_counts + eps) / (len(actual) + eps * len(actual_counts))
+
+    psi_value = np.sum((actual_pct - expected_pct) * np.log(actual_pct / expected_pct))
+    return float(max(0.0, psi_value))
+
+def calculate_ks_metric(expected: np.ndarray, actual: np.ndarray) -> Tuple[float, float]:
+    """Calculate Kolmogorov-Smirnov 2-sample statistic and p-value."""
+    if len(expected) == 0 or len(actual) == 0:
+        return 0.0, 1.0
+    stat, pval = ks_2samp(expected, actual)
+    return float(stat), float(pval)
 
 EXPECTED_CHAMPION_VERSION = "v8.0-bmr-36f"
 EXPECTED_SHA256 = "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7"

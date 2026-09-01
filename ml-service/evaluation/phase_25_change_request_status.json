@@ -1,7 +1,0 @@
-{
-  "status": "NONE",
-  "change_request_warranted": false,
-  "escalation_state": "NORMAL",
-  "consecutive_critical_windows": 0,
-  "justification": "No sustained production degradation or new labeled evidence exists. Model v8.0-bmr-36f continues active steady-state service."
-}

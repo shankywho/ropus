@@ -1,9 +1,0 @@
-{
-  "live_ground_truth_status": "AWAITING_PRODUCTION_LABELS",
-  "live_labeled_chargebacks": 0,
-  "live_fraud_dollars_observed": 0.0,
-  "chargeback_lag_monitoring": {
-    "minimum_label_maturation_days": 60,
-    "active_dispute_webhooks_listening": true
-  }
-}

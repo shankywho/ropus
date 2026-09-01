@@ -1,7 +1,0 @@
-{
-  "first_transaction_status": "AWAITING_FIRST_PRODUCTION_TRANSACTION",
-  "observed_transactions": 0,
-  "enforced_policy": "Baseline Dynamic BMR (No Floor)",
-  "shadow_candidate_policy": "Floor tau_floor = 0.040 (Non-Enforcing)",
-  "trace_record": null
-}

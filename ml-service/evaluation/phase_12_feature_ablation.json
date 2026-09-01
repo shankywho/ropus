@@ -1,8 +1,0 @@
-{
-  "feature_tiers": {
-    "28F_Baseline": 25,
-    "36F_Velocity_Enhanced": 39,
-    "38F_Temporal_Velocity": 41
-  },
-  "selected_tier": "36F_Velocity_Enhanced"
-}

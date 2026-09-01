@@ -1,7 +1,0 @@
-{
-  "live_ground_truth_status": "AWAITING_PRODUCTION_LABELS",
-  "mature_labels_count": 0,
-  "chargeback_maturation_window_days": 60,
-  "unlabeled_tx_policy": "NEVER_TREAT_UNLABELED_AS_LEGITIMATE",
-  "active_dispute_stream_listening": true
-}

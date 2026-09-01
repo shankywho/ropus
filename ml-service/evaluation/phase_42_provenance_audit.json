@@ -1,9 +1,0 @@
-{
-  "provenance_tiers": {
-    "PRODUCTION_LIVE": "Only genuine live HMAC signed gateway events",
-    "STAGING_TEST": "Staging payloads explicitly excluded from production evidence",
-    "SYNTHETIC_TEST": "Local test vectors excluded",
-    "HISTORICAL_REPLAY": "Historical holdout replay excluded",
-    "UNTRUSTED": "Unsigned or spoofed claims quarantined"
-  }
-}

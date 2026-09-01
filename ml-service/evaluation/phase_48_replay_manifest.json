@@ -1,6 +1,0 @@
-{
-  "dataset_sha256": "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44",
-  "champion_artifact_sha256": "d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7",
-  "feature_contract": "36F_CANONICAL_V8",
-  "reproducibility_status": "100% DETERMINISTIC REPLAY CERTIFIED"
-}

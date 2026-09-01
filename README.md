@@ -1,17 +1,6 @@
 # ROPUS — AI Risk Manager 🛡️
 
-[![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?style=flat&logo=go)](https://go.dev/)
-[![Frontend](https://img.shields.io/badge/Frontend-TanStack_Start_/_React-black?style=flat&logo=react)](https://tanstack.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=flat&logo=postgresql)](https://www.postgresql.org/)
-[![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=flat&logo=redis)](https://redis.io/)
-[![ONNX Runtime](https://img.shields.io/badge/ONNX_Runtime-1.17+-005CED?style=flat&logo=onnx)](https://onnxruntime.ai/)
-[![Redpanda](https://img.shields.io/badge/Redpanda-Kafka_Compatible-FF0055?style=flat&logo=apachekafka)](https://redpanda.com/)
-[![ClickHouse](https://img.shields.io/badge/ClickHouse-24_OLAP-FFCC01?style=flat&logo=clickhouse)](https://clickhouse.com/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-ROPUS is an enterprise-grade, real-time **Payments Fraud, Abuse, and Chargeback Defense Platform**. Built with **Go** (High-Performance Decision Engine), **TanStack Start / React** (Paper Command Deck Control Plane), **Python / PyTorch / ONNX** (Statistical Calibration & Graph Intelligence), **PostgreSQL 16**, **Redis 7**, **Redpanda (Kafka)**, **Debezium CDC**, and **ClickHouse OLAP**.
-
-The platform orchestrates multi-stage synchronous fraud decisioning (**<100ms p95 SLA**), deterministic JSON-AST rules with **Maker-Checker dual-control**, Bayes Minimum Risk (BMR) cost-optimal thresholding, inductive **GraphSAGE GNN relationship intelligence in non-enforcing shadow mode**, asynchronous **24-hour SLA analyst review queues**, **AES-256-GCM Envelope Encryption & Crypto-Shredding**, and cryptographic SHA-256 hash-chain auditing.
+Most fraud detection systems reduce risk decisioning to an arbitrary score threshold, ignoring transaction economics. **ROPUS** combines real-time streaming feature extraction with **Bayes Minimum Risk (BMR)** cost-optimal decisioning—evaluating calibrated posterior probabilities against dynamic loss matrices to choose the action that minimizes expected financial loss. The platform processes synchronous risk evaluations with deterministic Go AST guardrails, Redis velocity counters, and an in-memory entity graph before committing decisions through a transactional outbox.
 
 ---
 
@@ -20,17 +9,17 @@ The platform orchestrates multi-stage synchronous fraud decisioning (**<100ms p9
 ```mermaid
 flowchart TD
     subgraph Edge_and_Ingestion ["Edge & Ingestion Layer"]
-        M["Merchant / Payment Gateway"] -->|POST /v1/risk-evaluations| API["Go API Gateway :8080"]
+        M["Merchant / Client Application"] -->|POST /v1/risk-evaluations| API["Go API Gateway :8080"]
         PG["Payment Provider"] -->|POST /webhooks/provider| API
-        UI["Paper Command Deck UI :3002"] <-->|REST API| API
+        UI["React Control Plane :3002"] <-->|REST API| API
     end
 
     subgraph Synchronous_Path ["Synchronous Decision Pipeline (<100ms SLA)"]
         API --> ORCH["Risk Orchestrator"]
-        ORCH <-->|ZADD / ZCOUNT| REDIS[("Redis 7 Feature Store")]
-        ORCH <-->|Fetch Active Rules| PG_DB[("PostgreSQL 16")]
+        ORCH <-->|Sliding-Window Velocity| REDIS[("Redis 7 Feature Store")]
+        ORCH <-->|Fetch Active AST Rules| PG_DB[("PostgreSQL 16")]
         ORCH -->|POST /predict - 50ms Deadline| ONNX["ONNX ML Sidecar :8000"]
-        ORCH -->|Derive DEK and Encrypt PII| KMS["KMS AES-256-GCM"]
+        ORCH -->|SHA-256 Decision Ledger| AUDIT["Decision Audit Trail"]
         ORCH -->|Atomic Commit - Decision and Outbox| PG_DB
     end
 
@@ -43,43 +32,68 @@ flowchart TD
         AUDIT_C -->|Batch / Stream Insert| CH[("ClickHouse OLAP :9000")]
     end
 
-    subgraph Shadow_Intelligence ["Non-Enforcing Shadow Intelligence Plane"]
+    subgraph Shadow_Intelligence ["Shadow Relationship Intelligence Plane"]
         REDP -.->|Passive Ingestion| GNN["GraphSAGE GNN Subsystem"]
-        GNN -->|Heterogeneous Embeddings| SHADOW_LEDGER[("Evidence Ledger")]
+        GNN -->|Heterogeneous Embeddings| SHADOW_LEDGER[("Shadow Evidence Ledger")]
     end
 ```
 
 ---
 
-## ⚡ Key Engineering Highlights & Governance Guarantees
+## ⚡ Core Engineering Highlights (Live-Verifiable End-to-End)
 
-### 1. Synchronous Multi-Stage Decision Pipeline (`<100ms SLA`)
-* **Context Aggregation:** Queries real-time sliding-window counters (`velocity.ip.1hr`, `velocity.token.24hr`) from Redis Sorted Sets in `<5ms`.
-* **Pre-Rules (Hard Guardrails):** Evaluates deterministic JSON-AST rules in `<0.4ms`. If a hard `DECLINE` or `ALLOW` rule triggers, pipeline evaluation halts immediately to conserve compute.
-* **ONNX Runtime ML Serving (50ms Deadline):** Sub-millisecond fraud scoring sidecar running compiled XGBoost graphs with **local SHAP feature attributions**. If the ML sidecar times out or errors, Go gracefully degrades (`is_degraded: true`) to conservative heuristic rules without dropping customer transactions.
-* **Bayes Minimum Risk (BMR) Cost-Optimal Decisioning:** Calibrated posterior probabilities $P(\text{fraud} \mid x)$ are mapped to dollar-denominated loss matrices ($\text{Cost}(\text{False Positive}) = \text{₹40,000} / \$500$).
-* **Tenant-Namespaced Graph Topology:** The synchronous graph engine is process-local and tenant-namespaced (`<tenant_id>:<entity_type>:<raw_id>`) for deterministic sub-millisecond BFS traversal. Production multi-replica deployments asynchronously materialize graph topology across a distributed graph store.
+### 1. Server-Side Maker-Checker Rule Governance (403 on Self-Approval)
+Policy rules are evaluated via a sandboxed Go JSON-AST interpreter with zero dynamic `eval()`. Transitions through the lifecycle (`DRAFT` $\rightarrow$ `PENDING_APPROVAL` $\rightarrow$ `ACTIVE`) strictly require two distinct principals:
+```bash
+# Attempting to approve your own rule returns HTTP 403 Forbidden
+curl -X PUT http://localhost:8080/v1/rules/rule_123/status \
+  -H "X-Actor-ID: rule_creator_alice" \
+  -d '{"status": "ACTIVE"}'
+# Response: 403 Forbidden ("rule creator cannot approve their own rule")
+```
 
-### 2. GraphSAGE Inductive Relationship Intelligence (Shadow Mode — Governance Invariant)
-* **Inductive Heterogeneous GNN:** Computes 64-dimensional node representations across 6 entity types (Customer, Device, IP, Card, Merchant, Payout Account) to detect synthetic identity rings and employee collusion.
-* **0% Customer Decision Authority:** Operates in **strictly non-enforcing shadow mode**. Customer transaction routing is **100% determined by Baseline Dynamic BMR**.
-* **Strict Promotion Gate:** GraphSAGE promotion to live decisioning is strictly blocked until $\ge 50$ confirmed real collusion cases accumulate past the 90-day dispute window and receive Model Risk Committee sign-off.
-* **Cryptographic Checksum Immutability:**
-  - Active Production Champion: `ml-service/model/candidates/production_model_v8_bmr.joblib` (`d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7`)
-  - Frozen Real Fraud Holdout: `ml-service/data/sample_ieee_fixture.csv` (`a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44`)
+### 2. Live `/demo` Control Plane
+The web UI command deck does not fake state transitions client-side. Triggering attack scenarios or adjusting canary rollout percentages sends real HTTP mutations (`POST /v1/risk-evaluations`, `POST /v1/canary/control`) to the Go engine, persisting decisions into PostgreSQL and feature counters into Redis.
 
-### 3. Declarative JSON-AST Rules Engine & Maker-Checker Dual Control
-* Zero arbitrary dynamic code execution (`eval()` is strictly prohibited). The Go AST interpreter evaluates nested boolean trees (`AND`, `OR`, `NOT`) and comparison predicates.
-* **Dual-Control Governance:** State machine (`DRAFT` $\rightarrow$ `PENDING_APPROVAL` $\rightarrow$ `ACTIVE`) enforces that a rule creator cannot approve their own rule (`ErrMakerCheckerViolation` / HTTP 403).
-* **Tenant Identity Boundary:** Standalone demo accepts `X-Tenant-ID` for local reproducibility via a structured identity resolution abstraction (`tenant.ResolveTenant`). Production deployments derive tenant identity from authenticated gateway claims rather than trusting client headers.
+### 3. Bayes Minimum Risk (BMR) Cost-Optimal Decisioning
+Instead of static cutoff scores, decisions are calculated by evaluating calibrated probability $P(\text{fraud} \mid x)$ against dollar-denominated loss functions:
+$$\text{Expected Loss}(\text{ALLOW}) = P(\text{fraud} \mid x) \times (\text{Amount} \times 1.05)$$
+$$\text{Expected Loss}(\text{DECLINE}) = (1 - P(\text{fraud} \mid x)) \times \text{Cost}(\text{False Positive})$$
+The system dynamically selects the action ($\text{ALLOW}$, $\text{MANUAL\_REVIEW}$, $\text{DECLINE}$) that minimizes total expected cost.
 
-### 4. Transactional Outbox Pattern & Multi-Layer Durable Idempotency
-* **Multi-Layer Idempotency:** Layer-1 in-memory mutex coalescing (<0.02ms) backed by Layer-2 PostgreSQL uniqueness on `(tenant_id, idempotency_key)` with SHA-256 payload tampering detection. Active execution leases are renewed via periodic heartbeat, while stale leases (>10s) are safely reclaimed on pod failure.
-* **Transactional Outbox Persistence:** PostgreSQL ACID transactions (`pgx.Tx`) commit `risk_decisions` and `outbox_events` atomically, ensuring at-least-once streaming delivery with idempotent downstream consumer deduplication.
+### 4. Cryptographic SHA-256 Decision Audit Chain
+Every evaluated decision and policy modification is linked into a sequential SHA-256 cryptographic hash chain:
+$$H_i = \text{SHA-256}(H_{i-1} \parallel \text{EntryID} \parallel \text{Timestamp} \parallel \text{PayloadHash})$$
+Live chain integrity can be verified at any time:
+```bash
+curl http://localhost:8080/v1/audit/verify
+# Response: {"status":"PASS","integrity_verified":true,"total_decisions_audited":42,"head_hash":"..."}
+```
 
-### 5. Cryptographic SHA-256 Hash-Chain Audit Ledger
-* Every decision and analyst case disposition is immutably linked in a tamper-evident cryptographic hash chain:
-  $$H_i = \text{SHA-256}(H_{i-1} \parallel \text{EntryID} \parallel \text{Timestamp} \parallel \text{PayloadHash})$$
+---
+
+## 🔬 Subsystem Deep Dives
+
+### Inductive Graph Intelligence (Shadow Mode)
+An inductive GraphSAGE GNN evaluates 6-entity heterogeneous relationships (Customer, Device, IP, Card, Merchant, Payout Account) to detect multi-account mule clusters. The graph engine runs process-locally with tenant namespacing (`<tenant_id>:<entity_type>:<raw_id>`) for sub-millisecond traversal and operates in shadow mode alongside the primary BMR decisioning pipeline.
+
+### Durable Multi-Layer Idempotency & Fault Resilience
+- **Multi-Layer Idempotency:** Layer-1 in-memory mutex coalescing (<0.02ms) backed by Layer-2 PostgreSQL uniqueness on `(tenant_id, idempotency_key)` with SHA-256 payload tampering detection. Active leases are renewed via a 2-second heartbeat ticker; crashed pod leases (>10s) are safely reclaimed on retry.
+- **Dependency Circuit Breakers:** 3-state circuit breakers protect Redis, PostgreSQL, and ML dependencies. If a downstream service fails $N$ times, the breaker trips to `OPEN`, immediately routing requests through fast-fail heuristic fallback rules. Live drills can be executed via `POST /v1/chaos/drill`.
+- **Transactional Outbox:** PostgreSQL ACID transactions commit `risk_decisions` and `outbox_events` atomically, ensuring at-least-once streaming delivery to Redpanda/Kafka without dual-write inconsistency.
+
+---
+
+## 🛠️ Technology Stack
+
+[![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?style=flat&logo=go)](https://go.dev/)
+[![Frontend](https://img.shields.io/badge/Frontend-TanStack_Start_/_React-black?style=flat&logo=react)](https://tanstack.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=flat&logo=postgresql)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=flat&logo=redis)](https://redis.io/)
+[![ONNX Runtime](https://img.shields.io/badge/ONNX_Runtime-1.17+-005CED?style=flat&logo=onnx)](https://onnxruntime.ai/)
+[![Redpanda](https://img.shields.io/badge/Redpanda-Kafka_Compatible-FF0055?style=flat&logo=apachekafka)](https://redpanda.com/)
+[![ClickHouse](https://img.shields.io/badge/ClickHouse-24_OLAP-FFCC01?style=flat&logo=clickhouse)](https://clickhouse.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
@@ -97,10 +111,10 @@ flowchart TD
 git clone https://github.com/shankywho/ropus.git
 cd ropus
 
-# Copy environment variables
+# Copy environment configuration
 cp .env.example .env
 
-# Launch core infrastructure (PostgreSQL, Redis, ClickHouse, Redpanda)
+# Launch core data infrastructure
 docker compose up -d postgres redis clickhouse redpanda
 ```
 
@@ -135,52 +149,45 @@ bun run dev # or npm run dev
 
 | Route | View | Description |
 |---|---|---|
-| **`/`** | Overview & Signal Thesis | Real-time system health, multi-signal decomposition, and incident summary |
-| **`/demo`** | 7-Stage Incident Replay | Deterministic 7-stage attack lifecycle replay and live chaos failure toggles |
-| **`/graph`** | Fraud Knowledge Graph | Interactive multi-hop entity graph traversal and mule ring exploration |
-| **`/models`** | Model Registry | Active BMR Champion vs GraphSAGE Shadow candidate tracking, drift PSI, and latency |
+| **`/`** | Overview & Metrics | Real-time system health, decision distribution, and throughput metrics |
+| **`/demo`** | Interactive Demo | End-to-end scenario dispatcher and live chaos failure injection |
+| **`/graph`** | Entity Graph Explorer | In-memory 3-hop relationship graph and cluster exploration |
+| **`/models`** | Model Registry | ONNX model versioning, feature contracts, and canary distribution |
 | **`/rules`** | Rules Engine | JSON-AST policy rule editor with Maker-Checker dual control |
-| **`/cases`** | Case Management | Analyst queue with 24-hour SLA countdowns and forensic evidence dossiers |
+| **`/cases`** | Case Management | Analyst queue with forensic evidence dossiers and disposition tracking |
 | **`/decisions`** | Decision Explorer | Real-time score attribution, factor decomposition, and raw payload audit |
 | **`/operations`** | Operations & SLOs | P99 latency tracking, error budgets, canary controls, and incident logs |
-| **`/security`** | Cryptographic Audit | SHA-256 hash-chain verification and tamper-detection inspector |
+| **`/security`** | Cryptographic Audit | SHA-256 decision audit chain verification and tamper detection |
 
 ---
 
 ## 🧪 Testing & Verification
 
-Run the Go platform test suite:
+Run the full Go test suite:
 ```bash
 cd backend
 go test -v ./...
 ```
 
-Run Python ML & GraphSAGE verification tests:
+Run Python ML & calibration tests:
 ```bash
 cd ml-service
-pytest tests/ -v
+pytest tests/ -q
 ```
 
-Verify Frontend build:
+Build the Frontend production bundle:
 ```bash
 cd frontend
-bun run build # or npm run build
-```
-
-Verify Cryptographic Checksums:
-```bash
-shasum -a 256 ml-service/model/candidates/production_model_v8_bmr.joblib ml-service/data/sample_ieee_fixture.csv
+npm run build
 ```
 
 ---
 
-## 🛡️ Defense-Only Threat Model & Safety Boundaries
+## 🛡️ Safety Boundaries
 
-Per regulatory safety mandates, the system enforces strict physical and architectural boundaries against misuse:
-* **Zero Execution Authority:** Emits risk recommendations only (`ALLOW`, `MANUAL_REVIEW`, `DECLINE`). Contains zero direct integration with payment rails or autonomous fund movement.
-* **Anti-Probing & Oracle Defense:** Detailed feature attributions and SHAP reason codes are exposed exclusively to authenticated analyst sessions and backend webhooks, preventing attackers from reverse-engineering thresholds.
-* **Conservative Fail-Safe Degradation:** If downstream models or feature stores become unavailable, the engine degrades into deterministic pre-rules—never a lenient fail-open path.
-* **AST Sandbox:** Rules execute inside a closed Go AST interpreter with zero dynamic `eval()` capability.
+* **Recommendation-Only Execution:** The engine outputs structured decisions (`ALLOW`, `MANUAL_REVIEW`, `DECLINE`) without direct payment rail access or autonomous fund settlement.
+* **Anti-Probing Defense:** Detailed SHAP factor weights are restricted to authenticated analyst endpoints and webhook payloads to prevent oracle boundary mapping.
+* **Fail-Safe Fallback:** If ML sidecars or Redis stores become unreachable, the engine degrades gracefully to deterministic AST rules rather than failing open.
 
 ---
 

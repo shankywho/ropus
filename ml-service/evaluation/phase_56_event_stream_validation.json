@@ -1,6 +1,0 @@
-{
-  "broker_config": "deploy/kubernetes/configmap.yaml (KAFKA_BROKER: risk-redpanda:29092)",
-  "topic": "risk.events",
-  "iac_reference": "infra/terraform/aws/msk_kafka.tf",
-  "status": "CONFIGMAP_AND_IAC_VERIFIED"
-}

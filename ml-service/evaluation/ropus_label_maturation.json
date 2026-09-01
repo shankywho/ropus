@@ -1,6 +1,0 @@
-{
-  "maturation_days": 60,
-  "dispute_webhook_endpoint": "/api/v1/disputes/webhook",
-  "reversals_supported": true,
-  "live_mature_observations": 0
-}
