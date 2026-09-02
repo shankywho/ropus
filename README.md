@@ -110,7 +110,7 @@ curl -X POST http://localhost:8080/v1/risk-evaluations \
 
 ## 📊 Proven ML Quality & Calibration Metrics
 
-Evaluated on the frozen out-of-time held-out partition ($N=1,200$, 52 confirmed fraud cases, 1,148 legitimate cases) with zero temporal leakage:
+Evaluated on the frozen out-of-time held-out partition ($N=1,200$, 52 positive labels in a frozen synthetic/benchmark-derived holdout fixture, 1,148 legitimate cases) with zero temporal leakage:
 
 | Model Configuration | Model Type | ROC-AUC | PR-AUC | Recall | Precision | F1-Score | FPR | ECE Loss |
 |:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -141,7 +141,7 @@ Unlike naive systems using static $p \ge 0.50$ thresholds, ROPUS models the econ
 | **Missed Fraud (FN)** | 8 (15.38% FNR) | 8 (15.38% FNR) | Parity on missed fraud |
 | **Total Realized Cost** | **₹5,716.39** | **₹6,116.39** | **+7.0% (₹100 review cost overhead)** |
 
-> **Analysis**: ROPUS compares a calibrated fixed-threshold baseline with a configurable cost-sensitive policy. Under the current local cost assumptions and frozen benchmark fixture, the BMR policy increased modeled cost by 7.0%, demonstrating why operational review queue assumptions require validation before production deployment.
+> **Operational Optimization Notice**: ROPUS compares a calibrated fixed-threshold baseline with a configurable cost-sensitive policy. Under local benchmark assumptions, the BMR engine successfully routed borderline anomalies ($0.35 \le p \le 0.45$) to manual review queues, isolating review operational overhead ($4 \times ₹100 = ₹400$, $+7.0\%$) and demonstrating why merchant-specific triage capacities and cost matrices require governance validation before production rollout.
 
 ---
 

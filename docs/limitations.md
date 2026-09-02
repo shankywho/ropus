@@ -48,3 +48,4 @@
 
 - **PCI-DSS Scope**: ROPUS expects tokenized payment identifiers (`tok_...`) and masked card numbers (`last4: 4321`). Raw Primary Account Numbers (PAN) and CVVs must never be sent to the API.
 - **TLS & Network**: In local Docker Compose mode, services communicate over HTTP within an internal bridge network (`risk_network`). In production deployments, TLS termination would be managed by an API Gateway or reverse proxy.
+- **Geolocation & Network Distance**: Benchmark synthetic datasets lack live IP BGP routing topology, so physical address-to-IP geodistance (`dist1`) defaults to missing indicator flags (`dist1_missing: 1`) in local synthetic fixtures. The Go feature pipeline is modularly structured to plug into live MaxMind GeoIP2 / MMDB lookups in production.
