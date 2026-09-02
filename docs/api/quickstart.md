@@ -1,112 +1,95 @@
-# ROPUS Quickstart Guide
+# API quickstart
 
-Integrate real-time fraud risk decisioning into your application in under 15 minutes.
+This guide targets a locally running ROPUS stack. Start it with `docker compose up --build`, then confirm `http://localhost:8080/health` responds before sending an evaluation.
 
----
+## Evaluate a transaction
 
-## 1. Authentication
-All API requests require a secret API key passed in the `Authorization` header:
+The canonical endpoint is `POST /v1/risk-evaluations`. `POST /v1/risk/evaluate` accepts the same request as a compatibility alias.
 
-```http
-Authorization: Bearer rop_live_8a19bc7f2e41...
-```
-
----
-
-## 2. Evaluate a Transaction (`POST /v1/risk/evaluate`)
-
-### Request
-```json
-{
-  "transaction_id": "tx_order_88419",
-  "customer_id": "usr_sarah_connor",
-  "amount": 14500.00,
-  "currency": "USD",
-  "merchant_id": "CryptoLiquidityExpress",
-  "device_id": "dev_mule_cluster_99",
-  "ip_address": "198.51.100.44",
-  "country": "CY"
-}
-```
-
-### Response
-```json
-{
-  "request_id": "req_4f8a1e9c",
-  "decision_id": "dec_8f4a1e9c",
-  "transaction_id": "tx_order_88419",
-  "verdict": "BLOCK",
-  "risk_score": 0.96,
-  "confidence": 0.94,
-  "recommendation": "BLOCK_AND_REVIEW",
-  "reasons": [
-    "Cross-border impossible travel from high-risk jurisdiction (CY)",
-    "Hardware fingerprint matches known emulator / spoofing framework",
-    "IP address originates from commercial bulletproof proxy / VPN",
-    "Entity linked to multi-account synthetic fraud cluster (degree: 14)"
-  ],
-  "risk_factors": [
-    { "factor_name": "Transaction Velocity / Amount", "contribution": 0.22 },
-    { "factor_name": "Impossible Travel Anomaly", "contribution": 0.21 },
-    { "factor_name": "Device Novelty / Emulator", "contribution": 0.18 },
-    { "factor_name": "IP Reputation & Proxy", "contribution": 0.18 },
-    { "factor_name": "Fraud Graph Exposure", "contribution": 0.17 },
-    { "factor_name": "Real ML Gradient Boosted Model", "contribution": 0.20 }
-  ],
-  "case_id": "CASE-88419",
-  "latency_ms": 1.42
-}
-```
-
----
-
-## 3. Python Integration Example
-
-```python
-import requests
-
-API_KEY = "rop_live_your_secret_key"
-BASE_URL = "https://api.ropus.ai"
-
-payload = {
-    "transaction_id": "tx_order_88419",
-    "customer_id": "usr_sarah_connor",
-    "amount": 14500.00,
-    "currency": "USD",
-    "merchant_id": "CryptoLiquidityExpress",
-    "device_id": "dev_mule_cluster_99",
+```bash
+curl -X POST http://localhost:8080/v1/risk-evaluations \
+  -H 'Content-Type: application/json' \
+  -H 'X-Tenant-ID: demo-merchant' \
+  -H 'X-Correlation-ID: checkout-req-1001' \
+  -H 'X-Idempotency-Key: checkout-tx-1001' \
+  -d '{
+    "transaction_id": "tx_checkout_1001",
+    "amount": 14999,
+    "currency": "INR",
+    "payment_method": {
+      "type": "card",
+      "token": "tok_demo_card"
+    },
+    "device_fingerprint": "device_demo_1001",
     "ip_address": "198.51.100.44",
-    "country": "CY"
-}
-
-resp = requests.post(
-    f"{BASE_URL}/v1/risk/evaluate",
-    headers={"Authorization": f"Bearer {API_KEY}"},
-    json=payload
-)
-
-data = resp.json()
-print(f"Verdict: {data['verdict']} (Score: {data['risk_score']})")
-
-if data["verdict"] == "BLOCK":
-    print(f"Settlement blocked. Case opened: {data['case_id']}")
+    "account_id": "acct_demo_42"
+  }'
 ```
 
----
+`amount` is an integer amount in the currency’s smallest unit; for example, `14999` represents ₹149.99 when the integration uses paise. ROPUS currently does not validate currency minor-unit conventions, so the caller must use one convention consistently.
 
-## 4. JavaScript / Node.js Integration Example
+## Request contract
 
-```javascript
-const axios = require('axios');
+| Field | Required | Notes |
+| --- | --- | --- |
+| `transaction_id` | Yes | Non-empty string, maximum 128 characters. |
+| `amount` | Yes | Integer; negative values are rejected. |
+| `currency` | No | Defaults to `USD` when absent. |
+| `payment_method.type` | No | Payment method type, such as `card`. |
+| `payment_method.token` | No | Token or non-sensitive payment reference. Never send raw card data. |
+| `device_fingerprint` | No | Device identifier used by velocity and graph signals. |
+| `ip_address` | No | If omitted, the API uses the request’s remote address. |
+| `account_id` | No | Account identifier used by graph and velocity signals. |
 
-async function evaluateRisk(transaction) {
-  const response = await axios.post('https://api.ropus.ai/v1/risk/evaluate', transaction, {
-    headers: {
-      'Authorization': 'Bearer rop_live_your_secret_key',
-      'Content-Type': 'application/json'
-    }
-  });
+## Response contract
 
-  return response.data;
+The precise score and evidence depend on the running model, rules, and historical state. A successful response has this shape:
+
+```json
+{
+  "decision_id": "dec_...",
+  "transaction_id": "tx_checkout_1001",
+  "recommended_action": "ALLOW_RECOMMENDATION",
+  "risk_score": 12,
+  "reason_codes": ["..."],
+  "feature_snapshot_ref": "...",
+  "evaluated_at": "2026-09-02T12:00:00Z",
+  "latency_ms": 8,
+  "expected_fraud_exposure": 0.0,
+  "expected_action_costs": {
+    "ALLOW_RECOMMENDATION": 0.0,
+    "MANUAL_REVIEW": 10.0,
+    "DECLINE_RECOMMENDATION": 25.0
+  },
+  "economic_decision_reason": "..."
 }
 ```
+
+The action is a recommendation, not an instruction to execute payment movement. Possible actions include `ALLOW_RECOMMENDATION`, `MANUAL_REVIEW`, `STEP_UP_RECOMMENDATION`, and `DECLINE_RECOMMENDATION`. Optional response fields expose feature, threat, graph, and component-latency details when they are available.
+
+## Headers and retries
+
+| Header | Purpose |
+| --- | --- |
+| `Content-Type: application/json` | Required for JSON requests. |
+| `X-Tenant-ID` | Local/demo tenant selector. It must match `^[a-zA-Z0-9_-]{1,64}$`; an omitted value uses the default demo tenant. |
+| `X-Idempotency-Key` | Recommended for every POST. Repeating the same endpoint and payload replays the original result, marked with `X-Idempotency-Replayed: true`. |
+| `X-Correlation-ID` | Optional request-tracing value; the API returns it when supplied. |
+
+Using an idempotency key with a different payload or endpoint returns `409 Conflict`. Generate a new key for each new business operation.
+
+## Useful follow-up calls
+
+```bash
+# Local service and dependency state
+curl http://localhost:8080/v1/system/status
+
+# SHA-256 audit-chain status
+curl http://localhost:8080/v1/audit/verify
+
+# Entity graph associated with an evaluation
+curl 'http://localhost:8080/v1/graph?decisionId=DECISION_ID&rootId=acct_demo_42' \
+  -H 'X-Tenant-ID: demo-merchant'
+```
+
+For the wider endpoint inventory, continue to the [API reference](api-reference.md). For setup and configuration, read the [local development guide](../local-development.md).

@@ -255,7 +255,7 @@ export interface LiveEvaluationResponse {
       legacy_version?: string;
       legacy_15?: Record<string, number>;
     };
-    [key: string]: any;
+    [key: string]: unknown;
   };
   expected_fraud_exposure?: number;
   expected_action_costs?: Record<string, number>;

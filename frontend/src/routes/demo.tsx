@@ -1,6 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
-import { Mono, RiskScore, VerdictBadge, PriorityTag, CaseStatusTag, StatusPill } from "@/components/ropus/core";
+import {
+  Mono,
+  RiskScore,
+  VerdictBadge,
+  PriorityTag,
+  CaseStatusTag,
+  StatusPill,
+} from "@/components/ropus/core";
 import { Page } from "@/components/ropus/page";
 import { blockedDecision, baselineDecision } from "@/lib/ropus/fixtures";
 import { fraudGraph } from "@/lib/ropus/graph-fixture";
@@ -65,7 +72,9 @@ function DemoPage() {
   const current: DemoStageInfo = demoStages[stage] || demoStages[0];
   const tweenedScore = useTweenedScore(current.simulatedScore);
   const [confirmedBlock, setConfirmedBlock] = useState(false);
-  const [activeTab, setActiveTab] = useState<"telemetry" | "live_api" | "bmr_matrix" | "feature_contract">("telemetry");
+  const [activeTab, setActiveTab] = useState<
+    "telemetry" | "live_api" | "bmr_matrix" | "feature_contract"
+  >("telemetry");
   const [liveEvalResult, setLiveEvalResult] = useState<LiveEvaluationResponse | null>(null);
   const [liveLoading, setLiveLoading] = useState(false);
   const [liveError, setLiveError] = useState<string | null>(null);
@@ -174,7 +183,7 @@ function DemoPage() {
     setLiveError(null);
     setActiveTab("telemetry");
     setLiveEvalResult(null);
-  }, [stage]);
+  }, [stage, currentPreset.amount, currentPreset.currency, currentPreset.ip, currentPreset.device]);
 
   const handleLiveEvaluate = async (overrideParams?: Partial<typeof currentPreset>) => {
     setLiveLoading(true);
@@ -203,9 +212,9 @@ function DemoPage() {
       });
       setLiveEvalResult(res);
       setActiveTab("live_api");
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Live evaluate failed", e);
-      setLiveError(e.message || "Failed to communicate with Go backend");
+      setLiveError(e instanceof Error ? e.message : "Failed to communicate with Go backend");
     } finally {
       setLiveLoading(false);
     }
@@ -244,8 +253,8 @@ function DemoPage() {
             Attack Evaluation Lifecycle
           </h1>
           <p className="mt-0.5 font-sans text-[12px] text-muted-foreground">
-            Normal baseline → high-risk wire → rules triggers → BMR ML calibration → GraphSAGE shadow traversal →
-            AI evidence → analyst freeze.
+            Normal baseline → high-risk wire → rules triggers → BMR ML calibration → GraphSAGE
+            shadow traversal → AI evidence → analyst freeze.
           </p>
         </div>
 
@@ -255,7 +264,11 @@ function DemoPage() {
             type="button"
             onClick={() => {
               setActiveTab("telemetry");
-              playing ? demoControls.pause() : demoControls.play();
+              if (playing) {
+                demoControls.pause();
+              } else {
+                demoControls.play();
+              }
             }}
             className={cn(
               "border px-3 py-1.5 font-mono text-[11px] font-medium transition-colors cursor-pointer",
@@ -347,7 +360,10 @@ function DemoPage() {
             >
               <div className="flex w-full items-center justify-between font-mono text-[9.5px]">
                 <span
-                  className={cn("font-medium", isActive ? "text-navy font-bold" : "text-muted-foreground")}
+                  className={cn(
+                    "font-medium",
+                    isActive ? "text-navy font-bold" : "text-muted-foreground",
+                  )}
                 >
                   STAGE {s.stageNumber}
                 </span>
@@ -373,7 +389,9 @@ function DemoPage() {
                 </span>
                 <VerdictBadge verdict={current.verdict} size="sm" />
               </div>
-              <h2 className="mt-1 font-sans text-[17px] font-bold text-foreground">{current.label}</h2>
+              <h2 className="mt-1 font-sans text-[17px] font-bold text-foreground">
+                {current.label}
+              </h2>
               <p className="mt-1 font-sans text-[12px] leading-relaxed text-muted-foreground">
                 {current.shortExplanation}
               </p>
@@ -413,7 +431,9 @@ function DemoPage() {
                 )}
                 {stage >= 2 && (
                   <li className="flex items-center justify-between font-mono">
-                    <span className="text-foreground">Velocity Surge + Impossible Travel Speed</span>
+                    <span className="text-foreground">
+                      Velocity Surge + Impossible Travel Speed
+                    </span>
                     <span className="text-blocked font-bold">+0.37</span>
                   </li>
                 )}
@@ -453,7 +473,9 @@ function DemoPage() {
                 className="w-full border border-navy bg-navy/10 hover:bg-navy/20 text-navy py-2 font-mono text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
               >
                 <span>⚡</span>
-                {liveLoading ? "Executing Live Go Evaluation..." : `Test Stage ${current.stageNumber} Live on Go API`}
+                {liveLoading
+                  ? "Executing Live Go Evaluation..."
+                  : `Test Stage ${current.stageNumber} Live on Go API`}
               </button>
             </div>
           </div>
@@ -498,8 +520,8 @@ function DemoPage() {
                       : "border-transparent text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  ⚡ Live Go API ({liveEvalResult ? `${liveEvalResult.latency_ms}ms` : "Ready"})
+                  <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />⚡ Live Go
+                  API ({liveEvalResult ? `${liveEvalResult.latency_ms}ms` : "Ready"})
                 </button>
                 <button
                   type="button"
@@ -557,14 +579,18 @@ function DemoPage() {
                   <span className="flex items-center gap-1.5">
                     <span>💥</span> Chaos Engineering &amp; Fault-Injection Console
                   </span>
-                  <span className="text-[10px] text-muted-foreground">Interactive Resilience Simulator</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    Interactive Resilience Simulator
+                  </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   {/* Chaos Toggle 1: Redis Latency */}
                   <div className="border border-border bg-card p-2.5 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-foreground text-[10.5px]">500ms Redis Latency</span>
+                      <span className="font-bold text-foreground text-[10.5px]">
+                        500ms Redis Latency
+                      </span>
                       <input
                         type="checkbox"
                         checked={chaosRedisLatency}
@@ -572,7 +598,8 @@ function DemoPage() {
                           setChaosRedisLatency(e.target.checked);
                           if (e.target.checked) {
                             toast.warning("Injected 500ms Redis Latency Fault", {
-                              description: "Risk Engine gracefully switched to in-memory fallback features.",
+                              description:
+                                "Risk Engine gracefully switched to in-memory fallback features.",
                             });
                           }
                         }}
@@ -592,7 +619,9 @@ function DemoPage() {
                   {/* Chaos Toggle 2: ML 503 Outage */}
                   <div className="border border-border bg-card p-2.5 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-foreground text-[10.5px]">ML Sidecar 503 Outage</span>
+                      <span className="font-bold text-foreground text-[10.5px]">
+                        ML Sidecar 503 Outage
+                      </span>
                       <input
                         type="checkbox"
                         checked={chaosMlOutage}
@@ -600,7 +629,8 @@ function DemoPage() {
                           setChaosMlOutage(e.target.checked);
                           if (e.target.checked) {
                             toast.error("Simulating Python ML Sidecar Outage (503)", {
-                              description: "Engine flag is_degraded: true active. Evaluated via Heuristic AST rules.",
+                              description:
+                                "Engine flag is_degraded: true active. Evaluated via Heuristic AST rules.",
                             });
                           }
                         }}
@@ -608,7 +638,8 @@ function DemoPage() {
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground font-sans">
-                      Simulates ONNX crash; validates pipeline degrades gracefully without dropping transactions.
+                      Simulates ONNX crash; validates pipeline degrades gracefully without dropping
+                      transactions.
                     </p>
                     {chaosMlOutage && (
                       <span className="inline-block border border-blocked bg-blocked text-white px-1.5 py-0.2 text-[9.5px] font-bold">
@@ -620,7 +651,9 @@ function DemoPage() {
                   {/* Chaos Toggle 3: Audit Ledger Tamper */}
                   <div className="border border-border bg-card p-2.5 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-foreground text-[10.5px]">Audit Chain Bit-Flip</span>
+                      <span className="font-bold text-foreground text-[10.5px]">
+                        Audit Chain Bit-Flip
+                      </span>
                       <input
                         type="checkbox"
                         checked={chaosLedgerTamper}
@@ -628,7 +661,8 @@ function DemoPage() {
                           setChaosLedgerTamper(e.target.checked);
                           if (e.target.checked) {
                             toast.error("🚨 INTEGRITY BREACH: Audit Chain Tamper Detected", {
-                              description: "SHA-256 block hash mismatch at Block #4281 (H_4281 != SHA256(H_4280 || Payload)).",
+                              description:
+                                "SHA-256 block hash mismatch at Block #4281 (H_4281 != SHA256(H_4280 || Payload)).",
                             });
                           }
                         }}
@@ -636,7 +670,8 @@ function DemoPage() {
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground font-sans">
-                      Injects payload byte mutation into past block; triggers real-time hash chain integrity alarm.
+                      Injects payload byte mutation into past block; triggers real-time hash chain
+                      integrity alarm.
                     </p>
                     {chaosLedgerTamper && (
                       <span className="inline-block border border-blocked bg-blocked text-white px-1.5 py-0.2 text-[9.5px] font-bold animate-pulse">
@@ -652,7 +687,10 @@ function DemoPage() {
             {activeTab !== "telemetry" && (
               <div className="mt-3 flex items-center justify-between border border-border bg-secondary/60 px-3 py-1.5 font-mono text-[10.5px]">
                 <span className="text-foreground">
-                  Viewing sub-tab for <strong>Stage {current.stageNumber}: {current.label}</strong>
+                  Viewing sub-tab for{" "}
+                  <strong>
+                    Stage {current.stageNumber}: {current.label}
+                  </strong>
                 </span>
                 <button
                   type="button"
@@ -669,11 +707,15 @@ function DemoPage() {
               <div className="mt-3 border border-border bg-secondary/40 p-3.5 font-mono text-[11px] space-y-3">
                 <div className="flex items-center justify-between font-bold text-foreground">
                   <span>Interactive Real-Time Payload Tuner</span>
-                  <span className="text-[10px] text-muted-foreground">Direct Ingress to POST /v1/risk-evaluations</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    Direct Ingress to POST /v1/risk-evaluations
+                  </span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   <div>
-                    <label className="text-[9.5px] text-muted-foreground block uppercase">Amount (Units)</label>
+                    <label className="text-[9.5px] text-muted-foreground block uppercase">
+                      Amount (Units)
+                    </label>
                     <input
                       type="number"
                       value={customAmount}
@@ -682,7 +724,9 @@ function DemoPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[9.5px] text-muted-foreground block uppercase">Currency</label>
+                    <label className="text-[9.5px] text-muted-foreground block uppercase">
+                      Currency
+                    </label>
                     <input
                       type="text"
                       value={customCurrency}
@@ -691,7 +735,9 @@ function DemoPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[9.5px] text-muted-foreground block uppercase">IP Address</label>
+                    <label className="text-[9.5px] text-muted-foreground block uppercase">
+                      IP Address
+                    </label>
                     <input
                       type="text"
                       value={customIp}
@@ -700,7 +746,9 @@ function DemoPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[9.5px] text-muted-foreground block uppercase">Device Fingerprint</label>
+                    <label className="text-[9.5px] text-muted-foreground block uppercase">
+                      Device Fingerprint
+                    </label>
                     <input
                       type="text"
                       value={customDevice}
@@ -746,8 +794,8 @@ function DemoPage() {
                         <StatusPill tone="authoritative">TRUSTED ACTIVE</StatusPill>
                       </div>
                       <div className="mt-1 font-sans text-[12.5px] text-foreground">
-                        Tenure: 14 months · Clean history (0 disputes) · 90-day moving average ticket:
-                        ₹480.00 INR
+                        Tenure: 14 months · Clean history (0 disputes) · 90-day moving average
+                        ticket: ₹480.00 INR
                       </div>
                     </div>
 
@@ -867,8 +915,8 @@ function DemoPage() {
                         <StatusPill tone="shadow">4 RULES TRIGGERED</StatusPill>
                       </div>
                       <div className="mt-1 font-sans text-[12.5px] text-foreground">
-                        Policy rules evaluate first to enforce deterministic compliance controls before
-                        statistical models.
+                        Policy rules evaluate first to enforce deterministic compliance controls
+                        before statistical models.
                       </div>
                     </div>
 
@@ -879,8 +927,8 @@ function DemoPage() {
                             RULE_IMPOSSIBLE_TRAVEL_SPEED
                           </div>
                           <div className="font-sans text-[11.5px] text-muted-foreground mt-0.5">
-                            Origin: Bengaluru, KA → Limassol proxy | Distance: 7,250 km in 12m (36,250
-                            km/h &gt; 900 km/h ceiling)
+                            Origin: Bengaluru, KA → Limassol proxy | Distance: 7,250 km in 12m
+                            (36,250 km/h &gt; 900 km/h ceiling)
                           </div>
                         </div>
                         <span className="font-mono text-[11px] font-bold text-blocked">+0.21</span>
@@ -892,7 +940,8 @@ function DemoPage() {
                             RULE_VELOCITY_SURGE_1H
                           </div>
                           <div className="font-sans text-[11.5px] text-muted-foreground mt-0.5">
-                            1-hour expenditure surge (+412% over 24-hour moving average spend profile)
+                            1-hour expenditure surge (+412% over 24-hour moving average spend
+                            profile)
                           </div>
                         </div>
                         <span className="font-mono text-[11px] font-bold text-blocked">+0.22</span>
@@ -904,8 +953,8 @@ function DemoPage() {
                             RULE_DATACENTER_PROXY_ASN
                           </div>
                           <div className="font-sans text-[11.5px] text-muted-foreground mt-0.5">
-                            Source IP 198.51.100.44 matches bulletproof hosting ASN 13335 (Anonymization
-                            network)
+                            Source IP 198.51.100.44 matches bulletproof hosting ASN 13335
+                            (Anonymization network)
                           </div>
                         </div>
                         <span className="font-mono text-[11px] font-bold text-blocked">+0.18</span>
@@ -917,7 +966,8 @@ function DemoPage() {
                             RULE_NEW_BENEFICIARY_HIGH_AMOUNT
                           </div>
                           <div className="font-sans text-[11.5px] text-muted-foreground mt-0.5">
-                            Unverified beneficiary PA-77120 receiving high-value transfer (&gt; ₹2,00,000)
+                            Unverified beneficiary PA-77120 receiving high-value transfer (&gt;
+                            ₹2,00,000)
                           </div>
                         </div>
                         <span className="font-mono text-[11px] font-bold text-blocked">+0.12</span>
@@ -937,22 +987,28 @@ function DemoPage() {
                         <StatusPill tone="authoritative">BETA CALIBRATED CHAMPION</StatusPill>
                       </div>
                       <div className="mt-1 font-sans text-[12.5px] text-foreground font-bold">
-                        Calibrated Posterior: P(fraud | x) = 0.9418 · Bayes Minimum Risk (BMR) Expected Monetary Loss =
-                        ₹13,65,610.00
+                        Calibrated Posterior: P(fraud | x) = 0.9418 · Bayes Minimum Risk (BMR)
+                        Expected Monetary Loss = ₹13,65,610.00
                       </div>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2 font-mono text-[11px]">
                       <div className="border border-border p-2.5 bg-surface">
-                        <div className="text-[9.5px] text-muted-foreground uppercase">Raw Model Output</div>
+                        <div className="text-[9.5px] text-muted-foreground uppercase">
+                          Raw Model Output
+                        </div>
                         <div className="mt-1 font-bold text-[13px] text-foreground">0.8712</div>
                       </div>
                       <div className="border border-border p-2.5 bg-surface">
-                        <div className="text-[9.5px] text-muted-foreground uppercase">Beta Calibrated</div>
+                        <div className="text-[9.5px] text-muted-foreground uppercase">
+                          Beta Calibrated
+                        </div>
                         <div className="mt-1 font-bold text-[13px] text-blocked">0.9418</div>
                       </div>
                       <div className="border border-border p-2.5 bg-surface">
-                        <div className="text-[9.5px] text-muted-foreground uppercase">Decision Weight</div>
+                        <div className="text-[9.5px] text-muted-foreground uppercase">
+                          Decision Weight
+                        </div>
                         <div className="mt-1 font-bold text-[13px] text-blocked">+0.20</div>
                       </div>
                     </div>
@@ -969,23 +1025,37 @@ function DemoPage() {
                       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4 font-mono text-[11px]">
                         <div className="border border-border p-2 bg-secondary/30">
                           <div className="text-[9.5px] text-muted-foreground">Precision</div>
-                          <div className="mt-0.5 font-bold text-[12.5px] text-foreground">10.08%</div>
-                          <div className="text-[9px] text-muted-foreground">TP/(TP+FP) = 13/129</div>
+                          <div className="mt-0.5 font-bold text-[12.5px] text-foreground">
+                            10.08%
+                          </div>
+                          <div className="text-[9px] text-muted-foreground">
+                            TP/(TP+FP) = 13/129
+                          </div>
                         </div>
                         <div className="border border-border p-2 bg-secondary/30">
                           <div className="text-[9.5px] text-muted-foreground">Recall</div>
-                          <div className="mt-0.5 font-bold text-[12.5px] text-foreground">25.00%</div>
+                          <div className="mt-0.5 font-bold text-[12.5px] text-foreground">
+                            25.00%
+                          </div>
                           <div className="text-[9px] text-muted-foreground">TP/(TP+FN) = 13/52</div>
                         </div>
                         <div className="border border-border p-2 bg-secondary/30">
                           <div className="text-[9.5px] text-muted-foreground">F1 Score</div>
-                          <div className="mt-0.5 font-bold text-[12.5px] text-foreground">14.36%</div>
+                          <div className="mt-0.5 font-bold text-[12.5px] text-foreground">
+                            14.36%
+                          </div>
                           <div className="text-[9px] text-muted-foreground">Harmonic Mean</div>
                         </div>
                         <div className="border border-border p-2 bg-secondary/30">
-                          <div className="text-[9.5px] text-muted-foreground">False-Positive Cost</div>
-                          <div className="mt-0.5 font-bold text-[12.5px] text-blocked">₹40,000 / FP</div>
-                          <div className="text-[9px] text-muted-foreground">₹46.4L total (116 FP)</div>
+                          <div className="text-[9.5px] text-muted-foreground">
+                            False-Positive Cost
+                          </div>
+                          <div className="mt-0.5 font-bold text-[12.5px] text-blocked">
+                            ₹40,000 / FP
+                          </div>
+                          <div className="text-[9px] text-muted-foreground">
+                            ₹46.4L total (116 FP)
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1003,7 +1073,8 @@ function DemoPage() {
                         <StatusPill tone="shadow">SHADOW / NON-ENFORCING</StatusPill>
                       </div>
                       <div className="mt-1 font-sans text-[12.5px] text-foreground font-bold">
-                        Syndicate Discovery: 2-hop inductive GNN embeds hardware canvas hash linking customer to 14 synthetic accounts and cashout node PA-77120.
+                        Syndicate Discovery: 2-hop inductive GNN embeds hardware canvas hash linking
+                        customer to 14 synthetic accounts and cashout node PA-77120.
                       </div>
                     </div>
 
@@ -1027,7 +1098,9 @@ function DemoPage() {
                         <span className="font-bold text-foreground">3-Hop: Payout Depot</span>
                         <span className="text-muted-foreground">All 14 accounts</span>
                         <span className="text-muted-foreground">→ PAYOUT_DESTINATION →</span>
-                        <span className="font-bold text-blocked">PA-77120 (Confirmed Mule Cashout)</span>
+                        <span className="font-bold text-blocked">
+                          PA-77120 (Confirmed Mule Cashout)
+                        </span>
                       </div>
                     </div>
 
@@ -1065,15 +1138,21 @@ function DemoPage() {
                     <div className="space-y-2 text-[11.5px] font-mono">
                       <div className="border border-border p-2.5 bg-surface flex items-center justify-between">
                         <span>Level 1: Statutory Compliance / Sanctions</span>
-                        <span className="text-authoritative font-bold">PASS (No OFAC/RBI match)</span>
+                        <span className="text-authoritative font-bold">
+                          PASS (No OFAC/RBI match)
+                        </span>
                       </div>
                       <div className="border border-border p-2.5 bg-surface flex items-center justify-between">
                         <span>Level 2: Declarative Policy Rules</span>
-                        <span className="text-blocked font-bold">ESCALATE (Speed + Proxy fired)</span>
+                        <span className="text-blocked font-bold">
+                          ESCALATE (Speed + Proxy fired)
+                        </span>
                       </div>
                       <div className="border border-border p-2.5 bg-surface flex items-center justify-between">
                         <span>Level 3: Fraud Knowledge Graph</span>
-                        <span className="text-blocked font-bold">ESCALATE (Degree 16 Mule Ring)</span>
+                        <span className="text-blocked font-bold">
+                          ESCALATE (Degree 16 Mule Ring)
+                        </span>
                       </div>
                       <div className="border border-border p-2.5 bg-surface flex items-center justify-between">
                         <span>Level 4: Calibrated XGBoost ML</span>
@@ -1091,7 +1170,9 @@ function DemoPage() {
                     <div
                       className={cn(
                         "border p-3.5 transition-colors",
-                        confirmedBlock ? "border-authoritative bg-authoritative-surface" : "border-blocked bg-blocked-surface/40",
+                        confirmedBlock
+                          ? "border-authoritative bg-authoritative-surface"
+                          : "border-blocked bg-blocked-surface/40",
                       )}
                     >
                       <div className="font-mono text-[10.5px] font-bold text-foreground uppercase">
@@ -1185,11 +1266,19 @@ function DemoPage() {
                       <div className="flex items-center gap-2">
                         <span className="size-2 rounded-full bg-authoritative animate-ping" />
                         <span className="font-bold text-authoritative">LIVE BACKEND RESPONSE</span>
-                        <span className="text-muted-foreground font-normal">| Ref: {liveEvalResult.decision_id}</span>
+                        <span className="text-muted-foreground font-normal">
+                          | Ref: {liveEvalResult.decision_id}
+                        </span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span>Latency: <strong className="text-foreground">{liveEvalResult.latency_ms}ms</strong></span>
-                        <span>Score: <strong className="text-blocked">{liveEvalResult.risk_score}/100</strong></span>
+                        <span>
+                          Latency:{" "}
+                          <strong className="text-foreground">{liveEvalResult.latency_ms}ms</strong>
+                        </span>
+                        <span>
+                          Score:{" "}
+                          <strong className="text-blocked">{liveEvalResult.risk_score}/100</strong>
+                        </span>
                         <VerdictBadge
                           verdict={
                             liveEvalResult.risk_score >= 80
@@ -1211,9 +1300,14 @@ function DemoPage() {
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10.5px]">
                           {Object.entries(liveEvalResult.component_latencies).map(([comp, lat]) => (
-                            <div key={comp} className="border border-border/60 bg-secondary/30 p-1.5">
+                            <div
+                              key={comp}
+                              className="border border-border/60 bg-secondary/30 p-1.5"
+                            >
                               <span className="text-muted-foreground block truncate">{comp}</span>
-                              <span className="font-bold text-foreground">{typeof lat === 'number' ? lat.toFixed(3) : lat}ms</span>
+                              <span className="font-bold text-foreground">
+                                {typeof lat === "number" ? lat.toFixed(3) : lat}ms
+                              </span>
                             </div>
                           ))}
                         </div>
@@ -1223,32 +1317,85 @@ function DemoPage() {
                     {/* Threat & Graph Intelligence if present */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px]">
                       <div className="border border-border bg-surface p-3">
-                        <div className="text-[10px] font-bold text-navy uppercase mb-1.5">Threat Intelligence Subsystem</div>
+                        <div className="text-[10px] font-bold text-navy uppercase mb-1.5">
+                          Threat Intelligence Subsystem
+                        </div>
                         <div className="space-y-1 text-muted-foreground">
-                          <div>ASN: <span className="font-bold text-foreground">{liveEvalResult.threat_intelligence?.asn || "ASN 13335 (Datacenter)"}</span></div>
-                          <div>Geo Distance: <span className="font-bold text-foreground">{liveEvalResult.threat_intelligence?.geo_distance_km || 7250} km</span></div>
-                          <div>Implied Speed: <span className="font-bold text-blocked">{liveEvalResult.threat_intelligence?.implied_speed_kmh || 36250} km/h</span></div>
-                          <div>Proxy/Tor Detected: <span className="font-bold text-blocked">{String(liveEvalResult.threat_intelligence?.is_proxy_datacenter ?? true)}</span></div>
+                          <div>
+                            ASN:{" "}
+                            <span className="font-bold text-foreground">
+                              {liveEvalResult.threat_intelligence?.asn || "ASN 13335 (Datacenter)"}
+                            </span>
+                          </div>
+                          <div>
+                            Geo Distance:{" "}
+                            <span className="font-bold text-foreground">
+                              {liveEvalResult.threat_intelligence?.geo_distance_km || 7250} km
+                            </span>
+                          </div>
+                          <div>
+                            Implied Speed:{" "}
+                            <span className="font-bold text-blocked">
+                              {liveEvalResult.threat_intelligence?.implied_speed_kmh || 36250} km/h
+                            </span>
+                          </div>
+                          <div>
+                            Proxy/Tor Detected:{" "}
+                            <span className="font-bold text-blocked">
+                              {String(
+                                liveEvalResult.threat_intelligence?.is_proxy_datacenter ?? true,
+                              )}
+                            </span>
+                          </div>
                         </div>
                       </div>
 
                       <div className="border border-border bg-surface p-3">
-                        <div className="text-[10px] font-bold text-navy uppercase mb-1.5">Graph Intelligence Subsystem</div>
+                        <div className="text-[10px] font-bold text-navy uppercase mb-1.5">
+                          Graph Intelligence Subsystem
+                        </div>
                         <div className="space-y-1 text-muted-foreground">
-                          <div>Centrality Degree: <span className="font-bold text-blocked">{liveEvalResult.graph_intelligence?.degree_centrality || 16}</span></div>
-                          <div>Syndicate Detected: <span className="font-bold text-blocked">{String(liveEvalResult.graph_intelligence?.fraud_ring_detected ?? true)}</span></div>
-                          <div>Visited Nodes: <span className="font-bold text-foreground">{liveEvalResult.graph_intelligence?.visited_nodes_count || 14}</span></div>
-                          <div>Traversed Edges: <span className="font-bold text-foreground">{liveEvalResult.graph_intelligence?.traversed_edges_count || 28}</span></div>
+                          <div>
+                            Centrality Degree:{" "}
+                            <span className="font-bold text-blocked">
+                              {liveEvalResult.graph_intelligence?.degree_centrality || 16}
+                            </span>
+                          </div>
+                          <div>
+                            Syndicate Detected:{" "}
+                            <span className="font-bold text-blocked">
+                              {String(
+                                liveEvalResult.graph_intelligence?.fraud_ring_detected ?? true,
+                              )}
+                            </span>
+                          </div>
+                          <div>
+                            Visited Nodes:{" "}
+                            <span className="font-bold text-foreground">
+                              {liveEvalResult.graph_intelligence?.visited_nodes_count || 14}
+                            </span>
+                          </div>
+                          <div>
+                            Traversed Edges:{" "}
+                            <span className="font-bold text-foreground">
+                              {liveEvalResult.graph_intelligence?.traversed_edges_count || 28}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     {/* Reason Codes */}
                     <div className="border border-border bg-secondary/30 p-2.5">
-                      <span className="text-muted-foreground block text-[10px] uppercase font-bold">Triggered Reason Codes:</span>
+                      <span className="text-muted-foreground block text-[10px] uppercase font-bold">
+                        Triggered Reason Codes:
+                      </span>
                       <div className="mt-1 flex flex-wrap gap-1.5">
                         {liveEvalResult.reason_codes.map((code) => (
-                          <span key={code} className="border border-border bg-surface px-1.5 py-0.5 text-[10px] text-foreground">
+                          <span
+                            key={code}
+                            className="border border-border bg-surface px-1.5 py-0.5 text-[10px] text-foreground"
+                          >
                             {code}
                           </span>
                         ))}
@@ -1267,41 +1414,68 @@ function DemoPage() {
                     <span className="font-bold text-navy uppercase text-[11px]">
                       Bayes Minimum Risk (BMR) Loss Optimization
                     </span>
-                    <span className="text-[10px] text-muted-foreground">Cost Function: argmin_a E[L(a|x)]</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      Cost Function: argmin_a E[L(a|x)]
+                    </span>
                   </div>
                   <p className="mt-2 font-sans text-[12px] text-muted-foreground leading-relaxed">
                     Instead of arbitrary score cutoffs, ROPUS minimizes expected monetary loss under
-                    uncertainty by weighting the posterior fraud probability P(fraud|x) against explicit cost parameters.
+                    uncertainty by weighting the posterior fraud probability P(fraud|x) against
+                    explicit cost parameters.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <div className="border border-border bg-surface p-2.5">
-                    <span className="text-[9.5px] text-muted-foreground uppercase block">ALLOW Loss</span>
-                    <span className="text-[13px] font-bold text-blocked block mt-1">₹14,50,000</span>
+                    <span className="text-[9.5px] text-muted-foreground uppercase block">
+                      ALLOW Loss
+                    </span>
+                    <span className="text-[13px] font-bold text-blocked block mt-1">
+                      ₹14,50,000
+                    </span>
                     <span className="text-[9.5px] text-muted-foreground">P(fraud) × Amount</span>
                   </div>
                   <div className="border border-border bg-surface p-2.5">
-                    <span className="text-[9.5px] text-muted-foreground uppercase block">DECLINE Loss</span>
-                    <span className="text-[13px] font-bold text-authoritative block mt-1">₹2,328</span>
-                    <span className="text-[9.5px] text-muted-foreground">(1 - P) × FalsePositiveCost</span>
+                    <span className="text-[9.5px] text-muted-foreground uppercase block">
+                      DECLINE Loss
+                    </span>
+                    <span className="text-[13px] font-bold text-authoritative block mt-1">
+                      ₹2,328
+                    </span>
+                    <span className="text-[9.5px] text-muted-foreground">
+                      (1 - P) × FalsePositiveCost
+                    </span>
                   </div>
                   <div className="border border-border bg-surface p-2.5">
-                    <span className="text-[9.5px] text-muted-foreground uppercase block">MANUAL REVIEW</span>
+                    <span className="text-[9.5px] text-muted-foreground uppercase block">
+                      MANUAL REVIEW
+                    </span>
                     <span className="text-[13px] font-bold text-foreground block mt-1">₹450</span>
-                    <span className="text-[9.5px] text-muted-foreground">Analyst Operational SLA</span>
+                    <span className="text-[9.5px] text-muted-foreground">
+                      Analyst Operational SLA
+                    </span>
                   </div>
                   <div className="border border-border bg-surface p-2.5">
-                    <span className="text-[9.5px] text-muted-foreground uppercase block">STEP-UP (2FA)</span>
+                    <span className="text-[9.5px] text-muted-foreground uppercase block">
+                      STEP-UP (2FA)
+                    </span>
                     <span className="text-[13px] font-bold text-foreground block mt-1">₹120</span>
-                    <span className="text-[9.5px] text-muted-foreground">Customer Friction Loss</span>
+                    <span className="text-[9.5px] text-muted-foreground">
+                      Customer Friction Loss
+                    </span>
                   </div>
                 </div>
 
                 <div className="border border-border bg-secondary/30 p-3 text-[11px]">
                   <div className="font-bold text-foreground">Economic Optimization Result:</div>
                   <div className="mt-1 text-muted-foreground">
-                    At P(fraud|x) = 0.9418 on transaction size ₹14,50,000.00, the expected loss of <strong className="text-foreground">ALLOW</strong> is <strong className="text-blocked">₹13.65 Lakh</strong>, while <strong className="text-foreground">DECLINE</strong> incurs only <strong className="text-authoritative">₹2,328.00</strong> in false-positive friction. BMR mathematically mandates a <strong className="text-blocked">BLOCK</strong> action.
+                    At P(fraud|x) = 0.9418 on transaction size ₹14,50,000.00, the expected loss of{" "}
+                    <strong className="text-foreground">ALLOW</strong> is{" "}
+                    <strong className="text-blocked">₹13.65 Lakh</strong>, while{" "}
+                    <strong className="text-foreground">DECLINE</strong> incurs only{" "}
+                    <strong className="text-authoritative">₹2,328.00</strong> in false-positive
+                    friction. BMR mathematically mandates a{" "}
+                    <strong className="text-blocked">BLOCK</strong> action.
                   </div>
                 </div>
               </div>
@@ -1315,7 +1489,9 @@ function DemoPage() {
                     <span className="font-bold text-navy uppercase text-[11px]">
                       Canonical 25-Feature Contract (fraud-xgb-25f-v3.0)
                     </span>
-                    <span className="text-[10px] text-muted-foreground">Schema v2.5 Point-in-Time</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      Schema v2.5 Point-in-Time
+                    </span>
                   </div>
                   <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2 text-[10.5px]">
                     {[
@@ -1343,9 +1519,12 @@ function DemoPage() {
                       "card_category_encoded",
                       "product_cd_encoded",
                       "tx_acceleration_5m_1h",
-                      "device_amount_concentration_5m_1h"
+                      "device_amount_concentration_5m_1h",
                     ].map((f, i) => (
-                      <div key={f} className="border border-border/60 bg-secondary/30 p-1.5 truncate">
+                      <div
+                        key={f}
+                        className="border border-border/60 bg-secondary/30 p-1.5 truncate"
+                      >
                         <span className="text-muted-foreground">{i + 1}. </span>
                         <span className="text-foreground font-semibold">{f}</span>
                       </div>
@@ -1354,9 +1533,12 @@ function DemoPage() {
                 </div>
 
                 <div className="border border-amber-intel/40 bg-shadow-intel-surface p-3 text-[11px]">
-                  <div className="font-bold text-shadow-intel uppercase">Shadow Candidate: extended_catboost_58f</div>
+                  <div className="font-bold text-shadow-intel uppercase">
+                    Shadow Candidate: extended_catboost_58f
+                  </div>
                   <div className="mt-1 text-foreground">
-                    Extends the 25 canonical features with 33 high-order temporal and graph features in non-enforcing shadow mode (0% customer decision authority).
+                    Extends the 25 canonical features with 33 high-order temporal and graph features
+                    in non-enforcing shadow mode (0% customer decision authority).
                   </div>
                 </div>
               </div>
@@ -1510,8 +1692,8 @@ function DemoPage() {
               <div className="mt-2 space-y-1.5 text-foreground text-[11.5px]">
                 <div>
                   1. <span className="text-muted-foreground">Backend Handler:</span>{" "}
-                  <Mono className="text-amber-intel">device_redis.go</Mono> catches connection timeout;
-                  sets <Mono className="text-amber-intel">IsDegraded: true</Mono> and logs{" "}
+                  <Mono className="text-amber-intel">device_redis.go</Mono> catches connection
+                  timeout; sets <Mono className="text-amber-intel">IsDegraded: true</Mono> and logs{" "}
                   <Mono className="text-amber-intel">VELOCITY_FEATURE_STORE_UNAVAILABLE</Mono>.
                 </div>
                 <div>
@@ -1543,8 +1725,9 @@ function DemoPage() {
               <div className="mt-2 space-y-1.5 text-foreground text-[11.5px]">
                 <div>
                   1. <span className="text-muted-foreground">Resilience Mechanism:</span>{" "}
-                  <Mono className="text-amber-intel">health_manager.go</Mono> catches broker disconnect
-                  and invokes <Mono className="text-foreground">BufferFallbackEvent</Mono>.
+                  <Mono className="text-amber-intel">health_manager.go</Mono> catches broker
+                  disconnect and invokes{" "}
+                  <Mono className="text-foreground">BufferFallbackEvent</Mono>.
                 </div>
                 <div>
                   2. <span className="text-muted-foreground">Transactional Outbox:</span> Audit
@@ -1556,8 +1739,9 @@ function DemoPage() {
                   consumer flushes buffered events with exponential backoff once Kafka recovers.
                 </div>
                 <div>
-                  4. <span className="text-muted-foreground">At-Least-Once Delivery:</span> Duplicate-safe
-                  consumer idempotency guarantees zero event loss; synchronous risk decision path remains 100% unblocked.
+                  4. <span className="text-muted-foreground">At-Least-Once Delivery:</span>{" "}
+                  Duplicate-safe consumer idempotency guarantees zero event loss; synchronous risk
+                  decision path remains 100% unblocked.
                 </div>
               </div>
             </div>

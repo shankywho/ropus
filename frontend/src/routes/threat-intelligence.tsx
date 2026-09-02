@@ -96,8 +96,18 @@ function ThreatIntelPage() {
             sub: "active evaluation matches",
             tone: "text-authoritative",
           },
-          { label: "Feeds Healthy", value: "5 / 5", sub: "all registries current", tone: "text-authoritative" },
-          { label: "Score Ceiling", value: "+0.14", sub: "max threat-intel weight", tone: "text-navy" },
+          {
+            label: "Feeds Healthy",
+            value: "5 / 5",
+            sub: "all registries current",
+            tone: "text-authoritative",
+          },
+          {
+            label: "Score Ceiling",
+            value: "+0.14",
+            sub: "max threat-intel weight",
+            tone: "text-navy",
+          },
         ]}
       />
 
@@ -110,7 +120,8 @@ function ThreatIntelPage() {
               Spherical Haversine Speed Anomaly Simulator
             </div>
             <div className="text-muted-foreground text-[11px] font-sans">
-              Test origin: Bengaluru, KA (12.97°N) → Limassol Proxy (34.70°N) · 7,250 km in 12 min (36,250 km/h)
+              Test origin: Bengaluru, KA (12.97°N) → Limassol Proxy (34.70°N) · 7,250 km in 12 min
+              (36,250 km/h)
             </div>
           </div>
         </div>
@@ -174,8 +185,15 @@ function ThreatIntelPage() {
               rows={filtered.map((i) => ({
                 id: i.value,
                 cells: [
-                  <Mono key="val" className="font-bold text-navy text-[11.5px]">{i.value}</Mono>,
-                  <span key="type" className="text-muted-foreground font-sans text-[11.5px] font-medium">{i.type}</span>,
+                  <Mono key="val" className="font-bold text-navy text-[11.5px]">
+                    {i.value}
+                  </Mono>,
+                  <span
+                    key="type"
+                    className="text-muted-foreground font-sans text-[11.5px] font-medium"
+                  >
+                    {i.type}
+                  </span>,
                   <span
                     key="class"
                     className={cn(
@@ -185,11 +203,21 @@ function ThreatIntelPage() {
                   >
                     {i.classification}
                   </span>,
-                  <Mono key="feed" className="text-muted-foreground text-[11px]">{i.feed}</Mono>,
-                  <Mono key="conf" className="font-bold text-foreground">{i.confidence.toFixed(2)}</Mono>,
-                  <Mono key="hits" className="text-muted-foreground font-semibold">{i.hits24h.toLocaleString()}</Mono>,
-                  <Mono key="first" className="text-muted-foreground text-[10.5px]">{i.firstSeen}</Mono>,
-                  <Mono key="last" className="text-muted-foreground text-[10.5px]">{i.lastSeen}</Mono>,
+                  <Mono key="feed" className="text-muted-foreground text-[11px]">
+                    {i.feed}
+                  </Mono>,
+                  <Mono key="conf" className="font-bold text-foreground">
+                    {i.confidence.toFixed(2)}
+                  </Mono>,
+                  <Mono key="hits" className="text-muted-foreground font-semibold">
+                    {i.hits24h.toLocaleString()}
+                  </Mono>,
+                  <Mono key="first" className="text-muted-foreground text-[10.5px]">
+                    {i.firstSeen}
+                  </Mono>,
+                  <Mono key="last" className="text-muted-foreground text-[10.5px]">
+                    {i.lastSeen}
+                  </Mono>,
                 ],
               }))}
             />
@@ -213,7 +241,9 @@ function ThreatIntelPage() {
                   <tr key={f.name}>
                     <td className="py-2.5 font-bold text-foreground">
                       <Mono className="text-[11.5px]">{f.name}</Mono>
-                      <div className="text-[9.5px] text-muted-foreground font-sans">{f.refreshed}</div>
+                      <div className="text-[9.5px] text-muted-foreground font-sans">
+                        {f.refreshed}
+                      </div>
                     </td>
                     <td className="py-2.5 text-right">
                       <Mono className="text-muted-foreground font-semibold">{f.records}</Mono>
@@ -228,7 +258,10 @@ function ThreatIntelPage() {
           </div>
 
           <div className="border border-border border-l-2 border-l-navy bg-surface p-3 text-[11.5px] text-muted-foreground font-sans leading-relaxed">
-            <strong className="text-foreground">Oracle Defense Boundary:</strong> Threat intelligence feeds contribute continuous additive risk weights during synchronous scoring. Raw indicators and reason codes are strictly restricted to authenticated analyst sessions.
+            <strong className="text-foreground">Oracle Defense Boundary:</strong> Threat
+            intelligence feeds contribute continuous additive risk weights during synchronous
+            scoring. Raw indicators and reason codes are strictly restricted to authenticated
+            analyst sessions.
           </div>
         </aside>
       </div>

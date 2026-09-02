@@ -9,13 +9,13 @@
     "learning_rate": 0.08,
     "subsample": 0.85,
     "colsample_bytree": 0.85,
-    "scale_pos_weight": 21.04724409448819,
+    "scale_pos_weight": 16.125382262996943,
     "random_state": 42,
     "eval_metric": "logloss",
     "tree_method": "hist"
   },
   "random_seed": 42,
-  "trained_at": "2026-09-01T03:45:17.038178+00:00",
+  "trained_at": "2026-09-02T06:45:25.372847+00:00",
   "total_rows": 8000,
   "split": {
     "strategy": "strict_chronological_temporal_split",
@@ -35,221 +35,197 @@
       13104601,
       15290421
     ],
-    "train_fraud_rate": 0.04535714285714286,
+    "train_fraud_rate": 0.05839285714285714,
     "val_fraud_rate": 0.04666666666666667,
     "test_fraud_rate": 0.043333333333333335
   },
   "test_metrics_25f": {
-    "roc_auc": 0.5976949879388904,
-    "pr_auc": 0.06996405236959914,
-    "precision": 0.09448818897637795,
-    "recall": 0.23076923076923078,
-    "f1": 0.1340782122905028,
-    "fpr": 0.10017421602787456,
-    "fnr": 0.7692307692307693,
-    "tp": 12,
-    "fp": 115,
-    "tn": 1033,
-    "fn": 40
+    "roc_auc": 0.9465625837577056,
+    "pr_auc": 0.6487467406011351,
+    "precision": 0.676923076923077,
+    "recall": 0.8461538461538461,
+    "f1": 0.7521367521367521,
+    "fpr": 0.018292682926829267,
+    "fnr": 0.15384615384615385,
+    "tp": 44,
+    "fp": 21,
+    "tn": 1127,
+    "fn": 8
   },
   "test_metrics_15f": {
-    "roc_auc": 0.6038930581613509,
-    "pr_auc": 0.07317853776435382,
-    "precision": 0.08641975308641975,
-    "recall": 0.2692307692307692,
-    "f1": 0.1308411214953271,
-    "fpr": 0.1289198606271777,
-    "fnr": 0.7307692307692307,
-    "tp": 14,
-    "fp": 148,
-    "tn": 1000,
-    "fn": 38
+    "roc_auc": 0.9404985258643794,
+    "pr_auc": 0.7319592017650861,
+    "precision": 0.6875,
+    "recall": 0.8461538461538461,
+    "f1": 0.7586206896551724,
+    "fpr": 0.017421602787456445,
+    "fnr": 0.15384615384615385,
+    "tp": 44,
+    "fp": 20,
+    "tn": 1128,
+    "fn": 8
   },
   "ablation_delta": {
-    "roc_auc": -0.006198070222460439,
-    "pr_auc": -0.0032144853947546764,
-    "precision": 0.008068435889958203,
-    "recall": -0.038461538461538436,
-    "f1": 0.003237090795175701,
-    "fpr": -0.028745644599303136,
-    "fnr": 0.03846153846153855
+    "roc_auc": 0.006064057893326202,
+    "pr_auc": -0.08321246116395098,
+    "precision": -0.01057692307692304,
+    "recall": 0.0,
+    "f1": -0.006483937518420246,
+    "fpr": 0.0008710801393728221,
+    "fnr": 0.0
   },
   "feature_importance_ranking": [
     {
-      "index": 10,
-      "feature": "email_domain_risk",
-      "is_new_feature": false,
-      "gain": 56.77070617675781,
-      "weight": 140.0,
-      "cover": 619.408935546875
-    },
-    {
-      "index": 7,
-      "feature": "product_cd_encoded",
-      "is_new_feature": false,
-      "gain": 53.259185791015625,
-      "weight": 98.0,
-      "cover": 533.7518920898438
-    },
-    {
-      "index": 13,
-      "feature": "device_info_missing",
-      "is_new_feature": false,
-      "gain": 42.843265533447266,
+      "index": 24,
+      "feature": "device_dispute_rate",
+      "is_new_feature": true,
+      "gain": 1218.4393310546875,
       "weight": 7.0,
-      "cover": 270.6494445800781
-    },
-    {
-      "index": 5,
-      "feature": "transaction_hour",
-      "is_new_feature": false,
-      "gain": 34.96303176879883,
-      "weight": 244.0,
-      "cover": 456.02685546875
-    },
-    {
-      "index": 20,
-      "feature": "device_unique_tokens_1h",
-      "is_new_feature": true,
-      "gain": 30.9774112701416,
-      "weight": 1.0,
-      "cover": 41.63700866699219
-    },
-    {
-      "index": 12,
-      "feature": "device_type_mobile",
-      "is_new_feature": false,
-      "gain": 28.1866512298584,
-      "weight": 25.0,
-      "cover": 313.4226379394531
-    },
-    {
-      "index": 11,
-      "feature": "dist1_missing",
-      "is_new_feature": false,
-      "gain": 28.092111587524414,
-      "weight": 34.0,
-      "cover": 282.0090637207031
-    },
-    {
-      "index": 16,
-      "feature": "device_tx_count_1h",
-      "is_new_feature": true,
-      "gain": 27.857683181762695,
-      "weight": 21.0,
-      "cover": 290.8131103515625
-    },
-    {
-      "index": 4,
-      "feature": "device_seen_before",
-      "is_new_feature": false,
-      "gain": 27.62227439880371,
-      "weight": 16.0,
-      "cover": 426.03729248046875
-    },
-    {
-      "index": 3,
-      "feature": "token_velocity_24h",
-      "is_new_feature": false,
-      "gain": 25.229549407958984,
-      "weight": 10.0,
-      "cover": 326.81585693359375
-    },
-    {
-      "index": 0,
-      "feature": "amount",
-      "is_new_feature": false,
-      "gain": 24.49696922302246,
-      "weight": 290.0,
-      "cover": 441.2959899902344
-    },
-    {
-      "index": 14,
-      "feature": "amount_to_mean_ratio",
-      "is_new_feature": false,
-      "gain": 24.165420532226562,
-      "weight": 327.0,
-      "cover": 448.684814453125
-    },
-    {
-      "index": 6,
-      "feature": "transaction_day",
-      "is_new_feature": false,
-      "gain": 24.073638916015625,
-      "weight": 121.0,
-      "cover": 219.4187469482422
-    },
-    {
-      "index": 1,
-      "feature": "ip_velocity_1h",
-      "is_new_feature": false,
-      "gain": 23.98712921142578,
-      "weight": 33.0,
-      "cover": 365.74249267578125
-    },
-    {
-      "index": 19,
-      "feature": "device_amount_concentration_5m_1h",
-      "is_new_feature": true,
-      "gain": 23.786867141723633,
-      "weight": 6.0,
-      "cover": 1190.1748046875
-    },
-    {
-      "index": 17,
-      "feature": "device_amount_sum_24h",
-      "is_new_feature": true,
-      "gain": 22.987016677856445,
-      "weight": 213.0,
-      "cover": 450.33721923828125
-    },
-    {
-      "index": 22,
-      "feature": "device_reputation_score",
-      "is_new_feature": true,
-      "gain": 22.929243087768555,
-      "weight": 30.0,
-      "cover": 557.0130615234375
+      "cover": 894.9742431640625
     },
     {
       "index": 23,
       "feature": "device_fraud_rate",
       "is_new_feature": true,
-      "gain": 22.78521156311035,
-      "weight": 170.0,
-      "cover": 414.750244140625
+      "gain": 546.3457641601562,
+      "weight": 79.0,
+      "cover": 687.1334838867188
+    },
+    {
+      "index": 11,
+      "feature": "dist1_missing",
+      "is_new_feature": false,
+      "gain": 26.075786590576172,
+      "weight": 31.0,
+      "cover": 381.866455078125
+    },
+    {
+      "index": 0,
+      "feature": "amount",
+      "is_new_feature": false,
+      "gain": 23.271595001220703,
+      "weight": 334.0,
+      "cover": 287.62127685546875
+    },
+    {
+      "index": 3,
+      "feature": "token_velocity_24h",
+      "is_new_feature": false,
+      "gain": 21.09305763244629,
+      "weight": 15.0,
+      "cover": 152.41433715820312
+    },
+    {
+      "index": 1,
+      "feature": "ip_velocity_1h",
+      "is_new_feature": false,
+      "gain": 19.518224716186523,
+      "weight": 38.0,
+      "cover": 161.7267608642578
+    },
+    {
+      "index": 5,
+      "feature": "transaction_hour",
+      "is_new_feature": false,
+      "gain": 18.752349853515625,
+      "weight": 178.0,
+      "cover": 166.2152099609375
+    },
+    {
+      "index": 10,
+      "feature": "email_domain_risk",
+      "is_new_feature": false,
+      "gain": 18.68994140625,
+      "weight": 121.0,
+      "cover": 240.16432189941406
+    },
+    {
+      "index": 12,
+      "feature": "device_type_mobile",
+      "is_new_feature": false,
+      "gain": 18.467191696166992,
+      "weight": 44.0,
+      "cover": 63.41642761230469
+    },
+    {
+      "index": 6,
+      "feature": "transaction_day",
+      "is_new_feature": false,
+      "gain": 18.285531997680664,
+      "weight": 71.0,
+      "cover": 140.10447692871094
+    },
+    {
+      "index": 22,
+      "feature": "device_reputation_score",
+      "is_new_feature": true,
+      "gain": 17.776790618896484,
+      "weight": 135.0,
+      "cover": 150.75112915039062
     },
     {
       "index": 2,
       "feature": "ip_velocity_24h",
       "is_new_feature": false,
-      "gain": 22.150558471679688,
-      "weight": 166.0,
-      "cover": 315.9728088378906
+      "gain": 16.76541519165039,
+      "weight": 122.0,
+      "cover": 127.50066375732422
+    },
+    {
+      "index": 17,
+      "feature": "device_amount_sum_24h",
+      "is_new_feature": true,
+      "gain": 16.49602508544922,
+      "weight": 10.0,
+      "cover": 119.0024185180664
+    },
+    {
+      "index": 14,
+      "feature": "amount_to_mean_ratio",
+      "is_new_feature": false,
+      "gain": 16.4536075592041,
+      "weight": 198.0,
+      "cover": 186.02796936035156
     },
     {
       "index": 8,
       "feature": "card_type_encoded",
       "is_new_feature": false,
-      "gain": 20.674959182739258,
-      "weight": 43.0,
-      "cover": 230.60914611816406
+      "gain": 15.83764934539795,
+      "weight": 23.0,
+      "cover": 237.92283630371094
     },
     {
-      "index": 24,
-      "feature": "device_dispute_rate",
-      "is_new_feature": true,
-      "gain": 19.066246032714844,
-      "weight": 18.0,
-      "cover": 649.538818359375
+      "index": 7,
+      "feature": "product_cd_encoded",
+      "is_new_feature": false,
+      "gain": 14.483726501464844,
+      "weight": 59.0,
+      "cover": 179.4342041015625
     },
     {
       "index": 9,
       "feature": "card_category_encoded",
       "is_new_feature": false,
-      "gain": 18.082923889160156,
-      "weight": 22.0,
-      "cover": 118.13471984863281
+      "gain": 14.26345157623291,
+      "weight": 19.0,
+      "cover": 86.73628234863281
+    },
+    {
+      "index": 4,
+      "feature": "device_seen_before",
+      "is_new_feature": false,
+      "gain": 2.038630723953247,
+      "weight": 1.0,
+      "cover": 2.777470111846924
+    },
+    {
+      "index": 13,
+      "feature": "device_info_missing",
+      "is_new_feature": false,
+      "gain": 0.0,
+      "weight": 0.0,
+      "cover": 0.0
     },
     {
       "index": 15,
@@ -260,8 +236,32 @@
       "cover": 0.0
     },
     {
+      "index": 16,
+      "feature": "device_tx_count_1h",
+      "is_new_feature": true,
+      "gain": 0.0,
+      "weight": 0.0,
+      "cover": 0.0
+    },
+    {
       "index": 18,
       "feature": "tx_acceleration_5m_1h",
+      "is_new_feature": true,
+      "gain": 0.0,
+      "weight": 0.0,
+      "cover": 0.0
+    },
+    {
+      "index": 19,
+      "feature": "device_amount_concentration_5m_1h",
+      "is_new_feature": true,
+      "gain": 0.0,
+      "weight": 0.0,
+      "cover": 0.0
+    },
+    {
+      "index": 20,
+      "feature": "device_unique_tokens_1h",
       "is_new_feature": true,
       "gain": 0.0,
       "weight": 0.0,
@@ -278,13 +278,13 @@
   ],
   "onnx_artifact": {
     "path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/model/candidates/fraud_model_25f_candidate.onnx",
-    "checksum_sha256": "8c3dc9cbd1c21eea6df9e1ea02d38f334814df8ece42aea4d4bfde853e5050d5",
+    "checksum_sha256": "520c6454703894a98483ca98bd330e4517110c6f034d12cfd0e3d52d64da7f77",
     "input_dimension": 25,
-    "max_parity_diff": 1.7881393432617188e-07
+    "max_parity_diff": 2.905726432800293e-07
   },
   "joblib_artifact": {
     "path": "/Users/shankar/PROJECTS/Ai Risk Manager/ml-service/model/candidates/fraud_model_25f_candidate.joblib",
-    "checksum_sha256": "8c44834070f5402ebe215864258181e5ef5303b97a6a13346d6d53f0eba0a8cd"
+    "checksum_sha256": "655e307d7b6fe3a453ef636b5b02c893f2c5fc6b3329813403bdddfbad1f966a"
   },
   "is_production_active": false,
   "notes": "Candidate 25-feature model for offline evaluation & shadow scoring (Phase 3.9). Does not serve live production traffic."

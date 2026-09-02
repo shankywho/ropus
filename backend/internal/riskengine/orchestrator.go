@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,28 +22,65 @@ import (
 	"github.com/shankywho/ropus/backend/internal/utils"
 )
 
+// AuditPayloadEntry represents a structured audit log entry for asynchronous processing.
+type AuditPayloadEntry struct {
+	DecisionID string    `json:"decision_id"`
+	ReqHash    string    `json:"req_hash"`
+	Action     string    `json:"action"`
+	RiskScore  float64   `json:"risk_score"`
+	ModelVer   string    `json:"model_version"`
+	Timestamp  time.Time `json:"timestamp"`
+}
+
+// RateLimitedLogger rate-limits critical error logs to prevent console I/O throttling.
+type RateLimitedLogger struct {
+	lastLogNs  int64
+	intervalNs int64
+}
+
+// NewRateLimitedLogger initializes a logger that logs at most once per interval.
+func NewRateLimitedLogger(interval time.Duration) *RateLimitedLogger {
+	return &RateLimitedLogger{
+		intervalNs: interval.Nanoseconds(),
+	}
+}
+
+// LogCritical logs a message if the interval has passed since the last log.
+func (l *RateLimitedLogger) LogCritical(msg string, droppedCount int64) {
+	now := time.Now().UnixNano()
+	last := atomic.LoadInt64(&l.lastLogNs)
+	if now-last > l.intervalNs {
+		if atomic.CompareAndSwapInt64(&l.lastLogNs, last, now) {
+			log.Printf("[CRITICAL_ALERT] %s (dropped_audit_events_total: %d)", msg, droppedCount)
+		}
+	}
+}
+
 // Orchestrator orchestrates the real-time synchronous risk evaluation pipeline.
 type Orchestrator struct {
-	db                    *pgxpool.Pool
-	velocityStore         *features.VelocityStore
-	deviceFeatureStore    *features.DeviceFeatureStore
-	graphStore            *features.AccountDeviceGraphStore
-	paymentTokenStore     *features.PaymentTokenStore
-	deviceVelocityStore   *features.DeviceVelocityStore
-	deviceReputationStore *features.DeviceReputationStore
-	rulesService          *rules.Service
-	mlClient              *MLClient
-	shadowScorer          *ShadowScorer
-	canaryRouter          *CanaryRouter
-	driftDetector         *DriftDetector
-	retrainingCoordinator *RetrainingCoordinator
-	metricsEngine         *MetricsEngine
-	sloEngine             *SLOEngine
-	threatEngine          *graph.ThreatIntelligenceEngine
-	graphEngine           *graph.GraphEngine
-	auditTrail            *governance.DecisionAuditTrail
-	kms                   utils.KMS
-	environment           string
+	db                      *pgxpool.Pool
+	velocityStore           *features.VelocityStore
+	deviceFeatureStore      *features.DeviceFeatureStore
+	graphStore              *features.AccountDeviceGraphStore
+	paymentTokenStore       *features.PaymentTokenStore
+	deviceVelocityStore     *features.DeviceVelocityStore
+	deviceReputationStore   *features.DeviceReputationStore
+	rulesService            *rules.Service
+	mlClient                *MLClient
+	shadowScorer            *ShadowScorer
+	canaryRouter            *CanaryRouter
+	driftDetector           *DriftDetector
+	retrainingCoordinator   *RetrainingCoordinator
+	metricsEngine           *MetricsEngine
+	sloEngine               *SLOEngine
+	threatEngine            *graph.ThreatIntelligenceEngine
+	graphEngine             *graph.GraphEngine
+	auditTrail              *governance.DecisionAuditTrail
+	kms                     utils.KMS
+	environment             string
+	auditChannel            chan AuditPayloadEntry
+	droppedAuditEventsTotal int64
+	auditLogger             *RateLimitedLogger
 }
 
 // NewOrchestrator constructs a new risk Orchestrator.
@@ -57,23 +95,25 @@ func NewOrchestrator(
 		kms = utils.NewMockKMS()
 	}
 	return &Orchestrator{
-		db:                    db,
-		velocityStore:         velocityStore,
-		deviceFeatureStore:    nil,
-		graphStore:            nil,
-		paymentTokenStore:     nil,
-		deviceVelocityStore:   nil,
-		deviceReputationStore: nil,
-		rulesService:          rulesService,
-		mlClient:              mlClient,
-		shadowScorer:          nil,
-		canaryRouter:          nil,
-		driftDetector:         nil,
-		retrainingCoordinator: nil,
-		threatEngine:          graph.NewThreatIntelligenceEngine(),
-		graphEngine:           graph.NewGraphEngine(nil),
-		kms:                   kms,
-		environment:           "development",
+		db:                      db,
+		velocityStore:           velocityStore,
+		deviceFeatureStore:      nil,
+		graphStore:              nil,
+		paymentTokenStore:       nil,
+		deviceVelocityStore:     nil,
+		deviceReputationStore:   nil,
+		rulesService:            rulesService,
+		mlClient:                mlClient,
+		shadowScorer:            nil,
+		canaryRouter:            nil,
+		driftDetector:           nil,
+		retrainingCoordinator:   nil,
+		threatEngine:            graph.NewThreatIntelligenceEngine(),
+		graphEngine:             graph.NewGraphEngine(nil),
+		kms:                     kms,
+		environment:             "development",
+		auditChannel:            make(chan AuditPayloadEntry, 20000),
+		auditLogger:             NewRateLimitedLogger(1 * time.Second),
 	}
 }
 
@@ -1291,6 +1331,31 @@ func (o *Orchestrator) Evaluate(ctx context.Context, tenantID string, req RiskEv
 		)
 	}
 
+	// Audit Channel Protection: Non-blocking write to async ledger with saturation safety
+	if o.auditChannel != nil {
+		reqBytes, _ := json.Marshal(req)
+		sum := sha256.Sum256(reqBytes)
+		entry := AuditPayloadEntry{
+			DecisionID: decisionID,
+			ReqHash:    hex.EncodeToString(sum[:]),
+			Action:     finalAction,
+			RiskScore:  float64(riskScore),
+			ModelVer:   "fraud-xgb-25f-v3.0",
+			Timestamp:  nowUTC,
+		}
+
+		select {
+		case o.auditChannel <- entry:
+			// Enqueued successfully without blocking
+		default:
+			// Channel saturated: safely drop entry, increment counter, rate-limited log
+			dropped := atomic.AddInt64(&o.droppedAuditEventsTotal, 1)
+			if o.auditLogger != nil {
+				o.auditLogger.LogCritical("audit ledger channel saturated, dropping audit entry to protect hot path", dropped)
+			}
+		}
+	}
+
 	return &RiskEvaluationResponse{
 		DecisionID:             decisionID,
 		TransactionID:          req.TransactionID,
@@ -1394,4 +1459,19 @@ func (o *Orchestrator) callLegacyML(ctx context.Context, legacy15Vector *MLFeatu
 	}
 
 	return o.mlClient.Predict(ctx, mlReq)
+}
+
+// GetDroppedAuditEventsTotal returns the count of dropped audit events due to channel saturation.
+func (o *Orchestrator) GetDroppedAuditEventsTotal() int64 {
+	return atomic.LoadInt64(&o.droppedAuditEventsTotal)
+}
+
+// GetAuditChannel returns the asynchronous audit channel.
+func (o *Orchestrator) GetAuditChannel() chan AuditPayloadEntry {
+	return o.auditChannel
+}
+
+// SetAuditChannel attaches a custom audit channel for testing or buffer tuning.
+func (o *Orchestrator) SetAuditChannel(ch chan AuditPayloadEntry) {
+	o.auditChannel = ch
 }

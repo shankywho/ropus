@@ -1,22 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import {
-  CaseStatusTag,
-  DemoTag,
-  PriorityTag,
-  RiskScore,
-} from "@/components/ropus/core";
+import { CaseStatusTag, DemoTag, PriorityTag, RiskScore } from "@/components/ropus/core";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { casesQuery } from "@/lib/ropus/api";
 import type { CaseStatus } from "@/lib/ropus/contracts";
 import { cn } from "@/lib/utils";
-import {
-  Clock,
-  AlertTriangle,
-  CheckSquare,
-  Square,
-  ArrowRight,
-} from "lucide-react";
+import { Clock, AlertTriangle, CheckSquare, Square, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/cases/")({
@@ -31,7 +20,8 @@ export const Route = createFileRoute("/cases/")({
       { property: "og:title", content: "Case Management Queue — ROPUS" },
       {
         property: "og:description",
-        content: "Investigation queue for blocked, challenged and review-flagged transactions with 24h SLA urgency.",
+        content:
+          "Investigation queue for blocked, challenged and review-flagged transactions with 24h SLA urgency.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -145,7 +135,8 @@ export function CaseQueue() {
             Case Management Queue &amp; SLA Monitor
           </h1>
           <p className="mt-0.5 font-sans text-[12.5px] text-muted-foreground">
-            Deterministic 24-hour investigation SLA. All analyst dispositions are committed to an immutable append-only ledger.
+            Deterministic 24-hour investigation SLA. All analyst dispositions are committed to an
+            immutable append-only ledger.
           </p>
         </div>
       </header>
@@ -154,23 +145,37 @@ export function CaseQueue() {
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5 border border-border bg-card p-4 shadow-xs font-mono text-[11px]">
         <div>
           <dd className="text-[22px] font-extrabold text-foreground tabular">{open.length}</dd>
-          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">Active Open Cases</dt>
+          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">
+            Active Open Cases
+          </dt>
         </div>
         <div>
           <dd className="text-[22px] font-extrabold text-blocked tabular">{breached.length}</dd>
-          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">SLA Breached (&lt;0m)</dt>
+          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">
+            SLA Breached (&lt;0m)
+          </dt>
         </div>
         <div>
           <dd className="text-[22px] font-extrabold text-amber-intel tabular">{critical.length}</dd>
-          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">Critical Urgency (&lt;4h)</dt>
+          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">
+            Critical Urgency (&lt;4h)
+          </dt>
         </div>
         <div>
-          <dd className="text-[22px] font-extrabold text-navy tabular">{open.filter((c) => c.priority === "P1").length}</dd>
-          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">P1 Priority</dt>
+          <dd className="text-[22px] font-extrabold text-navy tabular">
+            {open.filter((c) => c.priority === "P1").length}
+          </dd>
+          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">
+            P1 Priority
+          </dt>
         </div>
         <div>
-          <dd className="text-[22px] font-extrabold text-authoritative tabular">{open.filter((c) => !c.assignee).length}</dd>
-          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">Unassigned</dt>
+          <dd className="text-[22px] font-extrabold text-authoritative tabular">
+            {open.filter((c) => !c.assignee).length}
+          </dd>
+          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">
+            Unassigned
+          </dt>
         </div>
       </dl>
 
@@ -265,7 +270,10 @@ export function CaseQueue() {
                     </button>
                   </td>
                   <td className="py-2.5 px-3 font-bold text-navy">
-                    <Link to={`/cases/${c.caseId}`} className="hover:underline flex items-center gap-1">
+                    <Link
+                      to={`/cases/${c.caseId}`}
+                      className="hover:underline flex items-center gap-1"
+                    >
                       <span>{c.caseId}</span>
                       <ArrowRight className="size-3 opacity-60" />
                     </Link>
@@ -286,7 +294,11 @@ export function CaseQueue() {
                     <RiskScore value={c.riskScore} size="sm" showBand />
                   </td>
                   <td className="py-2.5 px-3 text-muted-foreground font-sans text-[11.5px]">
-                    {c.assignee ?? <span className="text-amber-intel italic font-semibold font-mono text-[11px]">Unassigned</span>}
+                    {c.assignee ?? (
+                      <span className="text-amber-intel italic font-semibold font-mono text-[11px]">
+                        Unassigned
+                      </span>
+                    )}
                   </td>
                   <td className="py-2.5 px-3">
                     <Link

@@ -29,9 +29,9 @@ export const Route = createFileRoute("/settings")({
 });
 
 export function SettingsPage() {
-  const [blockThreshold, setBlockThreshold] = useState<number>(0.80);
-  const [reviewThreshold, setReviewThreshold] = useState<number>(0.50);
-  const [challengeThreshold, setChallengeThreshold] = useState<number>(0.30);
+  const [blockThreshold, setBlockThreshold] = useState<number>(0.8);
+  const [reviewThreshold, setReviewThreshold] = useState<number>(0.5);
+  const [challengeThreshold, setChallengeThreshold] = useState<number>(0.3);
   const [makerCheckerEnforced, setMakerCheckerEnforced] = useState<boolean>(true);
   const [timeoutBudgetMs, setTimeoutBudgetMs] = useState<number>(100);
   const [saving, setSaving] = useState<boolean>(false);
@@ -41,7 +41,12 @@ export function SettingsPage() {
     setTimeout(() => {
       setSaving(false);
       toast.success("Tenant configuration committed to audit ledger", {
-        description: "New threshold cutoffs will take effect on next evaluation (Block: ≥" + blockThreshold.toFixed(2) + ", Review: ≥" + reviewThreshold.toFixed(2) + ").",
+        description:
+          "New threshold cutoffs will take effect on next evaluation (Block: ≥" +
+          blockThreshold.toFixed(2) +
+          ", Review: ≥" +
+          reviewThreshold.toFixed(2) +
+          ").",
       });
     }, 400);
   };
@@ -55,11 +60,36 @@ export function SettingsPage() {
 
       <TelemetryStrip
         items={[
-          { label: "Active Policy", value: "pol_wire_outbound_v8", sub: "Production Champion", tone: "text-navy" },
-          { label: "Block Cutoff (τ*)", value: blockThreshold.toFixed(2), sub: "BMR Cost Optimal", tone: "text-blocked" },
-          { label: "Review Cutoff", value: reviewThreshold.toFixed(2), sub: "24h SLA Case Queue", tone: "text-amber-intel" },
-          { label: "Timeout Budget", value: `${timeoutBudgetMs} ms`, sub: "Hard deadline", tone: "text-authoritative" },
-          { label: "Dual Control", value: makerCheckerEnforced ? "ENFORCED" : "OFF", sub: "Maker-Checker Policy", tone: makerCheckerEnforced ? "text-authoritative" : "text-amber-intel" },
+          {
+            label: "Active Policy",
+            value: "pol_wire_outbound_v8",
+            sub: "Production Champion",
+            tone: "text-navy",
+          },
+          {
+            label: "Block Cutoff (τ*)",
+            value: blockThreshold.toFixed(2),
+            sub: "BMR Cost Optimal",
+            tone: "text-blocked",
+          },
+          {
+            label: "Review Cutoff",
+            value: reviewThreshold.toFixed(2),
+            sub: "24h SLA Case Queue",
+            tone: "text-amber-intel",
+          },
+          {
+            label: "Timeout Budget",
+            value: `${timeoutBudgetMs} ms`,
+            sub: "Hard deadline",
+            tone: "text-authoritative",
+          },
+          {
+            label: "Dual Control",
+            value: makerCheckerEnforced ? "ENFORCED" : "OFF",
+            sub: "Maker-Checker Policy",
+            tone: makerCheckerEnforced ? "text-authoritative" : "text-amber-intel",
+          },
         ]}
       />
 
@@ -114,8 +144,12 @@ export function SettingsPage() {
             {/* Block Threshold Slider */}
             <div className="border border-border bg-surface p-3 space-y-1.5 shadow-2xs">
               <div className="flex justify-between items-center">
-                <span className="font-bold text-blocked uppercase text-[10.5px]">1. Hard Block Cutoff (P(fraud) ≥ τ*)</span>
-                <span className="font-bold text-blocked text-[13px]">{blockThreshold.toFixed(2)}</span>
+                <span className="font-bold text-blocked uppercase text-[10.5px]">
+                  1. Hard Block Cutoff (P(fraud) ≥ τ*)
+                </span>
+                <span className="font-bold text-blocked text-[13px]">
+                  {blockThreshold.toFixed(2)}
+                </span>
               </div>
               <input
                 type="range"
@@ -127,15 +161,20 @@ export function SettingsPage() {
                 className="w-full accent-blocked cursor-pointer"
               />
               <div className="text-[11px] text-muted-foreground font-sans leading-snug">
-                Transactions scoring above {blockThreshold.toFixed(2)} are refused at payment gateway with statutory reason code.
+                Transactions scoring above {blockThreshold.toFixed(2)} are refused at payment
+                gateway with statutory reason code.
               </div>
             </div>
 
             {/* Review Threshold Slider */}
             <div className="border border-border bg-surface p-3 space-y-1.5 shadow-2xs">
               <div className="flex justify-between items-center">
-                <span className="font-bold text-amber-intel uppercase text-[10.5px]">2. Analyst Review Cutoff</span>
-                <span className="font-bold text-amber-intel text-[13px]">{reviewThreshold.toFixed(2)}</span>
+                <span className="font-bold text-amber-intel uppercase text-[10.5px]">
+                  2. Analyst Review Cutoff
+                </span>
+                <span className="font-bold text-amber-intel text-[13px]">
+                  {reviewThreshold.toFixed(2)}
+                </span>
               </div>
               <input
                 type="range"
@@ -147,15 +186,20 @@ export function SettingsPage() {
                 className="w-full accent-amber-intel cursor-pointer"
               />
               <div className="text-[11px] text-muted-foreground font-sans leading-snug">
-                Scores between {reviewThreshold.toFixed(2)} and {blockThreshold.toFixed(2)} provision a case in the 24-hour SLA analyst queue.
+                Scores between {reviewThreshold.toFixed(2)} and {blockThreshold.toFixed(2)}{" "}
+                provision a case in the 24-hour SLA analyst queue.
               </div>
             </div>
 
             {/* Step-Up Challenge Slider */}
             <div className="border border-border bg-surface p-3 space-y-1.5 shadow-2xs">
               <div className="flex justify-between items-center">
-                <span className="font-bold text-navy uppercase text-[10.5px]">3. Step-Up 2FA Challenge Cutoff</span>
-                <span className="font-bold text-navy text-[13px]">{challengeThreshold.toFixed(2)}</span>
+                <span className="font-bold text-navy uppercase text-[10.5px]">
+                  3. Step-Up 2FA Challenge Cutoff
+                </span>
+                <span className="font-bold text-navy text-[13px]">
+                  {challengeThreshold.toFixed(2)}
+                </span>
               </div>
               <input
                 type="range"
@@ -167,7 +211,8 @@ export function SettingsPage() {
                 className="w-full accent-navy cursor-pointer"
               />
               <div className="text-[11px] text-muted-foreground font-sans leading-snug">
-                Scores between {challengeThreshold.toFixed(2)} and {reviewThreshold.toFixed(2)} request dynamic WebAuthn / OTP step-up authentication.
+                Scores between {challengeThreshold.toFixed(2)} and {reviewThreshold.toFixed(2)}{" "}
+                request dynamic WebAuthn / OTP step-up authentication.
               </div>
             </div>
           </div>
@@ -198,7 +243,8 @@ export function SettingsPage() {
                     <span>Maker-Checker Dual Control Enforcement</span>
                   </div>
                   <div className="mt-1 font-sans text-[11.5px] text-muted-foreground leading-relaxed">
-                    Rule creators and model deployers cannot self-approve production promotions. Mandates independent second officer sign-off.
+                    Rule creators and model deployers cannot self-approve production promotions.
+                    Mandates independent second officer sign-off.
                   </div>
                 </div>
                 <input
@@ -229,7 +275,9 @@ export function SettingsPage() {
                 className="w-full accent-navy cursor-pointer"
               />
               <div className="font-sans text-[11px] text-muted-foreground leading-snug">
-                If the synchronous pipeline exceeds {timeoutBudgetMs}ms, execution gracefully falls back to deterministic AST rules with <Mono className="text-amber-intel">is_degraded: true</Mono>.
+                If the synchronous pipeline exceeds {timeoutBudgetMs}ms, execution gracefully falls
+                back to deterministic AST rules with{" "}
+                <Mono className="text-amber-intel">is_degraded: true</Mono>.
               </div>
             </div>
 
@@ -238,9 +286,9 @@ export function SettingsPage() {
               <button
                 type="button"
                 onClick={() => {
-                  setBlockThreshold(0.80);
-                  setReviewThreshold(0.50);
-                  setChallengeThreshold(0.30);
+                  setBlockThreshold(0.8);
+                  setReviewThreshold(0.5);
+                  setChallengeThreshold(0.3);
                   setTimeoutBudgetMs(100);
                   setMakerCheckerEnforced(true);
                   toast.info("Reset settings to default calibrated profile");

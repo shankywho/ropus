@@ -165,8 +165,18 @@ function ApiPage() {
       <MetricStrip
         items={[
           { label: "Calls (24h)", value: "1,345,142", sub: "production requests" },
-          { label: "Decision p99", value: "62.4 ms", sub: "POST /v1/risk-evaluations", tone: "text-authoritative" },
-          { label: "Error rate", value: "0.03%", sub: "5xx and timeouts", tone: "text-authoritative" },
+          {
+            label: "Decision p99",
+            value: "62.4 ms",
+            sub: "POST /v1/risk-evaluations",
+            tone: "text-authoritative",
+          },
+          {
+            label: "Error rate",
+            value: "0.03%",
+            sub: "5xx and timeouts",
+            tone: "text-authoritative",
+          },
           { label: "Timeout Budget", value: "100 ms", sub: "falls back to AST rules" },
           { label: "API version", value: "2026-08-01", sub: "pinned per key" },
         ]}
@@ -198,13 +208,29 @@ function ApiPage() {
                     >
                       {e.method}
                     </span>,
-                    <Mono key="p" className="font-bold text-navy">{e.path}</Mono>,
-                    <span key="s" className="text-muted-foreground font-sans text-[12px]">{e.summary}</span>,
-                    <Mono key="lat" className={e.p99Ms > 250 ? "text-amber-intel font-bold" : "text-muted-foreground"}>
+                    <Mono key="p" className="font-bold text-navy">
+                      {e.path}
+                    </Mono>,
+                    <span key="s" className="text-muted-foreground font-sans text-[12px]">
+                      {e.summary}
+                    </span>,
+                    <Mono
+                      key="lat"
+                      className={
+                        e.p99Ms > 250 ? "text-amber-intel font-bold" : "text-muted-foreground"
+                      }
+                    >
                       {e.p99Ms.toFixed(1)}ms
                     </Mono>,
-                    <Mono key="c" className="text-muted-foreground font-medium">{e.calls24h.toLocaleString()}</Mono>,
-                    <Mono key="err" className={e.errorRate > 0.01 ? "text-blocked font-bold" : "text-muted-foreground"}>
+                    <Mono key="c" className="text-muted-foreground font-medium">
+                      {e.calls24h.toLocaleString()}
+                    </Mono>,
+                    <Mono
+                      key="err"
+                      className={
+                        e.errorRate > 0.01 ? "text-blocked font-bold" : "text-muted-foreground"
+                      }
+                    >
                       {(e.errorRate * 100).toFixed(2)}%
                     </Mono>,
                   ],
@@ -225,14 +251,23 @@ function ApiPage() {
                   "Idempotency",
                   "Repeat a transaction_id within 24h to receive the original decision, not a duplicate evaluation.",
                 ],
-                ["Timeouts & Fallback", "If downstream ML times out (>50ms), engine returns conservative deterministic AST rule verdict (is_degraded: true)."],
+                [
+                  "Timeouts & Fallback",
+                  "If downstream ML times out (>50ms), engine returns conservative deterministic AST rule verdict (is_degraded: true).",
+                ],
                 [
                   "Webhooks & CDC",
                   "decision.returned is emitted asynchronously via Debezium CDC and Redpanda; never gate fund movement on webhooks.",
                 ],
-                ["Rate limit", "2,500 requests per second per production key with automatic token-bucket burst capacity."],
+                [
+                  "Rate limit",
+                  "2,500 requests per second per production key with automatic token-bucket burst capacity.",
+                ],
               ].map(([k, v]) => (
-                <div key={k} className="flex flex-col sm:flex-row gap-2 sm:gap-6 py-2.5 first:pt-0 last:pb-0">
+                <div
+                  key={k}
+                  className="flex flex-col sm:flex-row gap-2 sm:gap-6 py-2.5 first:pt-0 last:pb-0"
+                >
                   <dt className="w-[160px] shrink-0 text-[10.5px] font-bold tracking-[0.06em] text-navy uppercase">
                     {k}
                   </dt>
@@ -276,7 +311,11 @@ function ApiPage() {
                 onClick={handleCopy}
                 className="absolute top-2 right-2 z-10 border border-border/80 bg-surface/90 hover:bg-secondary p-1.5 text-muted-foreground hover:text-foreground cursor-pointer shadow-2xs font-mono text-[10px] flex items-center gap-1"
               >
-                {copied ? <Check className="size-3 text-authoritative" /> : <Copy className="size-3" />}
+                {copied ? (
+                  <Check className="size-3 text-authoritative" />
+                ) : (
+                  <Copy className="size-3" />
+                )}
                 <span>{copied ? "Copied" : "Copy"}</span>
               </button>
               <CodeBlock code={getCode()} language={activeLang === "curl" ? "bash" : activeLang} />
@@ -294,7 +333,9 @@ function ApiPage() {
             </div>
             <CodeBlock code={evaluateResponse} language="json" />
             <p className="text-[11px] text-muted-foreground font-sans leading-relaxed pt-1">
-              The synchronous payload carries the decision verdict, calibrated risk score, and reason codes. Detailed TreeSHAP attributions and 3-hop graph topologies are indexed asynchronously for analyst review.
+              The synchronous payload carries the decision verdict, calibrated risk score, and
+              reason codes. Detailed TreeSHAP attributions and 3-hop graph topologies are indexed
+              asynchronously for analyst review.
             </p>
           </div>
         </aside>

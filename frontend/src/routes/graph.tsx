@@ -1,12 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import {
-  DemoTag,
-  Mono,
-  StatusPill,
-  entityRiskMeta,
-} from "@/components/ropus/core";
+import { DemoTag, Mono, StatusPill, entityRiskMeta } from "@/components/ropus/core";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { graphQuery } from "@/lib/ropus/api";
 import { blockedDecision } from "@/lib/ropus/fixtures";
@@ -41,7 +36,8 @@ export const Route = createFileRoute("/graph")({
       { property: "og:title", content: "Fraud Knowledge Graph — ROPUS" },
       {
         property: "og:description",
-        content: "Traverse connected entities behind risk decisions with GraphSAGE shadow inference.",
+        content:
+          "Traverse connected entities behind risk decisions with GraphSAGE shadow inference.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -134,7 +130,10 @@ export function FraudGraphPage() {
       const newY = (e.clientY - rect.top - pan.y) / zoom;
       setNodePositions((prev) => ({
         ...prev,
-        [draggedNodeId]: { x: Math.max(50, Math.min(950, newX)), y: Math.max(50, Math.min(550, newY)) },
+        [draggedNodeId]: {
+          x: Math.max(50, Math.min(950, newX)),
+          y: Math.max(50, Math.min(550, newY)),
+        },
       }));
       return;
     }
@@ -198,17 +197,21 @@ export function FraudGraphPage() {
             </span>
           </div>
           <h1 className="mt-1 font-sans text-[24px] lg:text-[26px] font-extrabold leading-[1.12] tracking-[-0.04em] text-foreground">
-            Syndicate Neighbourhood of <Mono className="text-[20px] font-bold text-foreground">{fraudGraph.rootId}</Mono>
+            Syndicate Neighbourhood of{" "}
+            <Mono className="text-[20px] font-bold text-foreground">{fraudGraph.rootId}</Mono>
           </h1>
           <p className="mt-0.5 font-sans text-[12.5px] text-muted-foreground">
-            3-hop in-memory BFS &amp; inductive GraphSAGE embeddings linking customer, headless device emulator, proxy ASN 13335, and cashout mule accounts.
+            3-hop in-memory BFS &amp; inductive GraphSAGE embeddings linking customer, headless
+            device emulator, proxy ASN 13335, and cashout mule accounts.
           </p>
         </div>
 
         {/* View Controls & Filters */}
         <div className="flex flex-wrap items-center gap-2 font-mono text-[10.5px]">
           <div className="flex items-center border border-border bg-surface p-0.5">
-            <span className="px-2 text-[9.5px] text-muted-foreground uppercase font-bold">Hops:</span>
+            <span className="px-2 text-[9.5px] text-muted-foreground uppercase font-bold">
+              Hops:
+            </span>
             {[1, 2, 3].map((h) => (
               <button
                 key={h}
@@ -288,7 +291,9 @@ export function FraudGraphPage() {
 
           {/* Graph Legend Overlay */}
           <div className="absolute top-3 right-3 z-10 border border-border bg-surface/90 backdrop-blur-xs p-2.5 shadow-xs font-mono text-[9.5px] space-y-1">
-            <div className="text-muted-foreground uppercase font-bold text-[9px] mb-1 tracking-wider">Entity Risk Class</div>
+            <div className="text-muted-foreground uppercase font-bold text-[9px] mb-1 tracking-wider">
+              Entity Risk Class
+            </div>
             {risks.map((r) => {
               const meta = entityRiskMeta(r);
               return (
@@ -310,7 +315,13 @@ export function FraudGraphPage() {
           >
             <defs>
               <pattern id="graph-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-border/40" />
+                <path
+                  d="M 40 0 L 0 0 0 40"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="0.5"
+                  className="text-border/40"
+                />
               </pattern>
               <marker
                 id="arrow-default"
@@ -365,8 +376,14 @@ export function FraudGraphPage() {
                       y1={s.y}
                       x2={t.x}
                       y2={t.y}
-                      strokeWidth={isSelected || isIncidentFocused ? 2.5 : isOnDecisionPath ? 2 : 1.2}
-                      markerEnd={isOnDecisionPath || isIncidentFocused ? "url(#arrow-active)" : "url(#arrow-default)"}
+                      strokeWidth={
+                        isSelected || isIncidentFocused ? 2.5 : isOnDecisionPath ? 2 : 1.2
+                      }
+                      markerEnd={
+                        isOnDecisionPath || isIncidentFocused
+                          ? "url(#arrow-active)"
+                          : "url(#arrow-default)"
+                      }
                       className={cn(
                         "transition-colors",
                         isSelected
@@ -487,7 +504,10 @@ export function FraudGraphPage() {
           <div className="absolute bottom-3 left-3 z-10 border border-border bg-surface/90 backdrop-blur-xs p-2 shadow-xs font-mono text-[9.5px] space-y-1 hidden sm:block">
             <div className="flex items-center gap-1.5 font-bold text-foreground">
               <Layers className="size-3 text-navy" />
-              <span>Visible Topology: {visible.entities.length} Nodes · {visible.relationships.length} Edges</span>
+              <span>
+                Visible Topology: {visible.entities.length} Nodes · {visible.relationships.length}{" "}
+                Edges
+              </span>
             </div>
             <div className="text-muted-foreground text-[9px]">
               Drag nodes to rearrange · Click node to inspect details
@@ -505,7 +525,15 @@ export function FraudGraphPage() {
                   ENTITY FORENSIC INSPECTOR
                 </span>
               </div>
-              <StatusPill tone={selected.risk === "CONFIRMED_FRAUD" ? "blocked" : selected.risk === "SUSPECT" ? "shadow" : "authoritative"}>
+              <StatusPill
+                tone={
+                  selected.risk === "CONFIRMED_FRAUD"
+                    ? "blocked"
+                    : selected.risk === "SUSPECT"
+                      ? "shadow"
+                      : "authoritative"
+                }
+              >
                 {selected.risk}
               </StatusPill>
             </div>
@@ -529,18 +557,24 @@ export function FraudGraphPage() {
 
               <div className="grid grid-cols-2 gap-2 text-[11px] border-t border-border pt-2.5">
                 <div>
-                  <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Entity Type:</span>
+                  <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">
+                    Entity Type:
+                  </span>
                   <span className="font-bold text-foreground">{selected.type}</span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">First Observed:</span>
+                  <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">
+                    First Observed:
+                  </span>
                   <span className="text-foreground">{selected.firstSeen}</span>
                 </div>
               </div>
 
               {/* Attributes Key-Value Table */}
               <div className="border-t border-border pt-2.5 space-y-1">
-                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Entity Attributes:</span>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">
+                  Entity Attributes:
+                </span>
                 {selected.attributes.map(([k, v]) => (
                   <div key={k} className="flex justify-between text-[11px]">
                     <span className="text-muted-foreground">{k}:</span>
@@ -552,10 +586,14 @@ export function FraudGraphPage() {
               {/* Signals and Flags */}
               {selected.signals && selected.signals.length > 0 && (
                 <div className="border-t border-border pt-2.5 space-y-1">
-                  <span className="text-muted-foreground block text-[9px] uppercase font-bold text-blocked tracking-wider">Forensic Signals:</span>
+                  <span className="text-muted-foreground block text-[9px] uppercase font-bold text-blocked tracking-wider">
+                    Forensic Signals:
+                  </span>
                   <ul className="space-y-1 font-sans text-[11px] text-muted-foreground list-disc list-inside">
                     {selected.signals.map((sig, idx) => (
-                      <li key={idx} className="leading-snug">{sig}</li>
+                      <li key={idx} className="leading-snug">
+                        {sig}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -578,7 +616,9 @@ export function FraudGraphPage() {
                     className="border border-border/70 bg-surface p-2 flex items-center justify-between cursor-pointer hover:bg-secondary/60 transition-colors shadow-2xs"
                   >
                     <div className="flex items-center gap-1.5 truncate">
-                      <span className="text-muted-foreground font-normal">{rel.direction === "out" ? "→" : "←"}</span>
+                      <span className="text-muted-foreground font-normal">
+                        {rel.direction === "out" ? "→" : "←"}
+                      </span>
                       <span className="font-bold text-navy">{rel.label}:</span>
                       <span className="truncate text-foreground font-medium">{rel.id}</span>
                     </div>

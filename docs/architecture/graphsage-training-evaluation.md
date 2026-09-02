@@ -2,16 +2,16 @@
 
 **Document Reference:** ROPUS-ARCH-GRAPHSAGE-2026-08
 **Governance Classification:** SYNTHETIC-TRAINED / NON-PRODUCTION / SHADOW-ONLY
-**Model Artifact Location:** [`ml-service/model/graphsage/graphsage_synthetic_v1.json`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/model/graphsage/graphsage_synthetic_v1.json)
-**Evaluation Output:** [`ml-service/evaluation/graphsage_offline_evaluation_report.json`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/graphsage_offline_evaluation_report.json)
-**Production Champion Reference:** [`ml-service/model/candidates/production_model_v8_bmr.joblib`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/model/candidates/production_model_v8_bmr.joblib)
+**Model Artifact Location:** [`../../ml-service/model/graphsage/graphsage_synthetic_v1.json`](../../ml-service/model/graphsage/graphsage_synthetic_v1.json)
+**Evaluation Output:** `graphsage_offline_evaluation_report.json`
+**Production Champion Reference:** [`../../ml-service/model/candidates/production_model_v8_bmr.joblib`](../../ml-service/model/candidates/production_model_v8_bmr.joblib)
 **Production Champion SHA-256:** `d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7` (UNCHANGED / AUTHORITATIVE)
 
 ---
 
 ## Executive Summary
 
-This report documents the end-to-end training, point-in-time neighbor sampling, offline evaluation, adversarial stress testing, and multi-defense ablation benchmarking of the ROPUS **GraphSAGE Heterogeneous Graph Neural Network** on the independently audited 100k-event synthetic ROPUS dataset ([`synthetic_ropus/data/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/synthetic_ropus/data/)).
+This report documents the end-to-end training, point-in-time neighbor sampling, offline evaluation, adversarial stress testing, and multi-defense ablation benchmarking of the ROPUS **GraphSAGE Heterogeneous Graph Neural Network** on the synthetic ROPUS dataset ([`../../synthetic_ropus/data/`](../../synthetic_ropus/data/)).
 
 GraphSAGE is designed specifically to detect complex structural relationship threats that evade single-event tabular classifiers, including **internal employee-consumer collusion rings**, **multi-account fraud rings**, **device/IP sharing clusters**, and **synthetic identity mule networks**.
 
@@ -96,7 +96,7 @@ flowchart LR
     Allowed --> M1 --> M2 --> M3
 ```
 
-### Verified Protections ([`test_graphsage_leakage_prevention.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/tests/test_graphsage_leakage_prevention.py))
+### Verified Protections ([`test_graphsage_leakage_prevention.py`](ml-service/tests/test_graphsage_leakage_prevention.py))
 1. **Zero Entity ID Magnitude Leakage:** Node IDs (`acct_000001` vs `acct_099999`) strictly serve as topological keys. They are never parsed into numerical continuous features, preventing the model from learning sequential entity allocation artifacts.
 2. **Total Exclusion of Scenario Tags:** `scenario_tags.csv` and columns `scenario_type`, `is_adversarial`, `is_hard_negative` are completely isolated and only read by offline reporting tools.
 3. **No Label Timestamps or Sources:** `label_timestamp`, `label_source`, and `label_confidence` are stripped from model ingestion.
@@ -147,7 +147,7 @@ Chronological Timeline:
 
 - **Binary-Search Incidence Index:** Edge timestamps are indexed in sorted arrays, enabling $O(\log N)$ edge cutoff lookup.
 - **Label Maturation Simulation:** Labels mature between 1 and 30 days after the event timestamp, accurately modeling chargeback and dispute reporting latencies.
-- **Adversarial Temporal Test ([`test_graphsage_temporal_leakage.py`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/tests/test_graphsage_temporal_leakage.py)):** Verified that future attack edges injected at $t_{\text{eval}} + 2\text{h}$ cause zero embedding drift at $t_{\text{eval}}$, while removing the temporal filter triggers test failure.
+- **Adversarial Temporal Test ([`test_graphsage_temporal_leakage.py`](ml-service/tests/test_graphsage_temporal_leakage.py)):** Verified that future attack edges injected at $t_{\text{eval}} + 2\text{h}$ cause zero embedding drift at $t_{\text{eval}}$, while removing the temporal filter triggers test failure.
 
 ---
 
@@ -409,10 +409,10 @@ stateDiagram-v2
 
 | Test Suite | Location | Tests | Status |
 | :--- | :--- | :--- | :--- |
-| **Synthetic Dataset Audit** | [`synthetic_ropus/validation/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/synthetic_ropus/validation/) | 16 | **16 / 16 PASSED** |
-| **GraphSAGE Python Unit & Integration** | [`ml-service/tests/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/tests/) | 12 | **12 / 12 PASSED** |
-| **GraphSAGE Offline Evaluation Suite** | [`ml-service/evaluation/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/) | 6 | **6 / 6 PASSED** |
-| **Backend Go Engine & Graph Tests** | [`backend/internal/graph/graphsage/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/graphsage/) | 10 | **10 / 10 PASSED** |
+| **Synthetic Dataset Audit** | `synthetic_ropus/validation/` | 16 | **16 / 16 PASSED** |
+| **GraphSAGE Python Unit & Integration** | [`../../ml-service/tests/`](../../ml-service/tests/) | 12 | **12 / 12 PASSED** |
+| **GraphSAGE Offline Evaluation Suite** | [`../../ml-service/evaluation/`](../../ml-service/evaluation/) | 6 | **6 / 6 PASSED** |
+| **Backend Go Engine & Graph Tests** | [`../../backend/internal/graph/graphsage/`](../../backend/internal/graph/graphsage/) | 10 | **10 / 10 PASSED** |
 | **Production Champion SHA-256 Check** | Root Verification | 1 | **PASSED (IDENTICAL)** |
 
 ---

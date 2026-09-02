@@ -120,20 +120,20 @@ type GraphNeighborhood struct {
  * **Real Staging Connectivity:** **`INFRASTRUCTURE_BLOCKED`** (Awaiting AWS STS staging credentials and MSK broker endpoints).
  * **Governance Gate:** **`PROMOTION_BLOCKED`** under `REAL_DATA_REQUIRED` (0 / 50 confirmed real collusion cases).
 
- For details, see [`docs/architecture/graphsage-status-and-roadmap.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-status-and-roadmap.md).
+ For details, see [`docs/architecture/graphsage-status-and-roadmap.md`](docs/architecture/graphsage-status-and-roadmap.md).
 
  ---
 
  ## 7. Source Code Map
- - [`backend/internal/graph/graph_engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/graph_engine.go): In-memory graph representation, BFS traversal, and syndicate detection.
- - [`backend/internal/graph/graph_schema.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/graph_schema.go): Node/Edge schema definitions.
- - [`backend/internal/graph/adaptive_risk_engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/adaptive_risk_engine.go): Graph exposure risk scoring.
- - [`backend/internal/graph/graphsage/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/graphsage/): GraphSAGE Go shadow telemetry, privacy boundary, and evidence ledger.
- - [`ml-service/graphsage/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/graphsage/): GraphSAGE Python GNN modeling, temporal sampling, and drift monitoring.
+ - [`backend/internal/graph/graph_engine.go`](backend/internal/graph/graph_engine.go): In-memory graph representation, BFS traversal, and syndicate detection.
+ - [`backend/internal/graph/graph_schema.go`](backend/internal/graph/graph_schema.go): Node/Edge schema definitions.
+ - [`backend/internal/graph/adaptive_risk_engine.go`](backend/internal/graph/adaptive_risk_engine.go): Graph exposure risk scoring.
+ - [`backend/internal/graph/graphsage/`](backend/internal/graph/graphsage/): GraphSAGE Go shadow telemetry, privacy boundary, and evidence ledger.
+ - [`ml-service/graphsage/`](ml-service/graphsage/): GraphSAGE Python GNN modeling, temporal sampling, and drift monitoring.
 
  ---
 
  ## 8. Cross-Component Links
- - [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Ingests graph exposure score during decisioning.
- - [Component 07: AI Investigators](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/07-ai-investigators.md) — Analyzes graph clusters to synthesize evidentiary dossiers.
- - [GraphSAGE Status & Roadmap](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-status-and-roadmap.md) — Authoritative Phase 68 status specification.
+ - [Component 01: Product API](docs/components/01-product-api.md) — Ingests graph exposure score during decisioning.
+ - [Component 07: AI Investigators](docs/components/07-ai-investigators.md) — Analyzes graph clusters to synthesize evidentiary dossiers.
+ - [GraphSAGE Status & Roadmap](docs/architecture/graphsage-status-and-roadmap.md) — Authoritative Phase 68 status specification.

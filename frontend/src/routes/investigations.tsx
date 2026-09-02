@@ -57,7 +57,12 @@ function InvestigationsPage() {
 
       <MetricStrip
         items={[
-          { label: "Active Investigations", value: String(open.length), sub: "active syndicate clusters", tone: "text-navy" },
+          {
+            label: "Active Investigations",
+            value: String(open.length),
+            sub: "active syndicate clusters",
+            tone: "text-navy",
+          },
           {
             label: "Entities Under Review",
             value: String(open.reduce((s, i) => s + i.entities, 0)),
@@ -101,8 +106,9 @@ function InvestigationsPage() {
               {activeInv.title}
             </h2>
             <p className="mt-0.5 font-sans text-[12.5px] text-muted-foreground">
-              Lead Fraud Investigator: <Mono className="text-foreground font-bold">{activeInv.owner}</Mono> ·
-              Total Syndicate Exposure:{" "}
+              Lead Fraud Investigator:{" "}
+              <Mono className="text-foreground font-bold">{activeInv.owner}</Mono> · Total Syndicate
+              Exposure:{" "}
               <Mono className="text-blocked font-bold text-[13px]">
                 {money(activeInv.exposure * 100)}
               </Mono>
@@ -136,13 +142,19 @@ function InvestigationsPage() {
             </div>
             <ul className="space-y-1.5 text-muted-foreground font-sans text-[11.5px] list-disc list-inside">
               <li>
-                Inbound session from Limassol datacenter proxy <Mono className="text-[11px] font-bold text-foreground">198.51.100.44</Mono> (ASN 13335).
+                Inbound session from Limassol datacenter proxy{" "}
+                <Mono className="text-[11px] font-bold text-foreground">198.51.100.44</Mono> (ASN
+                13335).
               </li>
               <li>
-                Headless Linux emulator canvas <Mono className="text-[11px] font-bold text-foreground">9f8a84b12c</Mono> with 0.96 entropy score.
+                Headless Linux emulator canvas{" "}
+                <Mono className="text-[11px] font-bold text-foreground">9f8a84b12c</Mono> with 0.96
+                entropy score.
               </li>
               <li>
-                Mule beneficiary node <Mono className="text-[11px] font-bold text-foreground">PA-77120</Mono> created 9 minutes before payout attempt.
+                Mule beneficiary node{" "}
+                <Mono className="text-[11px] font-bold text-foreground">PA-77120</Mono> created 9
+                minutes before payout attempt.
               </li>
             </ul>
           </div>
@@ -153,14 +165,13 @@ function InvestigationsPage() {
             </div>
             <ul className="space-y-1.5 text-muted-foreground font-sans text-[11.5px] list-disc list-inside">
               <li>
-                <strong>14 synthetic accounts</strong> share the identical hardware canvas fingerprint.
+                <strong>14 synthetic accounts</strong> share the identical hardware canvas
+                fingerprint.
               </li>
               <li>
                 Degree centrality = <strong>16</strong> (High-density syndicate ring structure).
               </li>
-              <li>
-                3 connected nodes have confirmed historical chargebacks on record.
-              </li>
+              <li>3 connected nodes have confirmed historical chargebacks on record.</li>
             </ul>
           </div>
 
@@ -170,17 +181,14 @@ function InvestigationsPage() {
             </div>
             <ul className="space-y-1.5 text-muted-foreground font-sans text-[11.5px] list-disc list-inside">
               <li>
-                Permanent payment refusal on transaction <Mono className="text-[11px]">txn_order_88419</Mono>.
+                Permanent payment refusal on transaction{" "}
+                <Mono className="text-[11px]">txn_order_88419</Mono>.
               </li>
-              <li>
-                Freeze 14 connected accounts in graph syndicate ring.
-              </li>
+              <li>Freeze 14 connected accounts in graph syndicate ring.</li>
               <li>
                 Add Beneficiary <Mono className="text-[11px]">PA-77120</Mono> to global blacklist.
               </li>
-              <li>
-                Export cryptographic audit evidence bundle for FIU-IND STR submission.
-              </li>
+              <li>Export cryptographic audit evidence bundle for FIU-IND STR submission.</li>
             </ul>
           </div>
         </div>
@@ -216,8 +224,12 @@ function InvestigationsPage() {
                 >
                   {i.id}
                 </button>,
-                <span key="title" className="font-sans font-semibold text-foreground text-[12px]">{i.title}</span>,
-                <Mono key="ent" className="text-muted-foreground font-semibold">{i.entities}</Mono>,
+                <span key="title" className="font-sans font-semibold text-foreground text-[12px]">
+                  {i.title}
+                </span>,
+                <Mono key="ent" className="text-muted-foreground font-semibold">
+                  {i.entities}
+                </Mono>,
                 i.linkedCases.length ? (
                   <span key="cs" className="flex flex-wrap gap-x-2 font-mono text-[11px]">
                     {i.linkedCases.map((c) => (
@@ -232,18 +244,31 @@ function InvestigationsPage() {
                     ))}
                   </span>
                 ) : (
-                  <span key="cs" className="text-muted-foreground font-mono text-[11px]">—</span>
+                  <span key="cs" className="text-muted-foreground font-mono text-[11px]">
+                    —
+                  </span>
                 ),
-                <Mono key="exp" className="font-bold text-foreground tabular">{money(i.exposure * 100)}</Mono>,
-                <span key="own" className="text-muted-foreground font-medium font-sans text-[11.5px]">{i.owner}</span>,
+                <Mono key="exp" className="font-bold text-foreground tabular">
+                  {money(i.exposure * 100)}
+                </Mono>,
+                <span
+                  key="own"
+                  className="text-muted-foreground font-medium font-sans text-[11.5px]"
+                >
+                  {i.owner}
+                </span>,
                 <span
                   key="st"
                   className={cn("font-mono text-[10.5px] font-bold uppercase", stateTone[i.state])}
                 >
                   {i.state}
                 </span>,
-                <Mono key="op" className="text-muted-foreground text-[10.5px]">{i.opened}</Mono>,
-                <Mono key="act" className="text-muted-foreground text-[10.5px]">{i.lastActivity}</Mono>,
+                <Mono key="op" className="text-muted-foreground text-[10.5px]">
+                  {i.opened}
+                </Mono>,
+                <Mono key="act" className="text-muted-foreground text-[10.5px]">
+                  {i.lastActivity}
+                </Mono>,
               ],
             }))}
           />

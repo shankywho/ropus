@@ -50,17 +50,39 @@ function WebhooksPage() {
 
       <MetricStrip
         items={[
-          { label: "Active Endpoints", value: String(webhookEndpoints.length), sub: "1 paused for maintenance" },
-          { label: "Delivered (24h)", value: "48,112", sub: "events dispatched", tone: "text-authoritative" },
-          { label: "Delivery Rate", value: "99.62%", sub: "across all endpoints", tone: "text-authoritative" },
+          {
+            label: "Active Endpoints",
+            value: String(webhookEndpoints.length),
+            sub: "1 paused for maintenance",
+          },
+          {
+            label: "Delivered (24h)",
+            value: "48,112",
+            sub: "events dispatched",
+            tone: "text-authoritative",
+          },
+          {
+            label: "Delivery Rate",
+            value: "99.62%",
+            sub: "across all endpoints",
+            tone: "text-authoritative",
+          },
           { label: "p95 Latency", value: "148.2 ms", sub: "whk_ledger_01" },
-          { label: "Retry Queue", value: "14", sub: "exponential backoff active", tone: "text-amber-intel" },
+          {
+            label: "Retry Queue",
+            value: "14",
+            sub: "exponential backoff active",
+            tone: "text-amber-intel",
+          },
         ]}
       />
 
       <div className="mt-6 space-y-6">
         <div>
-          <SectionHead title="Configured Endpoints" meta={`${webhookEndpoints.length} registered`} />
+          <SectionHead
+            title="Configured Endpoints"
+            meta={`${webhookEndpoints.length} registered`}
+          />
           <div className="mt-2 border border-border bg-card shadow-xs overflow-x-auto">
             <DataGrid
               columns={[
@@ -76,14 +98,31 @@ function WebhooksPage() {
               rows={webhookEndpoints.map((e) => ({
                 id: e.id,
                 cells: [
-                  <Mono key="id" className="font-bold text-navy text-[11.5px]">{e.id}</Mono>,
-                  <Mono key="url" className="font-semibold text-foreground text-[12px]">{e.url}</Mono>,
-                  <span key="ev" className="text-muted-foreground font-mono text-[10.5px]">{e.events.join(", ")}</span>,
-                  <Mono key="rt" className={e.successRate < 0.99 ? "text-amber-intel font-bold" : "text-authoritative font-bold"}>
+                  <Mono key="id" className="font-bold text-navy text-[11.5px]">
+                    {e.id}
+                  </Mono>,
+                  <Mono key="url" className="font-semibold text-foreground text-[12px]">
+                    {e.url}
+                  </Mono>,
+                  <span key="ev" className="text-muted-foreground font-mono text-[10.5px]">
+                    {e.events.join(", ")}
+                  </span>,
+                  <Mono
+                    key="rt"
+                    className={
+                      e.successRate < 0.99
+                        ? "text-amber-intel font-bold"
+                        : "text-authoritative font-bold"
+                    }
+                  >
                     {(e.successRate * 100).toFixed(2)}%
                   </Mono>,
-                  <Mono key="lat" className="text-muted-foreground font-semibold">{e.p99Ms ? `${e.p99Ms.toFixed(1)}ms` : "148.2ms"}</Mono>,
-                  <Mono key="ls" className="text-muted-foreground">{e.lastDelivery}</Mono>,
+                  <Mono key="lat" className="text-muted-foreground font-semibold">
+                    {e.p99Ms ? `${e.p99Ms.toFixed(1)}ms` : "148.2ms"}
+                  </Mono>,
+                  <Mono key="ls" className="text-muted-foreground">
+                    {e.lastDelivery}
+                  </Mono>,
                   <span
                     key="st"
                     className={cn(
@@ -127,17 +166,37 @@ function WebhooksPage() {
                 .map((d) => ({
                   id: d.id,
                   cells: [
-                    <Mono key="at" className="text-muted-foreground">{d.at}</Mono>,
-                    <Mono key="id" className="font-bold text-navy">{d.id}</Mono>,
-                    <Mono key="ep" className="text-muted-foreground">{d.endpoint}</Mono>,
-                    <span key="ev" className="font-mono text-[11px] font-semibold text-foreground">{d.event}</span>,
-                    <Mono key="att" className={d.attempt > 1 ? "text-amber-intel font-bold" : "text-muted-foreground"}>
+                    <Mono key="at" className="text-muted-foreground">
+                      {d.at}
+                    </Mono>,
+                    <Mono key="id" className="font-bold text-navy">
+                      {d.id}
+                    </Mono>,
+                    <Mono key="ep" className="text-muted-foreground">
+                      {d.endpoint}
+                    </Mono>,
+                    <span key="ev" className="font-mono text-[11px] font-semibold text-foreground">
+                      {d.event}
+                    </span>,
+                    <Mono
+                      key="att"
+                      className={
+                        d.attempt > 1 ? "text-amber-intel font-bold" : "text-muted-foreground"
+                      }
+                    >
                       #{d.attempt}
                     </Mono>,
-                    <Mono key="st" className={d.status >= 400 ? "text-blocked font-bold" : "text-authoritative font-bold"}>
+                    <Mono
+                      key="st"
+                      className={
+                        d.status >= 400 ? "text-blocked font-bold" : "text-authoritative font-bold"
+                      }
+                    >
                       HTTP {d.status}
                     </Mono>,
-                    <Mono key="lat" className="text-muted-foreground font-semibold">{(d.latencyMs / 1000).toFixed(2)}s</Mono>,
+                    <Mono key="lat" className="text-muted-foreground font-semibold">
+                      {(d.latencyMs / 1000).toFixed(2)}s
+                    </Mono>,
                   ],
                 }))}
             />

@@ -129,7 +129,7 @@ type CanonicalRiskResponse struct {
 ```
 
 ### Side Effects:
-1. **Tenant Metering**: Increments atomic counter in [`UsageMeterEngine`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/saas/usage_meter.go).
+1. **Tenant Metering**: Increments atomic counter in [`UsageMeterEngine`](backend/internal/saas/usage_meter.go).
 2. **Decision Ledger**: Stores `StoredDecisionRecord` keyed by `decision_id`.
 3. **Automated Case Opening**: If score $\ge 0.80$ (BLOCK) or $\ge 0.30$ (REVIEW), generates a new review case.
 4. **Webhook Notification**: Appends event payload to internal webhook egress dispatcher.
@@ -193,9 +193,9 @@ type RiskFactorContribution struct {
 ---
 
 ## 9. Source Code Map
-- [`backend/internal/product_api/unified_pipeline.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/product_api/unified_pipeline.go): Complete pipeline orchestration, feature extraction, factor attribution, and decision return.
-- [`backend/internal/product_api/unified_pipeline_test.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/product_api/unified_pipeline_test.go): Comprehensive integration tests, decision thresholding tests, and factor sum verification.
-- [`backend/internal/security/api_gateway_middleware.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/security/api_gateway_middleware.go): Edge input sanitization, token validation, and rate limiting middleware.
+- [`backend/internal/product_api/unified_pipeline.go`](backend/internal/product_api/unified_pipeline.go): Complete pipeline orchestration, feature extraction, factor attribution, and decision return.
+- [`backend/internal/product_api/unified_pipeline_test.go`](backend/internal/product_api/unified_pipeline_test.go): Comprehensive integration tests, decision thresholding tests, and factor sum verification.
+- [`backend/internal/security/api_gateway_middleware.go`](backend/internal/security/api_gateway_middleware.go): Edge input sanitization, token validation, and rate limiting middleware.
 
 ---
 
@@ -237,7 +237,7 @@ Content-Type: application/json
 
 ## 11. How to Extend & Add New Signals
 To add a new feature signal (e.g. Email Domain Age):
-1. Add the raw field to `CanonicalRiskRequest` in [`backend/internal/product_api/unified_pipeline.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/product_api/unified_pipeline.go).
+1. Add the raw field to `CanonicalRiskRequest` in [`backend/internal/product_api/unified_pipeline.go`](backend/internal/product_api/unified_pipeline.go).
 2. Implement the evaluation logic under step 4 of `EvaluateRisk`.
 3. Compute the normalized `RiskFactorContribution` struct with a distinct `FactorName` and `Contribution` delta.
 4. Append the factor to the `factors` slice and reasons to `reasons`.
@@ -253,7 +253,7 @@ To add a new feature signal (e.g. Email Domain Age):
 ---
 
 ## 13. Cross-Component Links
-- [Component 02: Risk Evaluation Engine](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/02-risk-engine.md) — Scoring logic and precedence arbitration.
-- [Component 04: ML Inference Engine](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/04-ml-inference.md) — Gradient boosted tree evaluation.
-- [Component 05: Fraud Knowledge Graph](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/05-fraud-graph.md) — 3-hop entity neighborhood traversal.
-- [Component 09: Auth & Tenancy](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/09-auth-and-tenancy.md) — API key cryptography and RBAC.
+- [Component 02: Risk Evaluation Engine](docs/components/02-risk-engine.md) — Scoring logic and precedence arbitration.
+- [Component 04: ML Inference Engine](docs/components/04-ml-inference.md) — Gradient boosted tree evaluation.
+- [Component 05: Fraud Knowledge Graph](docs/components/05-fraud-graph.md) — 3-hop entity neighborhood traversal.
+- [Component 09: Auth & Tenancy](docs/components/09-auth-and-tenancy.md) — API key cryptography and RBAC.

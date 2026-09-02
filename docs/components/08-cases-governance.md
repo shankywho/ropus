@@ -81,12 +81,12 @@ type Case struct {
 ---
 
 ## 5. Source Code Map
-- [`backend/internal/cases/case_service.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/cases/case_service.go): Case creation, querying, state transitions, and assignment.
-- [`backend/internal/governance/model_risk_management.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/governance/model_risk_management.go): Model risk governance and SR 11-7 validation.
+- [`backend/internal/cases/case_service.go`](backend/internal/cases/case_service.go): Case creation, querying, state transitions, and assignment.
+- [`backend/internal/governance/model_risk_management.go`](backend/internal/governance/model_risk_management.go): Model risk governance and SR 11-7 validation.
 
 ---
 
 ## 6. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Automatically opens cases upon high-risk decisions.
-- [Component 07: AI Investigators](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/07-ai-investigators.md) — Attaches generated dossiers to the case.
-- [Component 04: ML Inference](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/04-ml-inference.md) — Receives resolved case labels for closed-loop model retraining.
+- [Component 01: Product API](docs/components/01-product-api.md) — Automatically opens cases upon high-risk decisions.
+- [Component 07: AI Investigators](docs/components/07-ai-investigators.md) — Attaches generated dossiers to the case.
+- [Component 04: ML Inference](docs/components/04-ml-inference.md) — Receives resolved case labels for closed-loop model retraining.

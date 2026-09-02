@@ -1,42 +1,96 @@
-name: Continuous Integration & Verification
+name: ROPUS CI Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
 
 jobs:
-  backend-verification:
-    name: Backend Test, Race & Static Analysis
+  backend-tests:
+    name: Backend Go Test Suite
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Go 1.22
+      - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
-          cache: true
           cache-dependency-path: backend/go.sum
 
-      - name: Verify Dependencies
+      - name: Run Go Tests & Race Detector
         run: |
           cd backend
-          go mod verify
+          go test -race -v ./...
 
-      - name: Static Analysis (go vet)
-        run: |
-          cd backend
-          go vet ./...
+  ml-tests:
+    name: Python ML & Evaluation Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Unit & Race Detection Tests
-        run: |
-          cd backend
-          go test -race -count=1 -timeout=180s ./...
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-      - name: Benchmark Performance Suite
+      - name: Install ML Dependencies
         run: |
-          cd backend
-          go test -bench=. -benchmem -run=^$ ./internal/riskengine/...
+          python -m pip install --upgrade pip
+          pip install -r ml-service/requirements.txt
+          pip install pytest joblib xgboost scikit-learn pandas numpy onnxruntime
+
+      - name: Run Pytest
+        run: |
+          pytest ml-service/tests
+
+      - name: Verify Frozen Holdout Evaluation
+        run: |
+          python ml-service/evaluation/evaluate_frozen_holdout.py
+
+  frontend-build:
+    name: Frontend Lint & Production Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run ESLint
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Run Production Build
+        run: |
+          cd frontend
+          npm run build
+
+  docs-and-compose:
+    name: Docker Compose & Documentation Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose Configuration
+        run: |
+          docker compose config
+
+      - name: Validate Documentation Files
+        run: |
+          make docs-check

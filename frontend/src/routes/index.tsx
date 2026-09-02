@@ -89,7 +89,8 @@ function Overview() {
             Risk Control Plane
           </h1>
           <p className="mt-0.5 font-sans text-[12.5px] text-muted-foreground">
-            Multi-stage synchronous decisioning (&lt;100ms SLA), deterministic AST rules, Bayes Minimum Risk (BMR) cost optimization, and GraphSAGE relationship intelligence.
+            Multi-stage synchronous decisioning (&lt;100ms SLA), deterministic AST rules, Bayes
+            Minimum Risk (BMR) cost optimization, and GraphSAGE relationship intelligence.
           </p>
         </div>
 
@@ -158,8 +159,8 @@ function Overview() {
             <p className="max-w-3xl font-sans text-[12.5px] leading-relaxed text-muted-foreground">
               An international IP or an elevated transaction amount looks benign in isolation. Real
               financial crime is only revealed when deterministic rules, calibrated machine learning
-              probabilities (BMR Champion), and inductive graph topologies (GraphSAGE Shadow) converge into an auditable defensive
-              verdict.
+              probabilities (BMR Champion), and inductive graph topologies (GraphSAGE Shadow)
+              converge into an auditable defensive verdict.
             </p>
           </div>
 
@@ -202,7 +203,9 @@ function Overview() {
               <ShieldAlert className="size-3.5 text-blocked shrink-0" />
               <div>
                 <div className="font-bold text-foreground">Case Queue</div>
-                <div className="text-[9.5px] text-blocked font-bold">{openCasesCount} Active (24h SLA)</div>
+                <div className="text-[9.5px] text-blocked font-bold">
+                  {openCasesCount} Active (24h SLA)
+                </div>
               </div>
             </Link>
           </div>
@@ -307,7 +310,8 @@ function Overview() {
             </h2>
             <p className="mt-0.5 font-sans text-[12.5px] text-muted-foreground">
               Customer <Mono className="font-bold text-foreground">cus_4471029</Mono> initiated an
-              IMPS payout of <strong className="text-foreground">₹14,50,000.00 INR</strong> from Limassol proxy 12 minutes after an active Bengaluru residential session.
+              IMPS payout of <strong className="text-foreground">₹14,50,000.00 INR</strong> from
+              Limassol proxy 12 minutes after an active Bengaluru residential session.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -390,7 +394,9 @@ function Overview() {
                 <span className="font-mono text-[10.5px] font-bold text-shadow-intel">
                   5. GraphSAGE Shadow Ring
                 </span>
-                <span className="font-mono text-[11px] font-bold text-shadow-intel tabular">+0.17</span>
+                <span className="font-mono text-[11px] font-bold text-shadow-intel tabular">
+                  +0.17
+                </span>
               </div>
               <p className="mt-1 font-sans text-[11.5px] text-muted-foreground leading-relaxed">
                 2-hop inductive GNN expands to 14 synthetic accounts linked to payout node{" "}
@@ -403,10 +409,13 @@ function Overview() {
                 <span className="font-mono text-[10.5px] font-bold text-authoritative">
                   6. Authoritative BMR ML
                 </span>
-                <span className="font-mono text-[11px] font-bold text-authoritative tabular">+0.20</span>
+                <span className="font-mono text-[11px] font-bold text-authoritative tabular">
+                  +0.20
+                </span>
               </div>
               <p className="mt-1 font-sans text-[11.5px] text-muted-foreground leading-relaxed">
-                25-feature ONNX XGBoost tree inference scores P(fraud|x) = 0.9418 (Beta-calibrated Champion).
+                25-feature ONNX XGBoost tree inference scores P(fraud|x) = 0.9418 (Beta-calibrated
+                Champion).
               </p>
             </div>
           </div>
@@ -510,7 +519,9 @@ function Overview() {
             rows={filteredDecisions.slice(0, 7).map((d) => ({
               id: d.decisionId,
               cells: [
-                <Mono key="time" className="text-muted-foreground">{time(d.evaluatedAt)}</Mono>,
+                <Mono key="time" className="text-muted-foreground">
+                  {time(d.evaluatedAt)}
+                </Mono>,
                 <Link
                   key="txn"
                   to="/decisions/$decisionId"
@@ -519,11 +530,21 @@ function Overview() {
                 >
                   {d.transactionId}
                 </Link>,
-                <Mono key="cus" className="text-muted-foreground">{d.customerId}</Mono>,
-                <Mono key="amt" className="font-bold">{`${d.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} ${d.currency}`}</Mono>,
+                <Mono key="cus" className="text-muted-foreground">
+                  {d.customerId}
+                </Mono>,
+                <Mono
+                  key="amt"
+                  className="font-bold"
+                >{`${d.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} ${d.currency}`}</Mono>,
                 <RiskScore key="score" value={d.riskScore} size="sm" showBand />,
                 <VerdictBadge key="v" verdict={d.verdict} size="sm" />,
-                <span key="sig" className="text-muted-foreground font-sans text-[11.5px] truncate max-w-[200px] block">{d.primarySignal}</span>,
+                <span
+                  key="sig"
+                  className="text-muted-foreground font-sans text-[11.5px] truncate max-w-[200px] block"
+                >
+                  {d.primarySignal}
+                </span>,
                 <Link
                   key="act"
                   to="/decisions/$decisionId"

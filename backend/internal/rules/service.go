@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"sync"
 )
 
 var (
@@ -59,11 +60,26 @@ type UpdateRuleInput struct {
 }
 
 type Service struct {
-	db *pgxpool.Pool
+	db          *pgxpool.Pool
+	memoryRules map[string][]Rule
+	mu          sync.RWMutex
 }
 
 func NewService(db *pgxpool.Pool) *Service {
-	return &Service{db: db}
+	return &Service{
+		db:          db,
+		memoryRules: make(map[string][]Rule),
+	}
+}
+
+// AddMemoryRule registers an active or draft rule into the in-memory fallback store.
+func (s *Service) AddMemoryRule(rule Rule) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.memoryRules == nil {
+		s.memoryRules = make(map[string][]Rule)
+	}
+	s.memoryRules[rule.TenantID] = append(s.memoryRules[rule.TenantID], rule)
 }
 
 // ensureTenantExists ensures the tenant record exists before foreign key insert.
@@ -173,7 +189,22 @@ func (s *Service) GetRule(ctx context.Context, tenantID, ruleID string) (*Rule, 
 // ListRules returns all rules for a tenant, optionally filtered by status.
 func (s *Service) ListRules(ctx context.Context, tenantID string, status *RuleStatus) ([]Rule, error) {
 	if s.db == nil {
-		return make([]Rule, 0), nil
+		s.mu.RLock()
+		defer s.mu.RUnlock()
+		rulesList, exists := s.memoryRules[tenantID]
+		if !exists {
+			return make([]Rule, 0), nil
+		}
+		if status == nil || *status == "" {
+			return append([]Rule(nil), rulesList...), nil
+		}
+		filtered := make([]Rule, 0, len(rulesList))
+		for _, r := range rulesList {
+			if r.Status == *status {
+				filtered = append(filtered, r)
+			}
+		}
+		return filtered, nil
 	}
 
 	var query string

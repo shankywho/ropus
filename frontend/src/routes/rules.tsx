@@ -1,21 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import {
-  DataGrid,
-  Page,
-  PageHead,
-  SectionHead,
-  TelemetryStrip,
-} from "@/components/ropus/page";
+import { DataGrid, Page, PageHead, SectionHead, TelemetryStrip } from "@/components/ropus/page";
 import { Mono, StatusPill } from "@/components/ropus/core";
 import { rules, ruleDetails, type RuleRecord } from "@/lib/ropus/platform-fixtures";
 import { cn } from "@/lib/utils";
-import {
-  Plus,
-  Trash2,
-  Play,
-  AlertTriangle,
-} from "lucide-react";
+import { Plus, Trash2, Play, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/rules")({
@@ -30,7 +19,8 @@ export const Route = createFileRoute("/rules")({
       { property: "og:title", content: "Rules Engine & AST Composer — ROPUS" },
       {
         property: "og:description",
-        content: "Deterministic JSON-AST decisioning rules with Maker-Checker dual control and backtester.",
+        content:
+          "Deterministic JSON-AST decisioning rules with Maker-Checker dual control and backtester.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -143,7 +133,8 @@ export function RulesPage() {
         estimatedFpMonthly: "₹38,500 INR",
       });
       toast.success("Dry-Run Backtest Completed on 100k Transactions", {
-        description: "Zero false-positive critical breaches projected across 90-day holdout dataset.",
+        description:
+          "Zero false-positive critical breaches projected across 90-day holdout dataset.",
       });
     }, 600);
   };
@@ -239,7 +230,9 @@ export function RulesPage() {
                 onClick={() => setComposerMode("visual")}
                 className={cn(
                   "px-2.5 py-0.5 cursor-pointer font-semibold",
-                  composerMode === "visual" ? "bg-navy text-white font-bold" : "text-muted-foreground",
+                  composerMode === "visual"
+                    ? "bg-navy text-white font-bold"
+                    : "text-muted-foreground",
                 )}
               >
                 Visual Nodes
@@ -249,7 +242,9 @@ export function RulesPage() {
                 onClick={() => setComposerMode("json")}
                 className={cn(
                   "px-2.5 py-0.5 cursor-pointer font-semibold",
-                  composerMode === "json" ? "bg-navy text-white font-bold" : "text-muted-foreground",
+                  composerMode === "json"
+                    ? "bg-navy text-white font-bold"
+                    : "text-muted-foreground",
                 )}
               >
                 Monaco JSON-AST
@@ -262,7 +257,9 @@ export function RulesPage() {
             <div className="space-y-4 font-mono text-[11.5px]">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[9.5px] text-muted-foreground uppercase block font-bold tracking-wider">Rule Identifier</label>
+                  <label className="text-[9.5px] text-muted-foreground uppercase block font-bold tracking-wider">
+                    Rule Identifier
+                  </label>
                   <input
                     type="text"
                     value={ruleName}
@@ -271,10 +268,14 @@ export function RulesPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-[9.5px] text-muted-foreground uppercase block font-bold tracking-wider">Enforcement Action</label>
+                  <label className="text-[9.5px] text-muted-foreground uppercase block font-bold tracking-wider">
+                    Enforcement Action
+                  </label>
                   <select
                     value={ruleAction}
-                    onChange={(e) => setRuleAction(e.target.value as any)}
+                    onChange={(e) =>
+                      setRuleAction(e.target.value as "BLOCK" | "REVIEW" | "CHALLENGE")
+                    }
                     className="mt-1 w-full border border-border bg-surface px-2.5 py-1 text-foreground font-mono text-[11.5px]"
                   >
                     <option value="BLOCK">BLOCK (Hard Decline)</option>
@@ -293,7 +294,10 @@ export function RulesPage() {
 
                   <div className="space-y-2">
                     {conditions.map((cond, idx) => (
-                      <div key={idx} className="flex items-center gap-2 border border-border bg-card p-2 shadow-2xs">
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 border border-border bg-card p-2 shadow-2xs"
+                      >
                         <select
                           value={cond.field}
                           onChange={(e) => {
@@ -304,7 +308,9 @@ export function RulesPage() {
                           className="border border-border bg-surface px-2 py-1 text-[11px] font-mono flex-1 text-foreground"
                         >
                           {CANONICAL_FEATURES.map((f) => (
-                            <option key={f} value={f}>{f}</option>
+                            <option key={f} value={f}>
+                              {f}
+                            </option>
                           ))}
                         </select>
 
@@ -318,7 +324,9 @@ export function RulesPage() {
                           className="border border-border bg-surface px-2 py-1 text-[11px] font-mono w-[140px] text-foreground"
                         >
                           {OPERATORS.map((op) => (
-                            <option key={op.value} value={op.value}>{op.label}</option>
+                            <option key={op.value} value={op.value}>
+                              {op.label}
+                            </option>
                           ))}
                         </select>
 
@@ -371,7 +379,8 @@ export function RulesPage() {
                   <span className="text-authoritative">IEEE-CIS Fixture</span>
                 </div>
                 <p className="text-[11px] text-muted-foreground font-sans leading-relaxed">
-                  Evaluate projected block rate &amp; false-positive friction against 100,000 historical transactions.
+                  Evaluate projected block rate &amp; false-positive friction against 100,000
+                  historical transactions.
                 </p>
                 <button
                   type="button"
@@ -380,14 +389,31 @@ export function RulesPage() {
                   className="w-full border border-border bg-card hover:bg-secondary py-1.5 text-foreground font-bold flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 text-[11px]"
                 >
                   <Play className="size-3" />
-                  <span>{backtestRunning ? "Simulating on 100k Events..." : "Run Dry-Run Simulation"}</span>
+                  <span>
+                    {backtestRunning ? "Simulating on 100k Events..." : "Run Dry-Run Simulation"}
+                  </span>
                 </button>
 
                 {backtestResult && (
                   <div className="border-t border-border pt-2 space-y-1 text-[10.5px]">
-                    <div className="flex justify-between"><span>Projected Hits:</span><span className="font-bold text-foreground">{backtestResult.hitCount} ({backtestResult.hitRate})</span></div>
-                    <div className="flex justify-between"><span>Precision:</span><span className="font-bold text-authoritative">{backtestResult.precision}</span></div>
-                    <div className="flex justify-between"><span>Est. FP Friction:</span><span className="font-bold text-navy">{backtestResult.estimatedFpMonthly}</span></div>
+                    <div className="flex justify-between">
+                      <span>Projected Hits:</span>
+                      <span className="font-bold text-foreground">
+                        {backtestResult.hitCount} ({backtestResult.hitRate})
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Precision:</span>
+                      <span className="font-bold text-authoritative">
+                        {backtestResult.precision}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Est. FP Friction:</span>
+                      <span className="font-bold text-navy">
+                        {backtestResult.estimatedFpMonthly}
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
@@ -399,7 +425,8 @@ export function RulesPage() {
                   <span>Maker-Checker Dual Control Policy</span>
                 </div>
                 <div className="text-[10.5px] text-muted-foreground font-sans leading-snug">
-                  Rules created by <strong>shankar.r</strong> cannot be activated without independent second-officer cryptographic sign-off.
+                  Rules created by <strong>shankar.r</strong> cannot be activated without
+                  independent second-officer cryptographic sign-off.
                 </div>
                 <div className="border-t border-border/40 pt-1 text-[9.5px] text-muted-foreground">
                   Workflow: DRAFT → PENDING_APPROVAL → ACTIVE
@@ -447,13 +474,26 @@ export function RulesPage() {
               rows={rows.map((r) => ({
                 id: r.id,
                 cells: [
-                  <Mono key="id" className="font-bold text-navy text-[11.5px]">{r.id}</Mono>,
-                  <span key="name" className="text-[12px] font-sans font-medium text-foreground">{r.name}</span>,
-                  <Mono key="pol" className="text-[11px] text-muted-foreground">{r.policy}</Mono>,
-                  <span key="act" className={actionTone[r.action]}>{r.action}</span>,
+                  <Mono key="id" className="font-bold text-navy text-[11.5px]">
+                    {r.id}
+                  </Mono>,
+                  <span key="name" className="text-[12px] font-sans font-medium text-foreground">
+                    {r.name}
+                  </span>,
+                  <Mono key="pol" className="text-[11px] text-muted-foreground">
+                    {r.policy}
+                  </Mono>,
+                  <span key="act" className={actionTone[r.action]}>
+                    {r.action}
+                  </span>,
                   <StateText key="state" state={r.state} />,
-                  <span key="hits" className="font-mono text-[11.5px] tabular">{r.hits24h.toLocaleString()}</span>,
-                  <span key="prec" className="font-mono text-[11.5px] font-bold tabular text-foreground">
+                  <span key="hits" className="font-mono text-[11.5px] tabular">
+                    {r.hits24h.toLocaleString()}
+                  </span>,
+                  <span
+                    key="prec"
+                    className="font-mono text-[11.5px] font-bold tabular text-foreground"
+                  >
                     {(r.precision * 100).toFixed(1)}%
                   </span>,
                 ],
@@ -474,7 +514,9 @@ export function RulesPage() {
 
             <div className="space-y-1">
               <div className="font-bold text-foreground text-[13px]">{selected.id}</div>
-              <div className="font-sans text-[12px] text-muted-foreground font-medium">{selected.name}</div>
+              <div className="font-sans text-[12px] text-muted-foreground font-medium">
+                {selected.name}
+              </div>
             </div>
 
             <div className="border-t border-border pt-3 space-y-2 text-[11px]">
@@ -483,30 +525,46 @@ export function RulesPage() {
                 <span className={actionTone[selected.action]}>{selected.action}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground uppercase text-[9.5px]">24h Hit Volume:</span>
-                <span className="font-bold text-foreground tabular">{selected.hits24h.toLocaleString()}</span>
+                <span className="text-muted-foreground uppercase text-[9.5px]">
+                  24h Hit Volume:
+                </span>
+                <span className="font-bold text-foreground tabular">
+                  {selected.hits24h.toLocaleString()}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground uppercase text-[9.5px]">Historical Precision:</span>
-                <span className="font-bold text-authoritative tabular">{(selected.precision * 100).toFixed(1)}%</span>
+                <span className="text-muted-foreground uppercase text-[9.5px]">
+                  Historical Precision:
+                </span>
+                <span className="font-bold text-authoritative tabular">
+                  {(selected.precision * 100).toFixed(1)}%
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground uppercase text-[9.5px]">Author:</span>
                 <span className="text-foreground font-medium">{detail.author}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground uppercase text-[9.5px]">Approving Officer:</span>
+                <span className="text-muted-foreground uppercase text-[9.5px]">
+                  Approving Officer:
+                </span>
                 <span className="text-foreground font-bold">{detail.approver}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground uppercase text-[9.5px]">SHA-256 Digest:</span>
-                <Mono className="text-[10px] text-muted-foreground truncate max-w-[160px]">{detail.sha256Hash}</Mono>
+                <span className="text-muted-foreground uppercase text-[9.5px]">
+                  SHA-256 Digest:
+                </span>
+                <Mono className="text-[10px] text-muted-foreground truncate max-w-[160px]">
+                  {detail.sha256Hash}
+                </Mono>
               </div>
             </div>
 
             {/* AST Logic Preview */}
             <div className="border-t border-border pt-3 space-y-1.5">
-              <span className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider block">AST Expression</span>
+              <span className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider block">
+                AST Expression
+              </span>
               <pre className="border border-border bg-surface p-2.5 text-[11px] text-foreground font-mono overflow-x-auto leading-relaxed shadow-2xs">
                 {JSON.stringify(detail.ast, null, 2)}
               </pre>

@@ -65,12 +65,12 @@ $$\text{Ciphertext} \parallel \text{AuthTag} = \text{AES-256-GCM}_{\text{Key}}\l
 ---
 
 ## 5. Source Code Map
-- [`backend/internal/storage/database.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/storage/database.go): PostgreSQL connection pooling, query execution, and transaction isolation.
-- [`backend/internal/features/store/feature_store.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/features/store/feature_store.go): Redis feature store sliding window aggregates and counters.
-- [`backend/internal/security/hardening/encryption_manager.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/security/hardening/encryption_manager.go): AES-256 GCM authenticated encryption.
+- [`backend/internal/storage/database.go`](backend/internal/storage/database.go): PostgreSQL connection pooling, query execution, and transaction isolation.
+- [`backend/internal/features/store/feature_store.go`](backend/internal/features/store/feature_store.go): Redis feature store sliding window aggregates and counters.
+- [`backend/internal/security/hardening/encryption_manager.go`](backend/internal/security/hardening/encryption_manager.go): AES-256 GCM authenticated encryption.
 
 ---
 
 ## 6. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Reads features and persists decision records.
-- [Component 09: Auth & Tenancy](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/09-auth-and-tenancy.md) — Enforces tenant isolation on all database interactions.
+- [Component 01: Product API](docs/components/01-product-api.md) — Reads features and persists decision records.
+- [Component 09: Auth & Tenancy](docs/components/09-auth-and-tenancy.md) — Enforces tenant isolation on all database interactions.

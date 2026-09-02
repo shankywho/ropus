@@ -40,11 +40,11 @@ If the burn rate exceeds $2.0\times$ across a 1-hour window, high-priority Pager
 ---
 
 ## 4. Source Code Map
-- [`backend/internal/observability/telemetry.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/observability/telemetry.go): Prometheus metric registration and latency recording middleware.
-- [`backend/internal/observability/slo_manager.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/observability/slo_manager.go): Rolling error budget and SLO availability tracker.
+- [`backend/internal/observability/telemetry.go`](backend/internal/observability/telemetry.go): Prometheus metric registration and latency recording middleware.
+- [`backend/internal/observability/slo_manager.go`](backend/internal/observability/slo_manager.go): Rolling error budget and SLO availability tracker.
 
 ---
 
 ## 5. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Instruments evaluation latency.
-- [Component 12: Resilience](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/12-resilience-circuit-breaker.md) — Exports circuit breaker state transitions.
+- [Component 01: Product API](docs/components/01-product-api.md) — Instruments evaluation latency.
+- [Component 12: Resilience](docs/components/12-resilience-circuit-breaker.md) — Exports circuit breaker state transitions.

@@ -1,195 +1,180 @@
-# ROPUS — AI Risk Manager 🛡️
+# ROPUS — AI Risk Manager (Razorpay AI Buildathon, Track 02)
 
-Most fraud detection systems reduce risk decisioning to an arbitrary score threshold, ignoring transaction economics. **ROPUS** combines real-time streaming feature extraction with **Bayes Minimum Risk (BMR)** cost-optimal decisioning—evaluating calibrated posterior probabilities against dynamic loss matrices to choose the action that minimizes expected financial loss. The platform processes synchronous risk evaluations with deterministic Go AST guardrails, Redis velocity counters, and an in-memory entity graph before committing decisions through a transactional outbox.
+**ROPUS** receives Razorpay payment events, estimates fraud risk using deterministic signals and a calibrated model, evaluates cost-sensitive policy recommendations, and produces an auditable analyst-ready result.
+
+> [!IMPORTANT]
+> **Buildathon Status Disclaimer**: This project is a locally reproducible engineering prototype and submission for **Track 02: AI Risk Manager**. Evaluated on an out-of-time frozen synthetic holdout partition ($N=1,200$). It does not connect to live payment settlement rails, does not handle real cardholder funds, and has not been independently audited for SOC2 or PCI-DSS compliance.
 
 ---
 
-## 🏛️ System Architecture
+## ⚡ 60-Second Quickstart (Docker Compose)
+
+```bash
+# 1. Clone repository and start container stack
+cp .env.example .env
+make up    # Or: docker compose up -d
+
+# 2. Verify service health
+curl http://localhost:8080/health
+curl http://localhost:8000/health
+
+# 3. Run the complete signed Razorpay webhook demo
+make demo-webhook
+```
+
+Once running, access the local interfaces:
+- **Analyst Control Plane**: [http://localhost:3000](http://localhost:3000)
+- **Go Risk Decision API**: [http://localhost:8080](http://localhost:8080)
+- **FastAPI / ONNX ML Sidecar**: [http://localhost:8000](http://localhost:8000)
+
+---
+
+## 🎯 The Complete Defense-Only Loop
 
 ```mermaid
-flowchart TD
-    subgraph Edge_and_Ingestion ["Edge & Ingestion Layer"]
-        M["Merchant / Client Application"] -->|POST /v1/risk-evaluations| API["Go API Gateway :8080"]
-        PG["Payment Provider"] -->|POST /webhooks/provider| API
-        UI["React Control Plane :3002"] <-->|REST API| API
-    end
+flowchart LR
+    A[Razorpay Webhook<br/>X-Razorpay-Signature] -->|HMAC-SHA256 Auth| B[Ingestion Adapter &<br/>Idempotency Guard]
+    B -->|Normalized Request| C[Risk Engine Orchestrator]
+    C -->|Feature Extraction| D[Velocity & Device Context]
+    C -->|Inference & Calibration| E[XGBoost 15F Model<br/>Beta Calibrated ECE: 1.19%]
+    D --> F[Deterministic AST Rules]
+    E --> G[Bayes Minimum Risk<br/>BMR Loss Engine]
+    F --> G
+    G -->|Optimal Action| H[Bounded Decision<br/>ALLOW / STEP_UP / REVIEW / DECLINE]
+    H -->|Non-Blocking Batch| I[Immutable SHA-256<br/>Audit Ledger]
+```
 
-    subgraph Synchronous_Path ["Synchronous Decision Pipeline (<100ms SLA)"]
-        API --> ORCH["Risk Orchestrator"]
-        ORCH <-->|Sliding-Window Velocity| REDIS[("Redis 7 Feature Store")]
-        ORCH <-->|Fetch Active AST Rules| PG_DB[("PostgreSQL 16")]
-        ORCH -->|POST /predict - 50ms Deadline| ONNX["ONNX ML Sidecar :8000"]
-        ORCH -->|SHA-256 Decision Ledger| AUDIT["Decision Audit Trail"]
-        ORCH -->|Atomic Commit - Decision and Outbox| PG_DB
-    end
+### 1. Ingress: Signed Razorpay Webhook
+Accepts `payment.authorized`, `payment.failed`, and `dispute.created` events at `POST /v1/webhooks/razorpay`, validating `X-Razorpay-Signature` using HMAC-SHA256:
 
-    subgraph Asynchronous_Streaming ["Asynchronous CDC & Event Streaming"]
-        PG_DB -.->|Logical WAL Replication| DEB["Debezium Connect :8083"]
-        DEB -->|EventRouter| REDP["Redpanda / Kafka :9092"]
-        REDP -->|risk.events| CASE_C["Case Manager Consumer"]
-        REDP -->|risk.events| AUDIT_C["Audit OLAP Consumer"]
-        CASE_C -->|Provision 24h SLA Case| PG_DB
-        AUDIT_C -->|Batch / Stream Insert| CH[("ClickHouse OLAP :9000")]
-    end
+```bash
+# Send signed Razorpay payment event
+curl -X POST http://localhost:8080/v1/webhooks/razorpay \
+  -H "Content-Type: application/json" \
+  -H "X-Razorpay-Signature: <hmac_sha256_hex>" \
+  -d '{
+    "entity": "event",
+    "account_id": "acc_RazorpayMerchant01",
+    "event": "payment.authorized",
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_Demo8391823",
+          "amount": 48000,
+          "currency": "INR",
+          "status": "authorized",
+          "method": "card",
+          "email": "gaurav.kumar@example.com"
+        }
+      }
+    }
+  }'
+```
 
-    subgraph Shadow_Intelligence ["Shadow Relationship Intelligence Plane"]
-        REDP -.->|Passive Ingestion| GNN["GraphSAGE GNN Subsystem"]
-        GNN -->|Heterogeneous Embeddings| SHADOW_LEDGER[("Shadow Evidence Ledger")]
-    end
+### 2. Decision: Direct API Risk Evaluation
+Direct synchronous decisioning via `POST /v1/risk-evaluations` (or alias `POST /v1/risk/evaluate`):
+
+```bash
+curl -X POST http://localhost:8080/v1/risk-evaluations \
+  -H "Content-Type: application/json" \
+  -H "X-Tenant-ID: merchant_buildathon_01" \
+  -d '{
+    "transaction_id": "txn_demo_4821",
+    "amount": 48000,
+    "currency": "INR",
+    "payment_method": {"type": "card", "token": "tok_visa_4321"},
+    "device_fingerprint": "dev_fp_iphone15_clean",
+    "ip_address": "106.51.72.10",
+    "account_id": "cus_99182"
+  }'
+```
+
+**Response Format**:
+```json
+{
+  "decision_id": "dec_8f3a9e12-4210-482a-9e11-88ab921cd091",
+  "transaction_id": "txn_demo_4821",
+  "recommended_action": "ALLOW_RECOMMENDATION",
+  "risk_score": 12,
+  "reason_codes": ["CLEAN_HISTORICAL_VELOCITY", "DOMESTIC_DEBIT_ISSUER"],
+  "expected_fraud_exposure": 0.05,
+  "expected_action_costs": {"ALLOW": 0.05, "STEP_UP": 15.00, "MANUAL_REVIEW": 150.00, "DECLINE": 72.00},
+  "economic_decision_reason": "ALLOW minimizes expected cost (0.05 vs 15.00)",
+  "evaluated_at": "2026-09-02T05:48:08Z",
+  "is_degraded": false,
+  "latency_ms": 3
+}
 ```
 
 ---
 
-## ⚡ Core Engineering Highlights (Live-Verifiable End-to-End)
+## 📊 Proven ML Quality & Calibration Metrics
 
-### 1. Server-Side Maker-Checker Rule Governance (403 on Self-Approval)
-Policy rules are evaluated via a sandboxed Go JSON-AST interpreter with zero dynamic `eval()`. Transitions through the lifecycle (`DRAFT` $\rightarrow$ `PENDING_APPROVAL` $\rightarrow$ `ACTIVE`) strictly require two distinct principals:
-```bash
-# Attempting to approve your own rule returns HTTP 403 Forbidden
-curl -X PUT http://localhost:8080/v1/rules/rule_123/status \
-  -H "X-Actor-ID: rule_creator_alice" \
-  -d '{"status": "ACTIVE"}'
-# Response: 403 Forbidden ("rule creator cannot approve their own rule")
+Evaluated on the frozen out-of-time held-out partition ($N=1,200$, 52 confirmed fraud cases, 1,148 legitimate cases) with zero temporal leakage:
+
+| Model Configuration | Model Type | ROC-AUC | PR-AUC | Recall | Precision | F1-Score | FPR | ECE Loss |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Random Baseline** | Baseline | 0.5000 | 0.0433 | 50.00% | 4.33% | 0.0797 | 50.00% | 0.4500 |
+| **15F Production Raw** | XGBoost 15F | 0.9376 | 0.6684 | 84.62% | 67.69% | 0.7521 | 1.83% | 0.0688 |
+| **15F Champion (Beta Calibrated)** | XGBoost 15F + Beta | **0.9376** | **0.6684** | **84.62%** | **70.97%** | **0.7719** | **1.57%** | **0.0119** |
+| **25F Candidate Raw** | XGBoost 25F | 0.9466 | 0.6487 | 84.62% | 67.69% | 0.7521 | 1.83% | 0.0666 |
+| **25F Candidate (Beta Calibrated)** | XGBoost 25F + Beta | 0.9466 | 0.6487 | 63.46% | 67.35% | 0.6535 | 1.39% | 0.0180 |
+
+### Champion Model Confusion Matrix ($N=1,200$):
 ```
-
-### 2. Live `/demo` Control Plane
-The web UI command deck does not fake state transitions client-side. Triggering attack scenarios or adjusting canary rollout percentages sends real HTTP mutations (`POST /v1/risk-evaluations`, `POST /v1/canary/control`) to the Go engine, persisting decisions into PostgreSQL and feature counters into Redis.
-
-### 3. Bayes Minimum Risk (BMR) Cost-Optimal Decisioning
-Instead of static cutoff scores, decisions are calculated by evaluating calibrated probability $P(\text{fraud} \mid x)$ against dollar-denominated loss functions:
-$$\text{Expected Loss}(\text{ALLOW}) = P(\text{fraud} \mid x) \times (\text{Amount} \times 1.05)$$
-$$\text{Expected Loss}(\text{DECLINE}) = (1 - P(\text{fraud} \mid x)) \times \text{Cost}(\text{False Positive})$$
-The system dynamically selects the action ($\text{ALLOW}$, $\text{MANUAL\_REVIEW}$, $\text{DECLINE}$) that minimizes total expected cost.
-
-### 4. Cryptographic SHA-256 Decision Audit Chain
-Every evaluated decision and policy modification is linked into a sequential SHA-256 cryptographic hash chain:
-$$H_i = \text{SHA-256}(H_{i-1} \parallel \text{EntryID} \parallel \text{Timestamp} \parallel \text{PayloadHash})$$
-Live chain integrity can be verified at any time:
-```bash
-curl http://localhost:8080/v1/audit/verify
-# Response: {"status":"PASS","integrity_verified":true,"total_decisions_audited":42,"head_hash":"..."}
+                       Predicted Legitimate    Predicted Fraud
+Actual Legitimate:           1130                   18       (FPR: 1.57%)
+Actual Fraud:                   8                   44       (Recall: 84.62%)
 ```
 
 ---
 
-## 🔬 Subsystem Deep Dives
+## 💰 False-Positive Cost & Bayes Minimum Risk (BMR) Analysis
 
-### Inductive Graph Intelligence (Shadow Mode)
-An inductive GraphSAGE GNN evaluates 6-entity heterogeneous relationships (Customer, Device, IP, Card, Merchant, Payout Account) to detect multi-account mule clusters. The graph engine runs process-locally with tenant namespacing (`<tenant_id>:<entity_type>:<raw_id>`) for sub-millisecond traversal and operates in shadow mode alongside the primary BMR decisioning pipeline.
+Unlike naive systems using static $p \ge 0.50$ thresholds, ROPUS models the economic trade-offs between false positives (turning away honest customers) and false negatives (chargeback loss):
 
-### Durable Multi-Layer Idempotency & Fault Resilience
-- **Multi-Layer Idempotency:** Layer-1 in-memory mutex coalescing (<0.02ms) backed by Layer-2 PostgreSQL uniqueness on `(tenant_id, idempotency_key)` with SHA-256 payload tampering detection. Active leases are renewed via a 2-second heartbeat ticker; crashed pod leases (>10s) are safely reclaimed on retry.
-- **Dependency Circuit Breakers:** 3-state circuit breakers protect Redis, PostgreSQL, and ML dependencies. If a downstream service fails $N$ times, the breaker trips to `OPEN`, immediately routing requests through fast-fail heuristic fallback rules. Live drills can be executed via `POST /v1/chaos/drill`.
-- **Transactional Outbox:** PostgreSQL ACID transactions commit `risk_decisions` and `outbox_events` atomically, ensuring at-least-once streaming delivery to Redpanda/Kafka without dual-write inconsistency.
+| Metric / Scenario | Fixed Threshold ($p \ge 0.50$) | ROPUS Calibrated BMR Engine | Comparison & Impact |
+|:---|:---:|:---:|:---:|
+| **Action Distribution** | 1,138 ALLOW / 62 DECLINE | 1,137 ALLOW / 4 REVIEW / 59 DECLINE | Dynamic triage routing |
+| **Frauds Intercepted (TP)** | 44 / 52 (84.62%) | 44 / 52 (84.62%) | Parity on caught fraud |
+| **False Declines (FP)** | 18 (1.57% FPR) | 19 (1.66% FPR) | +1 review on boundary item |
+| **Missed Fraud (FN)** | 8 (15.38% FNR) | 8 (15.38% FNR) | Parity on missed fraud |
+| **Total Realized Cost** | **₹5,716.39** | **₹6,116.39** | **+7.0% (₹100 review cost overhead)** |
 
----
-
-## 🛠️ Technology Stack
-
-[![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?style=flat&logo=go)](https://go.dev/)
-[![Frontend](https://img.shields.io/badge/Frontend-TanStack_Start_/_React-black?style=flat&logo=react)](https://tanstack.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=flat&logo=postgresql)](https://www.postgresql.org/)
-[![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=flat&logo=redis)](https://redis.io/)
-[![ONNX Runtime](https://img.shields.io/badge/ONNX_Runtime-1.17+-005CED?style=flat&logo=onnx)](https://onnxruntime.ai/)
-[![Redpanda](https://img.shields.io/badge/Redpanda-Kafka_Compatible-FF0055?style=flat&logo=apachekafka)](https://redpanda.com/)
-[![ClickHouse](https://img.shields.io/badge/ClickHouse-24_OLAP-FFCC01?style=flat&logo=clickhouse)](https://clickhouse.com/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+> **Analysis**: ROPUS compares a calibrated fixed-threshold baseline with a configurable cost-sensitive policy. Under the current local cost assumptions and frozen benchmark fixture, the BMR policy increased modeled cost by 7.0%, demonstrating why operational review queue assumptions require validation before production deployment.
 
 ---
 
-## 🚀 Quickstart & Local Development
+## 🛡️ Thoughtful Failure Recovery (8ms Timeout & Saturated Ledger)
 
-### Prerequisites
-* [Docker Desktop](https://www.docker.com/) (v24.0+) & Docker Compose
-* [Go 1.22+](https://go.dev/)
-* [Node.js 20+](https://nodejs.org/) or [Bun](https://bun.sh/)
-* [Python 3.11+](https://www.python.org/)
+1. **Context Deadline Degradation**: If downstream ML sidecar latency exceeds 8ms or is unreachable, the orchestrator trips its circuit breaker and resolves the transaction using purely pre-compiled, in-memory JSON-AST rules and recycled scratch buffers with **zero downstream SQL or network I/O**.
+2. **Audit Ledger Memory Saturation Protection**: Asynchronous SHA-256 audit ledger writes use non-blocking `select` channels with rate-limited alerts, ensuring that high ingestion bursts never block the real-time payment path.
 
-### 1. Launch Docker Infrastructure
+---
+
+## 🛠️ Verification & Test Commands
+
 ```bash
-# Clone the repository
-git clone https://github.com/shankywho/ropus.git
-cd ropus
+# Run all Go, Python, and frontend verification suites
+make test
 
-# Copy environment configuration
-cp .env.example .env
+# Reproduce published metrics directly from the canonical evaluation artifact
+make evaluate
 
-# Launch core data infrastructure
-docker compose up -d postgres redis clickhouse redpanda
-```
+# Run the 5-minute signed Razorpay webhook demo script
+make demo-webhook
 
-### 2. Start Go Decision Engine
-```bash
-cd backend
-go run cmd/api/main.go
-# Listens on http://localhost:8080
-```
-
-### 3. Start Python ML Sidecar
-```bash
-cd ml-service
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python3 serve.py
-# Listens on http://localhost:8000
-```
-
-### 4. Start Frontend Control Plane
-```bash
-cd frontend
-bun install # or npm install
-bun run dev # or npm run dev
-# Listens on http://localhost:3002
+# Validate documentation consistency
+make docs-check
 ```
 
 ---
 
-## 🌐 Control Plane Navigation
+## 📚 Documentation Index
 
-| Route | View | Description |
-|---|---|---|
-| **`/`** | Overview & Metrics | Real-time system health, decision distribution, and throughput metrics |
-| **`/demo`** | Interactive Demo | End-to-end scenario dispatcher and live chaos failure injection |
-| **`/graph`** | Entity Graph Explorer | In-memory 3-hop relationship graph and cluster exploration |
-| **`/models`** | Model Registry | ONNX model versioning, feature contracts, and canary distribution |
-| **`/rules`** | Rules Engine | JSON-AST policy rule editor with Maker-Checker dual control |
-| **`/cases`** | Case Management | Analyst queue with forensic evidence dossiers and disposition tracking |
-| **`/decisions`** | Decision Explorer | Real-time score attribution, factor decomposition, and raw payload audit |
-| **`/operations`** | Operations & SLOs | P99 latency tracking, error budgets, canary controls, and incident logs |
-| **`/security`** | Cryptographic Audit | SHA-256 decision audit chain verification and tamper detection |
-
----
-
-## 🧪 Testing & Verification
-
-Run the full Go test suite:
-```bash
-cd backend
-go test -v ./...
-```
-
-Run Python ML & calibration tests:
-```bash
-cd ml-service
-pytest tests/ -q
-```
-
-Build the Frontend production bundle:
-```bash
-cd frontend
-npm run build
-```
-
----
-
-## 🛡️ Safety Boundaries
-
-* **Recommendation-Only Execution:** The engine outputs structured decisions (`ALLOW`, `MANUAL_REVIEW`, `DECLINE`) without direct payment rail access or autonomous fund settlement.
-* **Anti-Probing Defense:** Detailed SHAP factor weights are restricted to authenticated analyst endpoints and webhook payloads to prevent oracle boundary mapping.
-* **Fail-Safe Fallback:** If ML sidecars or Redis stores become unreachable, the engine degrades gracefully to deterministic AST rules rather than failing open.
-
----
-
-## 📄 License
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+- [Submission Evidence & Requirement Map](docs/buildathon-evidence.md) — Authoritative Buildathon evaluation document.
+- [Machine Learning Quality & Metrics Report](docs/ml_quality_report.md) — Full calibration curves, Brier scores, and ablation details.
+- [Five-Minute Demo Video Runbook](docs/demo-runbook.md) — Step-by-step walkthrough script for evaluators.
+- [Technical Scope & Known Limitations](docs/limitations.md) — Transparent disclosure of prototype boundaries.
+- [API Reference](docs/api/api-reference.md) — Complete endpoint documentation.
+- [Local Development & Troubleshooting](docs/local-development.md) — Running individual services natively without Docker.

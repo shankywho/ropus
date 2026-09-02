@@ -35,5 +35,5 @@ Before any candidate model can receive production traffic, it must traverse and 
 
 ## 3. Master Promotion Policy
 For concrete threshold numbers, statistical protocols ($p < 0.05$), latency SLAs ($\text{P99} \le 5.0\text{ ms}$), and the complete dual-track framework, see:
-- [`docs/conditional_promotion_governance_decision.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/conditional_promotion_governance_decision.md) — Master Promotion Policy & Governance Decision.
-- [`docs/shadow_mode_promotion_policy.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/shadow_mode_promotion_policy.md) — Concrete 6-Gate Threshold Specifications.
+- [`ai_risk_policy.md`](ai_risk_policy.md) — Master AI Risk Governance Policy.
+- [`../ml_quality_report.md`](../ml_quality_report.md) — Concrete Model Quality & Calibration Report.

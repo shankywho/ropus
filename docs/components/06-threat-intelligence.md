@@ -48,10 +48,10 @@ When an IP matches a known proxy subnet (e.g. `198.51.100.0/24`), it contributes
 ---
 
 ## 4. Source Code Map
-- [`backend/internal/graph/threat_intelligence.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/threat_intelligence.go): Haversine distance, velocity calculation, and subnet matchers.
+- [`backend/internal/graph/threat_intelligence.go`](backend/internal/graph/threat_intelligence.go): Haversine distance, velocity calculation, and subnet matchers.
 
 ---
 
 ## 5. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Consumes travel velocity and IP threat score.
-- [Component 07: AI Investigators](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/07-ai-investigators.md) — Embeds network facts into investigation dossiers.
+- [Component 01: Product API](docs/components/01-product-api.md) — Consumes travel velocity and IP threat score.
+- [Component 07: AI Investigators](docs/components/07-ai-investigators.md) — Embeds network facts into investigation dossiers.

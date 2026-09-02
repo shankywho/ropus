@@ -69,12 +69,12 @@ type InvestigationDossier struct {
 ---
 
 ## 5. Source Code Map
-- [`backend/internal/llm/investigation_agent.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/llm/investigation_agent.go): Prompt templating, reasoning framework, and evidence synthesis.
-- [`backend/internal/llm/llm_client.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/llm/llm_client.go): Real HTTP client targeting OpenAI/Anthropic `/chat/completions` with deterministic fallback.
-- [`backend/internal/agent_council/debate_engine.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/agent_council/debate_engine.go): Multi-persona consensus engine and debate orchestration.
+- [`backend/internal/llm/investigation_agent.go`](backend/internal/llm/investigation_agent.go): Prompt templating, reasoning framework, and evidence synthesis.
+- [`backend/internal/llm/llm_client.go`](backend/internal/llm/llm_client.go): Real HTTP client targeting OpenAI/Anthropic `/chat/completions` with deterministic fallback.
+- [`backend/internal/agent_council/debate_engine.go`](backend/internal/agent_council/debate_engine.go): Multi-persona consensus engine and debate orchestration.
 
 ---
 
 ## 6. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Triggers investigation upon elevated risk.
-- [Component 08: Case Management](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/08-cases-governance.md) — Embeds generated dossier into persistent analyst case queue.
+- [Component 01: Product API](docs/components/01-product-api.md) — Triggers investigation upon elevated risk.
+- [Component 08: Case Management](docs/components/08-cases-governance.md) — Embeds generated dossier into persistent analyst case queue.

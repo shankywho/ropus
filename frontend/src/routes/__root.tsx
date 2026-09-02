@@ -49,7 +49,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <span className="font-mono text-[9.5px] font-semibold tracking-[0.12em] text-block uppercase">
           Render failure
         </span>
-        <h1 className="mt-2 font-sans text-lg font-bold tracking-tight">This surface did not load</h1>
+        <h1 className="mt-2 font-sans text-lg font-bold tracking-tight">
+          This surface did not load
+        </h1>
         <p className="mt-1 font-sans text-[12.5px] text-muted-foreground">
           The view failed before data could be rendered. Retry, or return to the Overview.
         </p>

@@ -4,10 +4,7 @@ import { Page, PageHead, SectionHead, TelemetryStrip } from "@/components/ropus/
 import { Mono } from "@/components/ropus/core";
 import { accessEvents, securityPosture, teamMembers } from "@/lib/ropus/platform-fixtures";
 import { cn } from "@/lib/utils";
-import {
-  CheckCircle2,
-  RefreshCw,
-} from "lucide-react";
+import { CheckCircle2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/security")({
@@ -110,7 +107,8 @@ export function SecurityPage() {
     setTimeout(() => {
       setVerifying(false);
       toast.success("Cryptographic Audit Hash-Chain Validated (4,284 Blocks)", {
-        description: "100% of SHA-256 block digests verify against the cryptographic tamper-evident hash chain.",
+        description:
+          "100% of SHA-256 block digests verify against the cryptographic tamper-evident hash chain.",
       });
     }, 500);
   };
@@ -129,15 +127,30 @@ export function SecurityPage() {
             value: String(teamMembers.length),
             sub: "including 1 service account",
           },
-          { label: "Audit Ledger Blocks", value: "4,284", sub: "SHA-256 Hash Chain", tone: "text-navy" },
+          {
+            label: "Audit Ledger Blocks",
+            value: "4,284",
+            sub: "SHA-256 Hash Chain",
+            tone: "text-navy",
+          },
           {
             label: "Denied Actions",
             value: String(denied.length),
             sub: "last 24 hours",
             tone: denied.length ? "text-blocked" : "",
           },
-          { label: "MFA Coverage", value: "100%", sub: "WebAuthn / FIDO2 Enforced", tone: "text-authoritative" },
-          { label: "KMS Envelope DEK", value: "Active", sub: "AES-256-GCM Hardware Root", tone: "text-authoritative" },
+          {
+            label: "MFA Coverage",
+            value: "100%",
+            sub: "WebAuthn / FIDO2 Enforced",
+            tone: "text-authoritative",
+          },
+          {
+            label: "KMS Envelope DEK",
+            value: "Active",
+            sub: "AES-256-GCM Hardware Root",
+            tone: "text-authoritative",
+          },
         ]}
       />
 
@@ -164,14 +177,20 @@ export function SecurityPage() {
         </div>
 
         <p className="font-sans text-[12.5px] text-muted-foreground leading-relaxed">
-          Every critical decision, rule activation, and model promotion generates a block chained via:
-          <Mono className="text-navy font-bold ml-1">H_i = SHA-256(H_{`{i-1}`} || EntryID || Timestamp || PayloadHash)</Mono>.
+          Every critical decision, rule activation, and model promotion generates a block chained
+          via:
+          <Mono className="text-navy font-bold ml-1">
+            H_i = SHA-256(H_{`{i-1}`} || EntryID || Timestamp || PayloadHash)
+          </Mono>
+          .
         </p>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
           {/* Block Chain Visualizer */}
           <div className="space-y-2">
-            <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Recent Ledger Blocks</div>
+            <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">
+              Recent Ledger Blocks
+            </div>
             <div className="space-y-2">
               {LEDGER_BLOCKS.map((blk) => (
                 <div
@@ -218,27 +237,47 @@ export function SecurityPage() {
 
             <div className="space-y-2">
               <div>
-                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Action:</span>
-                <span className="font-bold text-foreground text-[12px] font-sans">{selectedBlock.action}</span>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">
+                  Action:
+                </span>
+                <span className="font-bold text-foreground text-[12px] font-sans">
+                  {selectedBlock.action}
+                </span>
               </div>
               <div>
-                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Timestamp:</span>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">
+                  Timestamp:
+                </span>
                 <span className="text-foreground">{selectedBlock.timestamp}</span>
               </div>
               <div>
-                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Previous Block Hash (H_{`{i-1}`}):</span>
-                <Mono className="text-[9.5px] text-muted-foreground break-all">{selectedBlock.prevHash}</Mono>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">
+                  Previous Block Hash (H_{`{i-1}`}):
+                </span>
+                <Mono className="text-[9.5px] text-muted-foreground break-all">
+                  {selectedBlock.prevHash}
+                </Mono>
               </div>
               <div>
-                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">Payload Digest (SHA-256):</span>
-                <Mono className="text-[9.5px] text-foreground break-all">{selectedBlock.payloadHash}</Mono>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">
+                  Payload Digest (SHA-256):
+                </span>
+                <Mono className="text-[9.5px] text-foreground break-all">
+                  {selectedBlock.payloadHash}
+                </Mono>
               </div>
               <div className="border-t border-border pt-2">
-                <span className="text-navy font-bold block text-[9px] uppercase tracking-wider">Final Block Hash (H_i):</span>
-                <Mono className="text-[10px] font-bold text-navy break-all">{selectedBlock.blockHash}</Mono>
+                <span className="text-navy font-bold block text-[9px] uppercase tracking-wider">
+                  Final Block Hash (H_i):
+                </span>
+                <Mono className="text-[10px] font-bold text-navy break-all">
+                  {selectedBlock.blockHash}
+                </Mono>
               </div>
               <div>
-                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">KMS Signature:</span>
+                <span className="text-muted-foreground block text-[9px] uppercase font-bold tracking-wider">
+                  KMS Signature:
+                </span>
                 <Mono className="text-[9.5px] text-authoritative">{selectedBlock.signature}</Mono>
               </div>
             </div>
@@ -266,9 +305,15 @@ export function SecurityPage() {
                   <tr key={e.id} className="hover:bg-secondary/40 transition-colors">
                     <td className="py-2.5 px-3 text-muted-foreground">{e.at}</td>
                     <td className="py-2.5 px-3 font-bold text-foreground">{e.actor}</td>
-                    <td className="py-2.5 px-3 font-sans text-foreground text-[12px]">{e.action}</td>
-                    <td className="py-2.5 px-3"><Mono className="text-[11px]">{e.resource}</Mono></td>
-                    <td className="py-2.5 px-3"><ResultTag result={e.result} /></td>
+                    <td className="py-2.5 px-3 font-sans text-foreground text-[12px]">
+                      {e.action}
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <Mono className="text-[11px]">{e.resource}</Mono>
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <ResultTag result={e.result} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -283,7 +328,10 @@ export function SecurityPage() {
           </span>
           <div className="space-y-2 text-[11px]">
             {securityPosture.map((p) => (
-              <div key={p.category} className="flex justify-between items-center py-1 border-b border-border/40 last:border-0">
+              <div
+                key={p.category}
+                className="flex justify-between items-center py-1 border-b border-border/40 last:border-0"
+              >
                 <span className="text-muted-foreground text-[10.5px]">{p.category}:</span>
                 <span className="font-bold text-authoritative">{p.status}</span>
               </div>

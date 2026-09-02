@@ -49,13 +49,13 @@ type DeadLetterEvent struct {
 ---
 
 ## 4. Source Code Map
-- [`backend/internal/streaming/event_bus_adapter.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/streaming/event_bus_adapter.go): Event bus adapter with partition batching and backpressure.
-- [`backend/internal/events/kafka_adapter.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/events/kafka_adapter.go): Kafka message broker adapter and consumer group fanout.
-- [`backend/internal/events/dead_letter_queue.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/events/dead_letter_queue.go): Dead letter queue handler and retry manager.
+- [`backend/internal/streaming/event_bus_adapter.go`](backend/internal/streaming/event_bus_adapter.go): Event bus adapter with partition batching and backpressure.
+- [`backend/internal/events/kafka_adapter.go`](backend/internal/events/kafka_adapter.go): Kafka message broker adapter and consumer group fanout.
+- [`backend/internal/events/dead_letter_queue.go`](backend/internal/events/dead_letter_queue.go): Dead letter queue handler and retry manager.
 
 ---
 
 ## 5. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Publishes decision events.
-- [Component 12: Resilience & Fallbacks](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/12-resilience-circuit-breaker.md) — Buffers events locally if Kafka brokers are unreachable.
-- [Component 13: Webhooks](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/13-webhooks.md) — Consumes events to dispatch customer webhooks.
+- [Component 01: Product API](docs/components/01-product-api.md) — Publishes decision events.
+- [Component 12: Resilience & Fallbacks](docs/components/12-resilience-circuit-breaker.md) — Buffers events locally if Kafka brokers are unreachable.
+- [Component 13: Webhooks](docs/components/13-webhooks.md) — Consumes events to dispatch customer webhooks.

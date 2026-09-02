@@ -186,7 +186,12 @@ export function MetricStrip({
     <dl className="grid grid-cols-2 divide-x divide-border border-b border-border sm:grid-cols-3 lg:grid-cols-5">
       {items.map((m, i) => (
         <div key={m.label} className={cn("px-5 py-3.5", i === 0 && "pl-0")}>
-          <dd className={cn("font-mono text-[28px] leading-none font-medium tracking-[-0.05em] tabular", m.tone)}>
+          <dd
+            className={cn(
+              "font-mono text-[28px] leading-none font-medium tracking-[-0.05em] tabular",
+              m.tone,
+            )}
+          >
             {m.value}
           </dd>
           <dt className="mt-2 font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
@@ -214,13 +219,20 @@ export function TelemetryStrip({
     <dl className={cn("flex flex-wrap divide-x divide-border border-b border-border", className)}>
       {items.map((m, i) => (
         <div key={m.label} className={cn("px-4 py-2.5", i === 0 && "pl-0")}>
-          <dd className={cn("font-mono text-[20px] leading-none font-semibold tracking-[-0.05em] tabular", m.tone)}>
+          <dd
+            className={cn(
+              "font-mono text-[20px] leading-none font-semibold tracking-[-0.05em] tabular",
+              m.tone,
+            )}
+          >
             {m.value}
           </dd>
           <dt className="mt-1.5 font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
             {m.label}
           </dt>
-          {m.sub && <dd className="mt-0.5 font-sans text-[10.5px] text-muted-foreground">{m.sub}</dd>}
+          {m.sub && (
+            <dd className="mt-0.5 font-sans text-[10.5px] text-muted-foreground">{m.sub}</dd>
+          )}
         </div>
       ))}
     </dl>
@@ -234,7 +246,9 @@ export function InspectorRow({ label, children }: { label: string; children: Rea
       <span className="font-mono text-[9.5px] font-semibold tracking-[0.10em] whitespace-nowrap text-muted-foreground uppercase">
         {label}
       </span>
-      <span className="min-w-0 truncate text-right font-sans text-[12px] text-foreground">{children}</span>
+      <span className="min-w-0 truncate text-right font-sans text-[12px] text-foreground">
+        {children}
+      </span>
     </div>
   );
 }

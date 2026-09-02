@@ -13,7 +13,8 @@ export const Route = createFileRoute("/api-keys")({
       { title: "API Keys & Credentials — ROPUS" },
       {
         name: "description",
-        content: "Issued API keys, scopes, environments, 24-hour overlapping key rotation, and cryptographic audit proofs.",
+        content:
+          "Issued API keys, scopes, environments, 24-hour overlapping key rotation, and cryptographic audit proofs.",
       },
       { property: "og:title", content: "API Keys — ROPUS" },
       {
@@ -42,7 +43,9 @@ function ApiKeysPage() {
   const [copied, setCopied] = useState(false);
 
   const handleGenerateKey = () => {
-    const rawSecret = `rop_${newKeyEnv === "PRODUCTION" ? "live" : "test"}_` + Array.from({ length: 24 }, () => Math.random().toString(36)[2]).join("");
+    const rawSecret =
+      `rop_${newKeyEnv === "PRODUCTION" ? "live" : "test"}_` +
+      Array.from({ length: 24 }, () => Math.random().toString(36)[2]).join("");
     const newRecord: ApiKeyRecord = {
       id: `key_${Math.random().toString(36).substring(2, 8)}`,
       label: newKeyLabel,
@@ -93,7 +96,12 @@ function ApiKeysPage() {
             sub: "retained in audit ledger",
           },
           { label: "Rotation Policy", value: "90 days", sub: "automatic notification" },
-          { label: "SLA Guarantee", value: "0ms Downtime", sub: "during key rotation", tone: "text-authoritative" },
+          {
+            label: "SLA Guarantee",
+            value: "0ms Downtime",
+            sub: "during key rotation",
+            tone: "text-authoritative",
+          },
         ]}
       />
 
@@ -135,7 +143,9 @@ function ApiKeysPage() {
             <div className="space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[9.5px] text-muted-foreground uppercase block font-bold tracking-wider">Key Label</label>
+                  <label className="text-[9.5px] text-muted-foreground uppercase block font-bold tracking-wider">
+                    Key Label
+                  </label>
                   <input
                     type="text"
                     value={newKeyLabel}
@@ -144,10 +154,12 @@ function ApiKeysPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-[9.5px] text-muted-foreground uppercase block font-bold tracking-wider">Environment</label>
+                  <label className="text-[9.5px] text-muted-foreground uppercase block font-bold tracking-wider">
+                    Environment
+                  </label>
                   <select
                     value={newKeyEnv}
-                    onChange={(e) => setNewKeyEnv(e.target.value as any)}
+                    onChange={(e) => setNewKeyEnv(e.target.value as "PRODUCTION" | "SANDBOX")}
                     className="mt-1 w-full border border-border bg-surface px-2.5 py-1 text-foreground font-mono text-[11.5px]"
                   >
                     <option value="PRODUCTION">PRODUCTION (Authoritative)</option>
@@ -172,7 +184,9 @@ function ApiKeysPage() {
                 <Check className="size-4" /> API Key Created! Store your secret now.
               </div>
               <div className="flex items-center justify-between border border-border bg-surface p-2.5">
-                <Mono className="text-[12px] font-bold text-foreground select-all">{newGeneratedSecret}</Mono>
+                <Mono className="text-[12px] font-bold text-foreground select-all">
+                  {newGeneratedSecret}
+                </Mono>
                 <button
                   type="button"
                   onClick={() => {
@@ -183,7 +197,11 @@ function ApiKeysPage() {
                   }}
                   className="border border-border bg-surface px-2.5 py-1 text-[10.5px] hover:bg-secondary cursor-pointer flex items-center gap-1"
                 >
-                  {copied ? <Check className="size-3 text-authoritative" /> : <Copy className="size-3" />}
+                  {copied ? (
+                    <Check className="size-3 text-authoritative" />
+                  ) : (
+                    <Copy className="size-3" />
+                  )}
                   <span>{copied ? "Copied" : "Copy"}</span>
                 </button>
               </div>
@@ -212,9 +230,15 @@ function ApiKeysPage() {
           rows={keysList.map((k) => ({
             id: k.id,
             cells: [
-              <Mono key="id" className="font-bold text-navy text-[11.5px]">{k.id}</Mono>,
-              <span key="label" className="font-sans font-semibold text-foreground text-[12px]">{k.label}</span>,
-              <Mono key="pref" className="text-muted-foreground">{k.prefix}</Mono>,
+              <Mono key="id" className="font-bold text-navy text-[11.5px]">
+                {k.id}
+              </Mono>,
+              <span key="label" className="font-sans font-semibold text-foreground text-[12px]">
+                {k.label}
+              </span>,
+              <Mono key="pref" className="text-muted-foreground">
+                {k.prefix}
+              </Mono>,
               <span
                 key="env"
                 className={cn(
@@ -224,12 +248,21 @@ function ApiKeysPage() {
               >
                 {k.environment}
               </span>,
-              <Mono key="sc" className="text-muted-foreground text-[10.5px]">{k.scopes.join(", ")}</Mono>,
-              <Mono key="cr" className="text-muted-foreground text-[10.5px]">{k.created}</Mono>,
-              <Mono key="us" className="text-muted-foreground text-[10.5px]">{k.lastUsed}</Mono>,
+              <Mono key="sc" className="text-muted-foreground text-[10.5px]">
+                {k.scopes.join(", ")}
+              </Mono>,
+              <Mono key="cr" className="text-muted-foreground text-[10.5px]">
+                {k.created}
+              </Mono>,
+              <Mono key="us" className="text-muted-foreground text-[10.5px]">
+                {k.lastUsed}
+              </Mono>,
               <span
                 key="st"
-                className={cn("font-mono text-[10.5px] font-semibold tracking-[0.06em] uppercase", stateTone[k.state])}
+                className={cn(
+                  "font-mono text-[10.5px] font-semibold tracking-[0.06em] uppercase",
+                  stateTone[k.state],
+                )}
               >
                 {k.state}
               </span>,
@@ -248,7 +281,9 @@ function ApiKeysPage() {
       </div>
 
       <p className="mt-3 text-[11.5px] font-sans text-muted-foreground leading-relaxed">
-        Key <Mono className="text-foreground font-bold">key_7c8de2</Mono> is currently in rotation. Its replacement has served traffic since 2026-08-21 and the old key will expire automatically on 2026-08-29.
+        Key <Mono className="text-foreground font-bold">key_7c8de2</Mono> is currently in rotation.
+        Its replacement has served traffic since 2026-08-21 and the old key will expire
+        automatically on 2026-08-29.
       </p>
     </Page>
   );

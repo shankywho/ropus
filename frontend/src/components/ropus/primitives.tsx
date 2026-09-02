@@ -25,8 +25,12 @@ export function Panel({
       {(title || actions) && (
         <header className="flex items-start justify-between gap-4 border-b border-border bg-card px-4 py-2.5">
           <div>
-            <h2 className="font-sans text-[13px] font-bold tracking-tight text-foreground">{title}</h2>
-            {description && <p className="mt-0.5 font-sans text-[11.5px] text-muted-foreground">{description}</p>}
+            <h2 className="font-sans text-[13px] font-bold tracking-tight text-foreground">
+              {title}
+            </h2>
+            {description && (
+              <p className="mt-0.5 font-sans text-[11.5px] text-muted-foreground">{description}</p>
+            )}
           </div>
           {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
         </header>
@@ -51,7 +55,9 @@ export function PageHeader({
     <header className="border-b border-border bg-surface px-6 py-6 lg:px-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-3xl">
-          <h1 className="font-sans text-[24px] lg:text-[26px] font-extrabold leading-[1.12] tracking-[-0.04em] text-foreground">{title}</h1>
+          <h1 className="font-sans text-[24px] lg:text-[26px] font-extrabold leading-[1.12] tracking-[-0.04em] text-foreground">
+            {title}
+          </h1>
           {description && (
             <p className="mt-1.5 font-sans text-[12.5px] leading-relaxed text-muted-foreground">
               {description}
@@ -209,7 +215,12 @@ export function RiskScore({ value, size = "sm" }: { value: number; size?: "sm" |
   if (size === "xl") {
     return (
       <div>
-        <div className={cn("font-mono text-[36px] lg:text-[40px] leading-none font-medium tracking-[-0.05em] tabular", tone)}>
+        <div
+          className={cn(
+            "font-mono text-[36px] lg:text-[40px] leading-none font-medium tracking-[-0.05em] tabular",
+            tone,
+          )}
+        >
           {value.toFixed(2)}
         </div>
         <div className="mt-1 font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
@@ -242,11 +253,20 @@ export function MetricBlock({
 }) {
   return (
     <div className="border-r border-b border-border bg-card px-4 py-3.5 last:border-r-0">
-      <div className="font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">{label}</div>
-      <div className="mt-1.5 font-mono text-[28px] leading-none font-medium tracking-[-0.05em] tabular">{value}</div>
+      <div className="font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+        {label}
+      </div>
+      <div className="mt-1.5 font-mono text-[28px] leading-none font-medium tracking-[-0.05em] tabular">
+        {value}
+      </div>
       <div className="mt-1.5 flex items-center gap-1.5 font-mono text-[10.5px] text-muted-foreground">
         {delta && (
-          <span className={cn("tabular font-semibold", dir === "up" ? "text-blocked" : "text-authoritative")}>
+          <span
+            className={cn(
+              "tabular font-semibold",
+              dir === "up" ? "text-blocked" : "text-authoritative",
+            )}
+          >
             {dir === "up" ? "▲" : "▼"} {delta}
           </span>
         )}
@@ -344,7 +364,9 @@ export function KeyValue({
           key={i}
           className="flex items-baseline justify-between gap-4 border-b border-border px-4 py-2 last:border-b-0"
         >
-          <dt className="font-mono text-[9.5px] font-semibold tracking-[0.10em] text-muted-foreground uppercase">{k}</dt>
+          <dt className="font-mono text-[9.5px] font-semibold tracking-[0.10em] text-muted-foreground uppercase">
+            {k}
+          </dt>
           <dd className="text-right font-sans text-[12px] font-medium text-foreground">{v}</dd>
         </div>
       ))}
@@ -482,7 +504,12 @@ export function NoticeBar({
     positive: "border-l-authoritative bg-authoritative-surface text-authoritative",
   } as const;
   return (
-    <div className={cn("border border-border border-l-2 px-4 py-2.5 font-sans text-[12px]", tones[tone])}>
+    <div
+      className={cn(
+        "border border-border border-l-2 px-4 py-2.5 font-sans text-[12px]",
+        tones[tone],
+      )}
+    >
       <span className="font-semibold">{title}</span>
       {children && <span className="text-muted-foreground"> — {children}</span>}
     </div>
@@ -538,7 +565,9 @@ export function Section({
     <section className={cn("min-w-0", className)}>
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border pb-2">
         <div>
-          <h2 className="font-sans text-[13.5px] font-bold tracking-tight text-foreground">{title}</h2>
+          <h2 className="font-sans text-[13.5px] font-bold tracking-tight text-foreground">
+            {title}
+          </h2>
           {description && (
             <p className="mt-0.5 font-sans text-[11.5px] text-muted-foreground">{description}</p>
           )}
@@ -551,7 +580,11 @@ export function Section({
 }
 
 export function SectionLabel({ children }: { children: ReactNode }) {
-  return <div className="font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">{children}</div>;
+  return (
+    <div className="font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+      {children}
+    </div>
+  );
 }
 
 /** Progressive disclosure: summary line first, forensic detail on demand. */
@@ -576,7 +609,9 @@ export function Disclosure({
       <summary className="flex cursor-pointer list-none items-baseline justify-between gap-4">
         <span>
           <span className="font-sans text-[12.5px] font-semibold text-foreground">{summary}</span>
-          {detail && <span className="ml-2 font-sans text-[11.5px] text-muted-foreground">{detail}</span>}
+          {detail && (
+            <span className="ml-2 font-sans text-[11.5px] text-muted-foreground">{detail}</span>
+          )}
         </span>
         <span className="shrink-0 font-sans text-[11.5px] font-medium text-primary">
           {cta}{" "}
@@ -654,7 +689,9 @@ export function ExplanationStage({
     <div className={cn("border-t-2 pt-3.5", accent)}>
       <div className="flex items-baseline gap-2">
         <Mono className="text-[10px] text-muted-foreground font-medium">{step}</Mono>
-        <h3 className="font-mono text-[9.5px] font-bold tracking-[0.12em] uppercase text-foreground">{title}</h3>
+        <h3 className="font-mono text-[9.5px] font-bold tracking-[0.12em] uppercase text-foreground">
+          {title}
+        </h3>
       </div>
       <ul className="mt-2.5 space-y-1.5">
         {items.map((i) => (

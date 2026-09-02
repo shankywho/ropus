@@ -44,10 +44,22 @@ const coreEngineNav: NavItem[] = [
 ];
 
 const governanceNav: NavItem[] = [
-  { label: "Rules Engine", to: "/rules", icon: FileCode2, badge: "AST", badgeTone: "authoritative" },
+  {
+    label: "Rules Engine",
+    to: "/rules",
+    icon: FileCode2,
+    badge: "AST",
+    badgeTone: "authoritative",
+  },
   { label: "Model Registry", to: "/models", icon: Cpu, badge: "BMR", badgeTone: "authoritative" },
   { label: "Threat Intel", to: "/threat-intelligence", icon: Globe2 },
-  { label: "SRE Operations", to: "/operations", icon: Activity, badge: "99.99%", badgeTone: "authoritative" },
+  {
+    label: "SRE Operations",
+    to: "/operations",
+    icon: Activity,
+    badge: "99.99%",
+    badgeTone: "authoritative",
+  },
   { label: "Security & KMS", to: "/security", icon: ShieldCheck },
 ];
 
@@ -229,7 +241,10 @@ function UtcClock() {
     return () => clearInterval(id);
   }, []);
   return (
-    <span className="font-mono text-[11px] text-muted-foreground tabular font-medium" suppressHydrationWarning>
+    <span
+      className="font-mono text-[11px] text-muted-foreground tabular font-medium"
+      suppressHydrationWarning
+    >
       UTC {now ?? "--:--:--"}
     </span>
   );
@@ -423,24 +438,70 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
             <div className="grid grid-cols-2 gap-3 font-mono text-[11.5px]">
               <div className="border border-border/60 bg-secondary/30 p-2.5 space-y-1.5">
-                <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Navigation (G then Key)</div>
-                <div className="flex justify-between"><span>Overview</span><kbd className="text-navy font-bold">G H</kbd></div>
-                <div className="flex justify-between"><span>Decisions</span><kbd className="text-navy font-bold">G D</kbd></div>
-                <div className="flex justify-between"><span>Cases Queue</span><kbd className="text-navy font-bold">G C</kbd></div>
-                <div className="flex justify-between"><span>Models Registry</span><kbd className="text-navy font-bold">G M</kbd></div>
-                <div className="flex justify-between"><span>Rules AST</span><kbd className="text-navy font-bold">G R</kbd></div>
-                <div className="flex justify-between"><span>Fraud Graph</span><kbd className="text-navy font-bold">G G</kbd></div>
-                <div className="flex justify-between"><span>Threat Intel</span><kbd className="text-navy font-bold">G T</kbd></div>
-                <div className="flex justify-between"><span>Operations</span><kbd className="text-navy font-bold">G O</kbd></div>
-                <div className="flex justify-between"><span>Security KMS</span><kbd className="text-navy font-bold">G S</kbd></div>
-                <div className="flex justify-between"><span>API Reference</span><kbd className="text-navy font-bold">G A</kbd></div>
+                <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Navigation (G then Key)
+                </div>
+                <div className="flex justify-between">
+                  <span>Overview</span>
+                  <kbd className="text-navy font-bold">G H</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Decisions</span>
+                  <kbd className="text-navy font-bold">G D</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Cases Queue</span>
+                  <kbd className="text-navy font-bold">G C</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Models Registry</span>
+                  <kbd className="text-navy font-bold">G M</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Rules AST</span>
+                  <kbd className="text-navy font-bold">G R</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Fraud Graph</span>
+                  <kbd className="text-navy font-bold">G G</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Threat Intel</span>
+                  <kbd className="text-navy font-bold">G T</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Operations</span>
+                  <kbd className="text-navy font-bold">G O</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Security KMS</span>
+                  <kbd className="text-navy font-bold">G S</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>API Reference</span>
+                  <kbd className="text-navy font-bold">G A</kbd>
+                </div>
               </div>
               <div className="border border-border/60 bg-secondary/30 p-2.5 space-y-1.5">
-                <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Global Omnibar &amp; Actions</div>
-                <div className="flex justify-between"><span>Open Omnibar</span><kbd className="text-navy font-bold">⌘ K / /</kbd></div>
-                <div className="flex justify-between"><span>Shortcuts Help</span><kbd className="text-navy font-bold">?</kbd></div>
-                <div className="flex justify-between"><span>Close Modal</span><kbd className="text-navy font-bold">ESC</kbd></div>
-                <div className="flex justify-between"><span>Run Action</span><kbd className="text-navy font-bold">↵</kbd></div>
+                <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Global Omnibar &amp; Actions
+                </div>
+                <div className="flex justify-between">
+                  <span>Open Omnibar</span>
+                  <kbd className="text-navy font-bold">⌘ K / /</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Shortcuts Help</span>
+                  <kbd className="text-navy font-bold">?</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Close Modal</span>
+                  <kbd className="text-navy font-bold">ESC</kbd>
+                </div>
+                <div className="flex justify-between">
+                  <span>Run Action</span>
+                  <kbd className="text-navy font-bold">↵</kbd>
+                </div>
               </div>
             </div>
             <div className="flex justify-end">

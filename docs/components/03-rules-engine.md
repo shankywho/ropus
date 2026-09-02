@@ -109,12 +109,12 @@ type RuleMatchRecord struct {
 ---
 
 ## 7. Source Code Map
-- [`backend/internal/rules/service.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/rules/service.go): Rule service, in-memory caching, and condition evaluation engine.
-- [`backend/internal/rules/ast.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/rules/ast.go): Declarative JSON-AST parsing and variable symbol resolution.
-- [`backend/internal/rules/ast_test.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/rules/ast_test.go): Comprehensive operator and priority ordering unit tests.
+- [`backend/internal/rules/service.go`](backend/internal/rules/service.go): Rule service, in-memory caching, and condition evaluation engine.
+- [`backend/internal/rules/ast.go`](backend/internal/rules/ast.go): Declarative JSON-AST parsing and variable symbol resolution.
+- [`backend/internal/rules/ast_test.go`](backend/internal/rules/ast_test.go): Comprehensive operator and priority ordering unit tests.
 
 ---
 
 ## 8. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Upstream ingestion.
-- [Component 02: Risk Evaluation Engine](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/02-risk-engine.md) — Consumes rule match results for precedence resolution.
+- [Component 01: Product API](docs/components/01-product-api.md) — Upstream ingestion.
+- [Component 02: Risk Evaluation Engine](docs/components/02-risk-engine.md) — Consumes rule match results for precedence resolution.

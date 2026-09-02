@@ -13,10 +13,7 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { decisionQuery } from "@/lib/ropus/api";
 import type { RiskDecision } from "@/lib/ropus/contracts";
-import {
-  Clock,
-  Sparkles,
-} from "lucide-react";
+import { Clock, Sparkles } from "lucide-react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -79,7 +76,8 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
       diff: baseValue,
       cumulative: baseValue,
       isBase: true,
-      counterfactual: "Prior background distribution expected value across 5M legitimate transactions.",
+      counterfactual:
+        "Prior background distribution expected value across 5M legitimate transactions.",
     },
     ...d.inference.features.map((f) => {
       cumulative += f.contribution;
@@ -101,7 +99,8 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
       diff: 0,
       cumulative: d.inference.probability,
       isFinal: true,
-      counterfactual: "Final Beta-calibrated output probability fed to Bayes Minimum Risk decision engine.",
+      counterfactual:
+        "Final Beta-calibrated output probability fed to Bayes Minimum Risk decision engine.",
     },
   ];
 
@@ -163,7 +162,9 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
               </div>
               <div className="flex justify-between gap-6">
                 <dt>Latency</dt>
-                <dd className="text-foreground font-semibold tabular">{d.latencyMs.toFixed(1)} ms</dd>
+                <dd className="text-foreground font-semibold tabular">
+                  {d.latencyMs.toFixed(1)} ms
+                </dd>
               </div>
             </dl>
           </div>
@@ -176,7 +177,9 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
         <div className="space-y-6">
           {/* Executive Summary */}
           <section className="border-b border-border pb-4">
-            <h2 className="font-mono text-[9.5px] font-bold tracking-[0.12em] uppercase text-foreground">Why this decision</h2>
+            <h2 className="font-mono text-[9.5px] font-bold tracking-[0.12em] uppercase text-foreground">
+              Why this decision
+            </h2>
             <p className="mt-2 max-w-[64ch] font-sans text-[13px] leading-relaxed text-foreground/90">
               {d.evidence.find((e) => e.kind === "INFERRED")?.text ??
                 "No elevated pattern detected; the transaction matches the customer baseline."}
@@ -198,7 +201,8 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
             </div>
 
             <p className="text-[11.5px] text-muted-foreground font-sans leading-relaxed">
-              Each feature pushes probability up (crimson) or down (forest) from expected baseline. Hover over any bar for counterfactual suggestions.
+              Each feature pushes probability up (crimson) or down (forest) from expected baseline.
+              Hover over any bar for counterfactual suggestions.
             </p>
 
             <div className="h-[220px] w-full border border-border/50 bg-surface/50 p-2 shadow-2xs">
@@ -233,7 +237,12 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
                       return null;
                     }}
                   />
-                  <ReferenceLine y={0.8} stroke="#A0443A" strokeDasharray="3 3" label={{ value: "Block Cutoff (0.80)", fill: "#A0443A", fontSize: 10 }} />
+                  <ReferenceLine
+                    y={0.8}
+                    stroke="#A0443A"
+                    strokeDasharray="3 3"
+                    label={{ value: "Block Cutoff (0.80)", fill: "#A0443A", fontSize: 10 }}
+                  />
                   <Bar dataKey="cumulative" radius={[2, 2, 0, 0]}>
                     {shapData.map((entry, index) => (
                       <Cell
@@ -264,12 +273,16 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
                   Synchronous Decision Pipeline Microsecond Profile
                 </span>
               </div>
-              <span className="font-bold text-authoritative">Total: {d.latencyMs.toFixed(1)} ms</span>
+              <span className="font-bold text-authoritative">
+                Total: {d.latencyMs.toFixed(1)} ms
+              </span>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center text-[11px]">
-                <span className="text-muted-foreground font-sans">1. Redis In-Memory Feature Store Fetch:</span>
+                <span className="text-muted-foreground font-sans">
+                  1. Redis In-Memory Feature Store Fetch:
+                </span>
                 <span className="font-bold text-foreground tabular">1.8 ms</span>
               </div>
               <div className="w-full bg-secondary h-1.5 overflow-hidden">
@@ -277,7 +290,9 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
               </div>
 
               <div className="flex justify-between items-center text-[11px]">
-                <span className="text-muted-foreground font-sans">2. Deterministic JSON-AST Rules Engine:</span>
+                <span className="text-muted-foreground font-sans">
+                  2. Deterministic JSON-AST Rules Engine:
+                </span>
                 <span className="font-bold text-foreground tabular">0.3 ms</span>
               </div>
               <div className="w-full bg-secondary h-1.5 overflow-hidden">
@@ -285,7 +300,9 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
               </div>
 
               <div className="flex justify-between items-center text-[11px]">
-                <span className="text-muted-foreground font-sans">3. ONNX Calibrated XGBoost Inference:</span>
+                <span className="text-muted-foreground font-sans">
+                  3. ONNX Calibrated XGBoost Inference:
+                </span>
                 <span className="font-bold text-foreground tabular">2.1 ms</span>
               </div>
               <div className="w-full bg-secondary h-1.5 overflow-hidden">
@@ -293,7 +310,9 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
               </div>
 
               <div className="flex justify-between items-center text-[11px]">
-                <span className="text-muted-foreground font-sans">4. PostgreSQL ACID Commit &amp; Outbox Message:</span>
+                <span className="text-muted-foreground font-sans">
+                  4. PostgreSQL ACID Commit &amp; Outbox Message:
+                </span>
                 <span className="font-bold text-foreground tabular">4.2 ms</span>
               </div>
               <div className="w-full bg-secondary h-1.5 overflow-hidden">
@@ -316,12 +335,19 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
               ) : (
                 <ul>
                   {d.rules.map((r) => (
-                    <li key={r.id} className="border-t border-border py-2.5 first:border-t-0 font-mono text-[12px]">
+                    <li
+                      key={r.id}
+                      className="border-t border-border py-2.5 first:border-t-0 font-mono text-[12px]"
+                    >
                       <div className="flex items-baseline gap-3">
                         <Mono className="text-navy font-bold">{r.id}</Mono>
-                        <span className="text-[12.5px] font-sans font-semibold text-foreground">{r.name}</span>
+                        <span className="text-[12.5px] font-sans font-semibold text-foreground">
+                          {r.name}
+                        </span>
                       </div>
-                      <p className="mt-0.5 text-[11.5px] text-muted-foreground font-sans">{r.outcome}</p>
+                      <p className="mt-0.5 text-[11.5px] text-muted-foreground font-sans">
+                        {r.outcome}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -359,10 +385,25 @@ function DecisionStory({ decision: d }: { decision: RiskDecision }) {
             <KeyValue
               rows={[
                 ["IP", <Mono key="ip">{d.threatIntel?.ip ?? "198.51.100.44"}</Mono>],
-                ["Reputation", <span key="rep" className="font-sans text-[11.5px]">{d.threatIntel?.ipReputation ?? "Datacenter Proxy"}</span>],
+                [
+                  "Reputation",
+                  <span key="rep" className="font-sans text-[11.5px]">
+                    {d.threatIntel?.ipReputation ?? "Datacenter Proxy"}
+                  </span>,
+                ],
                 ["ASN", <Mono key="asn">{d.threatIntel?.asn ?? "ASN 13335"}</Mono>],
-                ["Device Canvas", <Mono key="dvc">{String(d.rawRequest?.["device_fingerprint"] ?? "dev_emulator_linux_9f8a")}</Mono>],
-                ["Channel", <span key="ch" className="font-sans text-[11.5px]">{String(d.rawRequest?.["channel"] ?? "imps_payout")}</span>],
+                [
+                  "Device Canvas",
+                  <Mono key="dvc">
+                    {String(d.rawRequest?.["device_fingerprint"] ?? "dev_emulator_linux_9f8a")}
+                  </Mono>,
+                ],
+                [
+                  "Channel",
+                  <span key="ch" className="font-sans text-[11.5px]">
+                    {String(d.rawRequest?.["channel"] ?? "imps_payout")}
+                  </span>,
+                ],
               ]}
             />
           </section>

@@ -1,0 +1,69 @@
+{
+  "evaluation_timestamp": "2026-09-02T07:05:17.046333+00:00",
+  "holdout_dataset": "sample_ieee_fixture.csv (Test Split)",
+  "holdout_sha256": "af554e5a8e82ec767e60fc9c2cc3054240b1a5edd330bf3b6d5bb06809ed4702",
+  "holdout_immutability_verified": true,
+  "champion_immutability_verified": true,
+  "model_artifact": "fraud_model.joblib (15-Feature Production Champion)",
+  "model_sha256": "89c299131b61f2253318ec701a0f47aa875d4e2692621fcf23cd868dc50b5f45",
+  "calibration_artifact": "calibration.json (Beta Calibrator cal-v2.0-beta)",
+  "calibration_sha256": "8ee957cf908b94bfbb6f9c42d4ed873f4efe5d48fe94d8eb4a4c080c0a361466",
+  "total_holdout_transactions": 1200,
+  "positive_labels_in_holdout": 52,
+  "negative_labels_in_holdout": 1148,
+  "test_time_window": [
+    13104601,
+    15290421
+  ],
+  "temporal_leakage_audit": "PASSED (Zero lookahead across time boundary)",
+  "discrimination_and_calibration_metrics": {
+    "roc_auc": 0.9376,
+    "pr_auc": 0.6684,
+    "brier_score": 0.018,
+    "expected_calibration_error_ece": 0.0119
+  },
+  "metrics": {
+    "roc_auc": 0.9376,
+    "pr_auc": 0.6684,
+    "brier_score": 0.018,
+    "expected_calibration_error_ece": 0.0119
+  },
+  "fixed_threshold_baseline_p50": {
+    "threshold": 0.5,
+    "precision": 0.7097,
+    "recall": 0.8462,
+    "f1_score": 0.7719,
+    "false_positive_rate_fpr": 0.0157,
+    "false_negative_rate_fnr": 0.1538,
+    "confusion_matrix": {
+      "true_positives_tp": 44,
+      "false_positives_fp": 18,
+      "true_negatives_tn": 1130,
+      "false_negatives_fn": 8
+    }
+  },
+  "bmr_cost_sensitive_policy": {
+    "action_mapping": "ALLOW = Negative (0), MANUAL_REVIEW / DECLINE = Positive Intervention (1)",
+    "precision": 0.6984,
+    "recall": 0.8462,
+    "f1_score": 0.7652,
+    "false_positive_rate_fpr": 0.0166,
+    "confusion_matrix": {
+      "true_positives_tp": 44,
+      "false_positives_fp": 19,
+      "true_negatives_tn": 1129,
+      "false_negatives_fn": 8
+    },
+    "decision_breakdown": {
+      "ALLOW": 1137,
+      "MANUAL_REVIEW": 4,
+      "DECLINE": 59
+    },
+    "financial_loss_comparison": {
+      "fixed_050_expected_loss_inr": 5716.39,
+      "bmr_policy_expected_loss_inr": 6116.39,
+      "net_merchant_savings_pct": -7.0
+    }
+  },
+  "governance_notice": "Evaluated on 52 positive labels in a frozen synthetic/benchmark-derived holdout fixture. Evaluated purely offline with zero parameter tuning."
+}

@@ -100,7 +100,7 @@ $$\text{PSI} = \sum_{b=1}^{B} \left( P_b - Q_b \right) \times \ln\left( \frac{P_
 where $P_b$ is the current evaluation distribution and $Q_b$ is the baseline training distribution.
 
 - If $\text{PSI} > 0.10$, a warning alert is emitted to the Observability plane.
-- If $\text{PSI} > 0.25$, the engine triggers [`retraining_trigger.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/retraining_trigger.go) to initiate an asynchronous offline retraining pipeline.
+- If $\text{PSI} > 0.25$, the engine triggers [`retraining_trigger.go`](backend/internal/riskengine/retraining_trigger.go) to initiate an asynchronous offline retraining pipeline.
 
 ---
 
@@ -117,16 +117,16 @@ where $P_b$ is the current evaluation distribution and $Q_b$ is the baseline tra
 ---
 
 ## 8. Source Code Map
-- [`backend/internal/riskengine/orchestrator.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/orchestrator.go): Core risk orchestrator, 7-step evaluation pipeline, and BMR decision arbitration.
-- [`backend/internal/riskengine/handler.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/handler.go): HTTP handler for `/v1/risk-evaluations` and `/v1/risk/evaluate`.
-- [`backend/internal/riskengine/shadow_scorer.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/shadow_scorer.go): Asynchronous non-blocking shadow scoring worker pool.
-- [`backend/internal/riskengine/canary_router.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/canary_router.go): Deterministic percentage-based canary routing and circuit breakers.
-- [`backend/internal/riskengine/model_registry.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/riskengine/model_registry.go): In-memory model registry and lifecycle management.
+- [`../../backend/internal/riskengine/orchestrator.go`](../../backend/internal/riskengine/orchestrator.go): Core risk orchestrator, 7-step evaluation pipeline, and BMR decision arbitration.
+- [`../../backend/internal/riskengine/handler.go`](../../backend/internal/riskengine/handler.go): HTTP handler for `/v1/risk-evaluations` and `/v1/risk/evaluate`.
+- [`../../backend/internal/riskengine/shadow_scorer.go`](../../backend/internal/riskengine/shadow_scorer.go): Asynchronous non-blocking shadow scoring worker pool.
+- [`../../backend/internal/riskengine/canary_router.go`](../../backend/internal/riskengine/canary_router.go): Deterministic percentage-based canary routing and circuit breakers.
+- [`../../backend/internal/riskengine/model_registry.go`](../../backend/internal/riskengine/model_registry.go): In-memory model registry and lifecycle management.
 
 ---
 
 ## 9. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Upstream caller.
-- [Component 03: Rules Engine](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/03-rules-engine.md) — Declarative rule evaluation.
-- [Component 04: ML Inference](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/04-ml-inference.md) — Machine learning scoring.
-- [Conditional Promotion Governance Decision](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/conditional_promotion_governance_decision.md) — Dual-track model promotion policy.
+- [Component 01: Product API](01-product-api.md) — Upstream caller.
+- [Component 03: Rules Engine](03-rules-engine.md) — Declarative rule evaluation.
+- [Component 04: ML Inference](04-ml-inference.md) — Machine learning scoring.
+- [AI Risk Policy](../governance/ai_risk_policy.md) — Dual-track model governance policy.

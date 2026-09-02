@@ -54,7 +54,7 @@ func TestPhase62_ProductionChampionChecksumInvariant(t *testing.T) {
 
 func TestPhase62_FrozenHoldoutChecksumInvariant(t *testing.T) {
 	holdoutPath := findProjectFile("ml-service/data/sample_ieee_fixture.csv")
-	expectedSHA := "a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44"
+	expectedSHA := "af554e5a8e82ec767e60fc9c2cc3054240b1a5edd330bf3b6d5bb06809ed4702"
 
 	sha, err := computeGoSHA256(holdoutPath)
 	require.NoError(t, err)

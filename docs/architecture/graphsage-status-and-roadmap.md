@@ -3,9 +3,9 @@
 **Document Reference:** `ROPUS-GRAPHSAGE-STATUS-ROADMAP-PHASE-68`
 **Current Governance State:** `SYNTHETICALLY_VALIDATED` $\to$ `REAL_DATA_SHADOW_READY` $\to$ `REAL_DATA_REQUIRED` (PROMOTION BLOCKED)
 **Last Updated:** 2026-08-26 (Phase 68 Verification Checkpoint)
-**Active Production Champion:** [`ml-service/model/candidates/production_model_v8_bmr.joblib`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/model/candidates/production_model_v8_bmr.joblib)
+**Active Production Champion:** [`ml-service/model/candidates/production_model_v8_bmr.joblib`](ml-service/model/candidates/production_model_v8_bmr.joblib)
 **Production Champion SHA-256:** `d473d1ef0c50f232b376c408be37e34c68a258df224277ee1357396e4e627cd7` (**BYTE-FOR-BYTE IMMUTABLE**)
-**Frozen 52-Case Real Holdout:** [`ml-service/data/sample_ieee_fixture.csv`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/data/sample_ieee_fixture.csv)
+**Frozen 52-Case Real Holdout:** [`ml-service/data/sample_ieee_fixture.csv`](ml-service/data/sample_ieee_fixture.csv)
 **Frozen Holdout SHA-256:** `a30a387ad0fa8743599d6043120be6bd66ac17184b8eee4fb9ce764970201d44` (**BYTE-FOR-BYTE IMMUTABLE**)
 
 ---
@@ -132,15 +132,15 @@ PROMOTION GATE STATUS:       BLOCKED (REAL_DATA_REQUIRED — 0 / 50 Real Collusi
 
 | Phase | Focus Area | Architectural Specification | JSON Evidence Artifact |
 | :--- | :--- | :--- | :--- |
-| **Phase 57** | GraphSAGE Relationship Intelligence | [`docs/architecture/graphsage-relationship-intelligence.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-relationship-intelligence.md) | `ml-service/evaluation/` benchmark suite |
-| **Phase 58** | Real-Data Readiness & Maturation | [`docs/architecture/graphsage-real-data-readiness.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-real-data-readiness.md) | `phase_58_real_data_readiness_report.json` |
-| **Phase 59** | Shadow Replay & Multi-Hop Path Extraction | [`docs/architecture/graphsage-real-data-shadow-replay.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-real-data-shadow-replay.md) | `phase_59_real_data_shadow_report.json` |
-| **Phase 60** | Shadow Ingestion & Privacy Boundary | [`docs/architecture/graphsage-real-data-shadow-ingestion.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-real-data-shadow-ingestion.md) | `phase_60_real_data_shadow_ingestion_report.json` |
-| **Phase 61** | Production Shadow Telemetry Deployment | [`docs/architecture/graphsage-production-shadow-telemetry.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-production-shadow-telemetry.md) | `phase_61_production_shadow_telemetry_report.json` |
-| **Phase 62** | Live Shadow Integration & Observability | [`docs/architecture/graphsage-live-shadow-integration.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-live-shadow-integration.md) | `phase_62_live_shadow_integration_report.json` |
-| **Phase 63** | Staging Shadow Soak Validation | [`docs/architecture/graphsage-staging-shadow-soak.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-staging-shadow-soak.md) | `phase_63_staging_shadow_soak_report.json` |
-| **Phase 64** | Real Staging Connectivity Discovery | [`docs/architecture/graphsage-real-staging-connectivity.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-real-staging-connectivity.md) | `phase_64_real_staging_connectivity_report.json` |
-| **Phase 65** | Real Staging Shadow Preflight Audit | [`docs/architecture/graphsage-real-staging-shadow.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-real-staging-shadow.md) | `phase_65_real_staging_shadow_report.json` |
-| **Phase 66** | Infrastructure Unblock & Activation | [`docs/architecture/graphsage-real-staging-activation.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-real-staging-activation.md) | `phase_66_real_staging_activation_report.json` |
-| **Phase 67** | Credential Provisioning & Evidence Gate | [`docs/architecture/graphsage-real-staging-infrastructure-gate.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-real-staging-infrastructure-gate.md) | `phase_67_real_staging_infrastructure_gate_report.json` |
-| **Phase 68** | Post-Provisioning Connectivity Verification | [`docs/architecture/graphsage-post-provisioning-connectivity.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-post-provisioning-connectivity.md) | `phase_68_post_provisioning_connectivity_report.json` |
+| **Phase 57** | GraphSAGE Relationship Intelligence | [`graphsage-relationship-intelligence.md`](graphsage-relationship-intelligence.md) | `ml-service/evaluation/` benchmark suite |
+| **Phase 58** | Real-Data Readiness & Maturation | `graphsage-real-data-readiness` | `phase_58_real_data_readiness_report.json` |
+| **Phase 59** | Shadow Replay & Multi-Hop Path Extraction | `graphsage-real-data-shadow-replay` | `phase_59_real_data_shadow_report.json` |
+| **Phase 60** | Shadow Ingestion & Privacy Boundary | `graphsage-real-data-shadow-ingestion` | `phase_60_real_data_shadow_ingestion_report.json` |
+| **Phase 61** | Production Shadow Telemetry Deployment | `graphsage-production-shadow-telemetry` | `phase_61_production_shadow_telemetry_report.json` |
+| **Phase 62** | Live Shadow Integration & Observability | `graphsage-live-shadow-integration` | `phase_62_live_shadow_integration_report.json` |
+| **Phase 63** | Staging Shadow Soak Validation | `graphsage-staging-shadow-soak` | `phase_63_staging_shadow_soak_report.json` |
+| **Phase 64** | Real Staging Connectivity Discovery | `graphsage-real-staging-connectivity` | `phase_64_real_staging_connectivity_report.json` |
+| **Phase 65** | Real Staging Shadow Preflight Audit | `graphsage-real-staging-shadow` | `phase_65_real_staging_shadow_report.json` |
+| **Phase 66** | Infrastructure Unblock & Activation | `graphsage-real-staging-activation` | `phase_66_real_staging_activation_report.json` |
+| **Phase 67** | Credential Provisioning & Evidence Gate | `graphsage-real-staging-infrastructure-gate` | `phase_67_real_staging_infrastructure_gate_report.json` |
+| **Phase 68** | Post-Provisioning Connectivity Verification | `graphsage-post-provisioning-connectivity` | `phase_68_post_provisioning_connectivity_report.json` |

@@ -14,7 +14,8 @@ export const Route = createFileRoute("/decisions/")({
       { title: "Risk Decisions & Evaluation Log — ROPUS" },
       {
         name: "description",
-        content: "Search, filter, and inspect every risk decision returned by the ROPUS synchronous evaluation API with sub-millisecond latency telemetry.",
+        content:
+          "Search, filter, and inspect every risk decision returned by the ROPUS synchronous evaluation API with sub-millisecond latency telemetry.",
       },
       { property: "og:title", content: "Risk Decisions — ROPUS" },
       {
@@ -75,7 +76,8 @@ function Decisions() {
             Risk Decision Evaluations
           </h1>
           <p className="mt-0.5 font-sans text-[12.5px] text-muted-foreground">
-            Immutable audit record of every synchronous transaction evaluated by <Mono className="text-navy font-bold">POST /v1/risk-evaluations</Mono>.
+            Immutable audit record of every synchronous transaction evaluated by{" "}
+            <Mono className="text-navy font-bold">POST /v1/risk-evaluations</Mono>.
           </p>
         </div>
 
@@ -92,30 +94,48 @@ function Decisions() {
       {/* KPI Ribbon */}
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5 border border-border bg-card p-4 shadow-xs font-mono text-[11px]">
         <div>
-          <dd className="text-[22px] font-extrabold text-foreground tabular">{data.length.toLocaleString()}</dd>
-          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">Recorded Decisions</dt>
+          <dd className="text-[22px] font-extrabold text-foreground tabular">
+            {data.length.toLocaleString()}
+          </dd>
+          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">
+            Recorded Decisions
+          </dt>
         </div>
         <div>
           <dd className="text-[22px] font-extrabold text-blocked tabular">{blockCount}</dd>
-          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">Blocked Fraud (24h)</dt>
+          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">
+            Blocked Fraud (24h)
+          </dt>
         </div>
         <div>
           <dd className="text-[22px] font-extrabold text-amber-intel tabular">{reviewCount}</dd>
-          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">Under Review (24h SLA)</dt>
+          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">
+            Under Review (24h SLA)
+          </dt>
         </div>
         <div>
-          <dd className="text-[22px] font-extrabold text-authoritative tabular">{avgLatency.toFixed(1)} ms</dd>
-          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">Average Latency</dt>
+          <dd className="text-[22px] font-extrabold text-authoritative tabular">
+            {avgLatency.toFixed(1)} ms
+          </dd>
+          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">
+            Average Latency
+          </dt>
         </div>
         <div>
           <dd className="text-[22px] font-extrabold text-navy tabular">100%</dd>
-          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">KMS Signed (ES256)</dt>
+          <dt className="text-muted-foreground uppercase text-[9.5px] font-semibold tracking-wider mt-0.5">
+            KMS Signed (ES256)
+          </dt>
         </div>
       </dl>
 
       {/* Filters & Search Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
-        <div className="flex flex-wrap gap-1 font-mono text-[10.5px]" role="group" aria-label="Filter by verdict">
+        <div
+          className="flex flex-wrap gap-1 font-mono text-[10.5px]"
+          role="group"
+          aria-label="Filter by verdict"
+        >
           {filters.map((f) => (
             <button
               key={f}

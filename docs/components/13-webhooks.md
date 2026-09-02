@@ -69,11 +69,11 @@ If the customer's endpoint returns a $5xx$ server error or network timeout, the 
 ---
 
 ## 5. Source Code Map
-- [`backend/internal/webhooks/webhook_manager.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/webhooks/webhook_manager.go): Subscription registry, payload signing, and delivery loop.
-- [`backend/internal/webhooks/webhook_reliability_test.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/webhooks/webhook_reliability_test.go): HMAC verification and retry test suite.
+- [`backend/internal/webhooks/webhook_manager.go`](backend/internal/webhooks/webhook_manager.go): Subscription registry, payload signing, and delivery loop.
+- [`backend/internal/webhooks/webhook_reliability_test.go`](backend/internal/webhooks/webhook_reliability_test.go): HMAC verification and retry test suite.
 
 ---
 
 ## 6. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Emits risk decision events.
-- [Component 08: Case Management](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/08-cases-governance.md) — Emits case creation and resolution events.
+- [Component 01: Product API](docs/components/01-product-api.md) — Emits risk decision events.
+- [Component 08: Case Management](docs/components/08-cases-governance.md) — Emits case creation and resolution events.

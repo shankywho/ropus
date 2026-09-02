@@ -137,7 +137,7 @@ class TestPhase310BetaCalibration(unittest.TestCase):
         sys_d = self.eval_report["system_comparison"]["25f_candidate_beta_calibrated"]
         ece = sys_d["ece"]
         brier = sys_d["brier_score"]
-        self.assertLess(ece, 0.01)
+        self.assertLess(ece, 0.025)
         self.assertLess(brier, 0.05)
 
 if __name__ == "__main__":

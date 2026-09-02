@@ -1,72 +1,84 @@
-# ROPUS Control Plane — 5-Minute Executive Demo Runbook
+# 🎬 Five-Minute Evaluation & Video Demonstration Runbook
 
-This runbook defines the exact click path for presenting the ROPUS Risk Control Plane to investors, judges, or enterprise risk committees in approximately 5 minutes.
+> **Track 02: AI Risk Manager (Razorpay AI Buildathon)**
+> **Target Duration**: Exactly 5 Minutes (0:00 – 5:00)
+> **Demonstration Script**: `scripts/demo_buildathon.sh`
 
 ---
 
-## 1. Demo Narrative Arc
+## ⏱️ Video Time Budget & Script Breakdown
 
-```text
-  [0:00 - 0:45]       [0:45 - 1:45]         [1:45 - 2:45]        [2:45 - 3:45]        [3:45 - 4:30]         [4:30 - 5:00]
-  COMMAND CENTER  →  RISK DECISIONS  →  FORENSIC GRAPH  →  ANALYST QUEUE  →  CANARY ROUTER  →  CLUSTER HEALTH
-    (Overview)          Terminal         & Intelligence       & Resolution       & Retraining           & SLOs
+```
+[0:00 - 0:45] Minute 1: The Problem & 60-Second Stack Overview
+[0:45 - 1:45] Minute 2: Signed Razorpay Webhook Ingress (Low-Risk vs High-Risk)
+[1:45 - 2:45] Minute 3: Bayes Minimum Risk (BMR) False-Positive Cost Minimization
+[2:45 - 3:45] Minute 4: Controlled Failure & 8ms Timeout Circuit Breaker Fallback
+[3:45 - 4:45] Minute 5: Immutable SHA-256 Audit Trail & Analyst Control Plane
+[4:45 - 5:00] Wrap-up: Reproducibility & Track 02 Submission Checklist
 ```
 
 ---
 
-## 2. Step-by-Step 5-Minute Click Path
-
-### Step 1: Institutional Command Center (`0:00 – 0:45`)
-- **Navigate to**: `/` (Overview)
-- **Key Talking Points**:
-  - Point out the **Live Backend** status and sub-millisecond telemetry.
-  - Highlight the 5-metric KPI strip: Decisions/sec, Block Rate (0.42%), Open Review Queue, P99 Latency (1.42ms), and Contractual Availability (99.995%).
-  - Highlight the bottom **Infrastructure Mesh Probes** table showing live heartbeats across PostgreSQL, Redis, ML sidecar, Redpanda, and ClickHouse.
-- **Action**: Click **"Evaluate Test Txn"** button in top right. Show a live synchronous decision streaming into the table in ~1.4ms.
-
-### Step 2: Synchronous Risk Decision Terminal (`0:45 – 1:45`)
-- **Navigate to**: `/transactions` (Risk Decisions)
-- **Key Talking Points**:
-  - Show the dual-scenario comparison: **Scenario A (Attack Wire: $14,500)** vs **Scenario B (Benign POS: $42.50)**.
-  - Click **"Execute"** to score the attack payload against the Go backend and ML sidecar.
-  - Point to the **Additive Factor Attribution Table**:
-    $$\text{Travel Velocity (+0.22)} + \text{Device Entropy (+0.21)} + \text{IP Threat (+0.20)} + \text{Volume (+0.18)} + \text{Drain (+0.17)} = 0.96 \implies \text{BLOCK}$$
-  - Expand **"TECHNICAL SPECIFICATIONS & 25-FEATURE VECTOR CONTRACT"** to prove real ONNX beta-calibrated model serving.
-
-### Step 3: Forensic Graph & Threat Intelligence (`1:45 – 2:45`)
-- **Navigate to**: `/graph` (Forensic Graph)
-- **Key Talking Points**:
-  - Point out the **Analytical View** provenance badge.
-  - Filter between **1-Hop**, **2-Hop**, and **3-Hop** BFS topology to reveal the coordinated syndicate mule account (`payout_offshore_882`).
-  - Click on the node `dev_mule_cluster_99` to show shared canvas entropy across 14 synthetic accounts in the Entity Inspector.
-- **Navigate to**: `/investigations` (Investigation Workspace)
-  - Highlight the strict **Tripartite Explainability** structure: *1. Observed Facts*, *2. Inferred Patterns*, *3. Recommended Actions*.
-
-### Step 4: Fraud Analyst Queue & Human-In-The-Loop (`2:45 – 3:45`)
-- **Navigate to**: `/cases` (Cases)
-- **Key Talking Points**:
-  - Point out that this is backed by real **PostgreSQL persistence**.
-  - Select an active case (`CASE-88419`).
-  - Review the evidentiary dossier.
-  - Enter analyst justification notes and click **"Confirm Decline (Block)"**.
-  - Show the instant database update and audit trail entry.
-
-### Step 5: Model Governance & Dynamic Canary Router (`3:45 – 4:30`)
-- **Navigate to**: `/models` (Model Registry)
-- **Key Talking Points**:
-  - Show the 3-tier architecture: Active Production (`fraud-xgb-25f-v3.0`), Canary Candidate, and Zero-Dependency Standby Fallback (`fraud-xgb-15f-v1.5`).
-  - Drag the **Canary Traffic Split Slider** to **25%** and click **"Apply Canary Split"**.
-  - Explain that the Go router dynamically adjusts traffic weights with zero-downtime hot reloading.
-
-### Step 6: Operations & Emergency Safety Controls (`4:30 – 5:00`)
-- **Navigate to**: `/operations` (Operations)
-- **Key Talking Points**:
-  - Show contractual **99.99% SLO error budgets** and sub-millisecond component probes.
-  - Point out the isolated **MUTATE** safety controls (Maintenance Mode, Model Freeze Lock, Disaster Recovery state sync).
-- **Conclude**: *"ROPUS is a complete, production-ready, sub-millisecond risk decisioning and safety control plane built on developer-first infrastructure."*
+### Minute 1 (0:00 – 0:45): The Problem & Stack Overview
+- **Opening Statement**: *"Welcome to ROPUS, built for Razorpay AI Buildathon Track 02: AI Risk Manager. Online merchants lose money in two ways: through fraud chargebacks, and through false declines that reject legitimate buyers. ROPUS solves this with a calibrated model and Bayes Minimum Risk cost optimization."*
+- **Visual**: Show terminal running `docker compose ps` / `make up` and opening [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 3. Alternative Fast Scenario: Automated 7-Stage Walkthrough
-- If presenting to an audience that prefers a hands-off cinematic simulation, navigate directly to **`/demo`**.
-- Click **"START DEMO"** to automatically advance through the 7-stage attack scenario with the operational execution timeline.
+### Minute 2 (0:45 – 1:45): Signed Razorpay Webhook Ingress
+- **Action**: Run `./scripts/demo_buildathon.sh` (or show Step 2 & 3 in UI).
+- **Scenario A (Normal Domestic Payment)**:
+  - Payload: ₹480 domestic HDFC card.
+  - Verification: Valid HMAC-SHA256 signature in `X-Razorpay-Signature`.
+  - Output: `ALLOW_RECOMMENDATION` (Risk score: 12/100).
+- **Scenario B (Coordinated Whale Attack)**:
+  - Payload: ₹1,50,000 international card from a disposable `@guerrillamail.com` domain.
+  - Output: `DECLINE_RECOMMENDATION` (Risk score: 99/100, Reason codes: `HIGH_VALUE_WHALE_THRESHOLD`, `DISPOSABLE_EMAIL_DOMAIN`).
+- **Scenario C (Tampered Signature Rejection)**:
+  - Payload with forged signature $\rightarrow$ Immediately rejected with `HTTP 401 Unauthorized`.
+
+---
+
+### Minute 3 (1:45 – 2:45): Bayes Minimum Risk & False-Positive Cost
+- **Narrative**: *"Why is probability calibration critical? Traditional fraud engines use uncalibrated scores or naive static thresholds. ROPUS pairs Beta calibration with Bayes Minimum Risk to evaluate trade-offs between chargeback risk and customer friction."*
+- **Visual**: Show `METRICS.md` or the BMR Cost Matrix in the frontend UI.
+- **Evidence**:
+  - Uncalibrated Model ECE: 6.88% $\rightarrow$ Beta Calibrated Model ECE: **1.19%** (Brier Score: 0.0180).
+  - ROC-AUC: **0.9376**, PR-AUC: **0.6684**, Recall: **84.62%** (44/52), Precision: **70.97%** (44/62), FPR: **1.57%** (18/1148) on the frozen held-out test split.
+  - Transparent Economic Analysis: Evaluates realized losses under configurable false-positive and triage cost parameters (Modeled cost: ₹5,716.39 baseline vs ₹6,116.39 BMR policy).
+
+---
+
+### Minute 4 (2:45 – 3:45): Controlled Failure & 8ms Timeout Fallback
+- **Demonstration**: Run `cd backend && go test -v ./internal -run TestHighPerformanceOrchestratorSuite`.
+- **Narrative**: *"What happens when the downstream ML model experiences a network spike or outage during high-volume flash sales?"*
+- **Proof**:
+  - 100 concurrent goroutines firing 5,000 requests.
+  - When the 8ms context deadline is exceeded, the orchestrator trips its circuit breaker.
+  - **Zero Downstream I/O**: The system degrades instantly to in-memory JSON-AST rules using recycled scratch buffers, returning safe deterministic decisions in sub-millisecond latency.
+
+---
+
+### Minute 5 (3:45 – 5:00): Immutable Audit Trail & Final Summary
+- **Visual**: Show the SHA-256 Audit Trail block hash generated from the batch ledger (`/v1/audit/verify`).
+- **Proof of Idempotency**: Re-sending identical webhooks returns `X-ROPUS-Idempotent-Replayed: true` without creating duplicate transactions.
+- **Conclusion**:
+  - *"In summary, ROPUS delivers a complete, defense-only fraud management loop: signed webhook ingestion, calibrated probability scoring, cost-sensitive BMR recommendations, and cryptographic auditability."*
+
+---
+
+## 🛠️ Step-by-Step CLI Execution Guide for Judges
+
+```bash
+# 1. Start the local stack
+make up
+
+# 2. Execute the automated 5-minute demonstration
+make demo-webhook
+
+# 3. Reproduce held-out metrics from canonical JSON artifact
+make evaluate
+
+# 4. Verify test suite (backend + ML + frontend)
+make test
+```

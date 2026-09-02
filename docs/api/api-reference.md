@@ -1,83 +1,95 @@
-# AI Risk Manager — Customer API Reference
+# API reference
 
-Base URL: `https://api.ropus.ai/v1`
+**Local base URL:** `http://localhost:8080`
+**Versioned prefix:** `/v1`
 
----
+This reference covers the principal routes registered by the current Go API. It is a local-development contract, not a public hosted API promise. The authoritative implementation is in [`backend/cmd/api/main.go`](../../backend/cmd/api/main.go) and its handlers.
 
-## 1. Evaluate Transaction Risk
+## Conventions
 
-`POST /v1/risk/evaluate`
+- Send JSON bodies with `Content-Type: application/json`.
+- `X-Tenant-ID` selects the local/demo tenant. Omit it to use the default tenant.
+- `X-Idempotency-Key` is supported for `POST`, `PUT`, `PATCH`, and `DELETE` requests under `/v1`. A replayed response includes `X-Idempotency-Replayed: true`.
+- Administrative mutations require `X-Admin-API-Key` (or `Authorization: Bearer <admin key>`).
+- `X-Actor-ID` identifies the actor for rule and case workflows in the local environment.
 
-Evaluates transaction telemetry against multi-model ML, fraud graph, and rules engines.
+## Health and status
 
-### Headers
-- `Authorization: Bearer <API_KEY>`
-- `Content-Type: application/json`
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/health`, `/healthz` | API process health. |
+| `GET` | `/readiness`, `/readyz` | Dependency readiness. |
+| `GET` | `/v1/system/status` | Consolidated health, model, canary, drift, and dependency snapshot. |
+| `GET` | `/v1/operations/health` | Operations health report. |
+| `GET` | `/v1/operations/slo` | SLO report. |
+| `GET` | `/v1/operations/metrics` | Metrics snapshot. |
+| `GET` | `/v1/audit/verify` | SHA-256 audit-chain verification status. |
 
-### Request Body
-```json
-{
-  "transaction_id": "tx_8819203",
-  "user_id": "usr_99812",
-  "amount": 2500.00,
-  "currency": "USD",
-  "merchant": "LuxuryGoodsHub",
-  "device": {
-    "device_fingerprint": "fp_88a91c2b",
-    "ip_address": "198.51.100.44",
-    "user_agent": "Mozilla/5.0",
-    "is_emulator": true,
-    "is_vpn": true
-  },
-  "location": {
-    "country": "CY",
-    "city": "Limassol",
-    "lat": 34.68,
-    "lon": 33.04
-  },
-  "metadata": {
-    "cart_items_count": 3
-  }
-}
-```
+## Risk evaluation
 
-### Response Body (`200 OK`)
-```json
-{
-  "transaction_id": "tx_8819203",
-  "risk_score": 94.0,
-  "decision": "BLOCK",
-  "confidence": 0.96,
-  "reasons": [
-    "Device telemetry indicates VPN or emulator environment",
-    "Fraud knowledge graph detected connection to active syndicate ring",
-    "High risk geolocation observed: CY"
-  ],
-  "human_explanation": "Transaction tx_8819203 blocked due to critical risk score (94.0%). High correlation with malicious fraud cluster and emulator spoofing.",
-  "breakdown": {
-    "graph_intelligence_weight": 0.92,
-    "behavior_analysis_weight": 0.55,
-    "threat_intelligence_weight": 0.95,
-    "machine_learning_weight": 0.25
-  },
-  "model_version": "v3.34-ensemble-prod",
-  "graph_signals": [
-    "Entity linked to known transnational carding cluster (degree: 14)"
-  ],
-  "recommended_action": "Block transaction immediately and trigger account freeze review",
-  "evaluated_at": "2026-08-22T12:00:00Z"
-}
-```
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/v1/risk-evaluations` | Canonical synchronous risk evaluation. |
+| `POST` | `/v1/risk/evaluate` | Alias for the canonical evaluation endpoint. |
+| `GET` | `/v1/graph` | Entity graph export; accepts `decisionId` and `rootId` query parameters. |
 
----
+See the [API quickstart](quickstart.md) for the request and response schema. The service returns `200 OK` for a completed evaluation, `400 Bad Request` for malformed input, `429 Too Many Requests` when a tenant’s quota is exceeded, and `500 Internal Server Error` when the pipeline cannot complete.
 
-## 2. Case Management Endpoints
+## Rules and cases
 
-### Create Case
-`POST /v1/cases/create`
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/v1/rules/` | Create a rule. Body requires `name` and `dsl_ast`. |
+| `GET` | `/v1/rules/` | List rules; optional `status` query filter. |
+| `GET` | `/v1/rules/{id}` | Retrieve a rule. |
+| `PUT` | `/v1/rules/{id}` | Update a rule. |
+| `PUT` | `/v1/rules/{id}/status` | Transition a rule lifecycle state. |
+| `GET` | `/v1/cases/` | List cases; optional `status` query filter. |
+| `GET` | `/v1/cases/{id}` | Retrieve a case. |
+| `PUT` | `/v1/cases/{id}/claim` | Claim a case for the current actor. |
+| `PUT` | `/v1/cases/{id}/resolve` | Resolve a case; body requires `action` and `reason`. |
 
-### Get Case Details
-`GET /v1/cases/{id}`
+Rule approval is maker-checker controlled: the creator cannot approve their own rule. See the [rules component guide](../components/03-rules-engine.md) for the supported AST structure and lifecycle behavior.
 
-### Get Case Investigation Timeline
-`GET /v1/cases/{id}/timeline`
+## Models, drift, and retraining
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/v1/models/status` | Static model subsystem status. |
+| `GET` | `/v1/models/registry` | Registered models. |
+| `GET` | `/v1/models/production` | Production and fallback model information. |
+| `GET` | `/v1/models/candidates` | Candidate model inventory. |
+| `GET` | `/v1/drift/status` | Current drift state. |
+| `GET` | `/v1/drift/history` | Drift measurements. |
+| `POST` | `/v1/drift/evaluate` | Trigger an on-demand drift measurement. |
+| `GET` | `/v1/retraining/status` | Retraining subsystem status. |
+| `GET` | `/v1/retraining/history` | Retraining history. |
+| `POST` | `/v1/retraining/trigger` | Trigger retraining; admin key required, with `reason` required. |
+| `POST` | `/v1/retraining/jobs/{id}/cancel` | Cancel a retraining job; admin key required. |
+
+## Operations and controlled mutations
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/v1/canary/status` | Canary routing and safety-gate status. |
+| `POST` | `/v1/canary/control` | Change canary settings; admin key required. Body requires `percentage` and non-empty `reason`; optional `enabled`. |
+| `POST` | `/v1/chaos/drill` | Run a local resilience drill. |
+| `POST` | `/admin/chaos/drill` | Admin-protected chaos drill alias. |
+| `GET` | `/v1/operations/incidents` | Current incidents. |
+| `POST` | `/v1/operations/maintenance/enable` | Enable maintenance mode; admin key required. |
+| `POST` | `/v1/operations/maintenance/disable` | Disable maintenance mode; admin key required. |
+| `POST` | `/v1/operations/recovery/trigger` | Trigger recovery handling; admin key required. |
+
+Use these endpoints only in a controlled local or authorized test environment. Review [incident response](../operations/incident-response.md) and [technical limitations](../architecture/technical-limitations.md) before use.
+
+## Inbound webhooks
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/webhooks/provider` | Provider webhook ingestion. |
+| `POST` | `/webhooks/razorpay` | Razorpay webhook ingestion. |
+| `POST` | `/v1/webhooks/provider` | Versioned provider webhook alias. |
+| `POST` | `/v1/webhooks/razorpay` | Versioned Razorpay webhook alias. |
+| `POST` | `/v1/razorpay/webhook` | Razorpay webhook alias. |
+
+Webhook authentication and expected event shapes are implemented by the ingestion handlers. Do not expose any endpoint until its secret validation and routing have been configured for the relevant provider.

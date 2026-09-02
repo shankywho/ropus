@@ -1,70 +1,35 @@
-# ROPUS — Final Institutional Readiness Audit Report
+# 🛡️ Engineering Readiness & Prototype Scope Assessment
 
-```text
-================================================================================
-          ROPUS INSTITUTIONAL READINESS AUDIT
-================================================================================
-Core Product ............................................................ 9.8 / 10
-Integration ............................................................. 9.6 / 10
-Security ................................................................ 9.5 / 10
-Explainability .......................................................... 9.8 / 10
-AI Credibility .......................................................... 9.7 / 10
-Demo Reliability ........................................................ 9.9 / 10
-Developer Experience .................................................... 9.6 / 10
-Performance ............................................................. 9.7 / 10
-Operational Resilience .................................................. 9.6 / 10
-Business Readiness ...................................................... 9.5 / 10
-================================================================================
-```
+> **Track 02: AI Risk Manager (Razorpay AI Buildathon)**
+> This document summarizes the engineering implementation status, tested capabilities, and prototype boundaries.
 
 ---
 
-## 1. Subsystem Readiness Scores & Gap Analysis
+## 1. Implemented & Tested Subsystems
 
-### 1. Core Product: 9.8 / 10
-- **Status**: Synchronous evaluation pipeline evaluates rules, ML models, graph neighborhood links, and behavioral signals in $< 2\text{ms}$.
-- **Remaining Gap**: Additional industry-specific risk presets (e.g. gaming micropayments vs commercial treasury).
-
-### 2. Integration: 9.6 / 10
-- **Status**: Canonical `POST /v1/risk/evaluate` endpoint unifies authentication, feature scaling, case creation, and signed webhook dispatches.
-
-### 3. Security: 9.5 / 10
-- **Status**: Field-level AES-256 GCM encryption at rest, TLS 1.3, SHA-256 API key hashing, SQLi parameter sanitization, and SHA-256 audit ledgers.
-- **Remaining Gap**: Requires external accredited third-party SOC 2 Type II / PCI-DSS QSA audit period.
-
-### 4. Explainability: 9.8 / 10
-- **Status**: Real mathematical factor weighting where the sum of additive feature contributions corresponds to the composite risk score.
-
-### 5. AI Credibility: 9.7 / 10
-- **Status**: Real XGBoost/LightGBM model weights with continuous probability transforms. AI Investigator strictly distinguishes observed facts from inferences.
-
-### 6. Demo Reliability: 9.9 / 10
-- **Status**: Fully deterministic 7-stage demo runner (`backend/internal/demo/demo_mode.go`) with zero external API dependencies or flakiness.
-
-### 7. Developer Experience: 9.6 / 10
-- **Status**: Clean OpenAPI/REST documentation, Python and Node.js SDK examples, and drop-in client code in [`docs/api/quickstart.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/api/quickstart.md).
-
-### 8. Performance: 9.7 / 10
-- **Status**: Microbenchmarks (0.42ms), end-to-end integration benchmarks (1.42ms), and simulated 100k+ ops/sec load tests (P99: 6.80ms).
-
-### 9. Operational Resilience: 9.6 / 10
-- **Status**: Circuit breakers fast-fail degraded dependencies and buffer Kafka streaming events in local fallback queues.
-
-### 10. Business Readiness: 9.5 / 10
-- **Status**: Multi-tenant SaaS tiers (Starter $499, Growth $4,999, Enterprise $24,999) with atomic usage metering and invoice generation.
+| Subsystem Area | Implementation Status | Verification Evidence |
+|:---|:---|:---|
+| **Razorpay Ingress & Auth** | Implemented & covered by local tests | HMAC-SHA256 signature verification (`X-Razorpay-Signature`), normalized payload parsing, and idempotent replay handling in `backend/internal/ingestion/razorpay_adapter.go`. |
+| **Model & Calibration** | Implemented & covered by local tests | 15-Feature gradient boosted trees with post-hoc Beta probability calibration (ECE = 0.0119 on held-out test split). |
+| **Bayes Minimum Risk Policy** | Implemented & covered by local tests | Financial loss matrix selecting optimal action (`ALLOW`, `STEP_UP`, `MANUAL_REVIEW`, `DECLINE`) to minimize expected chargeback and friction costs. |
+| **Resilience & Timeout Fallback** | Implemented & covered by local tests | 8ms context deadline circuit breaker degrading to in-memory JSON-AST rules with zero downstream SQL/network I/O; non-blocking audit ledger writes. |
+| **Audit Ledger** | Implemented & covered by local tests | Cryptographic SHA-256 Merkle chain verified via `GET /v1/audit/verify`. |
+| **Analyst Control Plane** | Implemented & covered by local tests | React / TanStack Start interface displaying real-time evaluations, reason codes, decision logs, and metrics. |
 
 ---
 
-## 2. Institutional Reality Check
+## 2. Explicit Prototype Boundaries & Limitations
 
-### What is Real
-- Real-time decisioning engine, XGBoost inference math, 3-hop graph traversal, SHA-256 key hashing, AES-256 GCM encryption, case review workflows, signed webhooks, rate limiting, and the 18-route Next.js portal.
+1. **Local Prototype Scope**:
+   - ROPUS is an engineering prototype submission for Track 02 of the Razorpay AI Buildathon.
+   - It runs locally via Docker Compose or native binaries.
+   - It has **not** been independently audited for SOC 2 Type II or PCI-DSS compliance.
 
-### What is Simulated
-- Upstream core banking payment ledger (driven by the high-volume synthetic world simulator).
+2. **No Live Payment Rail Connection**:
+   - The system ingests sandboxed or synthetic Razorpay webhook events.
+   - It returns defensive risk recommendations (`ALLOW_RECOMMENDATION`, `STEP_UP_RECOMMENDATION`, `MANUAL_REVIEW`, `DECLINE_RECOMMENDATION`).
+   - It does **not** process live cardholder payments or settle real funds.
 
-### What is Demo-Only
-- Interactive 7-stage investor demo scenario designed for deterministic presentation without third-party API flakiness.
-
-### What is Not Yet Production Ready
-- Formal accredited third-party SOC 2 Type II CPA audit report and live connection to commercial core banking payment gateways (e.g. live FIS / Fiserv cores).
+3. **Synthetic / Benchmark-Derived Evaluation**:
+   - ML models are evaluated on a frozen 1,200-transaction holdout partition (52 positive labels, 1,148 negative labels) derived from canonical IEEE-CIS fraud detection distributions.
+   - Evaluation is conducted strictly offline with zero parameter tuning on the holdout split.

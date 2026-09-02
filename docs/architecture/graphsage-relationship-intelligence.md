@@ -65,15 +65,15 @@ The core engineering and automated software validation for GraphSAGE are **subst
 * **Governance Promotion Gate:** Strictly **`PROMOTION_BLOCKED`** under `REAL_DATA_REQUIRED` (0 / 50 confirmed real collusion cases).
 
 For the full architectural breakdown, automated validation matrix, and infrastructure handoff specification, see:
-* [`docs/architecture/graphsage-status-and-roadmap.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-status-and-roadmap.md)
+* [`graphsage-status-and-roadmap.md`](graphsage-status-and-roadmap.md)
 
 ---
 
 ## Go & Python Integration
 
-- **Backend Ingestion & Shadow Scoring**: [`backend/internal/graph/graphsage/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/graph/graphsage/)
-- **Unified Pipeline Integration**: [`backend/internal/product_api/unified_pipeline.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/product_api/unified_pipeline.go)
-- **Python ML Subsystem**: [`ml-service/graphsage/`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/graphsage/)
-- **Authoritative Status & Roadmap**: [`docs/architecture/graphsage-status-and-roadmap.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-status-and-roadmap.md)
-- **Phase 68 Post-Provisioning Architecture**: [`docs/architecture/graphsage-post-provisioning-connectivity.md`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/architecture/graphsage-post-provisioning-connectivity.md)
-- **Phase 68 Post-Provisioning JSON Report**: [`ml-service/evaluation/phase_68_post_provisioning_connectivity_report.json`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/ml-service/evaluation/phase_68_post_provisioning_connectivity_report.json)
+- **Backend Ingestion & Shadow Scoring**: [`../../backend/internal/graph/graphsage/`](../../backend/internal/graph/graphsage/)
+- **Unified Pipeline Integration**: [`../../backend/internal/product_api/unified_pipeline.go`](../../backend/internal/product_api/unified_pipeline.go)
+- **Python ML Subsystem**: [`../../ml-service/graphsage/`](../../ml-service/graphsage/)
+- **Authoritative Status & Roadmap**: [`graphsage-status-and-roadmap.md`](graphsage-status-and-roadmap.md)
+- **Phase 68 Post-Provisioning Architecture**: `Phase 68: Post-Provisioning Connectivity Verification`
+- **Phase 68 Post-Provisioning JSON Report**: `phase_68_post_provisioning_connectivity_report.json`

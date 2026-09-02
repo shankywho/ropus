@@ -63,12 +63,12 @@ type APIKeyMetadata struct {
 ---
 
 ## 5. Source Code Map
-- [`backend/internal/auth/api_keys/key_service.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/auth/api_keys/key_service.go): API key generation, hashing, and cache-backed verification.
-- [`backend/internal/saas/organization.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/saas/organization.go): Multi-tenant organization and user membership.
-- [`backend/internal/saas/tenant_isolation_test.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/saas/tenant_isolation_test.go): Adversarial cross-tenant isolation test suite.
+- [`backend/internal/auth/api_keys/key_service.go`](backend/internal/auth/api_keys/key_service.go): API key generation, hashing, and cache-backed verification.
+- [`backend/internal/saas/organization.go`](backend/internal/saas/organization.go): Multi-tenant organization and user membership.
+- [`backend/internal/saas/tenant_isolation_test.go`](backend/internal/saas/tenant_isolation_test.go): Adversarial cross-tenant isolation test suite.
 
 ---
 
 ## 6. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — First middleware step in every request.
-- [Component 11: Storage Persistence](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/11-storage-persistence.md) — Enforces `WHERE org_id = $1` on all SQL queries.
+- [Component 01: Product API](docs/components/01-product-api.md) — First middleware step in every request.
+- [Component 11: Storage Persistence](docs/components/11-storage-persistence.md) — Enforces `WHERE org_id = $1` on all SQL queries.

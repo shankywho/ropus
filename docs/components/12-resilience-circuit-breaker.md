@@ -69,12 +69,12 @@ When the circuit breaker transitions back to `CLOSED`, a background worker drain
 ---
 
 ## 4. Source Code Map
-- [`backend/internal/resilience/circuit_breaker.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/resilience/circuit_breaker.go): Circuit breaker state machine, failure thresholds, and half-open probes.
-- [`backend/internal/resilience/health_manager.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/resilience/health_manager.go): Health state tracking and background degraded dependency probes.
-- [`backend/internal/resilience/failure_resilience_test.go`](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/backend/internal/resilience/failure_resilience_test.go): Simulated fault injection tests.
+- [`backend/internal/resilience/circuit_breaker.go`](backend/internal/resilience/circuit_breaker.go): Circuit breaker state machine, failure thresholds, and half-open probes.
+- [`backend/internal/resilience/health_manager.go`](backend/internal/resilience/health_manager.go): Health state tracking and background degraded dependency probes.
+- [`backend/internal/resilience/failure_resilience_test.go`](backend/internal/resilience/failure_resilience_test.go): Simulated fault injection tests.
 
 ---
 
 ## 5. Cross-Component Links
-- [Component 01: Product API](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/01-product-api.md) — Protected by circuit breakers.
-- [Component 10: Streaming Kafka](file:///Users/shankar/PROJECTS/Ai%20Risk%20Manager/docs/components/10-streaming-kafka.md) — Target destination for fallback flushes.
+- [Component 01: Product API](docs/components/01-product-api.md) — Protected by circuit breakers.
+- [Component 10: Streaming Kafka](docs/components/10-streaming-kafka.md) — Target destination for fallback flushes.

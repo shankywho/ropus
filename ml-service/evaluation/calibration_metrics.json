@@ -1,15 +1,15 @@
 {
-  "evaluation_timestamp": "2026-08-21T09:29:39.831796+00:00",
+  "evaluation_timestamp": "2026-09-01T04:59:54.425476+00:00",
   "selection_split": "validation",
   "selected_calibrator": "beta",
   "selection_rationale": "Selected 'beta' calibration for production: achieves near-zero test ECE (0.0050) while preserving smooth continuous score resolution (524 unique levels, <1.0% modal share).",
   "validation_evaluation": {
     "raw": {
-      "brier_score": 0.1054,
-      "ece": 0.2001,
-      "log_loss": 0.3576,
-      "roc_auc": 0.6591,
-      "pr_auc": 0.1237,
+      "brier_score": 0.0248,
+      "ece": 0.0495,
+      "log_loss": 0.1395,
+      "roc_auc": 0.8966,
+      "pr_auc": 0.6797,
       "reliability_bins": [
         {
           "bin_idx": 0,
@@ -17,10 +17,10 @@
             0.0,
             0.1
           ],
-          "sample_count": 218,
-          "mean_predicted_prob": 0.0711,
-          "actual_fraud_frequency": 0.0367,
-          "absolute_calibration_error": 0.0344
+          "sample_count": 992,
+          "mean_predicted_prob": 0.0329,
+          "actual_fraud_frequency": 0.0101,
+          "absolute_calibration_error": 0.0228
         },
         {
           "bin_idx": 1,
@@ -28,10 +28,10 @@
             0.1,
             0.2
           ],
-          "sample_count": 431,
-          "mean_predicted_prob": 0.1453,
-          "actual_fraud_frequency": 0.0255,
-          "absolute_calibration_error": 0.1198
+          "sample_count": 108,
+          "mean_predicted_prob": 0.1348,
+          "actual_fraud_frequency": 0.0185,
+          "absolute_calibration_error": 0.1162
         },
         {
           "bin_idx": 2,
@@ -39,10 +39,10 @@
             0.2,
             0.3
           ],
-          "sample_count": 223,
-          "mean_predicted_prob": 0.2421,
-          "actual_fraud_frequency": 0.0179,
-          "absolute_calibration_error": 0.2241
+          "sample_count": 32,
+          "mean_predicted_prob": 0.2318,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.2318
         },
         {
           "bin_idx": 3,
@@ -50,10 +50,10 @@
             0.3,
             0.4
           ],
-          "sample_count": 112,
-          "mean_predicted_prob": 0.348,
-          "actual_fraud_frequency": 0.0536,
-          "absolute_calibration_error": 0.2944
+          "sample_count": 8,
+          "mean_predicted_prob": 0.36,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.36
         },
         {
           "bin_idx": 4,
@@ -61,10 +61,10 @@
             0.4,
             0.5
           ],
-          "sample_count": 66,
-          "mean_predicted_prob": 0.4492,
-          "actual_fraud_frequency": 0.1364,
-          "absolute_calibration_error": 0.3128
+          "sample_count": 3,
+          "mean_predicted_prob": 0.4052,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.4052
         },
         {
           "bin_idx": 5,
@@ -72,10 +72,10 @@
             0.5,
             0.6
           ],
-          "sample_count": 64,
-          "mean_predicted_prob": 0.5469,
-          "actual_fraud_frequency": 0.1094,
-          "absolute_calibration_error": 0.4375
+          "sample_count": 1,
+          "mean_predicted_prob": 0.5102,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.5102
         },
         {
           "bin_idx": 6,
@@ -83,10 +83,10 @@
             0.6,
             0.7
           ],
-          "sample_count": 49,
-          "mean_predicted_prob": 0.6536,
-          "actual_fraud_frequency": 0.102,
-          "absolute_calibration_error": 0.5516
+          "sample_count": 1,
+          "mean_predicted_prob": 0.6646,
+          "actual_fraud_frequency": 1.0,
+          "absolute_calibration_error": 0.3354
         },
         {
           "bin_idx": 7,
@@ -94,10 +94,10 @@
             0.7,
             0.8
           ],
-          "sample_count": 27,
-          "mean_predicted_prob": 0.7401,
-          "actual_fraud_frequency": 0.1111,
-          "absolute_calibration_error": 0.629
+          "sample_count": 1,
+          "mean_predicted_prob": 0.7046,
+          "actual_fraud_frequency": 1.0,
+          "absolute_calibration_error": 0.2954
         },
         {
           "bin_idx": 8,
@@ -105,10 +105,10 @@
             0.8,
             0.9
           ],
-          "sample_count": 10,
-          "mean_predicted_prob": 0.8333,
-          "actual_fraud_frequency": 0.3,
-          "absolute_calibration_error": 0.5333
+          "sample_count": 1,
+          "mean_predicted_prob": 0.8287,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.8287
         },
         {
           "bin_idx": 9,
@@ -116,19 +116,19 @@
             0.9,
             1.0
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.95,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 53,
+          "mean_predicted_prob": 0.9961,
+          "actual_fraud_frequency": 0.7925,
+          "absolute_calibration_error": 0.2036
         }
       ]
     },
     "platt": {
-      "brier_score": 0.0434,
-      "ece": 0.0021,
-      "log_loss": 0.179,
-      "roc_auc": 0.6591,
-      "pr_auc": 0.1237,
+      "brier_score": 0.0188,
+      "ece": 0.0116,
+      "log_loss": 0.0837,
+      "roc_auc": 0.8966,
+      "pr_auc": 0.6797,
       "reliability_bins": [
         {
           "bin_idx": 0,
@@ -136,10 +136,10 @@
             0.0,
             0.1
           ],
-          "sample_count": 1135,
-          "mean_predicted_prob": 0.0425,
-          "actual_fraud_frequency": 0.0414,
-          "absolute_calibration_error": 0.0011
+          "sample_count": 1143,
+          "mean_predicted_prob": 0.0161,
+          "actual_fraud_frequency": 0.0105,
+          "absolute_calibration_error": 0.0056
         },
         {
           "bin_idx": 1,
@@ -147,10 +147,10 @@
             0.1,
             0.2
           ],
-          "sample_count": 65,
-          "mean_predicted_prob": 0.1195,
-          "actual_fraud_frequency": 0.1385,
-          "absolute_calibration_error": 0.019
+          "sample_count": 1,
+          "mean_predicted_prob": 0.1464,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.1464
         },
         {
           "bin_idx": 2,
@@ -158,10 +158,10 @@
             0.2,
             0.3
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.25,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 1,
+          "mean_predicted_prob": 0.2785,
+          "actual_fraud_frequency": 1.0,
+          "absolute_calibration_error": 0.7215
         },
         {
           "bin_idx": 3,
@@ -169,10 +169,10 @@
             0.3,
             0.4
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.35,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 1,
+          "mean_predicted_prob": 0.3226,
+          "actual_fraud_frequency": 1.0,
+          "absolute_calibration_error": 0.6774
         },
         {
           "bin_idx": 4,
@@ -180,10 +180,10 @@
             0.4,
             0.5
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.45,
+          "sample_count": 1,
+          "mean_predicted_prob": 0.4777,
           "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "absolute_calibration_error": 0.4777
         },
         {
           "bin_idx": 5,
@@ -202,10 +202,10 @@
             0.6,
             0.7
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.65,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 53,
+          "mean_predicted_prob": 0.6878,
+          "actual_fraud_frequency": 0.7925,
+          "absolute_calibration_error": 0.1046
         },
         {
           "bin_idx": 7,
@@ -243,11 +243,11 @@
       ]
     },
     "isotonic": {
-      "brier_score": 0.0422,
+      "brier_score": 0.0174,
       "ece": 0.0,
-      "log_loss": 0.1712,
-      "roc_auc": 0.7008,
-      "pr_auc": 0.12,
+      "log_loss": 0.0773,
+      "roc_auc": 0.9085,
+      "pr_auc": 0.6878,
       "reliability_bins": [
         {
           "bin_idx": 0,
@@ -255,9 +255,9 @@
             0.0,
             0.1
           ],
-          "sample_count": 958,
-          "mean_predicted_prob": 0.0261,
-          "actual_fraud_frequency": 0.0261,
+          "sample_count": 1144,
+          "mean_predicted_prob": 0.0105,
+          "actual_fraud_frequency": 0.0105,
           "absolute_calibration_error": 0.0
         },
         {
@@ -266,9 +266,9 @@
             0.1,
             0.2
           ],
-          "sample_count": 234,
-          "mean_predicted_prob": 0.1197,
-          "actual_fraud_frequency": 0.1197,
+          "sample_count": 0,
+          "mean_predicted_prob": 0.15,
+          "actual_fraud_frequency": 0.0,
           "absolute_calibration_error": 0.0
         },
         {
@@ -277,9 +277,9 @@
             0.2,
             0.3
           ],
-          "sample_count": 4,
+          "sample_count": 0,
           "mean_predicted_prob": 0.25,
-          "actual_fraud_frequency": 0.25,
+          "actual_fraud_frequency": 0.0,
           "absolute_calibration_error": 0.0
         },
         {
@@ -310,9 +310,9 @@
             0.5,
             0.6
           ],
-          "sample_count": 4,
-          "mean_predicted_prob": 0.5,
-          "actual_fraud_frequency": 0.5,
+          "sample_count": 0,
+          "mean_predicted_prob": 0.55,
+          "actual_fraud_frequency": 0.0,
           "absolute_calibration_error": 0.0
         },
         {
@@ -321,9 +321,9 @@
             0.6,
             0.7
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.65,
-          "actual_fraud_frequency": 0.0,
+          "sample_count": 12,
+          "mean_predicted_prob": 0.6667,
+          "actual_fraud_frequency": 0.6667,
           "absolute_calibration_error": 0.0
         },
         {
@@ -332,9 +332,9 @@
             0.7,
             0.8
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.75,
-          "actual_fraud_frequency": 0.0,
+          "sample_count": 26,
+          "mean_predicted_prob": 0.7692,
+          "actual_fraud_frequency": 0.7692,
           "absolute_calibration_error": 0.0
         },
         {
@@ -343,9 +343,9 @@
             0.8,
             0.9
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.85,
-          "actual_fraud_frequency": 0.0,
+          "sample_count": 13,
+          "mean_predicted_prob": 0.8462,
+          "actual_fraud_frequency": 0.8462,
           "absolute_calibration_error": 0.0
         },
         {
@@ -354,19 +354,19 @@
             0.9,
             1.0
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.95,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 5,
+          "mean_predicted_prob": 0.9999,
+          "actual_fraud_frequency": 1.0,
+          "absolute_calibration_error": 0.0001
         }
       ]
     },
     "beta": {
-      "brier_score": 0.0433,
-      "ece": 0.0034,
-      "log_loss": 0.1787,
-      "roc_auc": 0.6591,
-      "pr_auc": 0.1237,
+      "brier_score": 0.0188,
+      "ece": 0.0014,
+      "log_loss": 0.0833,
+      "roc_auc": 0.8966,
+      "pr_auc": 0.6797,
       "reliability_bins": [
         {
           "bin_idx": 0,
@@ -374,10 +374,10 @@
             0.0,
             0.1
           ],
-          "sample_count": 1116,
-          "mean_predicted_prob": 0.0394,
-          "actual_fraud_frequency": 0.0403,
-          "absolute_calibration_error": 0.001
+          "sample_count": 1146,
+          "mean_predicted_prob": 0.0122,
+          "actual_fraud_frequency": 0.0122,
+          "absolute_calibration_error": 0.0
         },
         {
           "bin_idx": 1,
@@ -385,10 +385,10 @@
             0.1,
             0.2
           ],
-          "sample_count": 74,
-          "mean_predicted_prob": 0.131,
-          "actual_fraud_frequency": 0.1081,
-          "absolute_calibration_error": 0.0229
+          "sample_count": 1,
+          "mean_predicted_prob": 0.1391,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.1391
         },
         {
           "bin_idx": 2,
@@ -396,10 +396,10 @@
             0.2,
             0.3
           ],
-          "sample_count": 9,
-          "mean_predicted_prob": 0.2308,
-          "actual_fraud_frequency": 0.3333,
-          "absolute_calibration_error": 0.1025
+          "sample_count": 0,
+          "mean_predicted_prob": 0.25,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.0
         },
         {
           "bin_idx": 3,
@@ -407,10 +407,10 @@
             0.3,
             0.4
           ],
-          "sample_count": 1,
-          "mean_predicted_prob": 0.3231,
+          "sample_count": 0,
+          "mean_predicted_prob": 0.35,
           "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.3231
+          "absolute_calibration_error": 0.0
         },
         {
           "bin_idx": 4,
@@ -429,10 +429,10 @@
             0.5,
             0.6
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.55,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 1,
+          "mean_predicted_prob": 0.5291,
+          "actual_fraud_frequency": 1.0,
+          "absolute_calibration_error": 0.4709
         },
         {
           "bin_idx": 6,
@@ -440,10 +440,10 @@
             0.6,
             0.7
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.65,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 1,
+          "mean_predicted_prob": 0.6915,
+          "actual_fraud_frequency": 1.0,
+          "absolute_calibration_error": 0.3085
         },
         {
           "bin_idx": 7,
@@ -451,10 +451,10 @@
             0.7,
             0.8
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.75,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 21,
+          "mean_predicted_prob": 0.7664,
+          "actual_fraud_frequency": 0.7619,
+          "absolute_calibration_error": 0.0045
         },
         {
           "bin_idx": 8,
@@ -462,10 +462,10 @@
             0.8,
             0.9
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.85,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 30,
+          "mean_predicted_prob": 0.82,
+          "actual_fraud_frequency": 0.8,
+          "absolute_calibration_error": 0.02
         },
         {
           "bin_idx": 9,
@@ -483,11 +483,11 @@
   },
   "test_evaluation": {
     "raw": {
-      "brier_score": 0.1129,
-      "ece": 0.2061,
-      "log_loss": 0.3749,
-      "roc_auc": 0.5572,
-      "pr_auc": 0.0583,
+      "brier_score": 0.0256,
+      "ece": 0.0527,
+      "log_loss": 0.1543,
+      "roc_auc": 0.9235,
+      "pr_auc": 0.6706,
       "reliability_bins": [
         {
           "bin_idx": 0,
@@ -495,10 +495,10 @@
             0.0,
             0.1
           ],
-          "sample_count": 237,
-          "mean_predicted_prob": 0.0704,
-          "actual_fraud_frequency": 0.0295,
-          "absolute_calibration_error": 0.0408
+          "sample_count": 1000,
+          "mean_predicted_prob": 0.0303,
+          "actual_fraud_frequency": 0.006,
+          "absolute_calibration_error": 0.0243
         },
         {
           "bin_idx": 1,
@@ -506,10 +506,10 @@
             0.1,
             0.2
           ],
-          "sample_count": 395,
-          "mean_predicted_prob": 0.1489,
-          "actual_fraud_frequency": 0.0506,
-          "absolute_calibration_error": 0.0982
+          "sample_count": 105,
+          "mean_predicted_prob": 0.1344,
+          "actual_fraud_frequency": 0.0095,
+          "absolute_calibration_error": 0.1249
         },
         {
           "bin_idx": 2,
@@ -517,10 +517,10 @@
             0.2,
             0.3
           ],
-          "sample_count": 224,
-          "mean_predicted_prob": 0.2433,
-          "actual_fraud_frequency": 0.0268,
-          "absolute_calibration_error": 0.2165
+          "sample_count": 23,
+          "mean_predicted_prob": 0.234,
+          "actual_fraud_frequency": 0.0435,
+          "absolute_calibration_error": 0.1905
         },
         {
           "bin_idx": 3,
@@ -528,10 +528,10 @@
             0.3,
             0.4
           ],
-          "sample_count": 106,
-          "mean_predicted_prob": 0.3442,
-          "actual_fraud_frequency": 0.0377,
-          "absolute_calibration_error": 0.3065
+          "sample_count": 7,
+          "mean_predicted_prob": 0.331,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.331
         },
         {
           "bin_idx": 4,
@@ -539,10 +539,10 @@
             0.4,
             0.5
           ],
-          "sample_count": 92,
-          "mean_predicted_prob": 0.4445,
-          "actual_fraud_frequency": 0.0543,
-          "absolute_calibration_error": 0.3902
+          "sample_count": 3,
+          "mean_predicted_prob": 0.4581,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.4581
         },
         {
           "bin_idx": 5,
@@ -550,10 +550,10 @@
             0.5,
             0.6
           ],
-          "sample_count": 60,
-          "mean_predicted_prob": 0.5429,
-          "actual_fraud_frequency": 0.0667,
-          "absolute_calibration_error": 0.4762
+          "sample_count": 0,
+          "mean_predicted_prob": 0.55,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.0
         },
         {
           "bin_idx": 6,
@@ -561,10 +561,10 @@
             0.6,
             0.7
           ],
-          "sample_count": 48,
-          "mean_predicted_prob": 0.6402,
-          "actual_fraud_frequency": 0.0417,
-          "absolute_calibration_error": 0.5985
+          "sample_count": 0,
+          "mean_predicted_prob": 0.65,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.0
         },
         {
           "bin_idx": 7,
@@ -572,10 +572,10 @@
             0.7,
             0.8
           ],
-          "sample_count": 32,
-          "mean_predicted_prob": 0.7403,
-          "actual_fraud_frequency": 0.125,
-          "absolute_calibration_error": 0.6153
+          "sample_count": 0,
+          "mean_predicted_prob": 0.75,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.0
         },
         {
           "bin_idx": 8,
@@ -583,10 +583,10 @@
             0.8,
             0.9
           ],
-          "sample_count": 6,
-          "mean_predicted_prob": 0.8289,
+          "sample_count": 0,
+          "mean_predicted_prob": 0.85,
           "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.8289
+          "absolute_calibration_error": 0.0
         },
         {
           "bin_idx": 9,
@@ -594,19 +594,19 @@
             0.9,
             1.0
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.95,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 62,
+          "mean_predicted_prob": 0.996,
+          "actual_fraud_frequency": 0.7097,
+          "absolute_calibration_error": 0.2864
         }
       ]
     },
     "platt": {
-      "brier_score": 0.0415,
-      "ece": 0.0035,
-      "log_loss": 0.1785,
-      "roc_auc": 0.5572,
-      "pr_auc": 0.0583,
+      "brier_score": 0.0174,
+      "ece": 0.0093,
+      "log_loss": 0.0732,
+      "roc_auc": 0.9235,
+      "pr_auc": 0.6706,
       "reliability_bins": [
         {
           "bin_idx": 0,
@@ -614,10 +614,10 @@
             0.0,
             0.1
           ],
-          "sample_count": 1143,
-          "mean_predicted_prob": 0.0432,
-          "actual_fraud_frequency": 0.0402,
-          "absolute_calibration_error": 0.003
+          "sample_count": 1135,
+          "mean_predicted_prob": 0.0154,
+          "actual_fraud_frequency": 0.007,
+          "absolute_calibration_error": 0.0084
         },
         {
           "bin_idx": 1,
@@ -625,10 +625,10 @@
             0.1,
             0.2
           ],
-          "sample_count": 57,
-          "mean_predicted_prob": 0.1193,
-          "actual_fraud_frequency": 0.1053,
-          "absolute_calibration_error": 0.0141
+          "sample_count": 3,
+          "mean_predicted_prob": 0.1161,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.1161
         },
         {
           "bin_idx": 2,
@@ -680,10 +680,10 @@
             0.6,
             0.7
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.65,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 62,
+          "mean_predicted_prob": 0.6878,
+          "actual_fraud_frequency": 0.7097,
+          "absolute_calibration_error": 0.0219
         },
         {
           "bin_idx": 7,
@@ -721,11 +721,11 @@
       ]
     },
     "isotonic": {
-      "brier_score": 0.0429,
-      "ece": 0.0245,
-      "log_loss": 0.1901,
-      "roc_auc": 0.5399,
-      "pr_auc": 0.0509,
+      "brier_score": 0.0182,
+      "ece": 0.0131,
+      "log_loss": 0.0832,
+      "roc_auc": 0.9262,
+      "pr_auc": 0.6196,
       "reliability_bins": [
         {
           "bin_idx": 0,
@@ -733,10 +733,10 @@
             0.0,
             0.1
           ],
-          "sample_count": 943,
-          "mean_predicted_prob": 0.0258,
-          "actual_fraud_frequency": 0.0392,
-          "absolute_calibration_error": 0.0134
+          "sample_count": 1138,
+          "mean_predicted_prob": 0.0101,
+          "actual_fraud_frequency": 0.007,
+          "absolute_calibration_error": 0.0031
         },
         {
           "bin_idx": 1,
@@ -744,10 +744,10 @@
             0.1,
             0.2
           ],
-          "sample_count": 253,
-          "mean_predicted_prob": 0.1198,
-          "actual_fraud_frequency": 0.0593,
-          "absolute_calibration_error": 0.0605
+          "sample_count": 0,
+          "mean_predicted_prob": 0.15,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.0
         },
         {
           "bin_idx": 2,
@@ -755,129 +755,10 @@
             0.2,
             0.3
           ],
-          "sample_count": 2,
+          "sample_count": 0,
           "mean_predicted_prob": 0.25,
           "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.25
-        },
-        {
-          "bin_idx": 3,
-          "bin_range": [
-            0.3,
-            0.4
-          ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.35,
-          "actual_fraud_frequency": 0.0,
           "absolute_calibration_error": 0.0
-        },
-        {
-          "bin_idx": 4,
-          "bin_range": [
-            0.4,
-            0.5
-          ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.45,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
-        },
-        {
-          "bin_idx": 5,
-          "bin_range": [
-            0.5,
-            0.6
-          ],
-          "sample_count": 2,
-          "mean_predicted_prob": 0.5,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.5
-        },
-        {
-          "bin_idx": 6,
-          "bin_range": [
-            0.6,
-            0.7
-          ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.65,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
-        },
-        {
-          "bin_idx": 7,
-          "bin_range": [
-            0.7,
-            0.8
-          ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.75,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
-        },
-        {
-          "bin_idx": 8,
-          "bin_range": [
-            0.8,
-            0.9
-          ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.85,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
-        },
-        {
-          "bin_idx": 9,
-          "bin_range": [
-            0.9,
-            1.0
-          ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.95,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
-        }
-      ]
-    },
-    "beta": {
-      "brier_score": 0.0418,
-      "ece": 0.005,
-      "log_loss": 0.1799,
-      "roc_auc": 0.5572,
-      "pr_auc": 0.0583,
-      "reliability_bins": [
-        {
-          "bin_idx": 0,
-          "bin_range": [
-            0.0,
-            0.1
-          ],
-          "sample_count": 1122,
-          "mean_predicted_prob": 0.04,
-          "actual_fraud_frequency": 0.041,
-          "absolute_calibration_error": 0.001
-        },
-        {
-          "bin_idx": 1,
-          "bin_range": [
-            0.1,
-            0.2
-          ],
-          "sample_count": 72,
-          "mean_predicted_prob": 0.1325,
-          "actual_fraud_frequency": 0.0833,
-          "absolute_calibration_error": 0.0491
-        },
-        {
-          "bin_idx": 2,
-          "bin_range": [
-            0.2,
-            0.3
-          ],
-          "sample_count": 6,
-          "mean_predicted_prob": 0.2341,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.2341
         },
         {
           "bin_idx": 3,
@@ -918,10 +799,10 @@
             0.6,
             0.7
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.65,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 9,
+          "mean_predicted_prob": 0.6693,
+          "actual_fraud_frequency": 1.0,
+          "absolute_calibration_error": 0.3307
         },
         {
           "bin_idx": 7,
@@ -929,10 +810,10 @@
             0.7,
             0.8
           ],
-          "sample_count": 0,
-          "mean_predicted_prob": 0.75,
-          "actual_fraud_frequency": 0.0,
-          "absolute_calibration_error": 0.0
+          "sample_count": 35,
+          "mean_predicted_prob": 0.7683,
+          "actual_fraud_frequency": 0.5714,
+          "absolute_calibration_error": 0.1969
         },
         {
           "bin_idx": 8,
@@ -940,10 +821,129 @@
             0.8,
             0.9
           ],
+          "sample_count": 9,
+          "mean_predicted_prob": 0.8458,
+          "actual_fraud_frequency": 0.8889,
+          "absolute_calibration_error": 0.0431
+        },
+        {
+          "bin_idx": 9,
+          "bin_range": [
+            0.9,
+            1.0
+          ],
+          "sample_count": 9,
+          "mean_predicted_prob": 0.9974,
+          "actual_fraud_frequency": 0.7778,
+          "absolute_calibration_error": 0.2196
+        }
+      ]
+    },
+    "beta": {
+      "brier_score": 0.0181,
+      "ece": 0.011,
+      "log_loss": 0.0738,
+      "roc_auc": 0.9235,
+      "pr_auc": 0.6706,
+      "reliability_bins": [
+        {
+          "bin_idx": 0,
+          "bin_range": [
+            0.0,
+            0.1
+          ],
+          "sample_count": 1138,
+          "mean_predicted_prob": 0.0115,
+          "actual_fraud_frequency": 0.007,
+          "absolute_calibration_error": 0.0045
+        },
+        {
+          "bin_idx": 1,
+          "bin_range": [
+            0.1,
+            0.2
+          ],
           "sample_count": 0,
-          "mean_predicted_prob": 0.85,
+          "mean_predicted_prob": 0.15,
           "actual_fraud_frequency": 0.0,
           "absolute_calibration_error": 0.0
+        },
+        {
+          "bin_idx": 2,
+          "bin_range": [
+            0.2,
+            0.3
+          ],
+          "sample_count": 0,
+          "mean_predicted_prob": 0.25,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.0
+        },
+        {
+          "bin_idx": 3,
+          "bin_range": [
+            0.3,
+            0.4
+          ],
+          "sample_count": 0,
+          "mean_predicted_prob": 0.35,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.0
+        },
+        {
+          "bin_idx": 4,
+          "bin_range": [
+            0.4,
+            0.5
+          ],
+          "sample_count": 0,
+          "mean_predicted_prob": 0.45,
+          "actual_fraud_frequency": 0.0,
+          "absolute_calibration_error": 0.0
+        },
+        {
+          "bin_idx": 5,
+          "bin_range": [
+            0.5,
+            0.6
+          ],
+          "sample_count": 2,
+          "mean_predicted_prob": 0.5723,
+          "actual_fraud_frequency": 1.0,
+          "absolute_calibration_error": 0.4277
+        },
+        {
+          "bin_idx": 6,
+          "bin_range": [
+            0.6,
+            0.7
+          ],
+          "sample_count": 2,
+          "mean_predicted_prob": 0.6688,
+          "actual_fraud_frequency": 1.0,
+          "absolute_calibration_error": 0.3312
+        },
+        {
+          "bin_idx": 7,
+          "bin_range": [
+            0.7,
+            0.8
+          ],
+          "sample_count": 23,
+          "mean_predicted_prob": 0.7747,
+          "actual_fraud_frequency": 0.6087,
+          "absolute_calibration_error": 0.166
+        },
+        {
+          "bin_idx": 8,
+          "bin_range": [
+            0.8,
+            0.9
+          ],
+          "sample_count": 35,
+          "mean_predicted_prob": 0.8207,
+          "actual_fraud_frequency": 0.7429,
+          "absolute_calibration_error": 0.0779
         },
         {
           "bin_idx": 9,

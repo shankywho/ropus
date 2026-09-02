@@ -81,8 +81,18 @@ function OperationsPage() {
             value: `${metrics.p99LatencyMs.toFixed(1)} ms`,
             sub: "objective < 80 ms",
           },
-          { label: "Availability", value: "99.995%", sub: "trailing 30 days", tone: "text-authoritative" },
-          { label: "Open incidents", value: "1", sub: "graph traversal latency", tone: "text-shadow-intel" },
+          {
+            label: "Availability",
+            value: "99.995%",
+            sub: "trailing 30 days",
+            tone: "text-authoritative",
+          },
+          {
+            label: "Open incidents",
+            value: "1",
+            sub: "graph traversal latency",
+            tone: "text-shadow-intel",
+          },
         ]}
       />
 
@@ -195,7 +205,9 @@ function OperationsPage() {
                     <span className="w-[140px] shrink-0 font-sans text-[12px] font-semibold text-foreground">
                       {e.component}
                     </span>
-                    <span className="min-w-0 font-sans text-[12px] text-muted-foreground">{e.text}</span>
+                    <span className="min-w-0 font-sans text-[12px] text-muted-foreground">
+                      {e.text}
+                    </span>
                   </li>
                 );
               })}
@@ -211,10 +223,20 @@ function OperationsPage() {
                 const used = Math.min(1, s.budget);
                 const exhausted = used >= 1;
                 return (
-                  <div key={s.name} className="border-b border-border/50 pb-3 last:border-b-0 last:pb-0">
+                  <div
+                    key={s.name}
+                    className="border-b border-border/50 pb-3 last:border-b-0 last:pb-0"
+                  >
                     <div className="flex items-baseline justify-between gap-4">
-                      <span className="font-sans text-[12px] font-medium text-foreground">{s.name}</span>
-                      <Mono className={cn("font-bold tabular text-[11.5px]", s.healthy ? "text-authoritative" : "text-amber-intel")}>
+                      <span className="font-sans text-[12px] font-medium text-foreground">
+                        {s.name}
+                      </span>
+                      <Mono
+                        className={cn(
+                          "font-bold tabular text-[11.5px]",
+                          s.healthy ? "text-authoritative" : "text-amber-intel",
+                        )}
+                      >
                         {s.actual}
                       </Mono>
                     </div>
@@ -222,7 +244,11 @@ function OperationsPage() {
                       <div
                         className={cn(
                           "h-full",
-                          exhausted ? "bg-blocked" : s.healthy ? "bg-authoritative" : "bg-amber-intel",
+                          exhausted
+                            ? "bg-blocked"
+                            : s.healthy
+                              ? "bg-authoritative"
+                              : "bg-amber-intel",
                         )}
                         style={{ width: `${used * 100}%` }}
                       />
@@ -253,7 +279,9 @@ function OperationsPage() {
             <SectionHead title="OPEN INCIDENT" meta="1 active" />
             <div className="border border-border bg-card p-4 shadow-xs font-mono text-[11px] space-y-2">
               <div className="flex items-baseline justify-between gap-3 border-b border-border pb-2">
-                <span className="font-sans text-[12.5px] font-bold text-foreground">Graph traversal latency</span>
+                <span className="font-sans text-[12.5px] font-bold text-foreground">
+                  Graph traversal latency
+                </span>
                 <Mono className="text-[10.5px] text-shadow-intel font-bold">INC-2261</Mono>
               </div>
               <dl className="space-y-1">

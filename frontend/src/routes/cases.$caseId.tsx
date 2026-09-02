@@ -36,7 +36,8 @@ export const Route = createFileRoute("/cases/$caseId")({
       { property: "og:title", content: "Case Dossier — ROPUS" },
       {
         property: "og:description",
-        content: "Forensic evidence dossier with identity, signal convergence, and immutable ledger disposition.",
+        content:
+          "Forensic evidence dossier with identity, signal convergence, and immutable ledger disposition.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -60,7 +61,10 @@ function CaseDetail() {
         <p className="mt-2 text-[12.5px] text-muted-foreground font-sans">
           No case matches <Mono>{caseId}</Mono> in this tenant.
         </p>
-        <Link to="/cases" className="mt-4 inline-block text-[12px] text-primary hover:underline font-sans font-medium">
+        <Link
+          to="/cases"
+          className="mt-4 inline-block text-[12px] text-primary hover:underline font-sans font-medium"
+        >
           Back to queue
         </Link>
       </div>
@@ -111,19 +115,24 @@ function CaseBody({ record }: { record: CaseRecord }) {
               {record.caseId}
             </h1>
             <PriorityTag priority={record.priority} />
-            <CaseStatusTag status={resolution ? ("CLOSED" as any) : record.status} />
+            <CaseStatusTag status={resolution ? "CLOSED" : record.status} />
             <VerdictBadge verdict={record.verdict} />
             <DemoTag />
           </div>
           <p className="font-sans text-[12.5px] text-muted-foreground">
-            Forensic incident opened following automated BLOCK disposition on transaction <Mono className="text-navy font-bold">{decision.transactionId}</Mono>.
+            Forensic incident opened following automated BLOCK disposition on transaction{" "}
+            <Mono className="text-navy font-bold">{decision.transactionId}</Mono>.
           </p>
         </div>
 
         <div className="flex items-center gap-6">
           <div className="text-right font-mono">
-            <div className="text-[9.5px] text-muted-foreground uppercase font-semibold tracking-wider">Transaction Amount</div>
-            <div className="text-[20px] font-extrabold text-foreground tabular">{money(record.amount, record.currency)}</div>
+            <div className="text-[9.5px] text-muted-foreground uppercase font-semibold tracking-wider">
+              Transaction Amount
+            </div>
+            <div className="text-[20px] font-extrabold text-foreground tabular">
+              {money(record.amount, record.currency)}
+            </div>
           </div>
           <RiskScore value={record.riskScore} size="hero" showBand />
         </div>
@@ -142,15 +151,21 @@ function CaseBody({ record }: { record: CaseRecord }) {
           {/* Customer Profile Box */}
           <div className="border border-border bg-surface p-3 space-y-2 shadow-2xs">
             <div className="flex justify-between">
-              <span className="text-muted-foreground uppercase text-[9px] font-bold tracking-wider">Customer ID:</span>
+              <span className="text-muted-foreground uppercase text-[9px] font-bold tracking-wider">
+                Customer ID:
+              </span>
               <span className="font-bold text-foreground">{record.customerId}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground uppercase text-[9px] font-bold tracking-wider">Tenure:</span>
+              <span className="text-muted-foreground uppercase text-[9px] font-bold tracking-wider">
+                Tenure:
+              </span>
               <span className="text-foreground">445 Days (14 Months)</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground uppercase text-[9px] font-bold tracking-wider">Historical Disputes:</span>
+              <span className="text-muted-foreground uppercase text-[9px] font-bold tracking-wider">
+                Historical Disputes:
+              </span>
               <span className="text-authoritative font-bold">0 Disputes</span>
             </div>
           </div>
@@ -164,7 +179,9 @@ function CaseBody({ record }: { record: CaseRecord }) {
             <div className="space-y-1 text-[11px]">
               <div className="flex justify-between">
                 <span className="text-muted-foreground font-sans">Fingerprint:</span>
-                <Mono className="text-foreground">{String(decision.rawRequest?.["device_fingerprint"] ?? "dev_emulator_linux_9f8a")}</Mono>
+                <Mono className="text-foreground">
+                  {String(decision.rawRequest?.["device_fingerprint"] ?? "dev_emulator_linux_9f8a")}
+                </Mono>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground font-sans">Platform:</span>
@@ -186,7 +203,9 @@ function CaseBody({ record }: { record: CaseRecord }) {
             <div className="space-y-1 text-[11px]">
               <div className="flex justify-between">
                 <span className="text-muted-foreground font-sans">Observed IP:</span>
-                <Mono className="text-foreground">{decision.threatIntel?.ip ?? "198.51.100.44"}</Mono>
+                <Mono className="text-foreground">
+                  {decision.threatIntel?.ip ?? "198.51.100.44"}
+                </Mono>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground font-sans">Origin:</span>
@@ -194,7 +213,9 @@ function CaseBody({ record }: { record: CaseRecord }) {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground font-sans">Network/ASN:</span>
-                <span className="text-foreground">{decision.threatIntel?.asn ?? "ASN 13335 (Cloudflare/Proxy)"}</span>
+                <span className="text-foreground">
+                  {decision.threatIntel?.asn ?? "ASN 13335 (Cloudflare/Proxy)"}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground font-sans">Velocity Hop:</span>
@@ -243,7 +264,9 @@ function CaseBody({ record }: { record: CaseRecord }) {
             </div>
             <div className="flex items-baseline justify-between">
               <span className="text-muted-foreground font-sans">Calibrated P(fraud):</span>
-              <span className="text-[16px] font-extrabold text-blocked font-mono">{decision.inference.probability.toFixed(4)}</span>
+              <span className="text-[16px] font-extrabold text-blocked font-mono">
+                {decision.inference.probability.toFixed(4)}
+              </span>
             </div>
           </div>
 
@@ -254,7 +277,9 @@ function CaseBody({ record }: { record: CaseRecord }) {
               <span className="text-shadow-intel font-bold">0% Authority</span>
             </div>
             <div className="text-[11.5px] font-sans text-muted-foreground leading-relaxed">
-              3-hop BFS identified device canvas shared across <strong>14 synthetic accounts</strong> routing funds to cashout mule <strong>PA-77120</strong>.
+              3-hop BFS identified device canvas shared across{" "}
+              <strong>14 synthetic accounts</strong> routing funds to cashout mule{" "}
+              <strong>PA-77120</strong>.
             </div>
             <Link
               to="/graph"
@@ -272,24 +297,35 @@ function CaseBody({ record }: { record: CaseRecord }) {
               <span className="font-bold text-navy text-[9.5px] uppercase tracking-[0.12em] flex items-center gap-1.5">
                 <Lock className="size-3.5" /> 3. Audit Ledger &amp; Console
               </span>
-              <span className="text-[9.5px] text-authoritative font-bold uppercase tracking-wider">ACID Append-Only</span>
+              <span className="text-[9.5px] text-authoritative font-bold uppercase tracking-wider">
+                ACID Append-Only
+              </span>
             </div>
 
             {/* Case Event Timeline */}
             <div className="space-y-2">
-              <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Investigation History</div>
+              <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">
+                Investigation History
+              </div>
               <CaseTimeline events={[...(record.timeline ?? []), ...extra]} />
             </div>
           </div>
 
           {/* Analyst Action Console */}
           <div className="border-t border-border pt-4 space-y-2">
-            <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">Operator Dispositions</div>
+            <div className="text-[9.5px] text-muted-foreground uppercase font-bold tracking-wider">
+              Operator Dispositions
+            </div>
             {!resolution ? (
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => resolve("CONFIRM_FRAUD_BLOCK", "Confirmed syndicate mule attack; permanent account lock & beneficiary freeze applied.")}
+                  onClick={() =>
+                    resolve(
+                      "CONFIRM_FRAUD_BLOCK",
+                      "Confirmed syndicate mule attack; permanent account lock & beneficiary freeze applied.",
+                    )
+                  }
                   className="border border-blocked bg-blocked py-2 text-white font-bold hover:bg-blocked/90 cursor-pointer text-[10.5px] flex items-center justify-center gap-1 shadow-xs"
                 >
                   <AlertOctagon className="size-3" />
@@ -297,7 +333,12 @@ function CaseBody({ record }: { record: CaseRecord }) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => resolve("ESCALATE_L2", "Escalated to Financial Intelligence Unit (FIU) / L2 Investigation team.")}
+                  onClick={() =>
+                    resolve(
+                      "ESCALATE_L2",
+                      "Escalated to Financial Intelligence Unit (FIU) / L2 Investigation team.",
+                    )
+                  }
                   className="border border-amber-intel bg-shadow-intel-surface py-2 text-shadow-intel font-bold hover:bg-secondary cursor-pointer text-[10.5px] flex items-center justify-center gap-1 shadow-xs"
                 >
                   <ShieldAlert className="size-3" />
@@ -305,7 +346,12 @@ function CaseBody({ record }: { record: CaseRecord }) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => resolve("APPROVE_OVERRIDE", "Manual analyst override; customer verified via out-of-band video KYC.")}
+                  onClick={() =>
+                    resolve(
+                      "APPROVE_OVERRIDE",
+                      "Manual analyst override; customer verified via out-of-band video KYC.",
+                    )
+                  }
                   className="border border-border bg-surface py-2 text-foreground font-medium hover:bg-secondary cursor-pointer text-[11px] col-span-2 flex items-center justify-center gap-1 font-sans"
                 >
                   <CheckCircle2 className="size-3" />

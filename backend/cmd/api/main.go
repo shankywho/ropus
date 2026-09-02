@@ -634,6 +634,7 @@ func main() {
 	idempotencyStore := riskengine.NewIdempotencyStoreWithDB(dbPool, 15*time.Minute, 50000)
 
 	webhookHandler := ingestion.NewWebhookHandler(dbPool)
+	razorpayAdapter := ingestion.NewRazorpayWebhookAdapter(dbPool, orchestrator)
 
 	// 5. Asynchronous Kafka Consumers & Periodic Incident Evaluator
 	kafkaCaseConsumer := cases.NewKafkaConsumer(cfg.KafkaBrokers, cfg.KafkaTopic, "risk-case-manager-group", casesService)
@@ -825,6 +826,7 @@ func main() {
 
 	// Provider Webhooks Ingestion (HMAC protected)
 	r.Post("/webhooks/provider", webhookHandler.HandleProviderWebhook)
+	r.Post("/webhooks/razorpay", razorpayAdapter.HandleRazorpayWebhook)
 
 	// Cryptographic SHA-256 Decision Audit Chain Verification endpoint
 	r.Get("/audit/verify", func(w http.ResponseWriter, r *http.Request) {
@@ -1046,6 +1048,8 @@ func main() {
 
 		// Webhook alias under /v1
 		r.Post("/webhooks/provider", webhookHandler.HandleProviderWebhook)
+		r.Post("/webhooks/razorpay", razorpayAdapter.HandleRazorpayWebhook)
+		r.Post("/razorpay/webhook", razorpayAdapter.HandleRazorpayWebhook)
 	})
 
 	server := &http.Server{

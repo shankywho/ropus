@@ -121,7 +121,8 @@ export function VerdictBadge({ verdict, size = "sm" }: { verdict: Verdict; size?
 
 /* --------------------------------------------------------- semantic status pills */
 
-export type SemanticTone = "authoritative" | "shadow" | "blocked" | "local" | "synthetic" | "neutral";
+export type SemanticTone =
+  "authoritative" | "shadow" | "blocked" | "local" | "synthetic" | "neutral";
 
 export function StatusPill({
   tone = "neutral",
@@ -228,7 +229,9 @@ export function RiskFactor({ factor, max }: { factor: RiskFactorRecord; max: num
         <span className="font-sans text-[12.5px] font-semibold">{factor.label}</span>
         <div className="flex shrink-0 items-baseline gap-3">
           <SourceTag source={factor.source} />
-          <Mono className="w-12 text-right font-bold text-[11.5px]">+{factor.weight.toFixed(2)}</Mono>
+          <Mono className="w-12 text-right font-bold text-[11.5px]">
+            +{factor.weight.toFixed(2)}
+          </Mono>
         </div>
       </div>
       {factor.detail && (
@@ -279,7 +282,9 @@ function RecommendedAction({ item }: { item: EvidenceItem }) {
           onClick={() => setState("authorized")}
           className={cn(
             "px-2 py-1 font-mono text-[11px] font-medium text-white transition-colors duration-150 cursor-pointer",
-            item.action.destructive ? "bg-destructive hover:bg-destructive/90" : "bg-primary hover:bg-primary/90",
+            item.action.destructive
+              ? "bg-destructive hover:bg-destructive/90"
+              : "bg-primary hover:bg-primary/90",
           )}
         >
           Confirm
@@ -341,7 +346,9 @@ export function EvidenceList({
   return (
     <section className={cn("border-t-2 pt-3", meta.rule)}>
       <div className="flex items-baseline justify-between gap-3">
-        <h3 className="font-mono text-[9.5px] font-bold tracking-[0.12em] uppercase text-foreground">{meta.title}</h3>
+        <h3 className="font-mono text-[9.5px] font-bold tracking-[0.12em] uppercase text-foreground">
+          {meta.title}
+        </h3>
         {kind !== "OBSERVED" && (
           <span className="font-mono text-[9px] font-semibold tracking-[0.10em] text-muted-foreground uppercase">
             AI GENERATED
@@ -355,14 +362,20 @@ export function EvidenceList({
           <li key={item.id} className="border-t border-border py-2.5 first:border-t-0 first:pt-0">
             {kind === "OBSERVED" ? (
               <div className="flex items-baseline justify-between gap-3">
-                <span className="font-sans text-[12.5px] leading-relaxed text-foreground/90">{item.text}</span>
+                <span className="font-sans text-[12.5px] leading-relaxed text-foreground/90">
+                  {item.text}
+                </span>
                 {item.source && <SourceTag source={item.source} />}
               </div>
             ) : kind === "INFERRED" ? (
-              <p className="font-sans text-[12.5px] leading-relaxed text-foreground/90">{item.text}</p>
+              <p className="font-sans text-[12.5px] leading-relaxed text-foreground/90">
+                {item.text}
+              </p>
             ) : (
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="font-sans text-[12.5px] leading-relaxed text-foreground/90">{item.text}</span>
+                <span className="font-sans text-[12.5px] leading-relaxed text-foreground/90">
+                  {item.text}
+                </span>
                 <RecommendedAction item={item} />
               </div>
             )}
@@ -383,8 +396,12 @@ export function EvidenceList({
 export function Metric({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div>
-      <div className="font-mono text-[28px] leading-none font-medium tracking-[-0.05em] tabular">{value}</div>
-      <div className="mt-2 font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">{label}</div>
+      <div className="font-mono text-[28px] leading-none font-medium tracking-[-0.05em] tabular">
+        {value}
+      </div>
+      <div className="mt-2 font-mono text-[9.5px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+        {label}
+      </div>
       {sub && (
         <div className="mt-0.5 font-mono text-[10.5px] text-muted-foreground tabular">{sub}</div>
       )}
@@ -407,7 +424,12 @@ export function DecisionSummary({
 }) {
   const rows: Array<[string, ReactNode]> = [
     ["Verdict", <VerdictBadge key="v" verdict={decision.verdict} />],
-    ["Risk Score", <Mono key="s" className="font-semibold text-foreground">{decision.riskScore.toFixed(2)}</Mono>],
+    [
+      "Risk Score",
+      <Mono key="s" className="font-semibold text-foreground">
+        {decision.riskScore.toFixed(2)}
+      </Mono>,
+    ],
     ["Confidence", <Mono key="c">{(decision.confidence * 100).toFixed(1)}%</Mono>],
     ["Model", <Mono key="m">{`${decision.model}-${decision.modelVersion}`}</Mono>],
     ["Policy", <Mono key="p">{decision.policy}</Mono>],
@@ -433,7 +455,9 @@ export function DecisionSummary({
     <dl className="divide-y divide-border border-y border-border">
       {rows.map(([k, v]) => (
         <div key={k} className="flex items-baseline justify-between gap-6 py-1.5">
-          <dt className="font-mono text-[9.5px] font-semibold tracking-[0.10em] text-muted-foreground uppercase">{k}</dt>
+          <dt className="font-mono text-[9.5px] font-semibold tracking-[0.10em] text-muted-foreground uppercase">
+            {k}
+          </dt>
           <dd className="text-right font-sans text-[12px]">{v}</dd>
         </div>
       ))}
@@ -447,10 +471,34 @@ const entityRisk: Record<
   import("@/lib/ropus/contracts").EntityRisk,
   { fill: string; text: string; bg: string; border: string; label: string }
 > = {
-  CLEAN: { fill: "#647182", text: "text-muted-foreground", bg: "bg-muted-foreground", border: "border-muted-foreground", label: "Clean" },
-  WATCH: { fill: "#476C87", text: "text-local", bg: "bg-local", border: "border-local", label: "Watch" },
-  SUSPECT: { fill: "#F5A524", text: "text-shadow-intel", bg: "bg-amber-intel", border: "border-amber-intel", label: "Suspect" },
-  CONFIRMED_FRAUD: { fill: "#CE3227", text: "text-blocked", bg: "bg-destructive", border: "border-destructive", label: "Confirmed Fraud" },
+  CLEAN: {
+    fill: "#647182",
+    text: "text-muted-foreground",
+    bg: "bg-muted-foreground",
+    border: "border-muted-foreground",
+    label: "Clean",
+  },
+  WATCH: {
+    fill: "#476C87",
+    text: "text-local",
+    bg: "bg-local",
+    border: "border-local",
+    label: "Watch",
+  },
+  SUSPECT: {
+    fill: "#F5A524",
+    text: "text-shadow-intel",
+    bg: "bg-amber-intel",
+    border: "border-amber-intel",
+    label: "Suspect",
+  },
+  CONFIRMED_FRAUD: {
+    fill: "#CE3227",
+    text: "text-blocked",
+    bg: "bg-destructive",
+    border: "border-destructive",
+    label: "Confirmed Fraud",
+  },
 };
 
 export function entityRiskMeta(risk: import("@/lib/ropus/contracts").EntityRisk) {
@@ -473,11 +521,16 @@ export function RelationshipInspector({
         <div className="font-mono text-[9.5px] font-bold tracking-[0.12em] text-muted-foreground uppercase">
           RELATIONSHIP
         </div>
-        <button onClick={onClear} className="font-sans text-[11px] text-primary hover:underline cursor-pointer">
+        <button
+          onClick={onClear}
+          className="font-sans text-[11px] text-primary hover:underline cursor-pointer"
+        >
           Back to Entity
         </button>
       </div>
-      <div className="mt-1 font-sans text-[13.5px] font-bold text-foreground">{relationship.label}</div>
+      <div className="mt-1 font-sans text-[13.5px] font-bold text-foreground">
+        {relationship.label}
+      </div>
       <dl className="mt-4 border-t border-border">
         {(
           [
@@ -490,7 +543,9 @@ export function RelationshipInspector({
             key={k}
             className="flex items-baseline justify-between gap-4 border-b border-border py-1.5"
           >
-            <dt className="font-mono text-[9.5px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">{k}</dt>
+            <dt className="font-mono text-[9.5px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+              {k}
+            </dt>
             <dd>
               <button
                 onClick={() => onSelect(v)}
@@ -529,20 +584,29 @@ export function PriorityTag({
   priority: import("@/lib/ropus/contracts").CasePriority;
 }) {
   const tone =
-    priority === "P1" ? "text-blocked font-bold" : priority === "P2" ? "text-amber-intel font-bold" : "text-muted-foreground";
-  return (
-    <span className={cn("font-mono text-[11px] font-bold tabular", tone)}>{priority}</span>
-  );
+    priority === "P1"
+      ? "text-blocked font-bold"
+      : priority === "P2"
+        ? "text-amber-intel font-bold"
+        : "text-muted-foreground";
+  return <span className={cn("font-mono text-[11px] font-bold tabular", tone)}>{priority}</span>;
 }
 
 export function SlaTag({ minutes }: { minutes: number }) {
-  if (minutes === 0) return <span className="font-sans text-[11.5px] text-muted-foreground">—</span>;
+  if (minutes === 0)
+    return <span className="font-sans text-[11.5px] text-muted-foreground">—</span>;
   const breached = minutes < 0;
   const abs = Math.abs(minutes);
   const text = `${Math.floor(abs / 60)}h ${abs % 60}m${breached ? " over" : ""}`;
   return (
     <Mono
-      className={breached ? "text-blocked font-bold" : abs <= 60 ? "text-amber-intel font-bold" : "text-muted-foreground"}
+      className={
+        breached
+          ? "text-blocked font-bold"
+          : abs <= 60
+            ? "text-amber-intel font-bold"
+            : "text-muted-foreground"
+      }
     >
       {text}
     </Mono>
@@ -590,4 +654,3 @@ export function CaseTimeline({ events }: { events: import("@/lib/ropus/contracts
     </ol>
   );
 }
-
