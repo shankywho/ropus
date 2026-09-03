@@ -692,8 +692,13 @@ func main() {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
-			w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, X-CSRF-Token, X-Tenant-ID, X-Admin-API-Key, X-Actor-ID, X-Correlation-ID, X-Idempotency-Key")
-			w.Header().Set("Access-Control-Expose-Headers", "Link, X-Total-Count, X-Correlation-ID, X-Latency-Ms")
+			reqHeaders := r.Header.Get("Access-Control-Request-Headers")
+			if reqHeaders != "" {
+				w.Header().Set("Access-Control-Allow-Headers", reqHeaders)
+			} else {
+				w.Header().Set("Access-Control-Allow-Headers", "*")
+			}
+			w.Header().Set("Access-Control-Expose-Headers", "*")
 			if r.Method == "OPTIONS" {
 				w.WriteHeader(http.StatusOK)
 				return

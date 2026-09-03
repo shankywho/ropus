@@ -20,14 +20,16 @@ import { decisionList, overviewMetrics } from "./overview-fixtures";
  * Connects directly to the Go Chi backend at http://localhost:8080.
  */
 const getBaseUrl = () => {
-  const envUrl = import.meta.env["VITE_ROPUS_API_URL"] as string | undefined;
+  const envUrl = (import.meta.env["VITE_ROPUS_API_URL"] ||
+    import.meta.env["NEXT_PUBLIC_API_URL"]) as string | undefined;
   if (envUrl && envUrl.trim().length > 0) {
     return envUrl.replace(/\/$/, "");
   }
   if (typeof window === "undefined") {
     return "http://127.0.0.1:8080";
   }
-  return "http://localhost:8080";
+  const host = window.location.hostname || "localhost";
+  return `http://${host}:8080`;
 };
 
 const BASE = getBaseUrl();
@@ -39,7 +41,7 @@ const DEFAULT_HEADERS = {
   Accept: "application/json",
   "X-Tenant-ID": "00000000-0000-0000-0000-000000000001",
   "X-API-Key": "test-api-key-12345",
-  "X-Admin-API-Key": "admin-secret-key-risk-ops-2026",
+  "X-Admin-API-Key": "adm_risk_super_secret_key_98765",
 };
 
 async function get<T>(path: string, fallback: () => T): Promise<T> {
