@@ -1,29 +1,33 @@
-# Welcome to your Lovable project
+# ROPUS — Analyst Control Plane & Demo UI
 
-This project was built with [Lovable](https://lovable.dev).
+Frontend control plane and interactive scenario evaluator for **ROPUS (Track 02: AI Risk Manager)**.
 
-## Build with Lovable
+For the full system architecture, Go backend orchestrator, and ML evaluation results, refer to the [Root README](../README.md).
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+---
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+## ⚡ Local Development
 
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+### Native Setup:
+```bash
+cd frontend
+npm install
 npm run dev
 ```
 
-## Built with
+The application will be available at [http://localhost:3000](http://localhost:3000).
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+### Stack Setup (via Docker):
+From the repository root:
+```bash
+make up
+```
+
+---
+
+## 🛠️ Verification Commands
+```bash
+cd frontend
+npm run lint
+npm run build
+```

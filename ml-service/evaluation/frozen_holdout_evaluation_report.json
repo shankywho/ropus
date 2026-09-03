@@ -1,5 +1,5 @@
 {
-  "evaluation_timestamp": "2026-09-02T07:15:13.224044+00:00",
+  "evaluation_timestamp": "2026-09-03T06:24:38.334007+00:00",
   "holdout_dataset": "sample_ieee_fixture.csv (Test Split)",
   "holdout_sha256": "af554e5a8e82ec767e60fc9c2cc3054240b1a5edd330bf3b6d5bb06809ed4702",
   "holdout_immutability_verified": true,

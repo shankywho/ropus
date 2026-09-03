@@ -29,6 +29,8 @@ frontend/node_modules/
 .vinxi/
 .tanstack/
 *.tsbuildinfo
+.wrangler/
+.lovable/
 
 # Python / ML Environments & Caches
 __pycache__/
